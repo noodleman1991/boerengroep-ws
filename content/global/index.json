@@ -1,11 +1,11 @@
 {
   "header": {
     "icon": {
-      "name": "Tina",
-      "color": "orange",
+      "name": "BiLeaf",
+      "color": "green",
       "style": "float"
     },
-    "name": "Tina Starter",
+    "name": "Stichting Boerengroep",
     "color": "default",
     "nav": [
       {
@@ -13,12 +13,144 @@
         "label": "Home"
       },
       {
-        "href": "/about",
-        "label": "About"
+        "href": "/over-ons",
+        "label": "Over Ons",
+        "submenu": [
+          {
+            "href": "/over-ons/wat-is-bg",
+            "label": "Wat is BG?"
+          },
+          {
+            "href": "/over-ons/geschiedenis",
+            "label": "Geschiedenis"
+          },
+          {
+            "href": "/over-ons/wie-zijn-wij",
+            "label": "Wie zijn wij?"
+          },
+          {
+            "href": "/over-ons/netwerk",
+            "label": "Netwerk"
+          }
+        ]
       },
       {
-        "href": "/posts",
-        "label": "Blog"
+        "href": "/activiteiten",
+        "label": "Activiteiten",
+        "submenu": [
+          {
+            "href": "/activiteiten/agenda",
+            "label": "Agenda"
+          },
+          {
+            "href": "/activiteiten/terugblik",
+            "label": "Terugblik"
+          },
+          {
+            "href": "/activiteiten/groepsstudies",
+            "label": "Groepsstudies"
+          },
+          {
+            "href": "/activiteiten/pei",
+            "label": "PEI"
+          },
+          {
+            "href": "/activiteiten/docenten",
+            "label": "Docenten"
+          },
+          {
+            "href": "/activiteiten/auditorium",
+            "label": "Auditorium"
+          },
+          {
+            "href": "/activiteiten/forumlezer",
+            "label": "Forum Lezer"
+          },
+          {
+            "href": "/activiteiten/soepkeuken",
+            "label": "Soepkeuken"
+          }
+        ]
+      },
+      {
+        "href": "/vacatures",
+        "label": "Vacatures",
+        "submenu": [
+          {
+            "href": "/vacatures/stages",
+            "label": "Stages"
+          },
+          {
+            "href": "/vacatures/coordinator",
+            "label": "Coördinator"
+          },
+          {
+            "href": "/vacatures/freelance",
+            "label": "Freelance/Tijdelijk"
+          },
+          {
+            "href": "/vacatures/vrijwilligers",
+            "label": "Vrijwilligers"
+          }
+        ]
+      },
+      {
+        "href": "/nieuws",
+        "label": "Nieuws",
+        "submenu": [
+          {
+            "href": "/nieuws/standpunten",
+            "label": "Standpunten"
+          },
+          {
+            "href": "/nieuws/landschap",
+            "label": "Landschap"
+          },
+          {
+            "href": "/nieuws/nieuwsbrief",
+            "label": "Nieuwsbrief"
+          },
+          {
+            "href": "/nieuws/vrienden-nieuws",
+            "label": "Vrienden Nieuws"
+          }
+        ]
+      },
+      {
+        "href": "/inspiratietheater",
+        "label": "Inspiratietheater",
+        "submenu": [
+          {
+            "href": "/inspiratietheater/netwerk",
+            "label": "Legendarisch Netwerk"
+          },
+          {
+            "href": "/inspiratietheater/evenementen",
+            "label": "Materiaal Evenementen"
+          }
+        ]
+      },
+      {
+        "href": "/bibliotheek",
+        "label": "Bibliotheek & Media",
+        "submenu": [
+          {
+            "href": "/bibliotheek/podcast",
+            "label": "Podcast"
+          },
+          {
+            "href": "/bibliotheek/media",
+            "label": "Geluid & Video's"
+          },
+          {
+            "href": "/bibliotheek/50-jaar-bg",
+            "label": "50 Jaar BG"
+          }
+        ]
+      },
+      {
+        "href": "/contact",
+        "label": "Contact"
       }
     ]
   },
@@ -28,30 +160,95 @@
         "icon": {
           "name": "FaLinkedin"
         },
-        "url": "https://www.linkedin.com/company/tinacms"
+        "url": "https://www.linkedin.com/company/stichting-boerengroep"
       },
       {
         "icon": {
-          "name": "FaGithub"
+          "name": "FaFacebook"
         },
-        "url": "https://github.com/tinacms/tinacms"
+        "url": "https://www.facebook.com/boerengroep"
+      },
+      {
+        "icon": {
+          "name": "FaInstagram"
+        },
+        "url": "https://www.instagram.com/boerengroep"
+      },
+      {
+        "icon": {
+          "name": "FaTwitter"
+        },
+        "url": "https://twitter.com/boerengroep"
       },
       {
         "icon": {
           "name": "FaYoutube"
         },
-        "url": "https://www.youtube.com/@TinaCMS"
+        "url": "https://www.youtube.com/@Boerengroep"
       },
       {
         "icon": {
-          "name": "FaXTwitter"
+          "name": "FaEnvelope"
         },
-        "url": "https://x.com/TinaCMS"
+        "url": "mailto:info@boerengroep.nl"
+      }
+    ],
+    "quickLinks": [
+      {
+        "title": "Over Ons",
+        "links": [
+          {
+            "href": "/over-ons/wat-is-bg",
+            "label": "Wat is BG?"
+          },
+          {
+            "href": "/over-ons/geschiedenis",
+            "label": "Geschiedenis"
+          },
+          {
+            "href": "/over-ons/netwerk",
+            "label": "Netwerk"
+          }
+        ]
+      },
+      {
+        "title": "Activiteiten",
+        "links": [
+          {
+            "href": "/activiteiten/agenda",
+            "label": "Agenda"
+          },
+          {
+            "href": "/activiteiten/groepsstudies",
+            "label": "Groepsstudies"
+          },
+          {
+            "href": "/activiteiten/soepkeuken",
+            "label": "Soepkeuken"
+          }
+        ]
+      },
+      {
+        "title": "Meedoen",
+        "links": [
+          {
+            "href": "/vacatures/stages",
+            "label": "Stages"
+          },
+          {
+            "href": "/vacatures/vrijwilligers",
+            "label": "Vrijwilligers"
+          },
+          {
+            "href": "/contact",
+            "label": "Contact"
+          }
+        ]
       }
     ]
   },
   "theme": {
-    "color": "blue",
+    "color": "green",
     "font": "sans",
     "darkMode": "light"
   }

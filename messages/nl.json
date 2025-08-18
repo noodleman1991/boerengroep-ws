@@ -1,0 +1,116 @@
+{
+  "navigation": {
+    "home": "Home",
+    "open-menu": "Menu openen",
+    "close-menu": "Menu sluiten",
+    "items": {
+      "home": "Home",
+      "over-ons": "Over Ons",
+      "wat-is-bg": "Wat is BG?",
+      "geschiedenis": "Geschiedenis",
+      "wie-zijn-wij": "Wie zijn wij?",
+      "netwerk": "Netwerk",
+      "activiteiten": "Activiteiten",
+      "agenda": "Agenda",
+      "terugblik": "Terugblik",
+      "groepsstudies": "Groepsstudies",
+      "pei": "PEI",
+      "docenten": "Docenten",
+      "auditorium": "Auditorium",
+      "forumlezer": "Forum Lezer",
+      "soepkeuken": "Soepkeuken",
+      "vacatures": "Vacatures",
+      "stages": "Stages",
+      "coordinator": "Coördinator",
+      "freelance": "Freelance/Tijdelijk",
+      "vrijwilligers": "Vrijwilligers",
+      "nieuws": "Nieuws",
+      "standpunten": "Standpunten",
+      "landschap": "Landschap",
+      "nieuwsbrief": "Nieuwsbrief",
+      "vrienden-nieuws": "Vrienden Nieuws",
+      "inspiratietheater": "Inspiratietheater",
+      "legendarisch-netwerk": "Legendarisch Netwerk",
+      "materiaal-evenementen": "Materiaal Evenementen",
+      "bibliotheek-media": "Bibliotheek & Media",
+      "podcast": "Podcast",
+      "geluid-videos": "Geluid & Video's",
+      "50-jaar-bg": "50 Jaar BG",
+      "contact": "Contact"
+    }
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Blijf op de hoogte",
+      "description": "Ontvang onze nieuwsbrief met het laatste nieuws over duurzame landbouw en onze activiteiten.",
+      "placeholder": "Uw e-mailadres",
+      "subscribe": "Aanmelden"
+    },
+    "contact": {
+      "title": "Contact",
+      "organization": "Stichting Boerengroep",
+      "address": {
+        "street": "Droevendaalsesteeg 1",
+        "city": "6708 PB Wageningen",
+        "country": "Nederland"
+      },
+      "email": "info@boerengroep.nl",
+      "phone": {
+        "raw": "+31317481100",
+        "display": "+31 (0)317 48 11 00"
+      }
+    },
+    "quick-links": {
+      "over-ons": {
+        "title": "Over Ons",
+        "links": {
+          "wat-is-bg": "Wat is BG?",
+          "geschiedenis": "Geschiedenis",
+          "netwerk": "Netwerk"
+        }
+      },
+      "activiteiten": {
+        "title": "Activiteiten",
+        "links": {
+          "agenda": "Agenda",
+          "groepsstudies": "Groepsstudies",
+          "soepkeuken": "Soepkeuken"
+        }
+      },
+      "meedoen": {
+        "title": "Meedoen",
+        "links": {
+          "stages": "Stages",
+          "vrijwilligers": "Vrijwilligers",
+          "contact": "Contact"
+        }
+      }
+    },
+    "social": {
+      "linkedin": "Volg ons op LinkedIn",
+      "facebook": "Volg ons op Facebook",
+      "instagram": "Volg ons op Instagram",
+      "twitter": "Volg ons op Twitter",
+      "youtube": "Bekijk onze YouTube kanaal",
+      "envelope": "Stuur ons een e-mail"
+    },
+    "legal": {
+      "privacy": "Privacybeleid",
+      "cookies": "Cookiebeleid",
+      "terms": "Algemene Voorwaarden",
+      "accessibility": "Toegankelijkheid"
+    },
+    "copyright": "© {year} {organization}, Alle rechten voorbehouden"
+  },
+  "language-switcher": {
+    "toggle-language-menu": "Wissel van taal",
+    "help-translate": "Help ons vertalen"
+  },
+  "common": {
+    "read-more": "Lees meer",
+    "learn-more": "Meer informatie",
+    "get-involved": "Doe mee",
+    "subscribe": "Aanmelden",
+    "contact-us": "Neem contact op"
+  }
+}

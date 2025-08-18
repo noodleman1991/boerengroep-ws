@@ -1,0 +1,285 @@
+export interface NavigationConfig {
+    header: {
+        icon: {
+            name: string;
+            color: string;
+            style: string;
+        };
+        name: string;
+        color: string;
+        nav: Array<{
+            href: string;
+            label: string;
+            submenu?: Array<{
+                href: string;
+                label: string;
+            }>;
+        }>;
+    };
+    footer: {
+        social: Array<{
+            icon: {
+                name: string;
+            };
+            url: string;
+        }>;
+        quickLinks: Array<{
+            title: string;
+            links: Array<{
+                href: string;
+                label: string;
+            }>;
+        }>;
+    };
+}
+
+export const navigationConfig: NavigationConfig = {
+    header: {
+        icon: {
+            name: "BiLeaf",
+            color: "green",
+            style: "float"
+        },
+        name: "Stichting Boerengroep",
+        color: "default",
+        nav: [
+            {
+                href: "/",
+                label: "Home"
+            },
+            {
+                href: "/over-ons",
+                label: "Over Ons",
+                submenu: [
+                    {
+                        href: "/over-ons/wat-is-bg",
+                        label: "Wat is BG?"
+                    },
+                    {
+                        href: "/over-ons/geschiedenis",
+                        label: "Geschiedenis"
+                    },
+                    {
+                        href: "/over-ons/wie-zijn-wij",
+                        label: "Wie zijn wij?"
+                    },
+                    {
+                        href: "/over-ons/netwerk",
+                        label: "Netwerk"
+                    }
+                ]
+            },
+            {
+                href: "/activiteiten",
+                label: "Activiteiten",
+                submenu: [
+                    {
+                        href: "/activiteiten/agenda",
+                        label: "Agenda"
+                    },
+                    {
+                        href: "/activiteiten/terugblik",
+                        label: "Terugblik"
+                    },
+                    {
+                        href: "/activiteiten/groepsstudies",
+                        label: "Groepsstudies"
+                    },
+                    {
+                        href: "/activiteiten/pei",
+                        label: "PEI"
+                    },
+                    {
+                        href: "/activiteiten/docenten",
+                        label: "Docenten"
+                    },
+                    {
+                        href: "/activiteiten/auditorium",
+                        label: "Auditorium"
+                    },
+                    {
+                        href: "/activiteiten/forumlezer",
+                        label: "Forum Lezer"
+                    },
+                    {
+                        href: "/activiteiten/soepkeuken",
+                        label: "Soepkeuken"
+                    }
+                ]
+            },
+            {
+                href: "/vacatures",
+                label: "Vacatures",
+                submenu: [
+                    {
+                        href: "/vacatures/stages",
+                        label: "Stages"
+                    },
+                    {
+                        href: "/vacatures/coordinator",
+                        label: "Coördinator"
+                    },
+                    {
+                        href: "/vacatures/freelance",
+                        label: "Freelance/Tijdelijk"
+                    },
+                    {
+                        href: "/vacatures/vrijwilligers",
+                        label: "Vrijwilligers"
+                    }
+                ]
+            },
+            {
+                href: "/nieuws",
+                label: "Nieuws",
+                submenu: [
+                    {
+                        href: "/nieuws/standpunten",
+                        label: "Standpunten"
+                    },
+                    {
+                        href: "/nieuws/landschap",
+                        label: "Landschap"
+                    },
+                    {
+                        href: "/nieuws/nieuwsbrief",
+                        label: "Nieuwsbrief"
+                    },
+                    {
+                        href: "/nieuws/vrienden-nieuws",
+                        label: "Vrienden Nieuws"
+                    }
+                ]
+            },
+            {
+                href: "/inspiratietheater",
+                label: "Inspiratietheater",
+                submenu: [
+                    {
+                        href: "/inspiratietheater/netwerk",
+                        label: "Legendarisch Netwerk"
+                    },
+                    {
+                        href: "/inspiratietheater/evenementen",
+                        label: "Materiaal Evenementen"
+                    }
+                ]
+            },
+            {
+                href: "/bibliotheek",
+                label: "Bibliotheek & Media",
+                submenu: [
+                    {
+                        href: "/bibliotheek/podcast",
+                        label: "Podcast"
+                    },
+                    {
+                        href: "/bibliotheek/media",
+                        label: "Geluid & Video's"
+                    },
+                    {
+                        href: "/bibliotheek/50-jaar-bg",
+                        label: "50 Jaar BG"
+                    }
+                ]
+            },
+            {
+                href: "/contact",
+                label: "Contact"
+            }
+        ]
+    },
+    footer: {
+        social: [
+            {
+                icon: {
+                    name: "FaLinkedin"
+                },
+                url: "https://www.linkedin.com/company/stichting-boerengroep"
+            },
+            {
+                icon: {
+                    name: "FaFacebook"
+                },
+                url: "https://www.facebook.com/boerengroep"
+            },
+            {
+                icon: {
+                    name: "FaInstagram"
+                },
+                url: "https://www.instagram.com/boerengroep"
+            },
+            {
+                icon: {
+                    name: "FaTwitter"
+                },
+                url: "https://twitter.com/boerengroep"
+            },
+            {
+                icon: {
+                    name: "FaYoutube"
+                },
+                url: "https://www.youtube.com/@Boerengroep"
+            },
+            {
+                icon: {
+                    name: "FaEnvelope"
+                },
+                url: "mailto:info@boerengroep.nl"
+            }
+        ],
+        quickLinks: [
+            {
+                title: "Over Ons",
+                links: [
+                    {
+                        href: "/over-ons/wat-is-bg",
+                        label: "Wat is BG?"
+                    },
+                    {
+                        href: "/over-ons/geschiedenis",
+                        label: "Geschiedenis"
+                    },
+                    {
+                        href: "/over-ons/netwerk",
+                        label: "Netwerk"
+                    }
+                ]
+            },
+            {
+                title: "Activiteiten",
+                links: [
+                    {
+                        href: "/activiteiten/agenda",
+                        label: "Agenda"
+                    },
+                    {
+                        href: "/activiteiten/groepsstudies",
+                        label: "Groepsstudies"
+                    },
+                    {
+                        href: "/activiteiten/soepkeuken",
+                        label: "Soepkeuken"
+                    }
+                ]
+            },
+            {
+                title: "Meedoen",
+                links: [
+                    {
+                        href: "/vacatures/stages",
+                        label: "Stages"
+                    },
+                    {
+                        href: "/vacatures/vrijwilligers",
+                        label: "Vrijwilligers"
+                    },
+                    {
+                        href: "/contact",
+                        label: "Contact"
+                    }
+                ]
+            }
+        ]
+    }
+};
