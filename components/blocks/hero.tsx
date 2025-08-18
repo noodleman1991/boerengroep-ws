@@ -3,7 +3,7 @@ import { iconSchema } from '@/tina/fields/icon';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
-import type { Template } from 'tinacms';
+import type { TinaTemplate } from '@tinacms/cli';
 import { tinaField } from 'tinacms/dist/react';
 import { PageBlocksHero, PageBlocksHeroImage } from '../../tina/__generated__/types';
 import { Icon } from '../icon';
@@ -132,7 +132,7 @@ const ImageBlock = ({ image }: { image: PageBlocksHeroImage }) => {
   }
 };
 
-export const heroBlockSchema: Template = {
+export const heroBlockSchema: TinaTemplate = {
   name: 'hero',
   label: 'Hero',
   ui: {
@@ -167,7 +167,7 @@ export const heroBlockSchema: Template = {
           icon: true,
           link: '/',
         },
-        itemProps: (item) => ({ label: item.label }),
+        itemProps: (item: any) => ({ label: item.label }),
       },
       fields: [
         {

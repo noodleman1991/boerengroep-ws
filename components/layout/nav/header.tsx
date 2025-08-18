@@ -8,9 +8,6 @@ import { useLayout } from "../layout-context";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
-// Import the actual TinaCMS generated types
-import type { GlobalHeaderNav, GlobalHeaderNavSubmenu } from "@/tina/__generated__/types";
-
 export const Header = () => {
     const { globalSettings, theme } = useLayout();
     const header = globalSettings!.header!;
@@ -25,22 +22,6 @@ export const Header = () => {
     const closeAllMenus = () => {
         setMenuState(false);
         setActiveDropdown(null);
-    };
-
-    // Helper function to safely get translation key
-    const getTranslationKey = (label: string | null | undefined): string => {
-        if (!label) return '';
-        return label.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    };
-
-    // Helper function to safely get translation with fallback
-    const getTranslation = (key: string, fallback: string | null | undefined): string => {
-        if (!fallback) return '';
-        try {
-            return t(key, { defaultValue: fallback });
-        } catch {
-            return fallback;
-        }
     };
 
     return (
@@ -81,11 +62,7 @@ export const Header = () => {
                             <div className="hidden lg:block">
                                 <ul className="flex gap-8 text-sm">
                                     {header.nav?.map((item, index) => {
-                                        // Null check for item
                                         if (!item || !item.href || !item.label) return null;
-
-                                        const translationKey = getTranslationKey(item.label);
-                                        const displayLabel = getTranslation(`items.${translationKey}`, item.label);
 
                                         return (
                                             <li key={index} className="relative group">
@@ -96,7 +73,7 @@ export const Header = () => {
                                                             onMouseEnter={() => setActiveDropdown(item.label!)}
                                                             onMouseLeave={() => setActiveDropdown(null)}
                                                         >
-                                                            <span>{displayLabel}</span>
+                                                            <span>{t(`items.${item.label}`)}</span>
                                                             <ChevronDown className="size-3 transition-transform group-hover:rotate-180" />
                                                         </button>
 
@@ -112,11 +89,7 @@ export const Header = () => {
                                                                     onMouseLeave={() => setActiveDropdown(null)}
                                                                 >
                                                                     {item.submenu.map((subItem, subIndex) => {
-                                                                        // Null check for subItem
                                                                         if (!subItem || !subItem.href || !subItem.label) return null;
-
-                                                                        const subTranslationKey = getTranslationKey(subItem.label);
-                                                                        const subDisplayLabel = getTranslation(`items.${translationKey}.${subTranslationKey}`, subItem.label);
 
                                                                         return (
                                                                             <Link
@@ -125,7 +98,7 @@ export const Header = () => {
                                                                                 className="block px-4 py-3 text-sm text-muted-foreground hover:text-accent-foreground hover:bg-accent/50 transition-colors duration-150"
                                                                                 onClick={closeAllMenus}
                                                                             >
-                                                                                {subDisplayLabel}
+                                                                                {t(`items.${subItem.label}`)}
                                                                             </Link>
                                                                         );
                                                                     })}
@@ -139,7 +112,7 @@ export const Header = () => {
                                                         className="text-muted-foreground hover:text-accent-foreground block duration-150"
                                                         onClick={closeAllMenus}
                                                     >
-                                                        <span>{displayLabel}</span>
+                                                        <span>{t(`items.${item.label}`)}</span>
                                                     </Link>
                                                 )}
                                             </li>
@@ -162,11 +135,7 @@ export const Header = () => {
                                     <div className="w-full">
                                         <ul className="space-y-6 text-base">
                                             {header.nav?.map((item, index) => {
-                                                // Null check for item
                                                 if (!item || !item.href || !item.label) return null;
-
-                                                const translationKey = getTranslationKey(item.label);
-                                                const displayLabel = getTranslation(`items.${translationKey}`, item.label);
 
                                                 return (
                                                     <li key={index}>
@@ -176,7 +145,7 @@ export const Header = () => {
                                                                     onClick={() => toggleDropdown(item.label!)}
                                                                     className="text-muted-foreground hover:text-accent-foreground flex w-full items-center justify-between duration-150"
                                                                 >
-                                                                    <span>{displayLabel}</span>
+                                                                    <span>{t(`items.${item.label}`)}</span>
                                                                     {activeDropdown === item.label ? (
                                                                         <ChevronUp className="size-4" />
                                                                     ) : (
@@ -194,11 +163,7 @@ export const Header = () => {
                                                                             className="mt-3 ml-4 space-y-3 overflow-hidden border-l border-border pl-4"
                                                                         >
                                                                             {item.submenu.map((subItem, subIndex) => {
-                                                                                // Null check for subItem
                                                                                 if (!subItem || !subItem.href || !subItem.label) return null;
-
-                                                                                const subTranslationKey = getTranslationKey(subItem.label);
-                                                                                const subDisplayLabel = getTranslation(`items.${translationKey}.${subTranslationKey}`, subItem.label);
 
                                                                                 return (
                                                                                     <Link
@@ -207,7 +172,7 @@ export const Header = () => {
                                                                                         className="text-muted-foreground hover:text-accent-foreground block text-sm duration-150"
                                                                                         onClick={closeAllMenus}
                                                                                     >
-                                                                                        {subDisplayLabel}
+                                                                                        {t(`items.${subItem.label}`)}
                                                                                     </Link>
                                                                                 );
                                                                             })}
@@ -221,7 +186,7 @@ export const Header = () => {
                                                                 className="text-muted-foreground hover:text-accent-foreground block duration-150"
                                                                 onClick={closeAllMenus}
                                                             >
-                                                                <span>{displayLabel}</span>
+                                                                <span>{t(`items.${item.label}`)}</span>
                                                             </Link>
                                                         )}
                                                     </li>

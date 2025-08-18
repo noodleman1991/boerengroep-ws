@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { Template } from 'tinacms';
+import type { TinaTemplate } from '@tinacms/cli'
 import { tinaField } from 'tinacms/dist/react';
 import { iconSchema } from '@/tina/fields/icon';
 import { Button } from '@/components/ui/button'
@@ -39,7 +39,7 @@ export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
 }
 
 
-export const ctaBlockSchema: Template = {
+export const ctaBlockSchema: TinaTemplate = {
     name: "cta",
     label: "CTA",
     ui: {
@@ -87,7 +87,7 @@ export const ctaBlockSchema: Template = {
                     icon: true,
                     link: '/',
                 },
-                itemProps: (item) => ({ label: item.label }),
+                itemProps: (item: any)  => ({ label: item.label }),
             },
             fields: [
                 {

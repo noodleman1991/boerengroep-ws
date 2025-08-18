@@ -1,5 +1,5 @@
 import { defineConfig } from "tinacms";
-import { baseConfig } from '../next.config';
+import { baseConfig } from '../next.config.base.js';
 
 import Post from "./collection/post";
 import Global from "./collection/global";
@@ -13,7 +13,7 @@ const config = defineConfig({
         process.env.NEXT_PUBLIC_TINA_BRANCH! || // custom branch env override
         process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF! || // Vercel branch env
         process.env.HEAD!, // Netlify branch env
-    token: process.env.TINA_TOKEN!,
+        token: process.env.TINA_TOKEN!,
     media: {
         // If you wanted cloudinary do this
         // loadCustomStore: async () => {

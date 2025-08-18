@@ -10,147 +10,147 @@
     "nav": [
       {
         "href": "/",
-        "label": "Home"
+        "label": "home"
       },
       {
         "href": "/over-ons",
-        "label": "Over Ons",
+        "label": "over-ons",
         "submenu": [
           {
             "href": "/over-ons/wat-is-bg",
-            "label": "Wat is BG?"
+            "label": "wat-is-bg"
           },
           {
             "href": "/over-ons/geschiedenis",
-            "label": "Geschiedenis"
+            "label": "geschiedenis"
           },
           {
             "href": "/over-ons/wie-zijn-wij",
-            "label": "Wie zijn wij?"
+            "label": "wie-zijn-wij"
           },
           {
             "href": "/over-ons/netwerk",
-            "label": "Netwerk"
+            "label": "netwerk"
           }
         ]
       },
       {
         "href": "/activiteiten",
-        "label": "Activiteiten",
+        "label": "activiteiten",
         "submenu": [
           {
             "href": "/activiteiten/agenda",
-            "label": "Agenda"
+            "label": "agenda"
           },
           {
             "href": "/activiteiten/terugblik",
-            "label": "Terugblik"
+            "label": "terugblik"
           },
           {
             "href": "/activiteiten/groepsstudies",
-            "label": "Groepsstudies"
+            "label": "groepsstudies"
           },
           {
             "href": "/activiteiten/pei",
-            "label": "PEI"
+            "label": "pei"
           },
           {
             "href": "/activiteiten/docenten",
-            "label": "Docenten"
+            "label": "docenten"
           },
           {
             "href": "/activiteiten/auditorium",
-            "label": "Auditorium"
+            "label": "auditorium"
           },
           {
             "href": "/activiteiten/forumlezer",
-            "label": "Forum Lezer"
+            "label": "forumlezer"
           },
           {
             "href": "/activiteiten/soepkeuken",
-            "label": "Soepkeuken"
+            "label": "soepkeuken"
           }
         ]
       },
       {
         "href": "/vacatures",
-        "label": "Vacatures",
+        "label": "vacatures",
         "submenu": [
           {
             "href": "/vacatures/stages",
-            "label": "Stages"
+            "label": "stages"
           },
           {
             "href": "/vacatures/coordinator",
-            "label": "Coördinator"
+            "label": "coordinator"
           },
           {
             "href": "/vacatures/freelance",
-            "label": "Freelance/Tijdelijk"
+            "label": "freelance"
           },
           {
             "href": "/vacatures/vrijwilligers",
-            "label": "Vrijwilligers"
+            "label": "vrijwilligers"
           }
         ]
       },
       {
         "href": "/nieuws",
-        "label": "Nieuws",
+        "label": "nieuws",
         "submenu": [
           {
             "href": "/nieuws/standpunten",
-            "label": "Standpunten"
+            "label": "standpunten"
           },
           {
             "href": "/nieuws/landschap",
-            "label": "Landschap"
+            "label": "landschap"
           },
           {
             "href": "/nieuws/nieuwsbrief",
-            "label": "Nieuwsbrief"
+            "label": "nieuwsbrief"
           },
           {
             "href": "/nieuws/vrienden-nieuws",
-            "label": "Vrienden Nieuws"
+            "label": "vrienden-nieuws"
           }
         ]
       },
       {
         "href": "/inspiratietheater",
-        "label": "Inspiratietheater",
+        "label": "inspiratietheater",
         "submenu": [
           {
             "href": "/inspiratietheater/netwerk",
-            "label": "Legendarisch Netwerk"
+            "label": "legendarisch-netwerk"
           },
           {
             "href": "/inspiratietheater/evenementen",
-            "label": "Materiaal Evenementen"
+            "label": "materiaal-evenementen"
           }
         ]
       },
       {
         "href": "/bibliotheek",
-        "label": "Bibliotheek & Media",
+        "label": "bibliotheek-media",
         "submenu": [
           {
             "href": "/bibliotheek/podcast",
-            "label": "Podcast"
+            "label": "podcast"
           },
           {
             "href": "/bibliotheek/media",
-            "label": "Geluid & Video's"
+            "label": "geluid-videos"
           },
           {
             "href": "/bibliotheek/50-jaar-bg",
-            "label": "50 Jaar BG"
+            "label": "50-jaar-bg"
           }
         ]
       },
       {
         "href": "/contact",
-        "label": "Contact"
+        "label": "contact"
       }
     ]
   },
@@ -170,13 +170,13 @@
       },
       {
         "icon": {
-          "name": "FaInstagram"
+          "name": "AiFillInstagram"
         },
         "url": "https://www.instagram.com/boerengroep"
       },
       {
         "icon": {
-          "name": "FaTwitter"
+          "name": "FaXTwitter"
         },
         "url": "https://twitter.com/boerengroep"
       },
@@ -185,71 +185,65 @@
           "name": "FaYoutube"
         },
         "url": "https://www.youtube.com/@Boerengroep"
-      },
-      {
-        "icon": {
-          "name": "FaEnvelope"
-        },
-        "url": "mailto:info@boerengroep.nl"
       }
     ],
     "quickLinks": [
       {
-        "title": "Over Ons",
+        "title": "over-ons",
         "links": [
           {
             "href": "/over-ons/wat-is-bg",
-            "label": "Wat is BG?"
+            "label": "wat-is-bg"
           },
           {
             "href": "/over-ons/geschiedenis",
-            "label": "Geschiedenis"
+            "label": "geschiedenis"
           },
           {
             "href": "/over-ons/netwerk",
-            "label": "Netwerk"
+            "label": "netwerk"
           }
         ]
       },
       {
-        "title": "Activiteiten",
+        "title": "activiteiten",
         "links": [
           {
             "href": "/activiteiten/agenda",
-            "label": "Agenda"
+            "label": "agenda"
           },
           {
             "href": "/activiteiten/groepsstudies",
-            "label": "Groepsstudies"
+            "label": "groepsstudies"
           },
           {
             "href": "/activiteiten/soepkeuken",
-            "label": "Soepkeuken"
+            "label": "soepkeuken"
           }
         ]
       },
       {
-        "title": "Meedoen",
+        "title": "meedoen",
         "links": [
           {
             "href": "/vacatures/stages",
-            "label": "Stages"
+            "label": "stages"
           },
           {
             "href": "/vacatures/vrijwilligers",
-            "label": "Vrijwilligers"
+            "label": "vrijwilligers"
           },
           {
             "href": "/contact",
-            "label": "Contact"
+            "label": "contact"
           }
         ]
       }
     ]
   },
   "theme": {
-    "color": "green",
-    "font": "sans",
+    "color": "blue",
+    "font": "nunito",
     "darkMode": "light"
   }
 }

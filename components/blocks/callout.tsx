@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import type { Template } from 'tinacms';
+import type { TinaTemplate } from '@tinacms/cli'
 import { tinaField } from 'tinacms/dist/react';
 import { PageBlocksCallout } from '@/tina/__generated__/types';
 import { ArrowRight } from 'lucide-react';
@@ -58,7 +58,7 @@ export const Callout = ({ data }: { data: PageBlocksCallout }) => {
     );
 };
 
-export const calloutBlockSchema: Template = {
+export const calloutBlockSchema: TinaTemplate = {
     name: 'callout',
     label: 'Callout',
     ui: {

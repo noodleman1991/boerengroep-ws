@@ -1,4 +1,4 @@
-import type { Collection } from "tinacms";
+import type { Collection } from "@tinacms/cli";
 import { ColorPickerInput } from "../fields/color";
 import { iconSchema } from "../fields/icon";
 
@@ -37,7 +37,7 @@ const Global: Collection = {
                     name: "nav",
                     list: true,
                     ui: {
-                        itemProps: (item) => {
+                        itemProps: (item: any) => {
                             return { label: item?.label };
                         },
                         defaultItem: {
@@ -62,7 +62,7 @@ const Global: Collection = {
                             name: "submenu",
                             list: true,
                             ui: {
-                                itemProps: (item) => {
+                                itemProps: (item: any) => {
                                     return { label: item?.label };
                                 },
                                 defaultItem: {
@@ -98,7 +98,7 @@ const Global: Collection = {
                     name: "social",
                     list: true,
                     ui: {
-                        itemProps: (item) => {
+                        itemProps: (item: any) => {
                             return { label: item?.icon?.name || 'undefined' };
                         },
                     },
@@ -117,7 +117,7 @@ const Global: Collection = {
                     name: "quickLinks",
                     list: true,
                     ui: {
-                        itemProps: (item) => {
+                        itemProps: (item: any) => {
                             return { label: item?.title || 'Quick Links Section' };
                         },
                         defaultItem: {
@@ -142,7 +142,7 @@ const Global: Collection = {
                             name: "links",
                             list: true,
                             ui: {
-                                itemProps: (item) => {
+                                itemProps: (item: any) => {
                                     return { label: item?.label };
                                 },
                                 defaultItem: {

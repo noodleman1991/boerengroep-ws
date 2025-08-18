@@ -1,5 +1,5 @@
 import React from "react";
-import type { Template } from "tinacms";
+import type { TinaTemplate } from "@tinacms/cli";
 import { PageBlocksTestimonial, PageBlocksTestimonialTestimonials } from "../../tina/__generated__/types";
 import { Section } from "../layout/section";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -48,7 +48,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: PageBlocksTestimonialTe
   );
 };
 
-export const testimonialBlockSchema: Template = {
+export const testimonialBlockSchema: TinaTemplate = {
   name: "testimonial",
   label: "Testimonial",
   ui: {
@@ -88,7 +88,7 @@ export const testimonialBlockSchema: Template = {
           quote: "There are only two hard things in Computer Science: cache invalidation and naming things.",
           author: "Phil Karlton",
         },
-        itemProps: (item) => {
+        itemProps: (item: any) => {
           return {
             label: `${item.quote} - ${item.author}`,
           };

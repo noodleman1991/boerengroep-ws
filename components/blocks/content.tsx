@@ -2,7 +2,7 @@
 import React from 'react';
 
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import type { Template } from 'tinacms';
+import type { TinaTemplate } from '@tinacms/cli';
 import { PageBlocksContent } from '../../tina/__generated__/types';
 import { tinaField } from 'tinacms/dist/react';
 import { Section } from '../layout/section';
@@ -24,7 +24,7 @@ export const Content = ({ data }: { data: PageBlocksContent }) => {
   );
 };
 
-export const contentBlockSchema: Template = {
+export const contentBlockSchema: TinaTemplate = {
   name: 'content',
   label: 'Content',
   ui: {

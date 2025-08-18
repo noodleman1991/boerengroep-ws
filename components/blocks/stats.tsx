@@ -1,4 +1,4 @@
-import type { Template } from "tinacms";
+import type { TinaTemplate } from "@tinacms/cli";
 import { tinaField } from "tinacms/dist/react";
 import { PageBlocksStats } from "@/tina/__generated__/types";
 import { Section } from "../layout/section";
@@ -14,8 +14,8 @@ export const Stats = ({ data }: { data: PageBlocksStats }) => {
                 </div>
 
                 <div className="grid divide-y *:text-center md:grid-cols-3 md:divide-x md:divide-y-0">
-                    {data.stats?.map((stat) => (
-                        <div key={stat?.type} className="space-y-4 py-4">
+                    {data.stats?.map((stat, index) => (
+                        <div key={index} className="space-y-4 py-4">
                             <div className="text-5xl font-bold" data-tina-field={tinaField(stat, 'stat')}>{stat!.stat}</div>
                             <p data-tina-field={tinaField(stat, 'type')}>{stat!.type}</p>
                         </div>
@@ -27,7 +27,7 @@ export const Stats = ({ data }: { data: PageBlocksStats }) => {
 }
 
 
-export const statsBlockSchema: Template = {
+export const statsBlockSchema: TinaTemplate = {
     name: "stats",
     label: "Stats",
     ui: {
@@ -73,7 +73,7 @@ export const statsBlockSchema: Template = {
                     stat: "12K",
                     type: "Stars on GitHub",
                 },
-                itemProps: (item) => {
+                itemProps: (item: any) => {
                     return {
                         label: `${item.stat} ${item.type}`,
                     };

@@ -1,7 +1,7 @@
 'use client';
 import * as React from 'react';
 import dynamic from 'next/dynamic';
-import type { Template } from 'tinacms';
+import type { TinaTemplate } from '@tinacms/cli';
 import { PageBlocksVideo } from '@/tina/__generated__/types';
 import { Section } from '../layout/section';
 import { sectionBlockSchemaField } from '../layout/section';
@@ -19,7 +19,7 @@ export const Video = ({ data }: { data: PageBlocksVideo }) => {
   );
 };
 
-export const videoBlockSchema: Template = {
+export const videoBlockSchema: TinaTemplate = {
   name: 'video',
   label: 'Video',
   ui: {

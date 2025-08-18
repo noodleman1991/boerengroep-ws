@@ -1,4 +1,4 @@
-import type { Collection } from "tinacms";
+import type { Collection } from "@tinacms/cli";
 
 const Tag: Collection = {
   label: "Tags",

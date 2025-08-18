@@ -6,7 +6,7 @@ import { Check, Copy } from "lucide-react";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { HTMLAttributes, useEffect, useState } from "react";
-import type { Template } from "tinacms";
+import type { TinaTemplate } from "@tinacms/cli";
 
 interface ScriptCopyBtnProps extends HTMLAttributes<HTMLDivElement> {
   showMultiplePackageOptions?: boolean;
@@ -148,7 +148,7 @@ export function ScriptCopyBtn({
   );
 }
 
-export const scriptCopyBlockSchema: Template = {
+export const scriptCopyBlockSchema: TinaTemplate = {
   name: "scriptCopyBlock",
   label: "Script Copy Block",
   ui: {

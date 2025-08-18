@@ -1,34 +1,16 @@
 "use client";
+
 import React from "react";
 import Link from "next/link";
 import { useTranslations } from 'next-intl';
 import { Icon } from "../../icon";
 import { useLayout } from "../layout-context";
 
-// Import the actual TinaCMS generated types
-import type { GlobalFooterQuickLinks, GlobalFooterQuickLinksLinks } from "@/tina/__generated__/types";
-
 export const Footer = () => {
     const { globalSettings } = useLayout();
     const { header, footer } = globalSettings!;
     const t = useTranslations('footer');
     const tNav = useTranslations('navigation');
-
-    // Helper function to safely get translation key
-    const getTranslationKey = (label: string | null | undefined): string => {
-        if (!label) return '';
-        return label.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    };
-
-    // Helper function to safely get translation with fallback
-    const getTranslation = (key: string, fallback: string | null | undefined): string => {
-        if (!fallback) return '';
-        try {
-            return t(key, { defaultValue: fallback });
-        } catch {
-            return fallback;
-        }
-    };
 
     return (
         <footer className="border-t bg-white pt-20 dark:bg-transparent">
@@ -38,24 +20,16 @@ export const Footer = () => {
                 {footer?.quickLinks && footer.quickLinks.length > 0 && (
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
                         {footer.quickLinks.map((section, index) => {
-                            // Null check for section
                             if (!section || !section.title) return null;
-
-                            const sectionKey = getTranslationKey(section.title);
-                            const sectionTitle = getTranslation(`quick-links.${sectionKey}.title`, section.title);
 
                             return (
                                 <div key={index} className="space-y-4">
                                     <h3 className="font-semibold text-foreground text-lg">
-                                        {sectionTitle}
+                                        {t(`quick-links.${section.title}.title`)}
                                     </h3>
                                     <ul className="space-y-3">
                                         {section.links?.map((link, linkIndex) => {
-                                            // Null check for link
                                             if (!link || !link.href || !link.label) return null;
-
-                                            const linkKey = getTranslationKey(link.label);
-                                            const linkLabel = getTranslation(`quick-links.${sectionKey}.links.${linkKey}`, link.label);
 
                                             return (
                                                 <li key={linkIndex}>
@@ -63,7 +37,7 @@ export const Footer = () => {
                                                         href={link.href}
                                                         className="text-muted-foreground hover:text-accent-foreground transition-colors duration-150 text-sm"
                                                     >
-                                                        {linkLabel}
+                                                        {t(`quick-links.${section.title}.links.${link.label}`)}
                                                     </Link>
                                                 </li>
                                             );
@@ -142,11 +116,9 @@ export const Footer = () => {
                     {/* Social Media Links */}
                     <div className="order-first flex justify-center gap-6 text-sm md:order-last md:justify-end">
                         {footer?.social?.map((link, index) => {
-                            // Null check for link
                             if (!link || !link.url || !link.icon?.name) return null;
 
-                            const socialName = link.icon.name.replace('Fa', '').toLowerCase();
-                            const ariaLabel = getTranslation(`social.${socialName}`, `Follow us on ${socialName}`);
+                            const socialName = link.icon.name.replace('Fa', '').replace('AiFill', '').toLowerCase();
 
                             return (
                                 <Link
@@ -155,7 +127,7 @@ export const Footer = () => {
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="group"
-                                    aria-label={ariaLabel}
+                                    aria-label={t(`social.${socialName}`)}
                                 >
                                     <Icon
                                         data={{ ...link.icon, size: 'small' }}
