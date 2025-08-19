@@ -39,3 +39,42 @@ query blogPostQuery($relativePath: String!) {
     }
   }
 }
+
+query calendarQuery {
+  eventConnection {
+    edges {
+      node {
+        id
+        title
+        description
+        startDate
+        endDate
+        eventType
+        location {
+          address
+          mapsLink
+          callLink
+        }
+        speakers {
+          speaker {
+            ... on Speaker {
+              id
+              name
+              avatar
+              affiliation
+            }
+          }
+          role
+        }
+        featured
+        _sys {
+          filename
+          basename
+          breadcrumbs
+          path
+          relativePath
+        }
+      }
+    }
+  }
+}

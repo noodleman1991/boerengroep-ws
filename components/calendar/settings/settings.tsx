@@ -178,7 +178,7 @@ export function Settings() {
                     <DropdownMenuRadioGroup
                         value={agendaModeGroupBy}
                         onValueChange={(value) =>
-                            setAgendaModeGroupBy(value as "date" | "color")
+                            setAgendaModeGroupBy(value as "date" | "eventType")
                         }
                     >
                         <DropdownMenuRadioItem value="date">Date</DropdownMenuRadioItem>

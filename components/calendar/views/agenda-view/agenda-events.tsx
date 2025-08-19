@@ -20,6 +20,7 @@ import {
     toCapitalize,
 } from "../../helpers";
 import {EventBullet} from "../../views/month-view/event-bullet";
+import { EVENT_TYPE_LABELS } from "../../types";
 
 export const AgendaEvents: FC = () => {
     const {events, badgeVariant, use24HourFormat, agendaModeGroupBy, selectedDate} =
@@ -30,11 +31,17 @@ export const AgendaEvents: FC = () => {
     const agendaEvents = Object.groupBy(monthEvents, (event) => {
         return agendaModeGroupBy === "date"
             ? format(parseISO(event.startDate), "yyyy-MM-dd")
-            : event.color;
+            : event.eventType;
     });
 
     const groupedAndSortedEvents = Object.entries(agendaEvents).sort(
-        (a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime(),
+        (a, b) => {
+            if (agendaModeGroupBy === "date") {
+                return new Date(a[0]).getTime() - new Date(b[0]).getTime();
+            } else {
+                return a[0].localeCompare(b[0]);
+            }
+        }
     );
 
     return (
@@ -43,13 +50,13 @@ export const AgendaEvents: FC = () => {
                 <CommandInput placeholder="Type a command or search..."/>
             </div>
             <CommandList className="max-h-max px-3 border-t">
-                {groupedAndSortedEvents.map(([date, groupedEvents]) => (
+                {groupedAndSortedEvents.map(([key, groupedEvents]) => (
                     <CommandGroup
-                        key={date}
+                        key={key}
                         heading={
                             agendaModeGroupBy === "date"
-                                ? format(parseISO(date), "EEEE, MMMM d, yyyy")
-                                : toCapitalize(groupedEvents![0].color)
+                                ? format(parseISO(key), "EEEE, MMMM d, yyyy")
+                                : EVENT_TYPE_LABELS[key as keyof typeof EVENT_TYPE_LABELS] || toCapitalize(key)
                         }
                     >
                         {groupedEvents!.map((event) => (

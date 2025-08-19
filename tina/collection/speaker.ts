@@ -29,9 +29,6 @@ const Speaker: Collection = {
             type: "rich-text",
             label: "Bio",
             name: "bio",
-            overrides: {
-                toolbar: ['bold', 'italic', 'link'],
-            },
         },
     ],
 };

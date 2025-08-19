@@ -6,6 +6,8 @@ import Global from "./collection/global";
 import Author from "./collection/author";
 import Page from "./collection/page";
 import Tag from "./collection/tag";
+import Event from "./collection/event";
+import Speaker from "./collection/speaker";
 
 const config = defineConfig({
     clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
@@ -32,7 +34,7 @@ const config = defineConfig({
         basePath: baseConfig.basePath?.replace(/^\//, '') || '',
     },
     schema: {
-        collections: [Page, Post, Author, Tag, Global],
+        collections: [Page, Post, Author, Tag, Global, Event, Speaker],
     },
 });
 
