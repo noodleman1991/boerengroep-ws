@@ -1,4 +1,4 @@
-import type { Variants } from "framer-motion";
+import type { Variants, Transition } from "framer-motion";
 
 export const fadeIn: Variants = {
 	initial: { opacity: 0 },
@@ -18,10 +18,10 @@ export const slideFromRight: Variants = {
 	exit: { x: -20, opacity: 0 },
 };
 
-export const transition = {
-	type: "spring",
-	stiffness: 200,
-	damping: 20,
+export const transition: Transition = {
+    type: "spring" as const,
+    stiffness: 200,
+    damping: 20,
 };
 
 export const staggerContainer: Variants = {
