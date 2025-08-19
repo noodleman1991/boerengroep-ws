@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 import { useCalendar } from "../contexts/calendar-context";
 import {EVENT_COLORS, EVENT_TYPE_LABELS, type TEventType} from "../types";
+import { getBulletColor } from "../helpers";
 
 export function FilterEvents() {
     const { selectedEventTypes, filterEventsByEventType, clearFilter } = useCalendar();
@@ -54,9 +55,7 @@ export function FilterEvents() {
                                 filterEventsByEventType(eventType);
                             }}
                         >
-                            <div
-                                className={`size-3.5 rounded-full bg-${color}-600 dark:bg-${color}-700`}
-                            />
+                            <div className={`size-3.5 rounded-full ${getBulletColor(color)}`} />
                             <span className="capitalize flex justify-between items-center w-full">
 								{label}
                                 {isSelected && (
