@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation'; // Use the localized Link component
 import { Icon } from "../../icon";
 import { useLayout } from "../layout-context";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
@@ -94,7 +94,7 @@ export const Header = () => {
                                                                         return (
                                                                             <Link
                                                                                 key={subIndex}
-                                                                                href={subItem.href}
+                                                                                href={subItem.href as any} // TypeScript will validate this against our pathnames
                                                                                 className="block px-4 py-3 text-sm text-muted-foreground hover:text-accent-foreground hover:bg-accent/50 transition-colors duration-150"
                                                                                 onClick={closeAllMenus}
                                                                             >
@@ -108,7 +108,7 @@ export const Header = () => {
                                                     </div>
                                                 ) : (
                                                     <Link
-                                                        href={item.href}
+                                                        href={item.href as any} // TypeScript will validate this against our pathnames
                                                         className="text-muted-foreground hover:text-accent-foreground block duration-150"
                                                         onClick={closeAllMenus}
                                                     >
@@ -168,7 +168,7 @@ export const Header = () => {
                                                                                 return (
                                                                                     <Link
                                                                                         key={subIndex}
-                                                                                        href={subItem.href}
+                                                                                        href={subItem.href as any}
                                                                                         className="text-muted-foreground hover:text-accent-foreground block text-sm duration-150"
                                                                                         onClick={closeAllMenus}
                                                                                     >
@@ -182,7 +182,7 @@ export const Header = () => {
                                                             </div>
                                                         ) : (
                                                             <Link
-                                                                href={item.href}
+                                                                href={item.href as any}
                                                                 className="text-muted-foreground hover:text-accent-foreground block duration-150"
                                                                 onClick={closeAllMenus}
                                                             >

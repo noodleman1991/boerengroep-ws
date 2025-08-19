@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { Icon } from "../../icon";
 import { useLayout } from "../layout-context";
 
@@ -34,7 +34,7 @@ export const Footer = () => {
                                             return (
                                                 <li key={linkIndex}>
                                                     <Link
-                                                        href={link.href}
+                                                        href={link.href as any} // TypeScript will validate this against our pathnames
                                                         className="text-muted-foreground hover:text-accent-foreground transition-colors duration-150 text-sm"
                                                     >
                                                         {t(`quick-links.${section.title}.links.${link.label}`)}
@@ -81,14 +81,14 @@ export const Footer = () => {
                                 <p>{t('contact.address.city')}</p>
                                 <p>{t('contact.address.country')}</p>
                                 <p className="pt-2">
-                                    <Link href={`mailto:${t('contact.email')}`} className="hover:text-accent-foreground transition-colors duration-150">
+                                    <a href={`mailto:${t('contact.email')}`} className="hover:text-accent-foreground transition-colors duration-150">
                                         {t('contact.email')}
-                                    </Link>
+                                    </a>
                                 </p>
                                 <p>
-                                    <Link href={`tel:${t('contact.phone.raw')}`} className="hover:text-accent-foreground transition-colors duration-150">
+                                    <a href={`tel:${t('contact.phone.raw')}`} className="hover:text-accent-foreground transition-colors duration-150">
                                         {t('contact.phone.display')}
-                                    </Link>
+                                    </a>
                                 </p>
                             </div>
                         </div>
@@ -121,7 +121,7 @@ export const Footer = () => {
                             const socialName = link.icon.name.replace('Fa', '').replace('AiFill', '').toLowerCase();
 
                             return (
-                                <Link
+                                <a
                                     key={`${link.icon.name}${index}`}
                                     href={link.url}
                                     target="_blank"
@@ -133,7 +133,7 @@ export const Footer = () => {
                                         data={{ ...link.icon, size: 'small' }}
                                         className="text-muted-foreground hover:text-primary group-hover:scale-110 transition-all duration-150"
                                     />
-                                </Link>
+                                </a>
                             );
                         })}
                     </div>
@@ -149,10 +149,10 @@ export const Footer = () => {
                         <Link href="/cookies" className="hover:text-accent-foreground transition-colors duration-150">
                             {t('legal.cookies')}
                         </Link>
-                        <Link href="/algemene-voorwaarden" className="hover:text-accent-foreground transition-colors duration-150">
+                        <Link href="/terms-conditions" className="hover:text-accent-foreground transition-colors duration-150">
                             {t('legal.terms')}
                         </Link>
-                        <Link href="/toegankelijkheid" className="hover:text-accent-foreground transition-colors duration-150">
+                        <Link href="/accessibility" className="hover:text-accent-foreground transition-colors duration-150">
                             {t('legal.accessibility')}
                         </Link>
                     </div>

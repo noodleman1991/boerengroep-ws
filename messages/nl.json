@@ -5,37 +5,37 @@
     "close-menu": "Menu sluiten",
     "items": {
       "home": "Home",
-      "over-ons": "Over Ons",
-      "wat-is-bg": "Wat is BG?",
-      "geschiedenis": "Geschiedenis",
-      "wie-zijn-wij": "Wie zijn wij?",
-      "netwerk": "Netwerk",
-      "activiteiten": "Activiteiten",
-      "agenda": "Agenda",
-      "terugblik": "Terugblik",
-      "groepsstudies": "Groepsstudies",
+      "about-us": "Over Ons",
+      "what-is-bg": "Wat is BG?",
+      "history": "Geschiedenis",
+      "who-are-we": "Wie zijn wij?",
+      "network": "Netwerk",
+      "activities": "Activiteiten",
+      "calendar": "Agenda",
+      "past-events": "Terugblik",
+      "group-studies": "Groepsstudies",
       "pei": "PEI",
-      "docenten": "Docenten",
+      "teachers": "Docenten",
       "auditorium": "Auditorium",
-      "forumlezer": "Forum Lezer",
-      "soepkeuken": "Soepkeuken",
-      "vacatures": "Vacatures",
-      "stages": "Stages",
+      "forum-reader": "Forum Lezer",
+      "soup-kitchen": "Soepkeuken",
+      "jobs": "Vacatures",
+      "internships": "Stages",
       "coordinator": "Coördinator",
       "freelance": "Freelance/Tijdelijk",
-      "vrijwilligers": "Vrijwilligers",
-      "nieuws": "Nieuws",
-      "standpunten": "Standpunten",
-      "landschap": "Landschap",
-      "nieuwsbrief": "Nieuwsbrief",
-      "vrienden-nieuws": "Vrienden Nieuws",
-      "inspiratietheater": "Inspiratietheater",
-      "legendarisch-netwerk": "Legendarisch Netwerk",
-      "materiaal-evenementen": "Materiaal Evenementen",
-      "bibliotheek-media": "Bibliotheek & Media",
+      "volunteers": "Vrijwilligers",
+      "news": "Nieuws",
+      "positions": "Standpunten",
+      "landscape": "Landschap",
+      "newsletter": "Nieuwsbrief",
+      "friends-news": "Vrienden Nieuws",
+      "inspiration-theater": "Inspiratietheater",
+      "legendary-network": "Legendarisch Netwerk",
+      "event-materials": "Materiaal Evenementen",
+      "library-media": "Bibliotheek & Media",
       "podcast": "Podcast",
-      "geluid-videos": "Geluid & Video's",
-      "50-jaar-bg": "50 Jaar BG",
+      "audio-videos": "Geluid & Video's",
+      "50-years-bg": "50 Jaar BG",
       "contact": "Contact"
     }
   },
@@ -61,27 +61,27 @@
       }
     },
     "quick-links": {
-      "over-ons": {
+      "about-us": {
         "title": "Over Ons",
         "links": {
-          "wat-is-bg": "Wat is BG?",
-          "geschiedenis": "Geschiedenis",
-          "netwerk": "Netwerk"
+          "what-is-bg": "Wat is BG?",
+          "history": "Geschiedenis",
+          "network": "Netwerk"
         }
       },
-      "activiteiten": {
+      "activities": {
         "title": "Activiteiten",
         "links": {
-          "agenda": "Agenda",
-          "groepsstudies": "Groepsstudies",
-          "soepkeuken": "Soepkeuken"
+          "calendar": "Agenda",
+          "group-studies": "Groepsstudies",
+          "soup-kitchen": "Soepkeuken"
         }
       },
-      "meedoen": {
+      "get-involved": {
         "title": "Meedoen",
         "links": {
-          "stages": "Stages",
-          "vrijwilligers": "Vrijwilligers",
+          "internships": "Stages",
+          "volunteers": "Vrijwilligers",
           "contact": "Contact"
         }
       }

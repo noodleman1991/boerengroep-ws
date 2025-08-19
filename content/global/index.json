@@ -1,7 +1,7 @@
 {
   "header": {
     "icon": {
-      "name": "BiLeaf",
+      "name": "BiSolidCaretRightCircle",
       "color": "green",
       "style": "float"
     },
@@ -13,138 +13,138 @@
         "label": "home"
       },
       {
-        "href": "/over-ons",
-        "label": "over-ons",
+        "href": "/about-us",
+        "label": "about-us",
         "submenu": [
           {
-            "href": "/over-ons/wat-is-bg",
-            "label": "wat-is-bg"
+            "href": "/about-us/what-is-bg",
+            "label": "what-is-bg"
           },
           {
-            "href": "/over-ons/geschiedenis",
-            "label": "geschiedenis"
+            "href": "/about-us/history",
+            "label": "history"
           },
           {
-            "href": "/over-ons/wie-zijn-wij",
-            "label": "wie-zijn-wij"
+            "href": "/about-us/who-are-we",
+            "label": "who-are-we"
           },
           {
-            "href": "/over-ons/netwerk",
-            "label": "netwerk"
+            "href": "/about-us/network",
+            "label": "network"
           }
         ]
       },
       {
-        "href": "/activiteiten",
-        "label": "activiteiten",
+        "href": "/activities",
+        "label": "activities",
         "submenu": [
           {
-            "href": "/activiteiten/agenda",
-            "label": "agenda"
+            "href": "/activities/calendar",
+            "label": "calendar"
           },
           {
-            "href": "/activiteiten/terugblik",
-            "label": "terugblik"
+            "href": "/activities/past-events",
+            "label": "past-events"
           },
           {
-            "href": "/activiteiten/groepsstudies",
-            "label": "groepsstudies"
+            "href": "/activities/group-studies",
+            "label": "group-studies"
           },
           {
-            "href": "/activiteiten/pei",
+            "href": "/activities/pei",
             "label": "pei"
           },
           {
-            "href": "/activiteiten/docenten",
-            "label": "docenten"
+            "href": "/activities/teachers",
+            "label": "teachers"
           },
           {
-            "href": "/activiteiten/auditorium",
+            "href": "/activities/auditorium",
             "label": "auditorium"
           },
           {
-            "href": "/activiteiten/forumlezer",
-            "label": "forumlezer"
+            "href": "/activities/forum-reader",
+            "label": "forum-reader"
           },
           {
-            "href": "/activiteiten/soepkeuken",
-            "label": "soepkeuken"
+            "href": "/activities/soup-kitchen",
+            "label": "soup-kitchen"
           }
         ]
       },
       {
-        "href": "/vacatures",
-        "label": "vacatures",
+        "href": "/jobs",
+        "label": "jobs",
         "submenu": [
           {
-            "href": "/vacatures/stages",
-            "label": "stages"
+            "href": "/jobs/internships",
+            "label": "internships"
           },
           {
-            "href": "/vacatures/coordinator",
+            "href": "/jobs/coordinator",
             "label": "coordinator"
           },
           {
-            "href": "/vacatures/freelance",
+            "href": "/jobs/freelance",
             "label": "freelance"
           },
           {
-            "href": "/vacatures/vrijwilligers",
-            "label": "vrijwilligers"
+            "href": "/jobs/volunteers",
+            "label": "volunteers"
           }
         ]
       },
       {
-        "href": "/nieuws",
-        "label": "nieuws",
+        "href": "/news",
+        "label": "news",
         "submenu": [
           {
-            "href": "/nieuws/standpunten",
-            "label": "standpunten"
+            "href": "/news/positions",
+            "label": "positions"
           },
           {
-            "href": "/nieuws/landschap",
-            "label": "landschap"
+            "href": "/news/landscape",
+            "label": "landscape"
           },
           {
-            "href": "/nieuws/nieuwsbrief",
-            "label": "nieuwsbrief"
+            "href": "/news/newsletter",
+            "label": "newsletter"
           },
           {
-            "href": "/nieuws/vrienden-nieuws",
-            "label": "vrienden-nieuws"
+            "href": "/news/friends-news",
+            "label": "friends-news"
           }
         ]
       },
       {
-        "href": "/inspiratietheater",
-        "label": "inspiratietheater",
+        "href": "/inspiration-theater",
+        "label": "inspiration-theater",
         "submenu": [
           {
-            "href": "/inspiratietheater/netwerk",
-            "label": "legendarisch-netwerk"
+            "href": "/inspiration-theater/network",
+            "label": "legendary-network"
           },
           {
-            "href": "/inspiratietheater/evenementen",
-            "label": "materiaal-evenementen"
+            "href": "/inspiration-theater/events",
+            "label": "event-materials"
           }
         ]
       },
       {
-        "href": "/bibliotheek",
-        "label": "bibliotheek-media",
+        "href": "/library",
+        "label": "library-media",
         "submenu": [
           {
-            "href": "/bibliotheek/podcast",
+            "href": "/library/podcast",
             "label": "podcast"
           },
           {
-            "href": "/bibliotheek/media",
-            "label": "geluid-videos"
+            "href": "/library/media",
+            "label": "audio-videos"
           },
           {
-            "href": "/bibliotheek/50-jaar-bg",
-            "label": "50-jaar-bg"
+            "href": "/library/50-years-bg",
+            "label": "50-years-bg"
           }
         ]
       },
@@ -189,49 +189,49 @@
     ],
     "quickLinks": [
       {
-        "title": "over-ons",
+        "title": "about-us",
         "links": [
           {
-            "href": "/over-ons/wat-is-bg",
-            "label": "wat-is-bg"
+            "href": "/about-us/what-is-bg",
+            "label": "what-is-bg"
           },
           {
-            "href": "/over-ons/geschiedenis",
-            "label": "geschiedenis"
+            "href": "/about-us/history",
+            "label": "history"
           },
           {
-            "href": "/over-ons/netwerk",
-            "label": "netwerk"
+            "href": "/about-us/network",
+            "label": "network"
           }
         ]
       },
       {
-        "title": "activiteiten",
+        "title": "activities",
         "links": [
           {
-            "href": "/activiteiten/agenda",
-            "label": "agenda"
+            "href": "/activities/calendar",
+            "label": "calendar"
           },
           {
-            "href": "/activiteiten/groepsstudies",
-            "label": "groepsstudies"
+            "href": "/activities/group-studies",
+            "label": "group-studies"
           },
           {
-            "href": "/activiteiten/soepkeuken",
-            "label": "soepkeuken"
+            "href": "/activities/soup-kitchen",
+            "label": "soup-kitchen"
           }
         ]
       },
       {
-        "title": "meedoen",
+        "title": "get-involved",
         "links": [
           {
-            "href": "/vacatures/stages",
-            "label": "stages"
+            "href": "/jobs/internships",
+            "label": "internships"
           },
           {
-            "href": "/vacatures/vrijwilligers",
-            "label": "vrijwilligers"
+            "href": "/jobs/volunteers",
+            "label": "volunteers"
           },
           {
             "href": "/contact",
