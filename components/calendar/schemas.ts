@@ -9,7 +9,7 @@ export const eventSchema = z.object({
     endDate: z.date({
         message: "End date is required", // Changed from required_error
     }),
-    color: z.enum(["blue", "green", "red", "yellow", "purple", "orange"], {
+    color: z.enum(["blue", "green", "red", "yellow", "purple", "orange", "pink", "teal"], {
         message: "Variant is required", // Changed from required_error
     }),
 });

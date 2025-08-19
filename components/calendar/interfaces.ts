@@ -1,4 +1,4 @@
-import type { TEventColor } from "./types";
+import type {TEventColor, TEventType} from "./types";
 
 export interface IUser {
 	id: string;
@@ -12,6 +12,7 @@ export interface IEvent {
 	endDate: string;
 	title: string;
 	color: TEventColor;
+    eventType: TEventType;
 	description: string;
 	user: IUser;
 }

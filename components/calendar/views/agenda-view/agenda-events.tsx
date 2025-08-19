@@ -22,7 +22,7 @@ import {
 import {EventBullet} from "../../views/month-view/event-bullet";
 
 export const AgendaEvents: FC = () => {
-    const {events, use24HourFormat, badgeVariant, agendaModeGroupBy, selectedDate} =
+    const {events, badgeVariant, use24HourFormat, agendaModeGroupBy, selectedDate} =
         useCalendar();
 
     const monthEvents = getEventsForMonth(events, selectedDate)

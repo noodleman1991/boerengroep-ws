@@ -8,7 +8,6 @@ import {
 	Grid3X3,
 	LayoutList,
 	List,
-	Plus,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,9 +18,8 @@ import {
 	transition,
 } from "../animations";
 import { useCalendar } from "../contexts/calendar-context";
-import { AddEditEventDialog } from "../dialogs/add-edit-event-dialog";
 import { DateNavigator } from "../header/date-navigator";
-import FilterEvents from "../header/filter";
+import { FilterEvents } from "../header/filter";
 import { TodayButton } from "../header/today-button";
 import { UserSelect } from "../header/user-select";
 import { Settings } from "../settings/settings";
@@ -100,17 +98,17 @@ export function CalendarHeader() {
 					</ButtonGroup>
 				</div>
 
-				<div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-1.5">
-					<UserSelect />
+				{/*todo: tidy code*//*<div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-1.5">*/}
+				{/*	<UserSelect />*/}
 
-					<AddEditEventDialog>
-						<Button
-						>
-							<Plus className="h-4 w-4" />
-							Add Event
-						</Button>
-					</AddEditEventDialog>
-				</div>
+				{/*	<AddEditEventDialog>*/}
+				{/*		<Button*/}
+				{/*		>*/}
+				{/*			<Plus className="h-4 w-4" />*/}
+				{/*			Add Event*/}
+				{/*		</Button>*/}
+				{/*	</AddEditEventDialog>*/}
+				{/*</div>*/}
 				<Settings />
 			</motion.div>
 		</div>

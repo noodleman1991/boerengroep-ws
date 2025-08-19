@@ -46,7 +46,6 @@ export function DndProvider({
 	children,
 	showConfirmation: showConfirmationProp = false,
 }: DndProviderProps) {
-	const { updateEvent } = useCalendar();
 	const [dragState, setDragState] = useState<{
 		draggedEvent: IEvent | null;
 		isDragging: boolean;
@@ -159,29 +158,6 @@ export function DndProvider({
 		setPendingDropData(null);
 		endDrag();
 	}, [endDrag]);
-
-	// Default event update handler
-	const handleEventUpdate = useCallback(
-		(event: IEvent, newStartDate: Date, newEndDate: Date) => {
-			try {
-				const updatedEvent = {
-					...event,
-					startDate: newStartDate.toISOString(),
-					endDate: newEndDate.toISOString(),
-				};
-				updateEvent(updatedEvent);
-				toast.success("Event updated successfully");
-			} catch {
-				toast.error("Failed to update event");
-			}
-		},
-		[updateEvent],
-	);
-
-	// Set default callback
-	React.useEffect(() => {
-		onEventDroppedRef.current = handleEventUpdate;
-	}, [handleEventUpdate]);
 
 	// When the prop changes, update the state
 	React.useEffect(() => {

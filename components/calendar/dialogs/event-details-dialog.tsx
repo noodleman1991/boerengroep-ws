@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCalendar } from "../contexts/calendar-context";
-import { AddEditEventDialog } from "../dialogs/add-edit-event-dialog";
 import { formatTime } from "../helpers";
 import type { IEvent } from "../interfaces";
 
@@ -27,16 +26,7 @@ interface IProps {
 export function EventDetailsDialog({ event, children }: IProps) {
 	const startDate = parseISO(event.startDate);
 	const endDate = parseISO(event.endDate);
-	const { use24HourFormat, removeEvent } = useCalendar();
-
-	const deleteEvent = (eventId: number) => {
-		try {
-			removeEvent(eventId);
-			toast.success("Event deleted successfully.");
-		} catch {
-			toast.error("Error deleting event.");
-		}
-	};
+	const { use24HourFormat } = useCalendar();
 
 	return (
 		<Dialog>
@@ -93,19 +83,6 @@ export function EventDetailsDialog({ event, children }: IProps) {
 						</div>
 					</div>
 				</ScrollArea>
-				<div className="flex justify-end gap-2">
-					<AddEditEventDialog event={event}>
-						<Button variant="outline">Edit</Button>
-					</AddEditEventDialog>
-					<Button
-						variant="destructive"
-						onClick={() => {
-							deleteEvent(event.id);
-						}}
-					>
-						Delete
-					</Button>
-				</div>
 				<DialogClose />
 			</DialogContent>
 		</Dialog>
