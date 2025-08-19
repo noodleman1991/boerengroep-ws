@@ -30,11 +30,11 @@ const Event: Collection = {
             required: true,
         },
         {
-            type: "rich-text",
+            type: "string",
             label: "Description",
             name: "description",
-            overrides: {
-                toolbar: ['bold', 'italic', 'link', 'quote'],
+            ui: {
+                component: "textarea", // For multi-line input
             },
         },
         {

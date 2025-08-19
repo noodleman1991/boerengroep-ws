@@ -2,7 +2,6 @@
 
 import type React from "react";
 import { createContext, useContext, useState, useEffect } from "react";
-import { useLocalStorage } from "../hooks";
 import type { IEvent, IUser } from "../interfaces";
 import type { TCalendarView, TEventType } from "../types";
 import { EVENT_COLORS } from "../types";
@@ -44,14 +43,48 @@ const DEFAULT_SETTINGS: CalendarSettings = {
     agendaModeGroupBy: "date",
 };
 
+// Safe localStorage hook that prevents hydration issues
+function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T) => void] {
+    const [storedValue, setStoredValue] = useState<T>(initialValue);
+    const [isHydrated, setIsHydrated] = useState(false);
+
+    // Load from localStorage after hydration
+    useEffect(() => {
+        setIsHydrated(true);
+        try {
+            const item = window.localStorage.getItem(key);
+            if (item) {
+                setStoredValue(JSON.parse(item));
+            }
+        } catch (error) {
+            console.warn(`Error reading localStorage key "${key}":`, error);
+        }
+    }, [key]);
+
+    const setValue = (value: T) => {
+        try {
+            const valueToStore = value instanceof Function ? value(storedValue) : value;
+            setStoredValue(valueToStore);
+
+            if (isHydrated && typeof window !== "undefined") {
+                window.localStorage.setItem(key, JSON.stringify(valueToStore));
+            }
+        } catch (error) {
+            console.warn(`Error setting localStorage key "${key}":`, error);
+        }
+    };
+
+    return [storedValue, setValue];
+}
+
 const CalendarContext = createContext({} as ICalendarContext);
 
 export function CalendarProvider({
-    children,
-    initialEvents = [],
-    badge = "colored",
-    view = "month",
-}: {
+                                     children,
+                                     initialEvents = [],
+                                     badge = "colored",
+                                     view = "month",
+                                 }: {
     children: React.ReactNode;
     initialEvents?: any[];
     badge?: "dot" | "colored";
