@@ -19,7 +19,6 @@
       "auditorium": "Auditorium",
       "forum-reader": "Forum Reader",
       "soup-kitchen": "Soup Kitchen",
-      "jobs": "Jobs",
       "internships": "Internships",
       "coordinator": "Coordinator",
       "freelance": "Freelance/Temporary",
@@ -36,7 +35,8 @@
       "podcast": "Podcast",
       "audio-videos": "Audio & Videos",
       "50-years-bg": "50 Years BG",
-      "contact": "Contact"
+      "contact": "Contact",
+      "vacancies": "Vacancies"
     }
   },
   "calendar": {
@@ -54,12 +54,54 @@
       "event": "event"
     },
     "weekdays": {
-      "short": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-      "long": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+      "short": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "long": [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ]
     },
     "months": {
-      "short": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      "long": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+      "short": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+      ],
+      "long": [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+      ]
     },
     "events": {
       "noEvents": "No events found for this month.",

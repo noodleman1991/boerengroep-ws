@@ -66,26 +66,10 @@ export const routing = defineRouting({
             nl: '/activiteiten/soepkeuken'
         },
 
-        // Jobs
-        '/jobs': {
-            en: '/jobs',
+        // Vacancies (simplified - no sub-routes since using sections)
+        '/vacancies': {
+            en: '/vacancies',
             nl: '/vacatures'
-        },
-        '/jobs/internships': {
-            en: '/jobs/internships',
-            nl: '/vacatures/stages'
-        },
-        '/jobs/coordinator': {
-            en: '/jobs/coordinator',
-            nl: '/vacatures/coordinator'
-        },
-        '/jobs/freelance': {
-            en: '/jobs/freelance',
-            nl: '/vacatures/freelance'
-        },
-        '/jobs/volunteers': {
-            en: '/jobs/volunteers',
-            nl: '/vacatures/vrijwilligers'
         },
 
         // News
@@ -169,7 +153,7 @@ export const PATHNAMES = {
     HOME: '/',
     ABOUT_US: '/about-us',
     ACTIVITIES: '/activities',
-    JOBS: '/jobs',
+    VACANCIES: '/vacancies',
     NEWS: '/news',
     INSPIRATION_THEATER: '/inspiration-theater',
     LIBRARY: '/library',

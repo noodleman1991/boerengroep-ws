@@ -19,7 +19,6 @@
       "auditorium": "Auditorium",
       "forum-reader": "Forum Lezer",
       "soup-kitchen": "Soepkeuken",
-      "jobs": "Vacatures",
       "internships": "Stages",
       "coordinator": "Coördinator",
       "freelance": "Freelance/Tijdelijk",
@@ -36,7 +35,8 @@
       "podcast": "Podcast",
       "audio-videos": "Geluid & Video's",
       "50-years-bg": "50 Jaar BG",
-      "contact": "Contact"
+      "contact": "Contact",
+      "vacancies": "Vacatures"
     }
   },
   "calendar": {
@@ -54,12 +54,54 @@
       "event": "evenement"
     },
     "weekdays": {
-      "short": ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"],
-      "long": ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"]
+      "short": [
+        "Zo",
+        "Ma",
+        "Di",
+        "Wo",
+        "Do",
+        "Vr",
+        "Za"
+      ],
+      "long": [
+        "Zondag",
+        "Maandag",
+        "Dinsdag",
+        "Woensdag",
+        "Donderdag",
+        "Vrijdag",
+        "Zaterdag"
+      ]
     },
     "months": {
-      "short": ["Jan", "Feb", "Mrt", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
-      "long": ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"]
+      "short": [
+        "Jan",
+        "Feb",
+        "Mrt",
+        "Apr",
+        "Mei",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Okt",
+        "Nov",
+        "Dec"
+      ],
+      "long": [
+        "Januari",
+        "Februari",
+        "Maart",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Augustus",
+        "September",
+        "Oktober",
+        "November",
+        "December"
+      ]
     },
     "events": {
       "noEvents": "Geen evenementen gevonden voor deze maand.",

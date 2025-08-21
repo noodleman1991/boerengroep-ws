@@ -73,24 +73,24 @@
         ]
       },
       {
-        "href": "/jobs",
-        "label": "jobs",
+        "href": "/vacancies",
+        "label": "vacancies",
         "submenu": [
           {
-            "href": "/jobs/internships",
+            "href": "/vacancies#volunteers",
+            "label": "volunteers"
+          },
+          {
+            "href": "/vacancies#internships",
             "label": "internships"
           },
           {
-            "href": "/jobs/coordinator",
+            "href": "/vacancies#coordinator",
             "label": "coordinator"
           },
           {
-            "href": "/jobs/freelance",
+            "href": "/vacancies#freelance",
             "label": "freelance"
-          },
-          {
-            "href": "/jobs/volunteers",
-            "label": "volunteers"
           }
         ]
       },
@@ -226,11 +226,11 @@
         "title": "get-involved",
         "links": [
           {
-            "href": "/jobs/internships",
+            "href": "/vacancies#internships",
             "label": "internships"
           },
           {
-            "href": "/jobs/volunteers",
+            "href": "/vacancies#volunteers",
             "label": "volunteers"
           },
           {
