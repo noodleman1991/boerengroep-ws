@@ -3,13 +3,13 @@
 import { motion } from "framer-motion";
 import {
     CalendarRange,
-    Columns,
-    Grid2X2,
     Grid3X3,
     LayoutList,
-    List,
+    Maximize,
+    Minimize,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -22,12 +22,17 @@ import { useCalendar } from "../contexts/calendar-context";
 import { DateNavigator } from "../header/date-navigator";
 import { FilterEvents } from "../header/filter";
 import { TodayButton } from "../header/today-button";
-import { UserSelect } from "../header/user-select";
 import { Settings } from "../settings/settings";
 
-export function CalendarHeader() {
+interface CalendarHeaderProps {
+    isFullscreen?: boolean;
+    onToggleFullscreen?: () => void;
+}
+
+export function CalendarHeader({ isFullscreen = false, onToggleFullscreen }: CalendarHeaderProps) {
     const { view, setView, events } = useCalendar();
     const [isHydrated, setIsHydrated] = useState(false);
+    const t = useTranslations('calendar');
 
     // Prevent hydration mismatch by only rendering after client hydration
     useEffect(() => {
@@ -78,6 +83,7 @@ export function CalendarHeader() {
                             variant={view === "agenda" ? "default" : "outline"}
                             onClick={() => setView("agenda")}
                             className="rounded-e-none"
+                            title={t('views.agenda')}
                         >
                             {view === "agenda" ? (
                                 <CalendarRange className="h-4 w-4" />
@@ -85,37 +91,31 @@ export function CalendarHeader() {
                                 <LayoutList className="h-4 w-4" />
                             )}
                         </Button>
-                        <Button
-                            variant={view === "day" ? "default" : "outline"}
-                            aria-label="View by day"
-                            onClick={() => setView("day")}
-                        >
-                            <List className="h-4 w-4" />
-                        </Button>
-
-                        <Button
-                            variant={view === "week" ? "default" : "outline"}
-                            aria-label="View by week"
-                            onClick={() => setView("week")}
-                        >
-                            <Columns className="h-4 w-4" />
-                        </Button>
 
                         <Button
                             variant={view === "month" ? "default" : "outline"}
-                            aria-label="View by month"
+                            aria-label={t('views.month')}
                             onClick={() => setView("month")}
+                            title={t('views.month')}
                         >
                             <Grid3X3 className="h-4 w-4" />
                         </Button>
-                        <Button
-                            variant={view === "year" ? "default" : "outline"}
-                            aria-label="View by year"
-                            onClick={() => setView("year")}
-                        >
-                            <Grid2X2 className="h-4 w-4" />
-                        </Button>
                     </ButtonGroup>
+
+                    {onToggleFullscreen && (
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={onToggleFullscreen}
+                            title={isFullscreen ? t('fullscreen.exit') : t('fullscreen.enter')}
+                        >
+                            {isFullscreen ? (
+                                <Minimize className="h-4 w-4" />
+                            ) : (
+                                <Maximize className="h-4 w-4" />
+                            )}
+                        </Button>
+                    )}
                 </div>
 
                 <Settings />

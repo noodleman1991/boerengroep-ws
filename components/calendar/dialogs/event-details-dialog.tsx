@@ -1,17 +1,17 @@
 "use client";
 
 import { format, parseISO } from "date-fns";
+import { nl } from "date-fns/locale";
 import { Calendar, Clock, Text, User } from "lucide-react";
 import type { ReactNode } from "react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { useTranslations, useLocale } from "next-intl";
 import {
-	Dialog,
-	DialogClose,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCalendar } from "../contexts/calendar-context";
@@ -19,72 +19,80 @@ import { formatTime } from "../helpers";
 import type { IEvent } from "../interfaces";
 
 interface IProps {
-	event: IEvent;
-	children: ReactNode;
+    event: IEvent;
+    children: ReactNode;
 }
 
 export function EventDetailsDialog({ event, children }: IProps) {
-	const startDate = parseISO(event.startDate);
-	const endDate = parseISO(event.endDate);
-	const { use24HourFormat } = useCalendar();
+    const startDate = parseISO(event.startDate);
+    const endDate = parseISO(event.endDate);
+    const { use24HourFormat } = useCalendar();
+    const t = useTranslations('calendar');
+    const locale = useLocale();
 
-	return (
-		<Dialog>
-			<DialogTrigger asChild>{children}</DialogTrigger>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>{event.title}</DialogTitle>
-				</DialogHeader>
+    const formatDateWithLocale = (date: Date) => {
+        return format(date, "EEEE dd MMMM", {
+            locale: locale === 'nl' ? nl : undefined
+        });
+    };
 
-				<ScrollArea className="max-h-[80vh]">
-					<div className="space-y-4 p-4">
-						<div className="flex items-start gap-2">
-							<User className="mt-1 size-4 shrink-0 text-muted-foreground" />
-							<div>
-								<p className="text-sm font-medium">Responsible</p>
-								<p className="text-sm text-muted-foreground">
-									{event.user.name}
-								</p>
-							</div>
-						</div>
+    return (
+        <Dialog>
+            <DialogTrigger asChild>{children}</DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{event.title}</DialogTitle>
+                </DialogHeader>
 
-						<div className="flex items-start gap-2">
-							<Calendar className="mt-1 size-4 shrink-0 text-muted-foreground" />
-							<div>
-								<p className="text-sm font-medium">Start Date</p>
-								<p className="text-sm text-muted-foreground">
-									{format(startDate, "EEEE dd MMMM")}
-									<span className="mx-1">at</span>
-									{formatTime(parseISO(event.startDate), use24HourFormat)}
-								</p>
-							</div>
-						</div>
+                <ScrollArea className="max-h-[80vh]">
+                    <div className="space-y-4 p-4">
+                        <div className="flex items-start gap-2">
+                            <User className="mt-1 size-4 shrink-0 text-muted-foreground" />
+                            <div>
+                                <p className="text-sm font-medium">{t('events.responsible')}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {event.user.name}
+                                </p>
+                            </div>
+                        </div>
 
-						<div className="flex items-start gap-2">
-							<Clock className="mt-1 size-4 shrink-0 text-muted-foreground" />
-							<div>
-								<p className="text-sm font-medium">End Date</p>
-								<p className="text-sm text-muted-foreground">
-									{format(endDate, "EEEE dd MMMM")}
-									<span className="mx-1">at</span>
-									{formatTime(parseISO(event.endDate), use24HourFormat)}
-								</p>
-							</div>
-						</div>
+                        <div className="flex items-start gap-2">
+                            <Calendar className="mt-1 size-4 shrink-0 text-muted-foreground" />
+                            <div>
+                                <p className="text-sm font-medium">{t('events.startDate')}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {formatDateWithLocale(startDate)}
+                                    <span className="mx-1">{t('events.at')}</span>
+                                    {formatTime(parseISO(event.startDate), use24HourFormat)}
+                                </p>
+                            </div>
+                        </div>
 
-						<div className="flex items-start gap-2">
-							<Text className="mt-1 size-4 shrink-0 text-muted-foreground" />
-							<div>
-								<p className="text-sm font-medium">Description</p>
-								<p className="text-sm text-muted-foreground">
-									{event.description}
-								</p>
-							</div>
-						</div>
-					</div>
-				</ScrollArea>
-				<DialogClose />
-			</DialogContent>
-		</Dialog>
-	);
+                        <div className="flex items-start gap-2">
+                            <Clock className="mt-1 size-4 shrink-0 text-muted-foreground" />
+                            <div>
+                                <p className="text-sm font-medium">{t('events.endDate')}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {formatDateWithLocale(endDate)}
+                                    <span className="mx-1">{t('events.at')}</span>
+                                    {formatTime(parseISO(event.endDate), use24HourFormat)}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-2">
+                            <Text className="mt-1 size-4 shrink-0 text-muted-foreground" />
+                            <div>
+                                <p className="text-sm font-medium">{t('events.description')}</p>
+                                <p className="text-sm text-muted-foreground">
+                                    {event.description}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </ScrollArea>
+                <DialogClose />
+            </DialogContent>
+        </Dialog>
+    );
 }

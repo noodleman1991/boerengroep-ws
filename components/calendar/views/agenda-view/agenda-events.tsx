@@ -1,6 +1,8 @@
 import { format, parseISO } from "date-fns";
+import { nl } from "date-fns/locale";
 import { groupBy } from "lodash";
 import type { FC } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Command,
@@ -19,42 +21,31 @@ import {
     getColorClass,
     getEventsForMonth,
     getFirstLetters,
-    toCapitalize,
 } from "../../helpers";
 import { EventBullet } from "../../views/month-view/event-bullet";
-import { EVENT_TYPE_LABELS, type TEventType } from "../../types";
 import type { IEvent } from "../../interfaces";
 
 export const AgendaEvents: FC = () => {
-    const { events, badgeVariant, use24HourFormat, agendaModeGroupBy, selectedDate } =
-        useCalendar();
+    const { events, badgeVariant, use24HourFormat, selectedDate } = useCalendar();
+    const t = useTranslations('calendar');
+    const locale = useLocale();
 
     const monthEvents = getEventsForMonth(events, selectedDate);
 
-    // Use lodash groupBy with proper typing
+    // Use lodash groupBy with proper typing - always group by date for now
     const agendaEvents: Record<string, IEvent[]> = groupBy(
         monthEvents,
-        (event: IEvent) => {
-            return agendaModeGroupBy === "date"
-                ? format(parseISO(event.startDate), "yyyy-MM-dd")
-                : event.eventType;
-        }
+        (event: IEvent) => format(parseISO(event.startDate), "yyyy-MM-dd")
     );
 
     const groupedAndSortedEvents: [string, IEvent[]][] = Object.entries(agendaEvents).sort(
-        ([a], [b]) => {
-            if (agendaModeGroupBy === "date") {
-                return new Date(a).getTime() - new Date(b).getTime();
-            } else {
-                return a.localeCompare(b);
-            }
-        }
+        ([a], [b]) => new Date(a).getTime() - new Date(b).getTime()
     );
 
     if (groupedAndSortedEvents.length === 0) {
         return (
             <div className="py-8 text-center">
-                <p className="text-muted-foreground">No events found for this month.</p>
+                <p className="text-muted-foreground">{t('events.noEvents')}</p>
             </div>
         );
     }
@@ -62,20 +53,21 @@ export const AgendaEvents: FC = () => {
     return (
         <Command className="py-4 h-[80vh] bg-transparent">
             <div className="mb-4 mx-4">
-                <CommandInput placeholder="Type a command or search..." />
+                <CommandInput placeholder={t('search.placeholder')} />
             </div>
             <CommandList className="max-h-max px-3 border-t">
                 {groupedAndSortedEvents.map(([key, groupedEvents]) => {
                     if (!groupedEvents || groupedEvents.length === 0) return null;
 
+                    const dateObj = parseISO(key);
+                    const formattedDate = format(dateObj, "EEEE, MMMM d, yyyy", {
+                        locale: locale === 'nl' ? nl : undefined
+                    });
+
                     return (
                         <CommandGroup
                             key={key}
-                            heading={
-                                agendaModeGroupBy === "date"
-                                    ? format(parseISO(key), "EEEE, MMMM d, yyyy")
-                                    : EVENT_TYPE_LABELS[key as TEventType] || toCapitalize(key)
-                            }
+                            heading={formattedDate}
                         >
                             {groupedEvents.map((event: IEvent) => (
                                 <CommandItem
@@ -118,27 +110,13 @@ export const AgendaEvents: FC = () => {
                                                 </div>
                                             </div>
                                             <div className="w-40 flex justify-center items-center gap-1">
-                                                {agendaModeGroupBy === "date" ? (
-                                                    <>
-                                                        <p className="text-sm">
-                                                            {formatTime(event.startDate, use24HourFormat)}
-                                                        </p>
-                                                        <span className="text-muted-foreground">-</span>
-                                                        <p className="text-sm">
-                                                            {formatTime(event.endDate, use24HourFormat)}
-                                                        </p>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <p className="text-sm">
-                                                            {format(parseISO(event.startDate), "MM/dd/yyyy")}
-                                                        </p>
-                                                        <span className="text-sm">at</span>
-                                                        <p className="text-sm">
-                                                            {formatTime(event.startDate, use24HourFormat)}
-                                                        </p>
-                                                    </>
-                                                )}
+                                                <p className="text-sm">
+                                                    {formatTime(event.startDate, use24HourFormat)}
+                                                </p>
+                                                <span className="text-muted-foreground">-</span>
+                                                <p className="text-sm">
+                                                    {formatTime(event.endDate, use24HourFormat)}
+                                                </p>
                                             </div>
                                         </div>
                                     </EventDetailsDialog>
@@ -147,7 +125,7 @@ export const AgendaEvents: FC = () => {
                         </CommandGroup>
                     );
                 })}
-                <CommandEmpty>No results found.</CommandEmpty>
+                <CommandEmpty>{t('search.noResults')}</CommandEmpty>
             </CommandList>
         </Command>
     );

@@ -25,6 +25,7 @@ import {
     subWeeks,
     subYears,
 } from "date-fns";
+import { nl } from "date-fns/locale";
 import { useCalendar } from "../calendar/contexts/calendar-context";
 import type {
     ICalendarCell,
@@ -37,9 +38,12 @@ import type {
 
 const FORMAT_STRING = "MMM d, yyyy";
 
-export function rangeText(view: TCalendarView, date: Date): string {
+export function rangeText(view: TCalendarView, date: Date, locale?: string): string {
     let start: Date;
     let end: Date;
+
+    // Get locale for date-fns - FIXED: proper import instead of require()
+    const dateLocale = locale === 'nl' ? nl : undefined;
 
     switch (view) {
         case "month":
@@ -51,7 +55,7 @@ export function rangeText(view: TCalendarView, date: Date): string {
             end = endOfWeek(date);
             break;
         case "day":
-            return format(date, FORMAT_STRING);
+            return format(date, FORMAT_STRING, { locale: dateLocale });
         case "year":
             start = startOfYear(date);
             end = endOfYear(date);
@@ -64,7 +68,7 @@ export function rangeText(view: TCalendarView, date: Date): string {
             return "Error while formatting";
     }
 
-    return `${format(start, FORMAT_STRING)} - ${format(end, FORMAT_STRING)}`;
+    return `${format(start, FORMAT_STRING, { locale: dateLocale })} - ${format(end, FORMAT_STRING, { locale: dateLocale })}`;
 }
 
 export function navigateDate(

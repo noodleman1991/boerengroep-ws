@@ -1,13 +1,9 @@
 import {
-    CheckIcon,
     DotIcon,
-    MoonIcon,
     PaletteIcon,
     SettingsIcon,
-    SunMediumIcon,
-    XIcon,
 } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -24,7 +20,6 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useCalendar } from "../contexts/calendar-context";
 import type { TCalendarView } from "../types";
-import { useDragDrop } from "../contexts/dnd-context";
 
 export function Settings() {
     const {
@@ -34,60 +29,23 @@ export function Settings() {
         toggleTimeFormat,
         view,
         setView,
-        agendaModeGroupBy,
-        setAgendaModeGroupBy,
     } = useCalendar();
-    const { showConfirmation, setShowConfirmation } = useDragDrop();
-    const { theme, setTheme } = useTheme();
 
-    const isDarkMode = theme === "dark";
+    const t = useTranslations('calendar');
+
     const isDotVariant = badgeVariant === "dot";
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
+                <Button variant="outline" size="icon" title={t('settings.title')}>
                     <SettingsIcon />
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Calendar settings</DropdownMenuLabel>
+                <DropdownMenuLabel>{t('settings.title')}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                        <div className="flex items-center gap-2">
-                            {isDarkMode ? (
-                                <MoonIcon className="h-4 w-4" />
-                            ) : (
-                                <SunMediumIcon className="h-4 w-4" />
-                            )}
-                            Use dark mode
-                        </div>
-                        <DropdownMenuShortcut>
-                            <Switch
-                                checked={isDarkMode}
-                                onCheckedChange={(checked) =>
-                                    setTheme(checked ? "dark" : "light")
-                                }
-                            />
-                        </DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                        <div className="flex items-center gap-2">
-                            {showConfirmation ? (
-                                <CheckIcon className="h-4 w-4" />
-                            ) : (
-                                <XIcon className="h-4 w-4" />
-                            )}
-                            Show confirmation dialog on event drop
-                        </div>
-                        <DropdownMenuShortcut>
-                            <Switch
-                                checked={showConfirmation}
-                                onCheckedChange={(checked) => setShowConfirmation(checked)}
-                            />
-                        </DropdownMenuShortcut>
-                    </DropdownMenuItem>
                     <DropdownMenuItem>
                         <div className="flex items-center gap-2">
                             {isDotVariant ? (
@@ -95,7 +53,7 @@ export function Settings() {
                             ) : (
                                 <PaletteIcon className="w-4 h-4" />
                             )}
-                            Use dot badge
+                            {t('settings.badgeVariant')}
                         </div>
                         <DropdownMenuShortcut>
                             <Switch
@@ -148,7 +106,7 @@ export function Settings() {
                                     <path d="M15 21v-6" />
                                 </svg>
                             )}
-                            Use 24 hour format
+                            {t('settings.timeFormat')}
                         </div>
                         <DropdownMenuShortcut>
                             <Switch
@@ -160,29 +118,13 @@ export function Settings() {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup className="w-56">
-                    <DropdownMenuLabel>Default view</DropdownMenuLabel>
+                    <DropdownMenuLabel>{t('settings.defaultView')}</DropdownMenuLabel>
                     <DropdownMenuRadioGroup
                         value={view}
                         onValueChange={(value) => setView(value as TCalendarView)}
                     >
-                        <DropdownMenuRadioItem value="day">Day</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="week">Week</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="month">Month</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="year">Year</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="agenda">Agenda</DropdownMenuRadioItem>
-                    </DropdownMenuRadioGroup>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                    <DropdownMenuLabel>Agenda view group by</DropdownMenuLabel>
-                    <DropdownMenuRadioGroup
-                        value={agendaModeGroupBy}
-                        onValueChange={(value) =>
-                            setAgendaModeGroupBy(value as "date" | "eventType")
-                        }
-                    >
-                        <DropdownMenuRadioItem value="date">Date</DropdownMenuRadioItem>
-                        <DropdownMenuRadioItem value="color">Color</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="month">{t('views.month')}</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="agenda">{t('views.agenda')}</DropdownMenuRadioItem>
                     </DropdownMenuRadioGroup>
                 </DropdownMenuGroup>
             </DropdownMenuContent>

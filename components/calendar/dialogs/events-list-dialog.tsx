@@ -1,5 +1,7 @@
 import {format} from "date-fns";
+import { nl } from "date-fns/locale";
 import type {ReactNode} from "react";
+import { useTranslations, useLocale } from "next-intl";
 import {
     Modal,
     ModalContent,
@@ -31,13 +33,20 @@ export function EventListDialog({
     const cellEvents = events;
     const hiddenEventsCount = Math.max(cellEvents.length - maxVisibleEvents, 0);
     const {badgeVariant, use24HourFormat} = useCalendar();
+    const t = useTranslations('calendar');
+    const locale = useLocale();
+
+    // Format date with locale support
+    const formattedDate = format(date, "EEEE, MMMM d, yyyy", {
+        locale: locale === 'nl' ? nl : undefined
+    });
 
     const defaultTrigger = (
         <span className="cursor-pointer">
 			<span className="sm:hidden">+{hiddenEventsCount}</span>
 			<span className="hidden sm:inline py-0.5 px-2 my-1 rounded-xl border">
 				{hiddenEventsCount}
-                <span className="mx-1">more...</span>
+                <span className="mx-1">{t('events.moreEvents')}</span>
 			</span>
 		</span>
     );
@@ -51,7 +60,7 @@ export function EventListDialog({
                         <div className="flex items-center gap-2">
                             <EventBullet color={cellEvents[0]?.color} className=""/>
                             <p className="text-sm font-medium">
-                                Events on {format(date, "EEEE, MMMM d, yyyy")}
+                                {t('events.eventsOn')} {formattedDate}
                             </p>
                         </div>
                     </ModalTitle>
@@ -65,23 +74,23 @@ export function EventListDialog({
                                         "flex items-center gap-2 p-2 border rounded-md hover:bg-muted cursor-pointer",
                                         {
                                             [dayCellVariants({color: event.color})]:
-                                                badgeVariant === "colored",
+                                            badgeVariant === "colored",
                                         },
                                     )}
                                 >
-                                        <EventBullet color={event.color}/>
-                                        <div className="flex justify-between items-center w-full">
-                                            <p className="text-sm font-medium">{event.title}</p>
-                                            <p className="text-xs">
-                                                {formatTime(event.startDate, use24HourFormat)}
-                                            </p>
-                                        </div>
+                                    <EventBullet color={event.color}/>
+                                    <div className="flex justify-between items-center w-full">
+                                        <p className="text-sm font-medium">{event.title}</p>
+                                        <p className="text-xs">
+                                            {formatTime(event.startDate, use24HourFormat)}
+                                        </p>
+                                    </div>
                                 </div>
                             </EventDetailsDialog>
                         ))
                     ) : (
                         <p className="text-sm text-muted-foreground">
-                            No events for this date.
+                            {t('events.noEventsForDate')}
                         </p>
                     )}
                 </div>

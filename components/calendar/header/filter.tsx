@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckIcon, Filter, RefreshCcw } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,11 +12,12 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Toggle } from "@/components/ui/toggle";
 import { useCalendar } from "../contexts/calendar-context";
-import {EVENT_COLORS, EVENT_TYPE_LABELS, type TEventType} from "../types";
+import {EVENT_COLORS, type TEventType} from "../types";
 import { getBulletColor } from "../helpers";
 
 export function FilterEvents() {
     const { selectedEventTypes, filterEventsByEventType, clearFilter } = useCalendar();
+    const t = useTranslations('calendar');
 
     const eventTypes: TEventType[] = [
         "talk",
@@ -31,7 +33,7 @@ export function FilterEvents() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Toggle variant="outline" className="cursor-pointer w-fit">
+                <Toggle variant="outline" className="cursor-pointer w-fit" title={t('filter.title')}>
                     <Filter className="h-4 w-4" />
                     {selectedEventTypes.length > 0 && (
                         <Badge variant="secondary" className="ml-2">
@@ -43,7 +45,7 @@ export function FilterEvents() {
             <DropdownMenuContent align="end" className="w-[200px]">
                 {eventTypes.map((eventType) => {
                     const color = EVENT_COLORS[eventType];
-                    const label = EVENT_TYPE_LABELS[eventType];
+                    const label = t(`eventTypes.${eventType}`);
                     const isSelected = selectedEventTypes.includes(eventType);
 
                     return (
@@ -75,7 +77,7 @@ export function FilterEvents() {
                     }}
                 >
                     <RefreshCcw className="size-3.5" />
-                    Clear Filter
+                    {t('filter.clearFilter')}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

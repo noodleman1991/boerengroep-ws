@@ -39,6 +39,74 @@
       "contact": "Contact"
     }
   },
+  "calendar": {
+    "title": "Evenementenagenda",
+    "description": "Bekijk alle komende evenementen, workshops, vergaderingen en activiteiten.",
+    "views": {
+      "month": "Maand",
+      "agenda": "Agenda"
+    },
+    "navigation": {
+      "today": "Vandaag",
+      "previous": "Vorige",
+      "next": "Volgende",
+      "events": "evenementen",
+      "event": "evenement"
+    },
+    "weekdays": {
+      "short": ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"],
+      "long": ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"]
+    },
+    "months": {
+      "short": ["Jan", "Feb", "Mrt", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
+      "long": ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"]
+    },
+    "events": {
+      "noEvents": "Geen evenementen gevonden voor deze maand.",
+      "noEventsForDate": "Geen evenementen voor deze datum.",
+      "moreEvents": "meer...",
+      "eventsOn": "Evenementen op",
+      "responsible": "Verantwoordelijke",
+      "startDate": "Startdatum",
+      "endDate": "Einddatum",
+      "description": "Beschrijving",
+      "at": "om"
+    },
+    "eventTypes": {
+      "talk": "Lezing",
+      "workshop": "Workshop",
+      "lecture": "College",
+      "meeting": "Vergadering",
+      "board-meeting": "Bestuursvergadering",
+      "soup-kitchen": "Soepkeuken",
+      "csa": "Community Supported Agriculture",
+      "excursion": "Excursie"
+    },
+    "settings": {
+      "title": "Agenda-instellingen",
+      "timeFormat": "Gebruik 24-uurs formaat",
+      "badgeVariant": "Gebruik punt badge",
+      "defaultView": "Standaardweergave"
+    },
+    "filter": {
+      "title": "Filter evenementen",
+      "clearFilter": "Filter wissen",
+      "allEvents": "Alle evenementen"
+    },
+    "search": {
+      "placeholder": "Typ een commando of zoek...",
+      "noResults": "Geen resultaten gevonden."
+    },
+    "fullscreen": {
+      "enter": "Volledig scherm",
+      "exit": "Volledig scherm verlaten"
+    },
+    "loading": "Evenementen laden...",
+    "errors": {
+      "loadingFailed": "Laden van evenementen mislukt",
+      "noEventsAdmin": "Geen evenementen gevonden. Voeg evenementen toe via het TinaCMS beheerpaneel."
+    }
+  },
   "footer": {
     "newsletter": {
       "title": "Blijf op de hoogte",

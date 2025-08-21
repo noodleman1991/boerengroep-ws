@@ -39,6 +39,74 @@
       "contact": "Contact"
     }
   },
+  "calendar": {
+    "title": "Event Calendar",
+    "description": "View all upcoming events, workshops, meetings, and activities.",
+    "views": {
+      "month": "Month",
+      "agenda": "Agenda"
+    },
+    "navigation": {
+      "today": "Today",
+      "previous": "Previous",
+      "next": "Next",
+      "events": "events",
+      "event": "event"
+    },
+    "weekdays": {
+      "short": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "long": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    },
+    "months": {
+      "short": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "long": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+    },
+    "events": {
+      "noEvents": "No events found for this month.",
+      "noEventsForDate": "No events for this date.",
+      "moreEvents": "more...",
+      "eventsOn": "Events on",
+      "responsible": "Responsible",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "description": "Description",
+      "at": "at"
+    },
+    "eventTypes": {
+      "talk": "Talk",
+      "workshop": "Workshop",
+      "lecture": "Lecture",
+      "meeting": "Meeting",
+      "board-meeting": "Board Meeting",
+      "soup-kitchen": "Soup Kitchen",
+      "csa": "Community Supported Agriculture",
+      "excursion": "Excursion"
+    },
+    "settings": {
+      "title": "Calendar settings",
+      "timeFormat": "Use 24 hour format",
+      "badgeVariant": "Use dot badge",
+      "defaultView": "Default view"
+    },
+    "filter": {
+      "title": "Filter events",
+      "clearFilter": "Clear Filter",
+      "allEvents": "All Events"
+    },
+    "search": {
+      "placeholder": "Type a command or search...",
+      "noResults": "No results found."
+    },
+    "fullscreen": {
+      "enter": "Enter fullscreen",
+      "exit": "Exit fullscreen"
+    },
+    "loading": "Loading events...",
+    "errors": {
+      "loadingFailed": "Failed to load events",
+      "noEventsAdmin": "No events found. Add events through the TinaCMS admin panel."
+    }
+  },
   "footer": {
     "newsletter": {
       "title": "Stay informed",

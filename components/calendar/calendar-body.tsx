@@ -3,6 +3,7 @@
 import { isSameDay, parseISO } from "date-fns";
 import { motion } from "framer-motion";
 import React from "react";
+import { useTranslations } from "next-intl";
 import { fadeIn, transition } from "./animations";
 import { useCalendar } from "./contexts/calendar-context";
 import { AgendaEvents } from "./views/agenda-view/agenda-events";
@@ -10,6 +11,7 @@ import { CalendarMonthView } from "./views/month-view/calendar-month-view";
 
 export function CalendarBody() {
     const { view, events, isLoading } = useCalendar();
+    const t = useTranslations('calendar');
 
     // Add error handling for events filtering
     const safeEvents = React.useMemo(() => {
@@ -65,6 +67,7 @@ export function CalendarBody() {
         return (
             <div className="w-full h-96 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <span className="ml-2 text-muted-foreground">{t('loading')}</span>
             </div>
         );
     }
@@ -99,7 +102,7 @@ export function CalendarBody() {
                     </motion.div>
                 )}
 
-                {/* Add placeholder for other views */}
+                {/* Fallback for unsupported views */}
                 {!["month", "agenda"].includes(view) && (
                     <div className="flex items-center justify-center h-96">
                         <p className="text-muted-foreground">
