@@ -223,5 +223,62 @@
     "get-involved": "Get involved",
     "subscribe": "Subscribe",
     "contact-us": "Contact us"
+  },
+  "vacancies": {
+    "title": "Opportunities",
+    "description": "Discover meaningful opportunities to contribute to our mission through volunteering, internships, and employment.",
+    "opportunity": "opportunity",
+    "opportunities": "opportunities",
+    "untitledPosition": "Untitled Position",
+    "organizationNotSpecified": "Organization not specified",
+    "downloadDocument": "Download Document",
+    "status": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "types": {
+      "volunteer": {
+        "title": "Volunteer Opportunities",
+        "navTitle": "Volunteers",
+        "noOpportunities": "No volunteer opportunities available at the moment."
+      },
+      "internship": {
+        "title": "Internships",
+        "navTitle": "Internships",
+        "noOpportunities": "No internship opportunities available at the moment."
+      },
+      "coordinator": {
+        "title": "Coordinator Positions",
+        "navTitle": "Coordinator",
+        "noOpportunities": "No coordinator positions available at the moment."
+      },
+      "freelance": {
+        "title": "Freelance & Temporary Positions",
+        "navTitle": "Freelance/Temporary",
+        "noOpportunities": "No freelance or temporary positions available at the moment."
+      },
+      "other": {
+        "title": "Other Opportunities",
+        "navTitle": "Other",
+        "noOpportunities": "No other opportunities available at the moment."
+      }
+    },
+    "fields": {
+      "deadline": "Deadline",
+      "location": "Location",
+      "duration": "Duration",
+      "compensation": "Compensation",
+      "description": "Description",
+      "responsibilities": "Responsibilities",
+      "requiredSkills": "Required Skills",
+      "preferredQualities": "Preferred Qualities",
+      "languagesRequired": "Required Languages",
+      "languagesPreferred": "Preferred Languages",
+      "accessibilityNotes": "Accessibility Notes",
+      "supportingDocument": "Supporting Document",
+      "valuesStatement": "Values & Commitment",
+      "howToApply": "How to Apply",
+      "contactInfo": "Contact Information"
+    }
   }
 }

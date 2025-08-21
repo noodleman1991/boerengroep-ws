@@ -1,6 +1,8 @@
 'use client';
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import { Section } from '@/components/layout/section';
 import {
     Accordion,
     AccordionContent,
@@ -10,15 +12,14 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { CalendarDays, MapPin, Clock, Euro, FileText, Users, Briefcase, GraduationCap } from 'lucide-react';
 
-// Type-safe interfaces
+// Type-safe interfaces based on current TinaCMS schema
 interface VacancyNode {
     id: string;
     opportunityType?: string | null;
-    jobCategory?: string | null;
     title?: string | null;
-    organization?: string | null;
-    applicationDeadline?: string | null;
+    startDate?: string | null;
     duration?: string | null;
+    applicationDeadline?: string | null;
     description?: any;
     responsibilities?: any;
     requiredSkills?: (string | null)[] | null;
@@ -30,6 +31,7 @@ interface VacancyNode {
     compensation?: {
         details?: string | null;
     } | null;
+    accessibilityNotes?: string | null;
     howToApply?: any;
     contactInfo?: {
         name?: string | null;
@@ -39,7 +41,7 @@ interface VacancyNode {
     supportingDocument?: string | null;
     valuesStatement?: any;
     languagesRequired?: (string | null)[] | null;
-    languagesPreferred?: (string | null)[] | null;
+    openToNontraditional?: boolean | null;
 }
 
 interface VacancyEdge {
@@ -52,9 +54,20 @@ interface VacancyConnection {
 
 interface VacanciesPageProps {
     vacancies: VacancyConnection;
+    locale: string;
 }
 
-export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
+const VACANCY_TYPES = [
+    { type: 'volunteer', icon: Users, color: 'green' },
+    { type: 'internship', icon: GraduationCap, color: 'blue' },
+    { type: 'coordinator', icon: Briefcase, color: 'purple' },
+    { type: 'freelance', icon: Briefcase, color: 'orange' },
+    { type: 'other', icon: Briefcase, color: 'gray' },
+] as const;
+
+export const VacanciesPage = ({ vacancies, locale }: VacanciesPageProps) => {
+    const t = useTranslations('vacancies');
+
     const isApplicationOpen = (deadline: string) => {
         const deadlineDate = new Date(deadline);
         const today = new Date();
@@ -70,25 +83,22 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
     };
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('nl-NL', {
+        return new Date(dateString).toLocaleDateString(locale === 'nl' ? 'nl-NL' : 'en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
         });
     };
 
-    const filterVacancies = (type: string, category?: string): VacancyEdge[] => {
+    const filterVacanciesByType = (type: string): VacancyEdge[] => {
         if (!vacancies.edges) return [];
-        
+
         return vacancies.edges
             .filter((edge): edge is VacancyEdge => {
                 const vacancy = edge?.node;
                 if (!vacancy?.opportunityType || !vacancy?.applicationDeadline) return false;
                 if (isExpired(vacancy.applicationDeadline)) return false;
-                
-                if (type === 'job' && category) {
-                    return vacancy.opportunityType === 'job' && vacancy.jobCategory === category;
-                }
+
                 return vacancy.opportunityType === type;
             })
             .sort((a, b) => {
@@ -98,61 +108,68 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
             });
     };
 
-    const renderJobBoard = (title: string, vacancies: VacancyEdge[], icon: React.ReactNode, id: string) => {
-        if (vacancies.length === 0) {
+    const VacancyAccordion = ({
+        vacancies: typeVacancies,
+        type,
+        icon: Icon,
+        color
+    }: {
+        vacancies: VacancyEdge[],
+        type: string,
+        icon: React.ComponentType<any>,
+        color: string
+    }) => {
+        if (typeVacancies.length === 0) {
             return (
-                <section id={id} className="space-y-6 scroll-mt-24">
+                <section id={type} className="space-y-6 scroll-mt-24">
                     <div className="flex items-center gap-3">
-                        {icon}
-                        <h2 className="text-2xl font-semibold">{title}</h2>
+                        <Icon className={`h-6 w-6 text-${color}-600`} />
+                        <h2 className="text-2xl font-semibold">{t(`types.${type}.title`)}</h2>
                     </div>
                     <p className="text-muted-foreground">
-                        No opportunities available at the moment.
+                        {t(`types.${type}.noOpportunities`)}
                     </p>
                 </section>
             );
         }
 
         return (
-            <section id={id} className="space-y-6 scroll-mt-24">
+            <section id={type} className="space-y-6 scroll-mt-24">
                 <div className="flex items-center gap-3">
-                    {icon}
-                    <h2 className="text-2xl font-semibold">{title}</h2>
+                    <Icon className={`h-6 w-6 text-${color}-600`} />
+                    <h2 className="text-2xl font-semibold">{t(`types.${type}.title`)}</h2>
                     <Badge variant="secondary" className="ml-2">
-                        {vacancies.length} {vacancies.length === 1 ? 'opportunity' : 'opportunities'}
+                        {typeVacancies.length} {typeVacancies.length === 1 ? t('opportunity') : t('opportunities')}
                     </Badge>
                 </div>
-                
+
                 <Accordion type="single" collapsible className="space-y-4">
-                    {vacancies.map((edge, index) => {
+                    {typeVacancies.map((edge, index) => {
                         const vacancy = edge?.node;
                         if (!vacancy) return null;
 
                         const applicationOpen = vacancy.applicationDeadline ? isApplicationOpen(vacancy.applicationDeadline) : false;
 
                         return (
-                            <AccordionItem 
-                                key={vacancy.id || index} 
-                                value={`vacancy-${id}-${index}`}
+                            <AccordionItem
+                                key={vacancy.id || index}
+                                value={`vacancy-${type}-${index}`}
                                 className="border rounded-lg px-4"
                             >
                                 <AccordionTrigger className="hover:no-underline">
                                     <div className="flex items-center justify-between w-full mr-4">
                                         <div className="text-left">
-                                            <div className="font-medium">{vacancy.title || 'Untitled Position'}</div>
-                                            <div className="text-sm text-muted-foreground">
-                                                {vacancy.organization || 'Organization not specified'}
-                                            </div>
+                                            <div className="font-medium">{vacancy.title || t('untitledPosition')}</div>
                                         </div>
-                                        <Badge 
+                                        <Badge
                                             variant={applicationOpen ? "default" : "destructive"}
                                             className={applicationOpen ? "bg-green-500 hover:bg-green-600" : ""}
                                         >
-                                            {applicationOpen ? "Open" : "Closed"}
+                                            {applicationOpen ? t('status.open') : t('status.closed')}
                                         </Badge>
                                     </div>
                                 </AccordionTrigger>
-                                
+
                                 <AccordionContent className="pt-4 space-y-6">
                                     {/* Quick Info */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
@@ -160,41 +177,41 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
                                             <div className="flex items-center gap-2">
                                                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                                                 <div>
-                                                    <div className="font-medium">Deadline</div>
+                                                    <div className="font-medium">{t('fields.deadline')}</div>
                                                     <div className="text-muted-foreground">
                                                         {formatDate(vacancy.applicationDeadline)}
                                                     </div>
                                                 </div>
                                             </div>
                                         )}
-                                        
+
                                         {vacancy.location && (
                                             <div className="flex items-center gap-2">
                                                 <MapPin className="h-4 w-4 text-muted-foreground" />
                                                 <div>
-                                                    <div className="font-medium">Location</div>
+                                                    <div className="font-medium">{t('fields.location')}</div>
                                                     <div className="text-muted-foreground">
                                                         {vacancy.location.type} {vacancy.location.cityRegion && `• ${vacancy.location.cityRegion}`}
                                                     </div>
                                                 </div>
                                             </div>
                                         )}
-                                        
+
                                         {vacancy.duration && (
                                             <div className="flex items-center gap-2">
                                                 <Clock className="h-4 w-4 text-muted-foreground" />
                                                 <div>
-                                                    <div className="font-medium">Duration</div>
+                                                    <div className="font-medium">{t('fields.duration')}</div>
                                                     <div className="text-muted-foreground">{vacancy.duration}</div>
                                                 </div>
                                             </div>
                                         )}
-                                        
+
                                         {vacancy.compensation?.details && (
                                             <div className="flex items-center gap-2">
                                                 <Euro className="h-4 w-4 text-muted-foreground" />
                                                 <div>
-                                                    <div className="font-medium">Compensation</div>
+                                                    <div className="font-medium">{t('fields.compensation')}</div>
                                                     <div className="text-muted-foreground">
                                                         {vacancy.compensation.details}
                                                     </div>
@@ -206,7 +223,7 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
                                     {/* Description */}
                                     {vacancy.description && (
                                         <div>
-                                            <h4 className="font-medium mb-2">Description</h4>
+                                            <h4 className="font-medium mb-2">{t('fields.description')}</h4>
                                             <div className="prose prose-sm max-w-none">
                                                 <TinaMarkdown content={vacancy.description} />
                                             </div>
@@ -216,7 +233,7 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
                                     {/* Responsibilities */}
                                     {vacancy.responsibilities && (
                                         <div>
-                                            <h4 className="font-medium mb-2">Responsibilities</h4>
+                                            <h4 className="font-medium mb-2">{t('fields.responsibilities')}</h4>
                                             <div className="prose prose-sm max-w-none">
                                                 <TinaMarkdown content={vacancy.responsibilities} />
                                             </div>
@@ -227,7 +244,7 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {vacancy.requiredSkills && vacancy.requiredSkills.length > 0 && (
                                             <div>
-                                                <h4 className="font-medium mb-2">Required Skills</h4>
+                                                <h4 className="font-medium mb-2">{t('fields.requiredSkills')}</h4>
                                                 <div className="flex flex-wrap gap-1">
                                                     {vacancy.requiredSkills.map((skill: string | null, idx: number) => skill && (
                                                         <Badge key={idx} variant="secondary" className="text-xs">
@@ -237,10 +254,10 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
                                                 </div>
                                             </div>
                                         )}
-                                        
+
                                         {vacancy.preferredQualities && vacancy.preferredQualities.length > 0 && (
                                             <div>
-                                                <h4 className="font-medium mb-2">Preferred Qualities</h4>
+                                                <h4 className="font-medium mb-2">{t('fields.preferredQualities')}</h4>
                                                 <div className="flex flex-wrap gap-1">
                                                     {vacancy.preferredQualities.map((quality: string | null, idx: number) => quality && (
                                                         <Badge key={idx} variant="outline" className="text-xs">
@@ -253,49 +270,39 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
                                     </div>
 
                                     {/* Languages */}
-                                    {((vacancy.languagesRequired && vacancy.languagesRequired.length > 0) || 
-                                      (vacancy.languagesPreferred && vacancy.languagesPreferred.length > 0)) && (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {vacancy.languagesRequired && vacancy.languagesRequired.length > 0 && (
-                                                <div>
-                                                    <h4 className="font-medium mb-2">Required Languages</h4>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {vacancy.languagesRequired.map((lang: string | null, idx: number) => lang && (
-                                                            <Badge key={idx} variant="secondary" className="text-xs">
-                                                                {lang}
-                                                            </Badge>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
-                                            
-                                            {vacancy.languagesPreferred && vacancy.languagesPreferred.length > 0 && (
-                                                <div>
-                                                    <h4 className="font-medium mb-2">Preferred Languages</h4>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {vacancy.languagesPreferred.map((lang: string | null, idx: number) => lang && (
-                                                            <Badge key={idx} variant="outline" className="text-xs">
-                                                                {lang}
-                                                            </Badge>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            )}
+                                    {vacancy.languagesRequired && vacancy.languagesRequired.length > 0 && (
+                                        <div>
+                                            <h4 className="font-medium mb-2">{t('fields.languagesRequired')}</h4>
+                                            <div className="flex flex-wrap gap-1">
+                                                {vacancy.languagesRequired.map((lang: string | null, idx: number) => lang && (
+                                                    <Badge key={idx} variant="secondary" className="text-xs">
+                                                        {lang}
+                                                    </Badge>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Accessibility Notes */}
+                                    {vacancy.accessibilityNotes && (
+                                        <div>
+                                            <h4 className="font-medium mb-2">{t('fields.accessibilityNotes')}</h4>
+                                            <p className="text-sm text-muted-foreground">{vacancy.accessibilityNotes}</p>
                                         </div>
                                     )}
 
                                     {/* Supporting Document */}
                                     {vacancy.supportingDocument && (
                                         <div>
-                                            <h4 className="font-medium mb-2">Supporting Document</h4>
-                                            <a 
+                                            <h4 className="font-medium mb-2">{t('fields.supportingDocument')}</h4>
+                                            <a
                                                 href={vacancy.supportingDocument}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="inline-flex items-center gap-2 text-primary hover:underline"
                                             >
                                                 <FileText className="h-4 w-4" />
-                                                Download Document
+                                                {t('downloadDocument')}
                                             </a>
                                         </div>
                                     )}
@@ -303,7 +310,7 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
                                     {/* Values Statement */}
                                     {vacancy.valuesStatement && (
                                         <div>
-                                            <h4 className="font-medium mb-2">Values & Commitment</h4>
+                                            <h4 className="font-medium mb-2">{t('fields.valuesStatement')}</h4>
                                             <div className="prose prose-sm max-w-none">
                                                 <TinaMarkdown content={vacancy.valuesStatement} />
                                             </div>
@@ -313,14 +320,14 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
                                     {/* How to Apply */}
                                     {vacancy.howToApply && (
                                         <div className="border-t pt-4">
-                                            <h4 className="font-medium mb-2">How to Apply</h4>
+                                            <h4 className="font-medium mb-2">{t('fields.howToApply')}</h4>
                                             <div className="prose prose-sm max-w-none">
                                                 <TinaMarkdown content={vacancy.howToApply} />
                                             </div>
-                                            
+
                                             {vacancy.contactInfo && (
                                                 <div className="mt-3">
-                                                    <h5 className="text-sm font-medium mb-1">Contact Information</h5>
+                                                    <h5 className="text-sm font-medium mb-1">{t('fields.contactInfo')}</h5>
                                                     <div className="text-sm text-muted-foreground">
                                                         {vacancy.contactInfo.name && <div>{vacancy.contactInfo.name}</div>}
                                                         {vacancy.contactInfo.email && (
@@ -345,74 +352,45 @@ export const VacanciesPage = ({ vacancies }: VacanciesPageProps) => {
         );
     };
 
-    // Filter vacancies by type and category
-    const volunteerVacancies = filterVacancies('volunteer');
-    const internshipVacancies = filterVacancies('internship');
-    const coordinatorJobs = filterVacancies('job', 'coordinator');
-    const freelanceJobs = filterVacancies('job', 'freelance');
-
     return (
-        <div className="space-y-16">
-            {/* Page Header */}
-            <div className="text-center space-y-4">
-                <h1 className="text-4xl font-bold">Opportunities</h1>
-                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                    Discover meaningful opportunities to contribute to our mission through volunteering, 
-                    internships, and employment.
-                </p>
+        <Section>
+            <div className="space-y-16">
+                {/* Page Header */}
+                <div className="text-center space-y-4">
+                    <h1 className="text-4xl font-bold">{t('title')}</h1>
+                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                        {t('description')}
+                    </p>
+                </div>
+
+                {/* Quick Navigation */}
+                <div className="flex flex-wrap justify-center gap-4">
+                    {VACANCY_TYPES.map(({ type, icon: Icon }) => (
+                        <a
+                            key={type}
+                            href={`#${type}`}
+                            className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
+                        >
+                            <Icon className="inline-block w-4 h-4 mr-2" />
+                            {t(`types.${type}.navTitle`)}
+                        </a>
+                    ))}
+                </div>
+
+                {/* Vacancy Sections */}
+                {VACANCY_TYPES.map(({ type, icon, color }) => {
+                    const typeVacancies = filterVacanciesByType(type);
+                    return (
+                        <VacancyAccordion
+                            key={type}
+                            vacancies={typeVacancies}
+                            type={type}
+                            icon={icon}
+                            color={color}
+                        />
+                    );
+                })}
             </div>
-
-            {/* Quick Navigation */}
-            <div className="flex flex-wrap justify-center gap-4">
-                <a href="#volunteers" className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
-                    <Users className="inline-block w-4 h-4 mr-2" />
-                    Volunteers
-                </a>
-                <a href="#internships" className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
-                    <GraduationCap className="inline-block w-4 h-4 mr-2" />
-                    Internships
-                </a>
-                <a href="#coordinator" className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
-                    <Briefcase className="inline-block w-4 h-4 mr-2" />
-                    Coordinator
-                </a>
-                <a href="#freelance" className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors">
-                    <Briefcase className="inline-block w-4 h-4 mr-2" />
-                    Freelance
-                </a>
-            </div>
-
-            {/* Volunteer Opportunities */}
-            {renderJobBoard(
-                "Volunteer Opportunities", 
-                volunteerVacancies, 
-                <Users className="h-6 w-6 text-green-600" />,
-                "volunteers"
-            )}
-
-            {/* Internships */}
-            {renderJobBoard(
-                "Internships", 
-                internshipVacancies, 
-                <GraduationCap className="h-6 w-6 text-blue-600" />,
-                "internships"
-            )}
-
-            {/* Coordinator Jobs */}
-            {renderJobBoard(
-                "Coordinator Positions", 
-                coordinatorJobs, 
-                <Briefcase className="h-6 w-6 text-purple-600" />,
-                "coordinator"
-            )}
-
-            {/* Freelance Jobs */}
-            {renderJobBoard(
-                "Freelance & Temporary Positions", 
-                freelanceJobs, 
-                <Briefcase className="h-6 w-6 text-orange-600" />,
-                "freelance"
-            )}
-        </div>
+        </Section>
     );
 };

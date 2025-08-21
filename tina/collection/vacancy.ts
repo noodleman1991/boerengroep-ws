@@ -191,15 +191,6 @@ const Vacancy: Collection = {
             description: "DEI commitment, land acknowledgement, etc.",
         },
         {
-            type: "string",
-            label: "Languages Required",
-            name: "languagesRequired",
-            list: true,
-            ui: {
-                component: "tags",
-            },
-        },
-        {
             type: "boolean",
             label: "Open to Nontraditional Applicants",
             name: "openToNontraditional",

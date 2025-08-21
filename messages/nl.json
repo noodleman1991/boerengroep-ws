@@ -223,5 +223,62 @@
     "get-involved": "Doe mee",
     "subscribe": "Aanmelden",
     "contact-us": "Neem contact op"
+  },
+  "vacancies": {
+    "title": "Kansen",
+    "description": "Ontdek zinvolle kansen om bij te dragen aan onze missie via vrijwilligerswerk, stages en werkgelegenheid.",
+    "opportunity": "kans",
+    "opportunities": "kansen",
+    "untitledPosition": "Positie zonder titel",
+    "organizationNotSpecified": "Organisatie niet gespecificeerd",
+    "downloadDocument": "Document downloaden",
+    "status": {
+      "open": "Open",
+      "closed": "Gesloten"
+    },
+    "types": {
+      "volunteer": {
+        "title": "Vrijwilligersmogelijkheden",
+        "navTitle": "Vrijwilligers",
+        "noOpportunities": "Momenteel geen vrijwilligersmogelijkheden beschikbaar."
+      },
+      "internship": {
+        "title": "Stages",
+        "navTitle": "Stages",
+        "noOpportunities": "Momenteel geen stagemogelijkheden beschikbaar."
+      },
+      "coordinator": {
+        "title": "Coördinatorfuncties",
+        "navTitle": "Coördinator",
+        "noOpportunities": "Momenteel geen coördinatorfuncties beschikbaar."
+      },
+      "freelance": {
+        "title": "Freelance & Tijdelijke Functies",
+        "navTitle": "Freelance/Tijdelijk",
+        "noOpportunities": "Momenteel geen freelance of tijdelijke functies beschikbaar."
+      },
+      "other": {
+        "title": "Andere Kansen",
+        "navTitle": "Overig",
+        "noOpportunities": "Momenteel geen andere kansen beschikbaar."
+      }
+    },
+    "fields": {
+      "deadline": "Deadline",
+      "location": "Locatie",
+      "duration": "Duur",
+      "compensation": "Vergoeding",
+      "description": "Beschrijving",
+      "responsibilities": "Verantwoordelijkheden",
+      "requiredSkills": "Vereiste Vaardigheden",
+      "preferredQualities": "Gewenste Eigenschappen",
+      "languagesRequired": "Vereiste Talen",
+      "languagesPreferred": "Gewenste Talen",
+      "accessibilityNotes": "Toegankelijkheidsnotities",
+      "supportingDocument": "Ondersteunend Document",
+      "valuesStatement": "Waarden & Engagement",
+      "howToApply": "Hoe solliciteren",
+      "contactInfo": "Contactinformatie"
+    }
   }
 }
