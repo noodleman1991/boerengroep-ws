@@ -26,19 +26,10 @@ const Vacancy: Collection = {
             required: true,
             description: "Select the main category of opportunity",
             options: [
-                { label: "Job", value: "job" },
                 { label: "Volunteer", value: "volunteer" },
                 { label: "Internship", value: "internship" },
-            ],
-        },
-        {
-            type: "string",
-            label: "Job Category",
-            name: "jobCategory",
-            description: "Required for Job opportunities only - specify the type of job",
-            options: [
                 { label: "Coordinator", value: "coordinator" },
-                { label: "Freelance/Temporary", value: "freelance" },
+                { label: "Freelance or Temporary", value: "freelance" },
                 { label: "Other", value: "other" },
             ],
         },
@@ -50,17 +41,11 @@ const Vacancy: Collection = {
             required: true,
         },
         {
-            type: "string",
-            label: "Organization Name",
-            name: "organization",
-            required: true,
-        },
-        {
             type: "datetime",
             label: "Start Date",
             name: "startDate",
             ui: {
-                dateFormat: 'YYYY-MM-DD',
+                dateFormat: "YYYY-MM-DD",
             },
         },
         {
@@ -75,7 +60,7 @@ const Vacancy: Collection = {
             name: "applicationDeadline",
             required: true,
             ui: {
-                dateFormat: 'YYYY-MM-DD',
+                dateFormat: "YYYY-MM-DD",
             },
         },
         {
@@ -94,6 +79,15 @@ const Vacancy: Collection = {
             type: "string",
             label: "Required Skills / Experience",
             name: "requiredSkills",
+            list: true,
+            ui: {
+                component: "tags",
+            },
+        },
+        {
+            type: "string",
+            label: "Languages Required",
+            name: "languagesRequired",
             list: true,
             ui: {
                 component: "tags",
@@ -125,7 +119,7 @@ const Vacancy: Collection = {
                 },
                 {
                     type: "string",
-                    label: "City/Region",
+                    label: "Where?",
                     name: "cityRegion",
                 },
             ],
@@ -200,15 +194,6 @@ const Vacancy: Collection = {
             type: "string",
             label: "Languages Required",
             name: "languagesRequired",
-            list: true,
-            ui: {
-                component: "tags",
-            },
-        },
-        {
-            type: "string",
-            label: "Languages Preferred",
-            name: "languagesPreferred",
             list: true,
             ui: {
                 component: "tags",
