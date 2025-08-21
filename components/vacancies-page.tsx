@@ -193,9 +193,9 @@ export const VacanciesPage = ({
                             <AccordionItem
                                 key={vacancy.id || index}
                                 value={`vacancy-${type}-${index}`}
-                                className="border rounded-lg px-4"
+                                className="border rounded-lg overflow-hidden bg-white shadow-sm"
                             >
-                                <AccordionTrigger className="hover:no-underline">
+                                <AccordionTrigger className="hover:no-underline px-4 py-3">
                                     <div className="flex items-center justify-between w-full mr-4">
                                         <div className="text-left">
                                             <div className="font-medium">
@@ -222,7 +222,7 @@ export const VacanciesPage = ({
                                     </div>
                                 </AccordionTrigger>
 
-                                <AccordionContent className="pt-4 space-y-6">
+                                <AccordionContent className="pt-4 px-4 pb-6 space-y-6">
                                     {/* Quick Info */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                                         {vacancy.applicationDeadline && (
