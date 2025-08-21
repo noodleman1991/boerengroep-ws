@@ -80,49 +80,46 @@ query calendarQuery {
 }
 
 query vacancyQuery {
-  ...LayoutQueryFragment
-  vacancyConnection {
-    edges {
-      node {
-        id
-        opportunityType
-        jobCategory
-        title
-        organization
-        startDate
-        duration
-        applicationDeadline
-        description
-        responsibilities
-        requiredSkills
-        preferredQualities
-        location {
-          type
-          cityRegion
+    ...LayoutQueryFragment
+    vacancyConnection {
+        edges {
+            node {
+                id
+                opportunityType
+                title
+                location {
+                    type
+                    cityRegion
+                }
+                startDate
+                duration
+                applicationDeadline
+                description
+                responsibilities
+                requiredSkills
+                preferredQualities
+                languagesRequired
+                compensation {
+                    details
+                }
+                accessibilityNotes
+                howToApply
+                contactInfo {
+                    name
+                    email
+                    phone
+                }
+                supportingDocument
+                valuesStatement
+                openToNontraditional
+                _sys {
+                    filename
+                    basename
+                    breadcrumbs
+                    path
+                    relativePath
+                }
+            }
         }
-        compensation {
-          details
-        }
-        accessibilityNotes
-        howToApply
-        contactInfo {
-          name
-          email
-          phone
-        }
-        supportingDocument
-        valuesStatement
-        languagesRequired
-        languagesPreferred
-        openToNontraditional
-        _sys {
-          filename
-          basename
-          breadcrumbs
-          path
-          relativePath
-        }
-      }
     }
-  }
 }

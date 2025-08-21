@@ -41,6 +41,28 @@ const Vacancy: Collection = {
             required: true,
         },
         {
+            type: "object",
+            label: "Job Location",
+            name: "location",
+            fields: [
+                {
+                    type: "string",
+                    label: "Type",
+                    name: "type",
+                    options: [
+                        { label: "Remote", value: "remote" },
+                        { label: "In-person", value: "in-person" },
+                        { label: "Hybrid", value: "hybrid" },
+                    ],
+                },
+                {
+                    type: "string",
+                    label: "Where?",
+                    name: "cityRegion",
+                },
+            ],
+        },
+        {
             type: "datetime",
             label: "Start Date",
             name: "startDate",
@@ -52,7 +74,7 @@ const Vacancy: Collection = {
             type: "string",
             label: "Duration",
             name: "duration",
-            description: "e.g., 3 months, 1 year, ongoing",
+            description: "e.g., 3 months, 1 year",
         },
         {
             type: "datetime",
@@ -77,12 +99,18 @@ const Vacancy: Collection = {
         },
         {
             type: "string",
-            label: "Required Skills / Experience",
+            label: "Required Skills or Experience",
             name: "requiredSkills",
             list: true,
             ui: {
                 component: "tags",
             },
+        },
+        {
+            type: "rich-text",
+            label: "Preferred Qualities",
+            name: "preferredQualities",
+            description: "Bulleted list or short paragraph",
         },
         {
             type: "string",
@@ -92,37 +120,6 @@ const Vacancy: Collection = {
             ui: {
                 component: "tags",
             },
-        },
-        {
-            type: "string",
-            label: "Preferred Qualities",
-            name: "preferredQualities",
-            list: true,
-            ui: {
-                component: "tags",
-            },
-        },
-        {
-            type: "object",
-            label: "Location",
-            name: "location",
-            fields: [
-                {
-                    type: "string",
-                    label: "Type",
-                    name: "type",
-                    options: [
-                        { label: "Remote", value: "remote" },
-                        { label: "In-person", value: "in-person" },
-                        { label: "Hybrid", value: "hybrid" },
-                    ],
-                },
-                {
-                    type: "string",
-                    label: "Where?",
-                    name: "cityRegion",
-                },
-            ],
         },
         {
             type: "object",
@@ -178,7 +175,7 @@ const Vacancy: Collection = {
         },
         {
             type: "image",
-            label: "Supporting Document",
+            label: "Job Description",
             name: "supportingDocument",
             description: "Upload PDF or DOCX file (job description, flyer, etc.)",
             // @ts-ignore

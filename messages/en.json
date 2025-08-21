@@ -266,6 +266,7 @@
     "fields": {
       "deadline": "Deadline",
       "location": "Location",
+      "startDate": "Start Date",
       "duration": "Duration",
       "compensation": "Compensation",
       "description": "Description",
@@ -278,7 +279,8 @@
       "supportingDocument": "Supporting Document",
       "valuesStatement": "Values & Commitment",
       "howToApply": "How to Apply",
-      "contactInfo": "Contact Information"
+      "contactInfo": "Contact Information",
+      "openToNontraditional": "Open to Nontraditional Applicants"
     }
   }
 }

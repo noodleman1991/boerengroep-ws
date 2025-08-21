@@ -266,6 +266,7 @@
     "fields": {
       "deadline": "Deadline",
       "location": "Locatie",
+      "startDate": "Startdatum",
       "duration": "Duur",
       "compensation": "Vergoeding",
       "description": "Beschrijving",
@@ -278,7 +279,8 @@
       "supportingDocument": "Ondersteunend Document",
       "valuesStatement": "Waarden & Engagement",
       "howToApply": "Hoe solliciteren",
-      "contactInfo": "Contactinformatie"
+      "contactInfo": "Contactinformatie",
+      "openToNontraditional": "Open voor niet-traditionele kandidaten"
     }
   }
 }
