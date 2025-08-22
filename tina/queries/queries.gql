@@ -123,3 +123,175 @@ query vacancyQuery {
         }
     }
 }
+
+query newsletterQuery($relativePath: String!) {
+    ...LayoutQueryFragment
+    newsletter(relativePath: $relativePath) {
+        id
+        title
+        type
+        organization
+        publishDate
+        tags
+        externalLink
+        linkDescription
+        author {
+            ... on Speaker {
+                name
+                avatar
+                affiliation
+            }
+        }
+        featuredImage
+        excerpt
+        body {
+            __typename
+            ... on NewsletterBodyHero {
+                headline
+                tagline
+                background
+                actions {
+                    label
+                    type
+                    link
+                    icon {
+                        name
+                        color
+                        style
+                    }
+                }
+                image {
+                    src
+                    alt
+                    videoUrl
+                }
+            }
+            ... on NewsletterBodyContent {
+                background
+                body
+            }
+            ... on NewsletterBodyFeatures {
+                background
+                title
+                description
+                items {
+                    title
+                    text
+                    icon {
+                        name
+                        color
+                        style
+                    }
+                }
+            }
+            ... on NewsletterBodyTestimonial {
+                background
+                title
+                description
+                testimonials {
+                    quote
+                    author
+                    role
+                    avatar
+                }
+            }
+            ... on NewsletterBodyVideo {
+                background
+                color
+                url
+                autoPlay
+                loop
+            }
+            ... on NewsletterBodyCallout {
+                background
+                text
+                url
+            }
+            ... on NewsletterBodyStats {
+                background
+                title
+                description
+                stats {
+                    stat
+                    type
+                }
+            }
+            ... on NewsletterBodyCta {
+                background
+                title
+                description
+                actions {
+                    label
+                    type
+                    link
+                    icon {
+                        name
+                        color
+                        style
+                    }
+                }
+            }
+            ... on NewsletterBodyImageText {
+                background
+                image {
+                    src
+                    alt
+                }
+                content
+                layout
+                imageSize
+                verticalAlignment
+            }
+        }
+        featured
+        published
+        _sys {
+            filename
+            basename
+            breadcrumbs
+            path
+            relativePath
+        }
+    }
+}
+
+query newsletterConnection {
+    newsletterConnection {
+        edges {
+            node {
+                id
+                title
+                type
+                organization
+                publishDate
+                tags
+                externalLink
+                linkDescription
+                author {
+                    ... on Speaker {
+                        name
+                        avatar
+                        affiliation
+                    }
+                }
+                featuredImage
+                excerpt
+                featured
+                published
+                _sys {
+                    filename
+                    basename
+                    breadcrumbs
+                    path
+                    relativePath
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+        }
+    }
+}

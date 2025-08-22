@@ -9,7 +9,12 @@
     "start": "tinacms build && next start",
     "export": "npm run build && next export",
     "lint": "biome lint",
-    "dev:build": "next build"
+    "dev:build": "next build",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio",
+    "newsletter:seed": "tsx scripts/seed-newsletter.ts",
+    "newsletter:test": "tsx scripts/test-newsletter.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
@@ -29,6 +34,7 @@
   "dependencies": {
     "@headlessui/react": "^2.2.4",
     "@hookform/resolvers": "^5.2.1",
+    "@neondatabase/serverless": "^1.0.1",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -50,6 +56,8 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
+    "drizzle-kit": "^0.31.4",
+    "drizzle-orm": "^0.44.4",
     "framer-motion": "^12.23.12",
     "lodash": "^4.17.21",
     "lucide-react": "^0.484.0",
@@ -66,6 +74,7 @@
     "react-icons": "^5.5.0",
     "react-player": "^2.16.0",
     "react-use-measure": "^2.1.7",
+    "resend": "^6.0.1",
     "shiki": "^3.7.0",
     "sonner": "^2.0.7",
     "styled-jsx": "^5.1.7",
