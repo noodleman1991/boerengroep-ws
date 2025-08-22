@@ -24,7 +24,6 @@
       "freelance": "Freelance/Temporary",
       "volunteers": "Volunteers",
       "news": "News",
-      "positions": "Positions",
       "landscape": "Landscape",
       "newsletter": "Newsletter",
       "friends-news": "Friends News",
@@ -42,36 +41,81 @@
   "newsletter": {
     "title": "Newsletter",
     "description": "Stay updated with the latest news from Stichting Boerengroep and our partner organizations.",
+    "read_more": "Read more",
+    "visit_link": "Visit link",
+    "no_newsletters": "No newsletters found.",
+    "back_to_newsletter": "Back to Newsletter",
     "signup": {
-      "title": "Subscribe to Newsletter",
-      "email_placeholder": "Enter your email",
-      "consent_text": "I consent to receive newsletters from Stichting Boerengroep. You can unsubscribe at any time.",
-      "privacy_policy_link": "Read our Privacy Policy",
+      "title": "Subscribe to Our Newsletter",
+      "description": "Stay updated with our latest news, events, and sustainable agriculture initiatives.",
+      "email_label": "Email Address",
+      "email_placeholder": "Enter your email address",
+      "consent_newsletter": "I want to receive newsletters from Stichting Boerengroep",
+      "consent_processing": "I consent to the processing of my personal data according to the privacy policy",
+      "gdpr_notice": "Your privacy matters to us. We only use your data to send you our newsletter and comply with GDPR regulations.",
+      "privacy_policy": "Privacy Policy",
+      "export_data": "Export My Data",
+      "delete_data": "Delete My Data",
       "submit_button": "Subscribe",
-      "success_message": "Successfully subscribed to newsletter!",
-      "error_message": "Something went wrong. Please try again.",
-      "already_subscribed": "This email is already subscribed.",
-      "invalid_email": "Please enter a valid email address.",
-      "consent_required": "You must consent to receive newsletters."
+      "success_message": "Thank you for subscribing! Please check your email to verify your subscription.",
+      "error_message": "Something went wrong. Please try again."
     },
-    "verification": {
-      "title": "Email Verification",
-      "success": "Your email has been verified successfully!",
-      "error": "Invalid or expired verification token.",
-      "already_verified": "This email is already verified."
+    "verify": {
+      "title": "Verify Your Email",
+      "description": "Please verify your email address to complete your newsletter subscription.",
+      "no_token": "No verification token provided. Please check the link in your email.",
+      "verifying": "Verifying your email...",
+      "back_home": "Back to Home",
+      "error_message": "Failed to verify email. Please try again or contact support."
     },
     "unsubscribe": {
-      "title": "Unsubscribe",
-      "success": "You have been successfully unsubscribed.",
-      "error": "Unable to unsubscribe. Please try again.",
-      "confirm": "Are you sure you want to unsubscribe?",
-      "feedback_placeholder": "Tell us why you're unsubscribing (optional)"
+      "title": "Unsubscribe from Newsletter",
+      "description": "We're sorry to see you go. Please let us know why you're unsubscribing.",
+      "no_token": "No unsubscribe token provided. Please use the link from your email.",
+      "reason_label": "Reason for unsubscribing (optional)",
+      "reason_placeholder": "e.g., Too many emails, Not relevant, etc.",
+      "feedback_label": "Additional feedback (optional)",
+      "feedback_placeholder": "Help us improve by sharing your thoughts...",
+      "confirm_unsubscribe": "Confirm Unsubscribe",
+      "cancel": "Cancel",
+      "success_title": "You've Been Unsubscribed",
+      "success_message": "Thank you for being part of our community. You can always re-subscribe later if you change your mind.",
+      "back_home": "Back to Home",
+      "error_message": "Failed to unsubscribe. Please try again or contact support."
     },
-    "gdpr": {
-      "data_controller": "Stichting Boerengroep",
-      "purpose": "To send you our newsletter and updates",
-      "retention": "Until you unsubscribe or request deletion",
-      "rights": "You have the right to access, update, or delete your data"
+    "exportData": {
+      "title": "Export Your Data",
+      "description": "Request a copy of all personal data we have stored about you.",
+      "what_included": "What's included in your data export:",
+      "included_subscription": "Your subscription information and preferences",
+      "included_consent": "Consent history and timestamps",
+      "included_preferences": "Email preferences and settings",
+      "included_statistics": "Subscription statistics and activity",
+      "email_label": "Email Address",
+      "email_placeholder": "Enter your email address",
+      "request_export": "Request Data Export",
+      "gdpr_notice": "This data export is provided in compliance with GDPR Article 15 (Right of Access).",
+      "delivery_notice": "Your data export will be sent to your email address within 24 hours.",
+      "error_message": "Failed to request data export. Please try again or contact support."
+    },
+    "deleteData": {
+      "title": "Delete Your Data",
+      "description": "Permanently delete all your personal data from our systems.",
+      "warning_message": "⚠️ This action cannot be undone. All your data will be permanently deleted.",
+      "what_deleted": "What will be deleted:",
+      "deleted_subscription": "Your subscription and all related preferences",
+      "deleted_consent": "All consent records and history",
+      "deleted_preferences": "Email preferences and settings",
+      "deleted_communications": "Records of all communications sent to you",
+      "email_label": "Email Address",
+      "email_placeholder": "Enter your email address",
+      "reason_label": "Reason for deletion (optional)",
+      "reason_placeholder": "Help us understand why you're deleting your data...",
+      "confirmation_text": "I understand this action cannot be undone and want to permanently delete all my data",
+      "confirm_delete": "Permanently Delete My Data",
+      "success_title": "Your Data Has Been Deleted",
+      "gdpr_notice": "This data deletion is provided in compliance with GDPR Article 17 (Right to Erasure).",
+      "error_message": "Failed to delete data. Please try again or contact support."
     },
     "filters": {
       "all": "All",
@@ -80,12 +124,12 @@
       "friends": "Friend Organizations"
     },
     "types": {
+      "article": "Article",
       "content": "Article",
-      "link": "External Link"
-    },
-    "no_newsletters": "No newsletters found.",
-    "read_more": "Read more",
-    "visit_link": "Visit link"
+      "link": "External Link",
+      "event": "Event",
+      "update": "Update"
+    }
   },
   "calendar": {
     "title": "Event Calendar",
@@ -102,54 +146,12 @@
       "event": "event"
     },
     "weekdays": {
-      "short": [
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat"
-      ],
-      "long": [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-      ]
+      "short": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "long": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     },
     "months": {
-      "short": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ],
-      "long": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ]
+      "short": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "long": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     },
     "events": {
       "noEvents": "No events found for this month.",
@@ -328,80 +330,6 @@
       "howToApply": "How to Apply",
       "contactInfo": "Contact Information",
       "openToNontraditional": "Open to Nontraditional Applicants"
-    }
-  },
-  "newsletter": {
-    "signup": {
-      "title": "Subscribe to Our Newsletter",
-      "description": "Stay updated with our latest news, events, and sustainable agriculture initiatives.",
-      "email_label": "Email Address",
-      "email_placeholder": "Enter your email address",
-      "consent_newsletter": "I want to receive newsletters from Stichting Boerengroep",
-      "consent_processing": "I consent to the processing of my personal data according to the privacy policy",
-      "gdpr_notice": "Your privacy matters to us. We only use your data to send you our newsletter and comply with GDPR regulations.",
-      "privacy_policy": "Privacy Policy",
-      "export_data": "Export My Data",
-      "delete_data": "Delete My Data",
-      "submit_button": "Subscribe",
-      "success_message": "Thank you for subscribing! Please check your email to verify your subscription.",
-      "error_message": "Something went wrong. Please try again."
-    },
-    "verify": {
-      "title": "Verify Your Email",
-      "description": "Please verify your email address to complete your newsletter subscription.",
-      "no_token": "No verification token provided. Please check the link in your email.",
-      "verifying": "Verifying your email...",
-      "back_home": "Back to Home",
-      "error_message": "Failed to verify email. Please try again or contact support."
-    },
-    "unsubscribe": {
-      "title": "Unsubscribe from Newsletter",
-      "description": "We're sorry to see you go. Please let us know why you're unsubscribing.",
-      "no_token": "No unsubscribe token provided. Please use the link from your email.",
-      "reason_label": "Reason for unsubscribing (optional)",
-      "reason_placeholder": "e.g., Too many emails, Not relevant, etc.",
-      "feedback_label": "Additional feedback (optional)",
-      "feedback_placeholder": "Help us improve by sharing your thoughts...",
-      "confirm_unsubscribe": "Confirm Unsubscribe",
-      "cancel": "Cancel",
-      "success_title": "You've Been Unsubscribed",
-      "success_message": "Thank you for being part of our community. You can always re-subscribe later if you change your mind.",
-      "back_home": "Back to Home",
-      "error_message": "Failed to unsubscribe. Please try again or contact support."
-    },
-    "exportData": {
-      "title": "Export Your Data",
-      "description": "Request a copy of all personal data we have stored about you.",
-      "what_included": "What's included in your data export:",
-      "included_subscription": "Your subscription information and preferences",
-      "included_consent": "Consent history and timestamps",
-      "included_preferences": "Email preferences and settings",
-      "included_statistics": "Subscription statistics and activity",
-      "email_label": "Email Address",
-      "email_placeholder": "Enter your email address",
-      "request_export": "Request Data Export",
-      "gdpr_notice": "This data export is provided in compliance with GDPR Article 15 (Right of Access).",
-      "delivery_notice": "Your data export will be sent to your email address within 24 hours.",
-      "error_message": "Failed to request data export. Please try again or contact support."
-    },
-    "deleteData": {
-      "title": "Delete Your Data",
-      "description": "Permanently delete all your personal data from our systems.",
-      "warning_message": "⚠️ This action cannot be undone. All your data will be permanently deleted.",
-      "what_deleted": "What will be deleted:",
-      "deleted_subscription": "Your subscription and all related preferences",
-      "deleted_consent": "All consent records and history",
-      "deleted_preferences": "Email preferences and settings",
-      "deleted_communications": "Records of all communications sent to you",
-      "email_label": "Email Address",
-      "email_placeholder": "Enter your email address",
-      "reason_label": "Reason for deletion (optional)",
-      "reason_placeholder": "Help us understand why you're deleting your data...",
-      "confirmation_text": "I understand this action cannot be undone and want to permanently delete all my data",
-      "confirm_delete": "Permanently Delete My Data",
-      "success_title": "Your Data Has Been Deleted",
-      "gdpr_notice": "This data deletion is provided in compliance with GDPR Article 17 (Right to Erasure).",
-      "error_message": "Failed to delete data. Please try again or contact support."
     }
   }
 }

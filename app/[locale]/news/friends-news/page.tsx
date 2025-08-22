@@ -1,14 +1,14 @@
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { client } from '@/tina/__generated__/client';
-import { FriendNewsPage } from '@/components/friend-news-page';
+import { NewsletterList } from '@/components/newsletter-list';
 import Layout from '@/components/layout/layout';
 
-interface FriendNewsPageProps {
+interface FriendsNewsPageProps {
     params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: FriendNewsPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: FriendsNewsPageProps): Promise<Metadata> {
     const { locale } = await params;
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
@@ -32,18 +32,10 @@ async function getFriendNewsData() {
     }
 }
 
-export default async function FriendNewsRoute({ params }: FriendNewsPageProps) {
+export default async function FriendsNewsPage({ params }: FriendsNewsPageProps) {
     const { locale } = await params;
     const { newsletters } = await getFriendNewsData();
-
-    // Filter for friend organizations only
-    const friendNewsletters = {
-        ...newsletters,
-        edges: newsletters.edges?.filter(edge => {
-            const org = edge?.node?.organization;
-            return org && org !== 'Boerengroep' && org !== 'Inspiratietheater';
-        }) || []
-    };
+    const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     const mockLayoutData = {
         data: {
@@ -53,7 +45,13 @@ export default async function FriendNewsRoute({ params }: FriendNewsPageProps) {
 
     return (
         <Layout rawPageData={mockLayoutData}>
-            <FriendNewsPage newsletters={friendNewsletters} locale={locale} />
+            <NewsletterList
+                newsletters={newsletters}
+                locale={locale}
+                filter="friends"
+                title={t('filters.friends')}
+                description="News and updates from our partner organizations and friends in the sustainable agriculture community."
+            />
         </Layout>
     );
 }

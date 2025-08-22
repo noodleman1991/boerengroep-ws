@@ -99,10 +99,6 @@
         "label": "news",
         "submenu": [
           {
-            "href": "/news/positions",
-            "label": "positions"
-          },
-          {
             "href": "/news/landscape",
             "label": "landscape"
           },

@@ -66,7 +66,7 @@ export const routing = defineRouting({
             nl: '/activiteiten/soepkeuken'
         },
 
-        // Vacancies (simplified - no sub-routes since using sections)
+        // Vacancies
         '/vacancies': {
             en: '/vacancies',
             nl: '/vacatures'
@@ -76,10 +76,6 @@ export const routing = defineRouting({
         '/news': {
             en: '/news',
             nl: '/nieuws'
-        },
-        '/news/positions': {
-            en: '/news/positions',
-            nl: '/nieuws/standpunten'
         },
         '/news/landscape': {
             en: '/news/landscape',
@@ -92,6 +88,12 @@ export const routing = defineRouting({
         '/news/friends-news': {
             en: '/news/friends-news',
             nl: '/nieuws/vrienden-nieuws'
+        },
+
+        // Newsletter detail pages
+        '/newsletters': {
+            en: '/newsletters',
+            nl: '/nieuwsbrieven'
         },
 
         // Inspiration Theater
