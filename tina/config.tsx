@@ -1,5 +1,5 @@
 import { defineConfig } from "tinacms";
-import { baseConfig } from '../next.config.base.js';
+import baseConfig from "../next.config.base";
 
 import Post from "./collection/post";
 import Global from "./collection/global";
@@ -9,6 +9,7 @@ import Tag from "./collection/tag";
 import Event from "./collection/event";
 import Speaker from "./collection/speaker";
 import Vacancy from "./collection/vacancy";
+import Newsletter from "./collection/newsletter";
 
 const config = defineConfig({
     clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
@@ -35,7 +36,7 @@ const config = defineConfig({
         basePath: baseConfig.basePath?.replace(/^\//, '') || '',
     },
     schema: {
-        collections: [Page, Post, Author, Tag, Global, Event, Speaker, Vacancy],
+        collections: [Page, Post, Author, Tag, Global, Event, Speaker, Vacancy, Newsletter],
     },
 });
 
