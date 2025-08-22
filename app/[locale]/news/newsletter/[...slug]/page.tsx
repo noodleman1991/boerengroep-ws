@@ -9,10 +9,10 @@ export const revalidate = 300;
 export default async function NewsletterDetailPage({
     params,
 }: {
-    params: Promise<{ locale: string; urlSegments: string[] }>;
+    params: Promise<{ locale: string; slug: string[] }>;
 }) {
-    const { locale, urlSegments } = await params;
-    const filepath = urlSegments.join('/');
+    const { locale, slug } = await params;
+    const filepath = slug.join('/');
 
     let data;
     try {
@@ -31,9 +31,15 @@ export default async function NewsletterDetailPage({
         }
     }
 
+    // Verify this newsletter belongs to main organizations
+    const newsletter = data.data.newsletter;
+    if (newsletter.organization !== 'Boerengroep' && newsletter.organization !== 'Inspiratietheater') {
+        notFound();
+    }
+
     return (
         <Layout rawPageData={data}>
-            <NewsletterClientPage {...data} />
+            <NewsletterClientPage {...data} backPath="/news/newsletter" />
         </Layout>
     );
 }
@@ -59,22 +65,30 @@ export async function generateStaticParams() {
         allNewsletters.data.newsletterConnection.edges.push(...newsletters.data.newsletterConnection.edges);
     }
 
-    const params: { locale: string; urlSegments: string[] }[] = [];
+    const params: { locale: string; slug: string[] }[] = [];
 
     allNewsletters.data?.newsletterConnection.edges.forEach((edge) => {
-        const breadcrumbs = edge?.node?._sys.breadcrumbs || [];
+        const newsletter = edge?.node;
+        if (!newsletter?.organization) return;
+
+        // Only include main organizations
+        if (newsletter.organization !== 'Boerengroep' && newsletter.organization !== 'Inspiratietheater') {
+            return;
+        }
+
+        const breadcrumbs = newsletter._sys.breadcrumbs || [];
 
         if (breadcrumbs.length >= 1 && locales.includes(breadcrumbs[0])) {
             const locale = breadcrumbs[0];
-            const urlSegments = breadcrumbs.slice(1);
+            const slug = breadcrumbs.slice(1);
 
-            if (urlSegments.length >= 1) {
-                params.push({ locale, urlSegments });
+            if (slug.length >= 1) {
+                params.push({ locale, slug });
             }
         } else {
             if (breadcrumbs.length >= 1) {
                 locales.forEach(locale => {
-                    params.push({ locale, urlSegments: breadcrumbs });
+                    params.push({ locale, slug: breadcrumbs });
                 });
             }
         }

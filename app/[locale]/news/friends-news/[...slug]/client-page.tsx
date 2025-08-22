@@ -33,12 +33,14 @@ interface ClientNewsletterProps {
     relativePath: string;
   };
   query: string;
+  backPath: string;
 }
 
 export default function NewsletterClientPage(props: ClientNewsletterProps) {
   const { theme } = useLayout();
-  const { data } = useTina({ ...props });
-  const newsletter = data.newsletter;
+  const { data, backPath } = props;
+  const { data: tinaData } = useTina({ data: props.data, variables: props.variables, query: props.query });
+  const newsletter = tinaData.newsletter;
   const t = useTranslations('newsletter');
 
   const date = new Date(newsletter.publishDate!);
@@ -49,11 +51,6 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
 
   const titleColour = titleColorClasses[theme!.color! as keyof typeof titleColorClasses];
 
-  // Determine back link based on organization
-  const backLink = newsletter.organization === 'Boerengroep' || newsletter.organization === 'Inspiratietheater'
-    ? '/news/newsletter'
-    : '/news/friends-news';
-
   // If this is an external link, show a redirect message
   if (newsletter.type === 'link' && newsletter.externalLink) {
     return (
@@ -63,7 +60,7 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
             {/* Breadcrumb */}
             <div className="mb-8">
               <Button variant="ghost" asChild>
-                <Link href={backLink as any}>
+                <Link href={backPath as any}>
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   {t('back_to_newsletter')}
                 </Link>
@@ -124,7 +121,7 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
         {/* Breadcrumb */}
         <div className="mb-8">
           <Button variant="ghost" asChild>
-            <Link href={backLink as any}>
+            <Link href={backPath as any}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               {t('back_to_newsletter')}
             </Link>

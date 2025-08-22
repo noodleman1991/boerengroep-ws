@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ExternalLink, Calendar } from 'lucide-react';
+import Image from 'next/image';
 
 interface NewsletterNode {
     id: string;
@@ -18,6 +19,7 @@ interface NewsletterNode {
     linkDescription?: string | null;
     published?: boolean | null;
     featured?: boolean | null;
+    featuredImage?: string | null;
     excerpt?: any;
     _sys: {
         breadcrumbs: string[];
@@ -88,17 +90,35 @@ export const NewsletterList = ({ newsletters, locale, filter, title, description
                             if (!newsletter) return null;
 
                             const isExternal = newsletter.type === 'link';
+
+                            // Determine the correct path based on organization
+                            const isMainOrg = newsletter.organization === 'Boerengroep' || newsletter.organization === 'Inspiratietheater';
+                            const basePath = isMainOrg ? '/news/newsletter' : '/news/friends-news';
+
                             const href = isExternal
                                 ? newsletter.externalLink!
-                                : `/newsletters/${newsletter._sys.breadcrumbs.slice(1).join('/')}` as any;
+                                : `${basePath}/${newsletter._sys.breadcrumbs.slice(1).join('/')}` as any;
 
                             return (
-                                <Card key={newsletter.id} className="h-full hover:shadow-md transition-shadow">
-                                    <CardHeader>
+                                <Card key={newsletter.id} className="h-full hover:shadow-md transition-shadow flex flex-col overflow-hidden">
+                                    {/* Featured Image or Placeholder */}
+                                    <div className="relative w-full aspect-video overflow-hidden group bg-muted">
+                                        {newsletter.featuredImage ? (
+                                            <Image
+                                                src={newsletter.featuredImage}
+                                                alt={newsletter.title || 'Newsletter image'}
+                                                fill
+                                                className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            />
+                                        ) : null}
+                                    </div>
+
+                                    <CardHeader className="flex-shrink-0">
                                         <div className="flex items-center justify-between mb-3">
-                                            <Badge variant="secondary">
-                                                {newsletter.organization}
-                                            </Badge>
+                                            {/*<Badge variant="secondary">*/}
+                                            {/*    {newsletter.organization}*/}
+                                            {/*</Badge> //todo: friend org name*/}
                                             <Badge variant="outline">
                                                 {t(`types.${newsletter.type}`) || newsletter.type}
                                             </Badge>
@@ -123,8 +143,8 @@ export const NewsletterList = ({ newsletters, locale, filter, title, description
                                         </CardTitle>
                                     </CardHeader>
 
-                                    <CardContent>
-                                        <div className="space-y-4">
+                                    <CardContent className="flex flex-col flex-1">
+                                        <div className="flex-1 space-y-4">
                                             {newsletter.linkDescription && (
                                                 <p className="text-sm text-muted-foreground line-clamp-3">
                                                     {newsletter.linkDescription}
@@ -137,7 +157,9 @@ export const NewsletterList = ({ newsletters, locale, filter, title, description
                                                     {newsletter.publishDate && formatDate(newsletter.publishDate)}
                                                 </span>
                                             </div>
+                                        </div>
 
+                                        <div className="mt-4 pt-4">
                                             <Button asChild variant="outline" size="sm" className="w-full">
                                                 {isExternal ? (
                                                     <a href={href as string} target="_blank" rel="noopener noreferrer">
