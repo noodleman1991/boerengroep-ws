@@ -33,7 +33,7 @@ const config = defineConfig({
     build: {
         publicFolder: "public", // The public asset folder for your framework
         outputFolder: "admin", // within the public folder
-        basePath: baseConfig.basePath?.replace(/^\//, '') || '',
+        //basePath: baseConfig.basePath?.replace(/^\//, '') || '',
     },
     schema: {
         collections: [Page, Post, Author, Tag, Global, Event, Speaker, Vacancy, Newsletter],
