@@ -1,3 +1,4 @@
+import 'dotenv/config'; // Load environment variables
 import { db } from '../lib/db';
 import { emailTemplates, gdprMessages } from '../lib/db/schema';
 import { defaultTemplates } from '../lib/email/templates';
@@ -39,7 +40,7 @@ const seedGdprMessages = [
 
 async function seedDatabase() {
     console.log('🌱 Seeding newsletter system...');
-    
+
     try {
         // Insert email templates
         console.log('📧 Inserting email templates...');

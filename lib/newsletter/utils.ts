@@ -26,8 +26,9 @@ export function getClientIP(request: NextRequest): string | null {
     if (realIP) return realIP;
     if (forwarded) return forwarded.split(',')[0]?.trim() || null;
 
-    // Fallback to connection remote address
-    return request.ip || null;
+    // Note: NextRequest doesn't have an ip property in Edge Runtime
+    // For Node.js runtime, you'd need to access it differently
+    return null;
 }
 
 // Get user agent from request

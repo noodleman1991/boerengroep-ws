@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Icon } from "../../icon";
 import { useLayout } from "../layout-context";
+import { NewsletterSignup } from "../../newsletter-signup";
 
 export const Footer = () => {
     const { globalSettings } = useLayout();
@@ -34,7 +35,7 @@ export const Footer = () => {
                                             return (
                                                 <li key={linkIndex}>
                                                     <Link
-                                                        href={link.href as any} // TypeScript will validate this against our pathnames
+                                                        href={link.href as any}
                                                         className="text-muted-foreground hover:text-accent-foreground transition-colors duration-150 text-sm"
                                                     >
                                                         {t(`quick-links.${section.title}.links.${link.label}`)}
@@ -59,16 +60,11 @@ export const Footer = () => {
                             <p className="text-muted-foreground text-sm">
                                 {t('newsletter.description')}
                             </p>
-                            <div className="flex gap-2 max-w-sm">
-                                <input
-                                    type="email"
-                                    placeholder={t('newsletter.placeholder')}
-                                    className="flex-1 px-3 py-2 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                                />
-                                <button className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors duration-150">
-                                    {t('newsletter.subscribe')}
-                                </button>
-                            </div>
+                            <NewsletterSignup
+                                variant="compact"
+                                source="footer"
+                                className="max-w-sm"
+                            />
                         </div>
 
                         <div className="space-y-4">

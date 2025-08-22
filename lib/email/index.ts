@@ -24,7 +24,8 @@ export async function verifyEmailConfig(): Promise<boolean> {
     try {
         // Test Resend API key by attempting to get domains
         const domains = await resend.domains.list();
-        console.log('Resend configuration verified:', domains.data?.length || 0, 'domains found');
+        const domainCount = domains.data?.data?.length || domains.data?.length || 0;
+        console.log('Resend configuration verified:', domainCount, 'domains found');
         return true;
     } catch (error) {
         console.error('Resend configuration verification failed:', error);

@@ -39,6 +39,54 @@
       "vacancies": "Vacancies"
     }
   },
+  "newsletter": {
+    "title": "Newsletter",
+    "description": "Stay updated with the latest news from Stichting Boerengroep and our partner organizations.",
+    "signup": {
+      "title": "Subscribe to Newsletter",
+      "email_placeholder": "Enter your email",
+      "consent_text": "I consent to receive newsletters from Stichting Boerengroep. You can unsubscribe at any time.",
+      "privacy_policy_link": "Read our Privacy Policy",
+      "submit_button": "Subscribe",
+      "success_message": "Successfully subscribed to newsletter!",
+      "error_message": "Something went wrong. Please try again.",
+      "already_subscribed": "This email is already subscribed.",
+      "invalid_email": "Please enter a valid email address.",
+      "consent_required": "You must consent to receive newsletters."
+    },
+    "verification": {
+      "title": "Email Verification",
+      "success": "Your email has been verified successfully!",
+      "error": "Invalid or expired verification token.",
+      "already_verified": "This email is already verified."
+    },
+    "unsubscribe": {
+      "title": "Unsubscribe",
+      "success": "You have been successfully unsubscribed.",
+      "error": "Unable to unsubscribe. Please try again.",
+      "confirm": "Are you sure you want to unsubscribe?",
+      "feedback_placeholder": "Tell us why you're unsubscribing (optional)"
+    },
+    "gdpr": {
+      "data_controller": "Stichting Boerengroep",
+      "purpose": "To send you our newsletter and updates",
+      "retention": "Until you unsubscribe or request deletion",
+      "rights": "You have the right to access, update, or delete your data"
+    },
+    "filters": {
+      "all": "All",
+      "boerengroep": "Boerengroep",
+      "inspiratietheater": "Inspiratietheater",
+      "friends": "Friend Organizations"
+    },
+    "types": {
+      "content": "Article",
+      "link": "External Link"
+    },
+    "no_newsletters": "No newsletters found.",
+    "read_more": "Read more",
+    "visit_link": "Visit link"
+  },
   "calendar": {
     "title": "Event Calendar",
     "description": "View all upcoming events, workshops, meetings, and activities.",

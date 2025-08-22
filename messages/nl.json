@@ -39,6 +39,54 @@
       "vacancies": "Vacatures"
     }
   },
+  "newsletter": {
+    "title": "Nieuwsbrief",
+    "description": "Blijf op de hoogte van het laatste nieuws van Stichting Boerengroep en onze partnerorganisaties.",
+    "signup": {
+      "title": "Inschrijven voor Nieuwsbrief",
+      "email_placeholder": "Voer je e-mailadres in",
+      "consent_text": "Ik ga akkoord met het ontvangen van nieuwsbrieven van Stichting Boerengroep. Je kunt je op elk moment uitschrijven.",
+      "privacy_policy_link": "Lees ons Privacybeleid",
+      "submit_button": "Inschrijven",
+      "success_message": "Succesvol ingeschreven voor de nieuwsbrief!",
+      "error_message": "Er is iets misgegaan. Probeer het opnieuw.",
+      "already_subscribed": "Dit e-mailadres is al ingeschreven.",
+      "invalid_email": "Voer een geldig e-mailadres in.",
+      "consent_required": "Je moet toestemming geven om nieuwsbrieven te ontvangen."
+    },
+    "verification": {
+      "title": "E-mail Verificatie",
+      "success": "Je e-mailadres is succesvol geverifieerd!",
+      "error": "Ongeldige of verlopen verificatietoken.",
+      "already_verified": "Dit e-mailadres is al geverifieerd."
+    },
+    "unsubscribe": {
+      "title": "Uitschrijven",
+      "success": "Je bent succesvol uitgeschreven.",
+      "error": "Kan niet uitschrijven. Probeer het opnieuw.",
+      "confirm": "Weet je zeker dat je je wilt uitschrijven?",
+      "feedback_placeholder": "Vertel ons waarom je je uitschrijft (optioneel)"
+    },
+    "gdpr": {
+      "data_controller": "Stichting Boerengroep",
+      "purpose": "Om je onze nieuwsbrief en updates te sturen",
+      "retention": "Totdat je je uitschrijft of verwijdering aanvraagt",
+      "rights": "Je hebt het recht om je gegevens in te zien, bij te werken of te verwijderen"
+    },
+    "filters": {
+      "all": "Alle",
+      "boerengroep": "Boerengroep",
+      "inspiratietheater": "Inspiratietheater",
+      "friends": "Vriendorganisaties"
+    },
+    "types": {
+      "content": "Artikel",
+      "link": "Externe Link"
+    },
+    "no_newsletters": "Geen nieuwsbrieven gevonden.",
+    "read_more": "Lees meer",
+    "visit_link": "Bezoek link"
+  },
   "calendar": {
     "title": "Evenementenagenda",
     "description": "Bekijk alle komende evenementen, workshops, vergaderingen en activiteiten.",
