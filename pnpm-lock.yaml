@@ -83,6 +83,9 @@ importers:
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
+      dotenv:
+        specifier: ^17.2.1
+        version: 17.2.1
       drizzle-orm:
         specifier: ^0.44.4
         version: 0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.11.6)(better-sqlite3@11.10.0)

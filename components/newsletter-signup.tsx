@@ -4,17 +4,19 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations, useLocale } from 'next-intl';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle, AlertCircle, Shield, Eye, Trash2 } from 'lucide-react';
 
 const newsletterSchema = z.object({
     email: z.string().email('Invalid email address'),
     consent: z.boolean().refine(val => val === true, 'You must consent to receive newsletters'),
+    dataProcessing: z.boolean().refine(val => val === true, 'You must agree to data processing'),
 });
 
 type NewsletterFormData = z.infer<typeof newsletterSchema>;
@@ -42,6 +44,7 @@ export function NewsletterSignup({
         defaultValues: {
             email: '',
             consent: false,
+            dataProcessing: false,
         },
     });
 
@@ -50,7 +53,7 @@ export function NewsletterSignup({
         setErrorMessage('');
 
         try {
-            const response = await fetch(`/${locale}/api/newsletter/subscribe`, {
+            const response = await fetch(`/api/newsletter/subscribe`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,7 +61,7 @@ export function NewsletterSignup({
                 body: JSON.stringify({
                     email: data.email,
                     language: locale,
-                    consent: data.consent,
+                    consent: data.consent && data.dataProcessing,
                     source,
                 }),
             });
@@ -78,6 +81,32 @@ export function NewsletterSignup({
         }
     };
 
+    const renderGdprLinks = () => (
+        <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+            <Link
+                href={`/${locale}/privacy-policy`}
+                className="flex items-center gap-1 hover:text-primary"
+            >
+                <Shield className="h-3 w-3" />
+                {t('privacy_policy')}
+            </Link>
+            <Link
+                href={`/${locale}/newsletter/export-data`}
+                className="flex items-center gap-1 hover:text-primary"
+            >
+                <Eye className="h-3 w-3" />
+                {t('export_data')}
+            </Link>
+            <Link
+                href={`/${locale}/newsletter/delete-data`}
+                className="flex items-center gap-1 hover:text-primary"
+            >
+                <Trash2 className="h-3 w-3" />
+                {t('delete_data')}
+            </Link>
+        </div>
+    );
+
     const renderForm = () => (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -87,7 +116,7 @@ export function NewsletterSignup({
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel className={variant === 'compact' ? 'sr-only' : undefined}>
-                                Email Address
+                                {t('email_label')}
                             </FormLabel>
                             <FormControl>
                                 <Input
@@ -116,13 +145,42 @@ export function NewsletterSignup({
                             </FormControl>
                             <div className="space-y-1 leading-none">
                                 <FormLabel className="text-sm font-normal cursor-pointer">
-                                    {t('consent_text')}
+                                    {t('consent_newsletter')}
                                 </FormLabel>
                                 <FormMessage />
                             </div>
                         </FormItem>
                     )}
                 />
+
+                <FormField
+                    control={form.control}
+                    name="dataProcessing"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                            <FormControl>
+                                <Checkbox
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                    disabled={submissionState === 'loading'}
+                                />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                                <FormLabel className="text-sm font-normal cursor-pointer">
+                                    {t('consent_processing')}
+                                </FormLabel>
+                                <FormMessage />
+                            </div>
+                        </FormItem>
+                    )}
+                />
+
+                {variant !== 'compact' && (
+                    <div className="text-xs text-muted-foreground space-y-2">
+                        <p>{t('gdpr_notice')}</p>
+                        {renderGdprLinks()}
+                    </div>
+                )}
 
                 <Button
                     type="submit"
@@ -134,6 +192,8 @@ export function NewsletterSignup({
                     )}
                     {t('submit_button')}
                 </Button>
+
+                {variant === 'compact' && renderGdprLinks()}
             </form>
         </Form>
     );
@@ -178,6 +238,7 @@ export function NewsletterSignup({
             <div className={`bg-muted/50 rounded-lg p-6 ${className}`}>
                 <div className="mb-4">
                     <h3 className="text-lg font-semibold">{t('title')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('description')}</p>
                 </div>
                 {renderContent()}
             </div>
@@ -187,9 +248,12 @@ export function NewsletterSignup({
     return (
         <Card className={className}>
             <CardHeader>
-                <CardTitle>{t('title')}</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-primary" />
+                    {t('title')}
+                </CardTitle>
                 <CardDescription>
-                    {t('consent_text')}
+                    {t('description')}
                 </CardDescription>
             </CardHeader>
             <CardContent>

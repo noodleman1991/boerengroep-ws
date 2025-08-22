@@ -41,3 +41,8 @@ const config = defineConfig({
 });
 
 export default config;
+
+// Add Privacy import and include in collections
+// You need to manually add this to your tina/config.tsx:
+// import Privacy from "./collection/privacy";
+// And add Privacy to the collections array

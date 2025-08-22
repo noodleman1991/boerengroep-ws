@@ -329,5 +329,79 @@
       "contactInfo": "Contactinformatie",
       "openToNontraditional": "Open voor niet-traditionele kandidaten"
     }
+  },
+  "newsletter": {
+    "signup": {
+      "title": "Inschrijven voor Nieuwsbrief",
+      "description": "Blijf op de hoogte van ons laatste nieuws, evenementen en duurzame landbouwinitiatieven.",
+      "email_label": "E-mailadres",
+      "email_placeholder": "Voer uw e-mailadres in",
+      "consent_newsletter": "Ik wil nieuwsbrieven ontvangen van Stichting Boerengroep",
+      "consent_processing": "Ik ga akkoord met de verwerking van mijn persoonsgegevens volgens het privacybeleid",
+      "gdpr_notice": "Uw privacy is belangrijk voor ons. We gebruiken uw gegevens alleen om u onze nieuwsbrief te sturen en voldoen aan AVG-regelgeving.",
+      "privacy_policy": "Privacybeleid",
+      "export_data": "Mijn Gegevens Exporteren",
+      "delete_data": "Mijn Gegevens Verwijderen",
+      "submit_button": "Inschrijven",
+      "success_message": "Bedankt voor uw inschrijving! Controleer uw e-mail om uw inschrijving te verifiëren.",
+      "error_message": "Er is iets misgegaan. Probeer het opnieuw."
+    },
+    "verify": {
+      "title": "Verifieer Uw E-mail",
+      "description": "Verifieer uw e-mailadres om uw nieuwsbriefinschrijving te voltooien.",
+      "no_token": "Geen verificatietoken opgegeven. Controleer de link in uw e-mail.",
+      "verifying": "Uw e-mail wordt geverifieerd...",
+      "back_home": "Terug naar Home",
+      "error_message": "Verificatie van e-mail mislukt. Probeer opnieuw of neem contact op met ondersteuning."
+    },
+    "unsubscribe": {
+      "title": "Uitschrijven van Nieuwsbrief",
+      "description": "We vinden het jammer dat u weggaat. Laat ons weten waarom u zich uitschrijft.",
+      "no_token": "Geen uitschrijftoken opgegeven. Gebruik de link uit uw e-mail.",
+      "reason_label": "Reden voor uitschrijving (optioneel)",
+      "reason_placeholder": "bijv. Te veel e-mails, Niet relevant, etc.",
+      "feedback_label": "Aanvullende feedback (optioneel)",
+      "feedback_placeholder": "Help ons verbeteren door uw gedachten te delen...",
+      "confirm_unsubscribe": "Uitschrijving Bevestigen",
+      "cancel": "Annuleren",
+      "success_title": "U Bent Uitgeschreven",
+      "success_message": "Bedankt dat u deel uitmaakte van onze gemeenschap. U kunt zich altijd later opnieuw inschrijven als u van gedachten verandert.",
+      "back_home": "Terug naar Home",
+      "error_message": "Uitschrijven mislukt. Probeer opnieuw of neem contact op met ondersteuning."
+    },
+    "exportData": {
+      "title": "Uw Gegevens Exporteren",
+      "description": "Vraag een kopie aan van alle persoonsgegevens die wij over u hebben opgeslagen.",
+      "what_included": "Wat is inbegrepen in uw gegevensexport:",
+      "included_subscription": "Uw inschrijvingsinformatie en voorkeuren",
+      "included_consent": "Toestemmingsgeschiedenis en tijdstempels",
+      "included_preferences": "E-mailvoorkeuren en instellingen",
+      "included_statistics": "Inschrijvingsstatistieken en activiteit",
+      "email_label": "E-mailadres",
+      "email_placeholder": "Voer uw e-mailadres in",
+      "request_export": "Gegevensexport Aanvragen",
+      "gdpr_notice": "Deze gegevensexport wordt verstrekt in overeenstemming met AVG Artikel 15 (Recht op Toegang).",
+      "delivery_notice": "Uw gegevensexport wordt binnen 24 uur naar uw e-mailadres verzonden.",
+      "error_message": "Aanvragen van gegevensexport mislukt. Probeer opnieuw of neem contact op met ondersteuning."
+    },
+    "deleteData": {
+      "title": "Uw Gegevens Verwijderen",
+      "description": "Verwijder permanent al uw persoonsgegevens uit onze systemen.",
+      "warning_message": "⚠️ Deze actie kan niet ongedaan worden gemaakt. Al uw gegevens worden permanent verwijderd.",
+      "what_deleted": "Wat wordt verwijderd:",
+      "deleted_subscription": "Uw inschrijving en alle gerelateerde voorkeuren",
+      "deleted_consent": "Alle toestemmingsgegevens en geschiedenis",
+      "deleted_preferences": "E-mailvoorkeuren en instellingen",
+      "deleted_communications": "Gegevens van alle communicatie die naar u is verzonden",
+      "email_label": "E-mailadres",
+      "email_placeholder": "Voer uw e-mailadres in",
+      "reason_label": "Reden voor verwijdering (optioneel)",
+      "reason_placeholder": "Help ons begrijpen waarom u uw gegevens verwijdert...",
+      "confirmation_text": "Ik begrijp dat deze actie niet ongedaan kan worden gemaakt en wil al mijn gegevens permanent verwijderen",
+      "confirm_delete": "Mijn Gegevens Permanent Verwijderen",
+      "success_title": "Uw Gegevens Zijn Verwijderd",
+      "gdpr_notice": "Deze gegevensverwijdering wordt verstrekt in overeenstemming met AVG Artikel 17 (Recht op Vergetelheid).",
+      "error_message": "Verwijderen van gegevens mislukt. Probeer opnieuw of neem contact op met ondersteuning."
+    }
   }
 }
