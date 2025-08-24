@@ -7,11 +7,9 @@ const config: Config = {
         './app/**/*.{js,ts,jsx,tsx,mdx}',
         './src/**/*.{js,ts,jsx,tsx,mdx}',
     ],
-    darkMode: 'class',
     theme: {
         extend: {
             colors: {
-                // System colors
                 border: 'hsl(var(--border))',
                 input: 'hsl(var(--input))',
                 ring: 'hsl(var(--ring))',
@@ -45,30 +43,15 @@ const config: Config = {
                     DEFAULT: 'hsl(var(--card))',
                     foreground: 'hsl(var(--card-foreground))',
                 },
-                // Boerengroep Brand Colors
-                'brand': {
-                    'tan': 'var(--color-brand-tan)',
-                    'light-yellow': 'var(--color-brand-light-yellow)',
-                    'green': 'var(--color-brand-green)',
-                    'orange': 'var(--color-brand-orange)',
-                    'lime': 'var(--color-brand-lime)',
-                    'blue': 'var(--color-brand-blue)',
-                    'light-green': 'var(--color-brand-light-green)',
-                    'pale-yellow': 'var(--color-brand-pale-yellow)',
-                    'primary-blue': 'var(--color-brand-primary-blue)',
-                }
-            },
-            fontFamily: {
-                heading: ['var(--font-enriqueta)', 'serif'],
-                subtitle: ['var(--font-public-sans)', 'sans-serif'],
-                body: ['var(--font-roboto-flex)', 'sans-serif'],
-                sans: ['var(--font-public-sans)', 'sans-serif'],
-                serif: ['var(--font-enriqueta)', 'serif'],
             },
             borderRadius: {
                 lg: 'var(--radius)',
                 md: 'calc(var(--radius) - 2px)',
                 sm: 'calc(var(--radius) - 4px)',
+            },
+            fontFamily: {
+                sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+                mono: ['var(--font-mono)', 'Consolas', 'monospace'],
             },
         },
     },
