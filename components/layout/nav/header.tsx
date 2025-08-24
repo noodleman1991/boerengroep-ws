@@ -2,14 +2,14 @@
 
 import React, { useState } from "react";
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
-import { HeaderLogo } from '@/components/brand/logo';
+import { Link } from '@/i18n/navigation'; // Use the localized Link component
+import { Icon } from "../../icon";
 import { useLayout } from "../layout-context";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export const Header = () => {
-    const { globalSettings } = useLayout();
+    const { globalSettings, theme } = useLayout();
     const header = globalSettings!.header!;
     const [menuState, setMenuState] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -28,8 +28,7 @@ export const Header = () => {
         <header>
             <nav
                 data-state={menuState && 'active'}
-                className="bg-background/95 backdrop-blur-md fixed z-20 w-full border-b border-brand-tan/20 shadow-sm"
-            >
+                className="bg-background/50 fixed z-20 w-full border-b backdrop-blur-3xl">
                 <div className="mx-auto max-w-6xl px-6 transition-all duration-300">
                     <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
                         <div className="flex w-full items-center justify-between gap-12">
@@ -37,29 +36,26 @@ export const Header = () => {
                                 href="/"
                                 onClick={closeAllMenus}
                                 aria-label={t('home')}
-                                className="flex items-center transition-all duration-200 hover:opacity-80 focus:outline-2 focus:outline-brand-green focus:outline-offset-2 rounded-sm"
-                            >
-                                <HeaderLogo
-                                    globalSettings={globalSettings}
-                                    className="transition-transform duration-200 hover:scale-105"
+                                className="flex items-center space-x-2 transition-opacity hover:opacity-80">
+                                <Icon
+                                    parentColor={header.color || 'default'}
+                                    data={{
+                                        name: header.icon?.name || 'BiLeaf',
+                                        color: header.icon?.color || 'green',
+                                        style: header.icon?.style || 'float',
+                                    }}
                                 />
+                                <span className="font-semibold text-foreground">
+                  {header.name || 'Stichting Boerengroep'}
+                </span>
                             </Link>
 
                             <button
                                 onClick={() => setMenuState(!menuState)}
                                 aria-label={menuState ? t('close-menu') : t('open-menu')}
-                                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden focus:outline-2 focus:outline-brand-green focus:outline-offset-2 rounded-md"
-                            >
-                                <Menu
-                                    className={`m-auto size-6 duration-200 ${
-                                        menuState ? 'rotate-180 scale-0 opacity-0' : ''
-                                    }`}
-                                />
-                                <X
-                                    className={`absolute inset-0 m-auto size-6 duration-200 ${
-                                        menuState ? 'rotate-0 scale-100 opacity-100' : '-rotate-180 scale-0 opacity-0'
-                                    }`}
-                                />
+                                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
+                                <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
+                                <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
                             </button>
 
                             {/* Desktop Navigation */}
@@ -73,7 +69,7 @@ export const Header = () => {
                                                 {item.submenu && item.submenu.length > 0 ? (
                                                     <div className="relative">
                                                         <button
-                                                            className="text-muted-foreground hover:text-brand-green flex items-center gap-1 duration-200 font-subtitle font-medium focus:outline-2 focus:outline-brand-green focus:outline-offset-2 rounded-sm px-2 py-1"
+                                                            className="text-muted-foreground hover:text-accent-foreground flex items-center gap-1 duration-150"
                                                             onMouseEnter={() => setActiveDropdown(item.label!)}
                                                             onMouseLeave={() => setActiveDropdown(null)}
                                                         >
@@ -88,7 +84,7 @@ export const Header = () => {
                                                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                                                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                                                     transition={{ duration: 0.15 }}
-                                                                    className="absolute top-full left-0 mt-2 w-64 bg-background border border-brand-tan/20 rounded-lg shadow-lg overflow-hidden z-50 backdrop-blur-sm"
+                                                                    className="absolute top-full left-0 mt-1 w-56 bg-background border border-border rounded-lg shadow-lg overflow-hidden z-50"
                                                                     onMouseEnter={() => setActiveDropdown(item.label!)}
                                                                     onMouseLeave={() => setActiveDropdown(null)}
                                                                 >
@@ -98,8 +94,8 @@ export const Header = () => {
                                                                         return (
                                                                             <Link
                                                                                 key={subIndex}
-                                                                                href={subItem.href as any}
-                                                                                className="block px-4 py-3 text-sm text-muted-foreground hover:text-brand-green hover:bg-brand-pale-yellow/30 transition-all duration-200 font-body focus:outline-2 focus:outline-brand-green"
+                                                                                href={subItem.href as any} // TypeScript will validate this against our pathnames
+                                                                                className="block px-4 py-3 text-sm text-muted-foreground hover:text-accent-foreground hover:bg-accent/50 transition-colors duration-150"
                                                                                 onClick={closeAllMenus}
                                                                             >
                                                                                 {t(`items.${subItem.label}`)}
@@ -112,8 +108,8 @@ export const Header = () => {
                                                     </div>
                                                 ) : (
                                                     <Link
-                                                        href={item.href as any}
-                                                        className="text-muted-foreground hover:text-brand-green block duration-200 font-subtitle font-medium focus:outline-2 focus:outline-brand-green focus:outline-offset-2 rounded-sm px-2 py-1"
+                                                        href={item.href as any} // TypeScript will validate this against our pathnames
+                                                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
                                                         onClick={closeAllMenus}
                                                     >
                                                         <span>{t(`items.${item.label}`)}</span>
@@ -134,7 +130,7 @@ export const Header = () => {
                                     animate={{ opacity: 1, height: "auto" }}
                                     exit={{ opacity: 0, height: 0 }}
                                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                                    className="bg-background/95 backdrop-blur-md mb-6 w-full flex-wrap items-center justify-end space-y-8 rounded-xl border border-brand-tan/20 p-6 shadow-lg lg:hidden"
+                                    className="bg-background mb-6 w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:hidden dark:shadow-none"
                                 >
                                     <div className="w-full">
                                         <ul className="space-y-6 text-base">
@@ -147,7 +143,7 @@ export const Header = () => {
                                                             <div>
                                                                 <button
                                                                     onClick={() => toggleDropdown(item.label!)}
-                                                                    className="text-muted-foreground hover:text-brand-green flex w-full items-center justify-between duration-200 font-subtitle font-medium focus:outline-2 focus:outline-brand-green focus:outline-offset-2 rounded-sm p-2"
+                                                                    className="text-muted-foreground hover:text-accent-foreground flex w-full items-center justify-between duration-150"
                                                                 >
                                                                     <span>{t(`items.${item.label}`)}</span>
                                                                     {activeDropdown === item.label ? (
@@ -164,7 +160,7 @@ export const Header = () => {
                                                                             animate={{ height: "auto", opacity: 1 }}
                                                                             exit={{ height: 0, opacity: 0 }}
                                                                             transition={{ duration: 0.2 }}
-                                                                            className="mt-3 ml-4 space-y-3 overflow-hidden border-l border-brand-tan/30 pl-4"
+                                                                            className="mt-3 ml-4 space-y-3 overflow-hidden border-l border-border pl-4"
                                                                         >
                                                                             {item.submenu.map((subItem, subIndex) => {
                                                                                 if (!subItem || !subItem.href || !subItem.label) return null;
@@ -173,7 +169,7 @@ export const Header = () => {
                                                                                     <Link
                                                                                         key={subIndex}
                                                                                         href={subItem.href as any}
-                                                                                        className="text-muted-foreground hover:text-brand-green block text-sm duration-200 font-body focus:outline-2 focus:outline-brand-green focus:outline-offset-2 rounded-sm p-1"
+                                                                                        className="text-muted-foreground hover:text-accent-foreground block text-sm duration-150"
                                                                                         onClick={closeAllMenus}
                                                                                     >
                                                                                         {t(`items.${subItem.label}`)}
@@ -187,7 +183,7 @@ export const Header = () => {
                                                         ) : (
                                                             <Link
                                                                 href={item.href as any}
-                                                                className="text-muted-foreground hover:text-brand-green block duration-200 font-subtitle font-medium focus:outline-2 focus:outline-brand-green focus:outline-offset-2 rounded-sm p-2"
+                                                                className="text-muted-foreground hover:text-accent-foreground block duration-150"
                                                                 onClick={closeAllMenus}
                                                             >
                                                                 <span>{t(`items.${item.label}`)}</span>

@@ -4,7 +4,6 @@ import React from "react";
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Icon } from "../../icon";
-import { FooterLogo } from "../../brand/logo";
 import { useLayout } from "../layout-context";
 import { NewsletterSignup } from "../../newsletter-signup";
 
@@ -96,7 +95,7 @@ export const Footer = () => {
                 <div className="flex flex-wrap items-center gap-6 border-t border-border py-6 flex-col md:flex-row md:justify-between">
 
                     <div className="order-last flex justify-center md:order-first md:justify-start">
-                        <Link href="/" aria-label={tNav("home")} className="flex items-center gap-2 hover:opacity-80 transition-opacity duration-150">
+                        <Link href="/" aria-label={tNav('home')} className="flex items-center gap-2 hover:opacity-80 transition-opacity duration-150">
                             <Icon
                                 parentColor={header?.color || 'default'}
                                 data={header?.icon || { name: 'BiLeaf', color: 'green', style: 'float' }}
