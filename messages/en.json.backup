@@ -146,54 +146,12 @@
       "event": "event"
     },
     "weekdays": {
-      "short": [
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat"
-      ],
-      "long": [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-      ]
+      "short": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "long": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     },
     "months": {
-      "short": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ],
-      "long": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ]
+      "short": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "long": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     },
     "events": {
       "noEvents": "No events found for this month.",
@@ -372,39 +330,6 @@
       "howToApply": "How to Apply",
       "contactInfo": "Contact Information",
       "openToNontraditional": "Open to Nontraditional Applicants"
-    }
-  },
-  "podcast": {
-    "title": "Latest Episodes",
-    "description": "Listen to our podcast episodes covering sustainable agriculture, community initiatives, and inspiring stories.",
-    "playEpisode": "Play Episode",
-    "loadMore": "Load More Episodes",
-    "episodeCount": "{count} of {total} episodes",
-    "publishedOn": "Published {date}",
-    "duration": "Duration",
-    "explicit": "Explicit",
-    "openInSpotify": "Open in Spotify",
-    "openInApple": "Open in Apple Podcasts",
-    "selectEpisode": "Select an episode to start playing",
-    "loading": "Loading...",
-    "hostedBy": "Hosted by",
-    "visitWebsite": "Visit Website",
-    "rssFeed": "RSS Feed",
-    "onSpotify": "On Spotify",
-    "onApple": "On Apple Podcasts",
-    "player": {
-      "play": "Play",
-      "pause": "Pause",
-      "rewind": "Rewind",
-      "forward": "Forward",
-      "previous": "Previous",
-      "next": "Next",
-      "mute": "Mute",
-      "unmute": "Unmute",
-      "volume": "Volume",
-      "currentTime": "Current time",
-      "duration": "Duration",
-      "progressBar": "Audio progress"
     }
   }
 }

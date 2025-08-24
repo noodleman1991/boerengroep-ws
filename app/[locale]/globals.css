@@ -3,3 +3,146 @@
 /*@tailwind base;*/
 /*@tailwind components;*/
 /*@tailwind utilities;*/
+
+/* React H5 Audio Player Custom Styles */
+.rhap_container {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.rhap_main {
+  flex-direction: column !important;
+  gap: 0.5rem !important;
+}
+
+.rhap_controls-section {
+  margin: 0 !important;
+}
+
+.rhap_additional-controls {
+  margin: 0 !important;
+}
+
+.rhap_progress-section {
+  margin: 0.5rem 0 !important;
+  flex: 1 !important;
+}
+
+.rhap_volume-controls {
+  margin: 0 !important;
+}
+
+/* Button styling to match the app theme */
+.rhap_button-clear {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+  transition: all 0.2s ease !important;
+}
+
+.rhap_button-clear:hover {
+  background-color: hsl(var(--accent)) !important;
+  color: hsl(var(--accent-foreground)) !important;
+}
+
+.rhap_button-clear:focus {
+  outline: 2px solid hsl(var(--ring)) !important;
+  outline-offset: 2px !important;
+}
+
+/* Play/pause button styling */
+.rhap_play-pause-button {
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: none !important;
+  width: 3rem !important;
+  height: 3rem !important;
+}
+
+.rhap_play-pause-button:hover {
+  background-color: hsl(var(--primary)) !important;
+  opacity: 0.9 !important;
+}
+
+/* Progress bar styling */
+.rhap_progress-bar {
+  background-color: hsl(var(--muted)) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+  height: 0.375rem !important;
+}
+
+.rhap_progress-filled {
+  background-color: hsl(var(--primary)) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+}
+
+.rhap_progress-indicator {
+  background-color: hsl(var(--primary)) !important;
+  border: 2px solid hsl(var(--background)) !important;
+  width: 1rem !important;
+  height: 1rem !important;
+  top: -0.3125rem !important;
+}
+
+/* Volume bar styling */
+.rhap_volume-bar {
+  background-color: hsl(var(--muted)) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+}
+
+.rhap_volume-filled {
+  background-color: hsl(var(--primary)) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+}
+
+.rhap_volume-indicator {
+  background-color: hsl(var(--primary)) !important;
+  border: 2px solid hsl(var(--background)) !important;
+  width: 0.75rem !important;
+  height: 0.75rem !important;
+}
+
+/* Time display styling */
+.rhap_time {
+  color: hsl(var(--muted-foreground)) !important;
+  font-size: 0.875rem !important;
+  font-family: var(--font-sans) !important;
+}
+
+/* Download progress styling */
+.rhap_download-progress {
+  background-color: hsl(var(--muted)) !important;
+  border-radius: calc(var(--radius) - 2px) !important;
+  opacity: 0.6 !important;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .rhap_button-clear {
+    background-color: hsl(var(--background)) !important;
+    border-color: hsl(var(--border)) !important;
+  }
+
+  .rhap_button-clear:hover {
+    background-color: hsl(var(--accent)) !important;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .rhap_controls-section {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .rhap_main-controls {
+    justify-content: center !important;
+  }
+
+  .rhap_volume-controls {
+    justify-content: center !important;
+  }
+}

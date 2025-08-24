@@ -146,54 +146,12 @@
       "event": "evenement"
     },
     "weekdays": {
-      "short": [
-        "Zo",
-        "Ma",
-        "Di",
-        "Wo",
-        "Do",
-        "Vr",
-        "Za"
-      ],
-      "long": [
-        "Zondag",
-        "Maandag",
-        "Dinsdag",
-        "Woensdag",
-        "Donderdag",
-        "Vrijdag",
-        "Zaterdag"
-      ]
+      "short": ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"],
+      "long": ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"]
     },
     "months": {
-      "short": [
-        "Jan",
-        "Feb",
-        "Mrt",
-        "Apr",
-        "Mei",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Okt",
-        "Nov",
-        "Dec"
-      ],
-      "long": [
-        "Januari",
-        "Februari",
-        "Maart",
-        "April",
-        "Mei",
-        "Juni",
-        "Juli",
-        "Augustus",
-        "September",
-        "Oktober",
-        "November",
-        "December"
-      ]
+      "short": ["Jan", "Feb", "Mrt", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
+      "long": ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"]
     },
     "events": {
       "noEvents": "Geen evenementen gevonden voor deze maand.",
@@ -372,39 +330,6 @@
       "howToApply": "Hoe solliciteren",
       "contactInfo": "Contactinformatie",
       "openToNontraditional": "Open voor niet-traditionele kandidaten"
-    }
-  },
-  "podcast": {
-    "title": "Nieuwste Afleveringen",
-    "description": "Luister naar onze podcast afleveringen over duurzame landbouw, gemeenschapsinitiatieven en inspirerende verhalen.",
-    "playEpisode": "Aflevering Afspelen",
-    "loadMore": "Meer Afleveringen Laden",
-    "episodeCount": "{count} van {total} afleveringen",
-    "publishedOn": "Gepubliceerd {date}",
-    "duration": "Duur",
-    "explicit": "Expliciete Inhoud",
-    "openInSpotify": "Openen in Spotify",
-    "openInApple": "Openen in Apple Podcasts",
-    "selectEpisode": "Selecteer een aflevering om te beginnen met afspelen",
-    "loading": "Laden...",
-    "hostedBy": "Gepresenteerd door",
-    "visitWebsite": "Bezoek Website",
-    "rssFeed": "RSS Feed",
-    "onSpotify": "Op Spotify",
-    "onApple": "Op Apple Podcasts",
-    "player": {
-      "play": "Afspelen",
-      "pause": "Pauzeren",
-      "rewind": "Terugspoelen",
-      "forward": "Vooruitspoelen",
-      "previous": "Vorige",
-      "next": "Volgende",
-      "mute": "Dempen",
-      "unmute": "Demping Opheffen",
-      "volume": "Volume",
-      "currentTime": "Huidige tijd",
-      "duration": "Duur",
-      "progressBar": "Audio voortgang"
     }
   }
 }
