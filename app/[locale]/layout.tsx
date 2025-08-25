@@ -85,7 +85,7 @@
 // }
 
 import { Metadata } from "next";
-import { Inter as FontSans, Lato, Nunito } from "next/font/google";
+import { Enriqueta, Public_Sans, Roboto_Flex } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "@/styles.css";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
@@ -96,20 +96,26 @@ import Layout from '@/components/layout/layout';
 import { VideoDialogProvider } from '@/components/ui/VideoDialogContext';
 import VideoDialog from '@/components/ui/VideoDialog';
 
-const fontSans = FontSans({
+// Boerengroep Brand Fonts
+const enriqueta = Enriqueta({
     subsets: ["latin"],
-    variable: "--font-sans",
+    variable: "--font-enriqueta",
+    weight: ["400", "700"],
+    display: 'swap',
 });
 
-const nunito = Nunito({
+const publicSans = Public_Sans({
     subsets: ["latin"],
-    variable: "--font-nunito",
+    variable: "--font-public-sans",
+    weight: ["300", "400", "500", "600", "700"],
+    style: ['normal', 'italic'],
+    display: 'swap',
 });
 
-const lato = Lato({
+const robotoFlex = Roboto_Flex({
     subsets: ["latin"],
-    variable: "--font-lato",
-    weight: "400",
+    variable: "--font-roboto-flex",
+    display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -137,8 +143,14 @@ export default async function LocaleLayout({
     const messages = await getMessages();
 
     return (
-        <html lang={locale}
-              className={cn(fontSans.variable, nunito.variable, lato.variable)}
+        <html
+            lang={locale}
+            className={cn(
+                enriqueta.variable,
+                publicSans.variable,
+                robotoFlex.variable,
+                "scroll-smooth"
+            )}
         >
         <body className="min-h-screen bg-background font-sans antialiased">
         <NextIntlClientProvider messages={messages}>

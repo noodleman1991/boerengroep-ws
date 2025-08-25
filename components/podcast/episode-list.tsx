@@ -34,7 +34,7 @@ interface EpisodeListProps {
   initialEpisodes: Episode[];
   totalEpisodes: number;
   hasMore: boolean;
-  onEpisodeSelect: (episode: Episode, index: number) => void;
+  onEpisodeSelectAction: (episode: Episode, index: number) => void;
   locale?: string;
 }
 
@@ -42,7 +42,7 @@ export function EpisodeList({
   initialEpisodes,
   totalEpisodes,
   hasMore,
-  onEpisodeSelect,
+  onEpisodeSelectAction,
   locale = 'en'
 }: EpisodeListProps) {
   const t = useTranslations('podcast');
@@ -84,7 +84,7 @@ export function EpisodeList({
             key={episode.id}
             episode={episode}
             episodeNumber={episodes.length - index}
-            onPlay={() => onEpisodeSelect(episode, index)}
+            onPlay={() => onEpisodeSelectAction(episode, index)}
             locale={locale}
           />
         ))}

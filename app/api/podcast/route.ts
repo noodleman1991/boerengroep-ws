@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       attributeNamePrefix: '@_',
       parseAttributeValue: true,
       trimValues: true,
-      parseTrueNumberOnly: false
+      ... { parseTrueNumberOnly: false as any } // todo:  X2jOptions type fixes
     });
 
     const feedData = parser.parse(xmlText);

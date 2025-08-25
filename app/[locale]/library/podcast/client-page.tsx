@@ -70,7 +70,7 @@ export function PodcastClientPage({ podcast, locale }: PodcastClientPageProps) {
         initialEpisodes={podcast.episodes}
         totalEpisodes={podcast.totalEpisodes}
         hasMore={podcast.hasMore}
-        onEpisodeSelect={handleEpisodeSelect}
+        onEpisodeSelectAction={handleEpisodeSelect}
         locale={locale}
       />
     </div>
