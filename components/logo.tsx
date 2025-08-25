@@ -26,30 +26,31 @@ export const Logo: React.FC<LogoProps> = ({
                                               textClassName,
                                               priority = false,
                                           }) => {
+    // Updated size configs with proper aspect ratio for wide logo (2.84:1)
     const sizeConfig = {
         xs: {
             container: 'h-6',
-            logo: { width: 96, height: 24 },
+            logo: { width: 72, height: 24 }, // 3:1 ratio
             text: 'text-xs font-medium'
         },
         sm: {
             container: 'h-8',
-            logo: { width: 120, height: 32 },
+            logo: { width: 96, height: 32 }, // 3:1 ratio
             text: 'text-sm font-medium'
         },
         md: {
             container: 'h-12',
-            logo: { width: 160, height: 48 },
+            logo: { width: 144, height: 48 }, // 3:1 ratio
             text: 'text-base font-medium'
         },
         lg: {
             container: 'h-16',
-            logo: { width: 200, height: 64 },
+            logo: { width: 192, height: 64 }, // 3:1 ratio
             text: 'text-lg font-semibold'
         },
         xl: {
             container: 'h-20',
-            logo: { width: 240, height: 80 },
+            logo: { width: 240, height: 80 }, // 3:1 ratio
             text: 'text-xl font-semibold'
         }
     };
@@ -63,21 +64,27 @@ export const Logo: React.FC<LogoProps> = ({
             className
         )}>
             {logoSrc && (
-                <div className="relative flex-shrink-0">
+                <div className={cn(
+                    'relative flex-shrink-0 overflow-hidden',
+                    currentSize.container
+                )}>
                     <Image
                         src={logoSrc}
                         alt={alt}
                         width={currentSize.logo.width}
                         height={currentSize.logo.height}
-                        className="h-full w-auto object-contain"
+                        className="h-full w-auto object-contain object-left"
                         priority={priority}
+                        style={{
+                            maxWidth: 'none', // Allow image to use full calculated width
+                        }}
                     />
                 </div>
             )}
 
             {showText && orgName && (
                 <span className={cn(
-                    'text-foreground whitespace-nowrap',
+                    'text-foreground whitespace-nowrap font-heading',
                     currentSize.text,
                     textClassName
                 )}>
@@ -99,7 +106,7 @@ export const Logo: React.FC<LogoProps> = ({
     return <LogoContent />;
 };
 
-// Enhanced hook for TinaCMS integration with better error handling
+// hook for TinaCMS integration with better error handling
 export const useGlobalLogo = (globalData: any) => {
     const header = globalData?.header;
 
@@ -137,7 +144,7 @@ export const AppLogo: React.FC<{
         return (
             <div className={cn('flex items-center', props.className)}>
                 <span className={cn(
-                    'font-semibold text-foreground',
+                    'font-heading font-semibold text-foreground',
                     props.textClassName
                 )}>
                     {logoProps.orgName}
@@ -149,7 +156,7 @@ export const AppLogo: React.FC<{
     return (
         <Logo
             {...logoProps}
-            showText={shouldShowText}
+            showText={false} // use - shouldShowText - for boolean condition based o available app data
             priority={priority}
             {...props}
         />
@@ -164,7 +171,7 @@ export const HeaderLogo: React.FC<{
     <AppLogo
         globalData={globalData}
         size="md"
-        showText={true}
+        showText={false} // note: logo text set to false
         href="/"
         priority={true}
         className={cn("transition-opacity hover:opacity-80", className)}

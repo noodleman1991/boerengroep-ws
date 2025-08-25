@@ -1,148 +1,408 @@
 @import "tailwindcss";
 
-/*@tailwind base;*/
-/*@tailwind components;*/
-/*@tailwind utilities;*/
+/* ===== BOERENGROEP BRAND SYSTEM - CENTRALIZED ===== */
+:root {
+    /* Map brand colors to design system tokens */
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
 
-/* React H5 Audio Player Custom Styles */
+    /* PRIMARY = Brand Green (your main brand color) */
+    --primary: 120 49% 45%; /* #44AD39 converted to HSL */
+    --primary-foreground: 0 0% 100%;
+
+    /* SECONDARY = Brand Orange for accents */
+    --secondary: 32 95% 49%; /* #F28F07 converted to HSL */
+    --secondary-foreground: 0 0% 100%;
+
+    /* ACCENT = Brand Blue for highlights */
+    --accent: 225 73% 57%; /* #4169E1 converted to HSL */
+    --accent-foreground: 0 0% 100%;
+
+    /* Keep neutral colors for UI */
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 120 49% 45%; /* Same as primary for focus rings */
+    --radius: 0.5rem;
+
+    /* Additional brand colors as CSS custom properties (for direct usage if needed) */
+    --color-brand-green: #44AD39;
+    --color-brand-orange: #F28F07;
+    --color-brand-blue: #4169E1;
+    --color-brand-lime: #32CD32;
+    --color-brand-tan: #D2B48C;
+    --color-brand-light-yellow: #FFFFE0;
+    --color-brand-light-green: #90EE90;
+    --color-brand-pale-yellow: #FFFF99;
+    --color-brand-primary-blue: #1E40AF;
+}
+
+.dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+
+    /* Brand colors remain consistent in dark mode */
+    --primary: 120 49% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 32 95% 49%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 225 73% 57%;
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 120 49% 45%;
+}
+
+/* ===== GLOBAL TYPOGRAPHY WITH BRAND FONTS ===== */
+html {
+    scroll-behavior: smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-variant-ligatures: normal;
+}
+
+/* Default body font = Roboto Flex */
+body {
+    font-family: var(--font-roboto-flex), var(--font-sans), system-ui, sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings: "slnt" 0, "wdth" 100, "GRAD" 0, "XTRA" 468, "XOPQ" 96, "YOPQ" 79, "YTLC" 514, "YTUC" 712, "YTAS" 750, "YTDE" -203, "YTFI" 738;
+}
+
+/* All headings automatically use Enriqueta */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-enriqueta), Georgia, serif;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: hsl(var(--foreground));
+}
+
+h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 1rem;
+}
+
+h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 0.875rem;
+}
+
+h3 {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    margin-bottom: 0.75rem;
+}
+
+h4 {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    margin-bottom: 0.625rem;
+}
+
+h5 {
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    margin-bottom: 0.5rem;
+}
+
+h6 {
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    margin-bottom: 0.5rem;
+}
+
+/* Navigation and UI elements use Public Sans */
+nav, .nav-item, button, [role="button"], input, select, textarea, label {
+    font-family: var(--font-public-sans), var(--font-sans), system-ui, sans-serif;
+    font-weight: 500;
+}
+
+/* Paragraphs and body text use Roboto Flex */
+p, li, blockquote, .prose {
+    font-family: var(--font-roboto-flex), var(--font-sans), system-ui, sans-serif;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    color: hsl(var(--foreground) / 0.9);
+}
+
+/* Links inherit brand colors */
+a {
+    color: hsl(var(--primary));
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: hsl(var(--primary) / 0.8);
+    text-decoration: underline;
+}
+
+/* Lists */
+ul, ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+li {
+    line-height: 1.6;
+    margin-bottom: 0.25rem;
+}
+
+/* Blockquotes use brand accent */
+blockquote {
+    border-left: 4px solid hsl(var(--primary));
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: hsl(var(--muted-foreground));
+}
+
+/* Code blocks */
+code {
+    font-family: var(--font-mono), 'Courier New', monospace;
+    font-size: 0.875em;
+    background-color: hsl(var(--muted));
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+}
+
+pre {
+    background-color: hsl(var(--muted));
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 1px solid hsl(var(--border));
+}
+
+th {
+    font-family: var(--font-public-sans), var(--font-sans), system-ui, sans-serif;
+    font-weight: 600;
+    background-color: hsl(var(--muted));
+}
+
+/* Form elements inherit UI font */
+input, textarea, select {
+    font-family: var(--font-public-sans), var(--font-sans), system-ui, sans-serif;
+}
+
+/* Buttons automatically use brand colors */
+button, [role="button"] {
+    font-family: var(--font-public-sans), var(--font-sans), system-ui, sans-serif;
+    font-weight: 500;
+}
+
+/* Utility classes for direct brand color access (optional) */
+.text-brand-green { color: var(--color-brand-green); }
+.text-brand-orange { color: var(--color-brand-orange); }
+.text-brand-blue { color: var(--color-brand-blue); }
+.bg-brand-green { background-color: var(--color-brand-green); }
+.bg-brand-orange { background-color: var(--color-brand-orange); }
+.bg-brand-blue { background-color: var(--color-brand-blue); }
+.border-brand-green { border-color: var(--color-brand-green); }
+.border-brand-orange { border-color: var(--color-brand-orange); }
+.border-brand-blue { border-color: var(--color-brand-blue); }
+
+/* React H5 Audio Player Custom Styles (keeping existing) */
 .rhap_container {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  padding: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
 }
 
 .rhap_main {
-  flex-direction: column !important;
-  gap: 0.5rem !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
 }
 
 .rhap_controls-section {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 
 .rhap_additional-controls {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 
 .rhap_progress-section {
-  margin: 0.5rem 0 !important;
-  flex: 1 !important;
+    margin: 0.5rem 0 !important;
+    flex: 1 !important;
 }
 
 .rhap_volume-controls {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 
 /* Button styling to match the app theme */
 .rhap_button-clear {
-  background-color: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
-  border: 1px solid hsl(var(--border)) !important;
-  border-radius: calc(var(--radius) - 2px) !important;
-  transition: all 0.2s ease !important;
+    background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: calc(var(--radius) - 2px) !important;
+    transition: all 0.2s ease !important;
 }
 
 .rhap_button-clear:hover {
-  background-color: hsl(var(--accent)) !important;
-  color: hsl(var(--accent-foreground)) !important;
+    background-color: hsl(var(--accent)) !important;
+    color: hsl(var(--accent-foreground)) !important;
 }
 
 .rhap_button-clear:focus {
-  outline: 2px solid hsl(var(--ring)) !important;
-  outline-offset: 2px !important;
+    outline: 2px solid hsl(var(--ring)) !important;
+    outline-offset: 2px !important;
 }
 
 /* Play/pause button styling */
 .rhap_play-pause-button {
-  background-color: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  border: none !important;
-  width: 3rem !important;
-  height: 3rem !important;
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    border: none !important;
+    width: 3rem !important;
+    height: 3rem !important;
 }
 
 .rhap_play-pause-button:hover {
-  background-color: hsl(var(--primary)) !important;
-  opacity: 0.9 !important;
+    background-color: hsl(var(--primary)) !important;
+    opacity: 0.9 !important;
 }
 
 /* Progress bar styling */
 .rhap_progress-bar {
-  background-color: hsl(var(--muted)) !important;
-  border-radius: calc(var(--radius) - 2px) !important;
-  height: 0.375rem !important;
+    background-color: hsl(var(--muted)) !important;
+    border-radius: calc(var(--radius) - 2px) !important;
+    height: 0.375rem !important;
 }
 
 .rhap_progress-filled {
-  background-color: hsl(var(--primary)) !important;
-  border-radius: calc(var(--radius) - 2px) !important;
+    background-color: hsl(var(--primary)) !important;
+    border-radius: calc(var(--radius) - 2px) !important;
 }
 
 .rhap_progress-indicator {
-  background-color: hsl(var(--primary)) !important;
-  border: 2px solid hsl(var(--background)) !important;
-  width: 1rem !important;
-  height: 1rem !important;
-  top: -0.3125rem !important;
+    background-color: hsl(var(--primary)) !important;
+    border: 2px solid hsl(var(--background)) !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    top: -0.3125rem !important;
 }
 
 /* Volume bar styling */
 .rhap_volume-bar {
-  background-color: hsl(var(--muted)) !important;
-  border-radius: calc(var(--radius) - 2px) !important;
+    background-color: hsl(var(--muted)) !important;
+    border-radius: calc(var(--radius) - 2px) !important;
 }
 
 .rhap_volume-filled {
-  background-color: hsl(var(--primary)) !important;
-  border-radius: calc(var(--radius) - 2px) !important;
+    background-color: hsl(var(--primary)) !important;
+    border-radius: calc(var(--radius) - 2px) !important;
 }
 
 .rhap_volume-indicator {
-  background-color: hsl(var(--primary)) !important;
-  border: 2px solid hsl(var(--background)) !important;
-  width: 0.75rem !important;
-  height: 0.75rem !important;
+    background-color: hsl(var(--primary)) !important;
+    border: 2px solid hsl(var(--background)) !important;
+    width: 0.75rem !important;
+    height: 0.75rem !important;
 }
 
 /* Time display styling */
 .rhap_time {
-  color: hsl(var(--muted-foreground)) !important;
-  font-size: 0.875rem !important;
-  font-family: var(--font-sans) !important;
+    color: hsl(var(--muted-foreground)) !important;
+    font-size: 0.875rem !important;
+    font-family: var(--font-roboto-flex) !important;
 }
 
 /* Download progress styling */
 .rhap_download-progress {
-  background-color: hsl(var(--muted)) !important;
-  border-radius: calc(var(--radius) - 2px) !important;
-  opacity: 0.6 !important;
+    background-color: hsl(var(--muted)) !important;
+    border-radius: calc(var(--radius) - 2px) !important;
+    opacity: 0.6 !important;
 }
 
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
-  .rhap_button-clear {
-    background-color: hsl(var(--background)) !important;
-    border-color: hsl(var(--border)) !important;
-  }
+    .rhap_button-clear {
+        background-color: hsl(var(--background)) !important;
+        border-color: hsl(var(--border)) !important;
+    }
 
-  .rhap_button-clear:hover {
-    background-color: hsl(var(--accent)) !important;
-  }
+    .rhap_button-clear:hover {
+        background-color: hsl(var(--accent)) !important;
+    }
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-  .rhap_controls-section {
-    flex-direction: column !important;
-    gap: 0.5rem !important;
-  }
+    .rhap_controls-section {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+    }
 
-  .rhap_main-controls {
-    justify-content: center !important;
-  }
+    .rhap_main-controls {
+        justify-content: center !important;
+    }
 
-  .rhap_volume-controls {
-    justify-content: center !important;
-  }
+    .rhap_volume-controls {
+        justify-content: center !important;
+    }
+}
+
+/* ===== PROSE STYLES FOR RICH TEXT CONTENT ===== */
+.prose {
+    max-width: none;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+    font-family: var(--font-enriqueta), Georgia, serif;
+}
+
+.prose p, .prose li, .prose blockquote {
+    font-family: var(--font-roboto-flex), system-ui, sans-serif;
+}
+
+/* ===== ANIMATION & ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus styles use brand color */
+*:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: calc(var(--radius) - 2px);
 }
