@@ -1,12 +1,9 @@
 {
   "header": {
-    "icon": {
-      "name": "BiSolidCaretRightCircle",
-      "color": "green",
-      "style": "float"
-    },
+    "logo": "/uploads/logo/boerengroep-logo.svg",
+    "logoAlt": "Stichting Boerengroep Logo",
     "name": "Stichting Boerengroep",
-    "color": "default",
+    "color": "primary",
     "nav": [
       {
         "href": "/",
@@ -153,33 +150,23 @@
   "footer": {
     "social": [
       {
-        "icon": {
-          "name": "FaLinkedin"
-        },
+        "platform": "LinkedIn",
         "url": "https://www.linkedin.com/company/stichting-boerengroep"
       },
       {
-        "icon": {
-          "name": "FaFacebook"
-        },
+        "platform": "Facebook",
         "url": "https://www.facebook.com/boerengroep"
       },
       {
-        "icon": {
-          "name": "AiFillInstagram"
-        },
+        "platform": "Instagram",
         "url": "https://www.instagram.com/boerengroep"
       },
       {
-        "icon": {
-          "name": "FaXTwitter"
-        },
+        "platform": "Twitter",
         "url": "https://twitter.com/boerengroep"
       },
       {
-        "icon": {
-          "name": "FaYoutube"
-        },
+        "platform": "YouTube",
         "url": "https://www.youtube.com/@Boerengroep"
       }
     ],
@@ -239,7 +226,7 @@
   },
   "theme": {
     "color": "blue",
-    "font": "nunito",
+    "font": "lato",
     "darkMode": "light"
   }
 }

@@ -244,42 +244,45 @@ const Global: Collection = {
             fields: [
                 {
                     type: "image",
-                    label: "Logo",
+                    label: "Organization Logo",
                     name: "logo",
-                    description: "Upload your organization logo (SVG, PNG, or JPG recommended). Optimal size: 200x50px or similar aspect ratio.",
+                    description: "Upload your organization logo (SVG recommended for best quality). Optimal size: 240x80px or similar aspect ratio.",
                     // @ts-ignore
-                    uploadDir: () => "logo",
+                    uploadDir: () => "branding",
                 },
                 {
                     type: "string",
                     label: "Logo Alt Text",
                     name: "logoAlt",
-                    description: "Alternative text for the logo (for accessibility)",
+                    description: "Alternative text for the logo (important for accessibility and SEO)",
                     required: true,
                 },
                 {
                     type: "string",
                     label: "Organization Name",
                     name: "name",
-                    description: "Will appear next to the logo as text"
+                    description: "Full organization name - appears in footer copyright and as fallback text",
+                    required: true,
                 },
                 {
                     type: "string",
-                    label: "Color",
+                    label: "Header Color Theme",
                     name: "color",
+                    description: "Color theme for header elements",
                     options: [
                         { label: "Default", value: "default" },
-                        { label: "Primary", value: "primary" },
+                        { label: "Primary Brand Color", value: "primary" },
                     ],
                 },
                 {
                     type: "object",
-                    label: "Navigation Links",
+                    label: "Navigation Menu",
                     name: "nav",
+                    description: "Main website navigation structure",
                     list: true,
                     ui: {
                         itemProps: (item: any) => {
-                            return { label: item?.label };
+                            return { label: item?.label || "Navigation Item" };
                         },
                         defaultItem: {
                             href: "/",
@@ -289,22 +292,27 @@ const Global: Collection = {
                     fields: [
                         {
                             type: "string",
-                            label: "Link",
+                            label: "Link URL",
                             name: "href",
+                            description: "Relative path (e.g., /about) or external URL",
+                            required: true,
                         },
                         {
                             type: "string",
-                            label: "Label",
+                            label: "Display Label",
                             name: "label",
+                            description: "Text shown in navigation menu",
+                            required: true,
                         },
                         {
                             type: "object",
-                            label: "Submenu Items",
+                            label: "Dropdown Menu Items",
                             name: "submenu",
+                            description: "Optional dropdown items for this navigation link",
                             list: true,
                             ui: {
                                 itemProps: (item: any) => {
-                                    return { label: item?.label };
+                                    return { label: item?.label || "Submenu Item" };
                                 },
                                 defaultItem: {
                                     href: "/",
@@ -314,13 +322,15 @@ const Global: Collection = {
                             fields: [
                                 {
                                     type: "string",
-                                    label: "Link",
+                                    label: "Link URL",
                                     name: "href",
+                                    required: true,
                                 },
                                 {
                                     type: "string",
-                                    label: "Label",
+                                    label: "Display Label",
                                     name: "label",
+                                    required: true,
                                 },
                             ],
                         },
@@ -333,27 +343,35 @@ const Global: Collection = {
             label: "Footer",
             name: "footer",
             fields: [
-                // ... rest of footer fields remain the same
                 {
                     type: "object",
-                    label: "Social Links",
+                    label: "Social Media Links",
                     name: "social",
+                    description: "Links to your organization's social media profiles",
                     list: true,
                     ui: {
                         itemProps: (item: any) => {
-                            return { label: item?.platform || 'Social Link' };
+                            return { label: item?.platform || 'Social Media Link' };
+                        },
+                        defaultItem: {
+                            platform: "Facebook",
+                            url: "https://facebook.com/your-page",
                         },
                     },
                     fields: [
                         {
                             type: "string",
-                            label: "Platform",
+                            label: "Platform Name",
                             name: "platform",
+                            description: "e.g., Facebook, Twitter, Instagram, LinkedIn",
+                            required: true,
                         },
                         {
                             type: "string",
-                            label: "URL",
+                            label: "Profile URL",
                             name: "url",
+                            description: "Full URL to your profile page",
+                            required: true,
                         },
                     ],
                 },
@@ -361,17 +379,22 @@ const Global: Collection = {
                     type: "object",
                     label: "Quick Links Sections",
                     name: "quickLinks",
+                    description: "Organized groups of footer links",
                     list: true,
                     ui: {
                         itemProps: (item: any) => {
                             return { label: item?.title || 'Quick Links Section' };
                         },
                         defaultItem: {
-                            title: "Section Title",
+                            title: "about",
                             links: [
                                 {
-                                    href: "/",
-                                    label: "Link Label",
+                                    href: "/about",
+                                    label: "about-us",
+                                },
+                                {
+                                    href: "/mission",
+                                    label: "our-mission",
                                 }
                             ],
                         },
@@ -379,33 +402,38 @@ const Global: Collection = {
                     fields: [
                         {
                             type: "string",
-                            label: "Section Title",
+                            label: "Section Title Key",
                             name: "title",
+                            description: "Translation key for section heading (e.g., 'about', 'services')",
+                            required: true,
                         },
                         {
                             type: "object",
-                            label: "Links",
+                            label: "Section Links",
                             name: "links",
                             list: true,
                             ui: {
                                 itemProps: (item: any) => {
-                                    return { label: item?.label };
+                                    return { label: item?.label || "Footer Link" };
                                 },
                                 defaultItem: {
                                     href: "/",
-                                    label: "Link Label",
+                                    label: "link-label",
                                 },
                             },
                             fields: [
                                 {
                                     type: "string",
-                                    label: "Link",
+                                    label: "Link URL",
                                     name: "href",
+                                    required: true,
                                 },
                                 {
                                     type: "string",
-                                    label: "Label",
+                                    label: "Translation Key",
                                     name: "label",
+                                    description: "Translation key for link text",
+                                    required: true,
                                 },
                             ],
                         },
@@ -415,13 +443,15 @@ const Global: Collection = {
         },
         {
             type: "object",
-            label: "Theme",
+            label: "Brand Theme",
             name: "theme",
+            description: "Global visual styling and branding settings",
             fields: [
                 {
                     type: "string",
-                    label: "Primary Color",
+                    label: "Primary Brand Color",
                     name: "color",
+                    description: "Main color used throughout the website",
                     ui: {
                         component: ColorPickerInput,
                     },
@@ -429,18 +459,19 @@ const Global: Collection = {
                 {
                     type: "string",
                     name: "font",
-                    label: "Font Family",
+                    label: "Typography Family",
+                    description: "Font family for website content",
                     options: [
                         {
-                            label: "System Sans",
+                            label: "System Sans-Serif",
                             value: "sans",
                         },
                         {
-                            label: "Nunito",
+                            label: "Nunito (Rounded)",
                             value: "nunito",
                         },
                         {
-                            label: "Lato",
+                            label: "Lato (Clean)",
                             value: "lato",
                         },
                     ],
@@ -448,18 +479,19 @@ const Global: Collection = {
                 {
                     type: "string",
                     name: "darkMode",
-                    label: "Dark Mode",
+                    label: "Dark Mode Setting",
+                    description: "How the website handles light/dark themes",
                     options: [
                         {
-                            label: "System",
+                            label: "Follow System Preference",
                             value: "system",
                         },
                         {
-                            label: "Light",
+                            label: "Always Light Mode",
                             value: "light",
                         },
                         {
-                            label: "Dark",
+                            label: "Always Dark Mode",
                             value: "dark",
                         },
                     ],

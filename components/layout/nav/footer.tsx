@@ -3,13 +3,14 @@
 import React from "react";
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Icon } from "../../icon";
+import { FooterLogo, useOrgName } from "../../logo";
 import { useLayout } from "../layout-context";
 import { NewsletterSignup } from "../../newsletter-signup";
 
 export const Footer = () => {
     const { globalSettings } = useLayout();
-    const { header, footer } = globalSettings!;
+    const { footer } = globalSettings!;
+    const orgName = useOrgName(globalSettings);
     const t = useTranslations('footer');
     const tNav = useTranslations('navigation');
 
@@ -95,40 +96,40 @@ export const Footer = () => {
                 <div className="flex flex-wrap items-center gap-6 border-t border-border py-6 flex-col md:flex-row md:justify-between">
 
                     <div className="order-last flex justify-center md:order-first md:justify-start">
-                        <Link href="/" aria-label={tNav('home')} className="flex items-center gap-2 hover:opacity-80 transition-opacity duration-150">
-                            <Icon
-                                parentColor={header?.color || 'default'}
-                                data={header?.icon || { name: 'BiLeaf', color: 'green', style: 'float' }}
-                            />
+                        <Link
+                            href="/"
+                            aria-label={tNav('home')}
+                            className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-150"
+                        >
+                            <FooterLogo globalData={globalSettings} />
                             <span className="self-center text-muted-foreground text-sm">
-                {t('copyright', {
-                    year: new Date().getFullYear().toString(),
-                    organization: header?.name || 'Stichting Boerengroep'
-                })}
-              </span>
+                                {t('copyright', {
+                                    year: new Date().getFullYear().toString(),
+                                    organization: orgName
+                                })}
+                            </span>
                         </Link>
                     </div>
 
                     {/* Social Media Links */}
                     <div className="order-first flex justify-center gap-6 text-sm md:order-last md:justify-end">
                         {footer?.social?.map((link, index) => {
-                            if (!link || !link.url || !link.icon?.name) return null;
+                            if (!link || !link.url || !link.platform) return null;
 
-                            const socialName = link.icon.name.replace('Fa', '').replace('AiFill', '').toLowerCase();
+                            const socialName = link.platform.toLowerCase();
 
                             return (
                                 <a
-                                    key={`${link.icon.name}${index}`}
+                                    key={`${link.platform}-${index}`}
                                     href={link.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="group"
+                                    className="group text-muted-foreground hover:text-primary transition-colors duration-150"
                                     aria-label={t(`social.${socialName}`)}
                                 >
-                                    <Icon
-                                        data={{ ...link.icon, size: 'small' }}
-                                        className="text-muted-foreground hover:text-primary group-hover:scale-110 transition-all duration-150"
-                                    />
+                                    <span className="text-sm font-medium capitalize group-hover:scale-110 transition-transform duration-150">
+                                        {link.platform}
+                                    </span>
                                 </a>
                             );
                         })}

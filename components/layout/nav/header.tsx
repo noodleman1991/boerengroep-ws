@@ -2,14 +2,14 @@
 
 import React, { useState } from "react";
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation'; // Use the localized Link component
-import { Icon } from "../../icon";
+import { Link } from '@/i18n/navigation';
+import { HeaderLogo } from "../../logo";
 import { useLayout } from "../layout-context";
 import { Menu, X, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 export const Header = () => {
-    const { globalSettings, theme } = useLayout();
+    const { globalSettings } = useLayout();
     const header = globalSettings!.header!;
     const [menuState, setMenuState] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -32,23 +32,7 @@ export const Header = () => {
                 <div className="mx-auto max-w-6xl px-6 transition-all duration-300">
                     <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
                         <div className="flex w-full items-center justify-between gap-12">
-                            <Link
-                                href="/"
-                                onClick={closeAllMenus}
-                                aria-label={t('home')}
-                                className="flex items-center space-x-2 transition-opacity hover:opacity-80">
-                                <Icon
-                                    parentColor={header.color || 'default'}
-                                    data={{
-                                        name: header.icon?.name || 'BiLeaf',
-                                        color: header.icon?.color || 'green',
-                                        style: header.icon?.style || 'float',
-                                    }}
-                                />
-                                <span className="font-semibold text-foreground">
-                  {header.name || 'Stichting Boerengroep'}
-                </span>
-                            </Link>
+                            <HeaderLogo globalData={globalSettings} />
 
                             <button
                                 onClick={() => setMenuState(!menuState)}
@@ -94,7 +78,7 @@ export const Header = () => {
                                                                         return (
                                                                             <Link
                                                                                 key={subIndex}
-                                                                                href={subItem.href as any} // TypeScript will validate this against our pathnames
+                                                                                href={subItem.href as any}
                                                                                 className="block px-4 py-3 text-sm text-muted-foreground hover:text-accent-foreground hover:bg-accent/50 transition-colors duration-150"
                                                                                 onClick={closeAllMenus}
                                                                             >
@@ -108,7 +92,7 @@ export const Header = () => {
                                                     </div>
                                                 ) : (
                                                     <Link
-                                                        href={item.href as any} // TypeScript will validate this against our pathnames
+                                                        href={item.href as any}
                                                         className="text-muted-foreground hover:text-accent-foreground block duration-150"
                                                         onClick={closeAllMenus}
                                                     >
