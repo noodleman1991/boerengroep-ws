@@ -36,13 +36,9 @@ const config = defineConfig({
         //basePath: baseConfig.basePath?.replace(/^\//, '') || '',
     },
     schema: {
-        collections: [Page, Post, Author, Tag, Global, Event, Speaker, Vacancy, Newsletter],
+        collections: [Event, Page, Tag,  Speaker, Vacancy, Newsletter, Global, Post, Author],
     },
 });
 
 export default config;
 
-// Add Privacy import and include in collections
-// You need to manually add this to your tina/config.tsx:
-// import Privacy from "./collection/privacy";
-// And add Privacy to the collections array

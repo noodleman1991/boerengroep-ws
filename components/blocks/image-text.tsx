@@ -111,11 +111,41 @@ export const imageTextBlockSchema: TinaTemplate = {
     label: 'Image & Text',
     ui: {
         previewSrc: '/blocks/image-text.png',
+        // defaultItem: {
+        //     layout: 'image-left',
+        //     imageSize: 'medium',
+        //     verticalAlignment: 'center',
+        //     content: 'Add your content here. This rich text editor supports **bold**, *italic*, and [links](https://example.com).',
+        //     image: {
+        //         src: '',
+        //         alt: 'Descriptive alt text',
+        //     },
+        // },
         defaultItem: {
             layout: 'image-left',
             imageSize: 'medium',
             verticalAlignment: 'center',
-            content: 'Add your content here. This rich text editor supports **bold**, *italic*, and [links](https://example.com).',
+            content: {
+                type: 'root',
+                children: [
+                    {
+                        type: 'p',
+                        children: [
+                            { type: 'text', text: 'Add your content here. This rich text editor supports ' },
+                            { type: 'text', text: 'bold', bold: true },
+                            { type: 'text', text: ', ' },
+                            { type: 'text', text: 'italic', italic: true },
+                            { type: 'text', text: ', and ' },
+                            {
+                                type: 'a',
+                                url: 'https://example.com',
+                                children: [{ type: 'text', text: 'links' }],
+                            },
+                            { type: 'text', text: '.' },
+                        ],
+                    },
+                ],
+            },
             image: {
                 src: '',
                 alt: 'Descriptive alt text',

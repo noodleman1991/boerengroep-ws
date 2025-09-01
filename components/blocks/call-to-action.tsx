@@ -45,8 +45,8 @@ export const ctaBlockSchema: TinaTemplate = {
     ui: {
         previewSrc: "/blocks/cta.png",
         defaultItem: {
-            title: "Start Building",
-            description: "Get started with TinaCMS today and take your content management to the next level.",
+            title: "Title",
+            description: "Description",
             actions: [
                 {
                     label: 'Get Started',
