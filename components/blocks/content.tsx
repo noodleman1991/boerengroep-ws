@@ -11,35 +11,48 @@ import { sectionBlockSchemaField } from '../layout/section';
 import { scriptCopyBlockSchema, ScriptCopyBtn } from '../magicui/script-copy-btn';
 
 export const Content = ({ data }: { data: PageBlocksContent }) => {
-  return (
-    <Section background={data.background!} className='prose prose-lg' data-tina-field={tinaField(data, 'body')}>
-      <TinaMarkdown
-        content={data.body}
-        components={{
-          mermaid: (props: any) => <Mermaid {...props} />,
-          scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
-        }}
-      />
-    </Section>
-  );
+    return (
+        <Section background={data.background!} className='prose prose-lg' data-tina-field={tinaField(data, 'body')}>
+            <TinaMarkdown
+                content={data.body}
+                components={{
+                    mermaid: (props: any) => <Mermaid {...props} />,
+                    scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
+                }}
+            />
+        </Section>
+    );
 };
 
 export const contentBlockSchema: TinaTemplate = {
-  name: 'content',
-  label: 'Content',
-  ui: {
-    previewSrc: '/blocks/content.png',
-    defaultItem: {
-      body: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.',
+    name: 'content',
+    label: 'Content',
+    ui: {
+        previewSrc: '/blocks/content.png',
+        defaultItem: {
+            body: {
+                type: 'root',
+                children: [
+                    {
+                        type: 'p',
+                        children: [
+                            {
+                                type: 'text',
+                                text: 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit, posuere a, pede.'
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
     },
-  },
-  fields: [
-    sectionBlockSchemaField as any,
-    {
-      type: 'rich-text',
-      label: 'Body',
-      name: 'body',
-      templates: [scriptCopyBlockSchema],
-    },
-  ],
+    fields: [
+        sectionBlockSchemaField as any,
+        {
+            type: 'rich-text',
+            label: 'Body',
+            name: 'body',
+            templates: [scriptCopyBlockSchema],
+        },
+    ],
 };
