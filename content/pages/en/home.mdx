@@ -1,16 +1,29 @@
 ---
 blocks:
-  - headline: this is english?!
-    tagline: Here's some text above the other text
+  - headline: Who is Boerengroep?
+    tagline: 'read more '
     _template: hero
+  - background: bg-orange-50/80
+    title: Events
+    description: Check-out our upcoming events
+    testimonials:
+      - quote: ' rrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrr'
+        author: Boerengroep Weekend
+        avatar: ''
+      - quote: >-
+          There are only two hard things in Computer Science: cache invalidation
+          and naming things.
+        author: Phil Karlton
+      - quote: >-
+          There are only two hard things in Computer Science: cache invalidation
+          and naming things.
+        author: Phil Karlton
+    _template: testimonial
   - body: >
       ***
 
 
-      what is possible with such a content component? idk… what is possible with
-      such a content component? idk…what is possible with such a content
-      component? idk…what is possible with such a content component? idk…what is
-      possible with such a content
+      News
 
 
       ***
@@ -27,31 +40,26 @@ blocks:
 
       any way okay?
     _template: content
-  - background: bg-orange-50/80
-    title: is this useful?
-    description: i dont know
-    testimonials:
-      - quote: ' rrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrrrrr rrr'
-        author: DINO DINOSAUR
-    _template: testimonial
-  - url: 'https://www.youtube.com/watch?v=j8egYW7Jpgk'
-    autoPlay: false
-    loop: false
-    _template: video
-  - headline: This Big Text is Totally Awesome
-    tagline: Here's some text above the othedddr text
-    _template: hero
+  - title: Get Involved!
+    description: Description
+    actions:
+      - label: Get Started
+        type: button
+        link: /
+      - label: Book Demo
+        type: link
+        link: /
+    _template: cta
   - title: Built to cover your needs
     description: We have a lot of features to cover your needs
     items:
       - icon:
           name: ''
-          color: ''
+          color: brand-lime
           style: float
-        title: Here's Another Feature
+        title: Boerengroep Weekend
         text: >
-          This is where you might talk about the feature, if this wasn't just
-          filler text.
+          ![](/uploads/Instagram%20of%20Poster%20Boerengroep%20Weekend%20-%20Google%20Formulieren%20\(Instagram%20Post\).png)
       - icon:
           name: ''
           color: ''
@@ -69,18 +77,5 @@ blocks:
           This is where you might talk about the feature, if this wasn't just
           filler text.
     _template: features
-  - body: |
-      neeeew
-    _template: content
-  - image:
-      src: /uploads/authors/llamantha.png
-      alt: Descriptive alt text
-    content: >
-      Add your content here. This rich text editor supports **bold**, *italic*,
-      and [links](https://example.com).
-    layout: image-right
-    imageSize: medium
-    verticalAlignment: top
-    _template: imageText
 ---
 
