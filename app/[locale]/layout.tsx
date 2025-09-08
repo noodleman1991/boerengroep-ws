@@ -126,8 +126,8 @@ export default async function LocaleLayout({
             {/*    crossOrigin="anonymous"*/}
             {/*/>*/}
             {/* Favicon and app icons */}
-            <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-            <link rel="icon" type="image/png" href="/favicon.png" />
+            <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+            <link rel="icon" type="image/png" href="/favicon.ico" />
             <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
             <link rel="manifest" href="/manifest.json" />
             {/* Theme color for mobile browsers */}

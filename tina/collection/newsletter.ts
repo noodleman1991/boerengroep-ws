@@ -57,7 +57,7 @@ const Newsletter: Collection = {
             required: true,
             options: [
                 { label: "Boerengroep", value: "Boerengroep" },
-                { label: "Inspiratietheater", value: "Inspiratietheater" },
+                { label: "Inspringtheater", value: "Inspringtheater" },
                 { label: "Friend Organization", value: "partner" },
                 { label: "Other", value: "other" },
             ],

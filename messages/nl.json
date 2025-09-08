@@ -14,14 +14,14 @@
       "calendar": "Agenda",
       "past-events": "Terugblik",
       "group-studies": "Groepsstudies",
-      "pei": "PEI",
+      "fei": "Ervaringsstage Boerderij",
       "teachers": "Docenten",
       "auditorium": "Auditorium",
       "forum-reader": "Forum Lezer",
       "soup-kitchen": "Soepkeuken",
       "internships": "Stages",
       "coordinator": "Coördinator",
-      "freelance": "Freelance/Tijdelijk",
+      "board": "board",
       "volunteers": "Vrijwilligers",
       "news": "Nieuws",
       "landscape": "Landschap",
@@ -344,10 +344,10 @@
         "navTitle": "Coördinator",
         "noOpportunities": "Momenteel geen coördinatorfuncties beschikbaar."
       },
-      "freelance": {
-        "title": "Freelance & Tijdelijke Functies",
-        "navTitle": "Freelance/Tijdelijk",
-        "noOpportunities": "Momenteel geen freelance of tijdelijke functies beschikbaar."
+      "board": {
+        "title": "Boardfuncties",
+        "navTitle": "Board",
+        "noOpportunities": "Momenteel geen boardfuncties beschikbaar."
       },
       "other": {
         "title": "Andere Kansen",

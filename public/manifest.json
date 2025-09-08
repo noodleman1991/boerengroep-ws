@@ -1,7 +1,7 @@
 {
   "name": "Stichting Boerengroep",
   "short_name": "Boerengroep",
-  "description": "Wageningen's peasant association - Celebrating 50 years!",
+  "description": "Wageningen's peasant association",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

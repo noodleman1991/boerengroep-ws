@@ -29,7 +29,7 @@ const Vacancy: Collection = {
                 { label: "Volunteer", value: "volunteer" },
                 { label: "Internship", value: "internship" },
                 { label: "Coordinator", value: "coordinator" },
-                { label: "Freelance or Temporary", value: "freelance" },
+                { label: "Board", value: "board" },
                 { label: "Other", value: "other" },
             ],
         },

@@ -70,7 +70,7 @@ const VACANCY_TYPES = [
     { type: 'volunteer', icon: Users, color: 'green' },
     { type: 'internship', icon: GraduationCap, color: 'blue' },
     { type: 'coordinator', icon: Briefcase, color: 'purple' },
-    { type: 'freelance', icon: Briefcase, color: 'orange' },
+    { type: 'board', icon: Briefcase, color: 'orange' },
     { type: 'other', icon: Briefcase, color: 'gray' },
 ] as const;
 

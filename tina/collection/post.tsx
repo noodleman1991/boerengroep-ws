@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Collection } from '@tinacms/cli';
 
 const Post: Collection = {
-    label: 'Blog Posts',
+    label: 'Past Activities',
     name: 'post',
     path: 'content/posts',
     format: 'mdx',

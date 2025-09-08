@@ -48,8 +48,8 @@
             "label": "group-studies"
           },
           {
-            "href": "/activities/pei",
-            "label": "pei"
+            "href": "/activities/fei",
+            "label": "farm-experience-internship"
           },
           {
             "href": "/activities/teachers",
@@ -86,8 +86,8 @@
             "label": "coordinator"
           },
           {
-            "href": "/vacancies#freelance",
-            "label": "freelance"
+            "href": "/vacancies#board",
+            "label": "board"
           }
         ]
       },

@@ -45,9 +45,9 @@ export const routing = defineRouting({
             en: '/activities/group-studies',
             nl: '/activiteiten/groepsstudies'
         },
-        '/activities/pei': {
-            en: '/activities/pei',
-            nl: '/activiteiten/pei'
+        '/activities/fei': {
+            en: '/activities/fei',
+            nl: '/activiteiten/fei'
         },
         '/activities/teachers': {
             en: '/activities/teachers',
@@ -96,18 +96,18 @@ export const routing = defineRouting({
             nl: '/nieuwsbrieven'
         },
 
-        // Inspiration Theater
-        '/inspiration-theater': {
-            en: '/inspiration-theater',
-            nl: '/inspiratietheater'
+        // Inspringtheater
+        '/inspringtheater': {
+            en: '/inspringtheater',
+            nl: '/inspringtheater'
         },
-        '/inspiration-theater/network': {
-            en: '/inspiration-theater/network',
-            nl: '/inspiratietheater/netwerk'
+        '/inspringtheater/network': {
+            en: '/inspringtheater/network',
+            nl: '/inspringtheater/netwerk'
         },
         '/inspiration-theater/events': {
-            en: '/inspiration-theater/events',
-            nl: '/inspiratietheater/evenementen'
+            en: '/inspringtheater/events',
+            nl: '/inspringtheater/evenementen'
         },
 
         // Library & Media

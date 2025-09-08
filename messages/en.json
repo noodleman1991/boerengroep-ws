@@ -14,14 +14,14 @@
       "calendar": "Calendar",
       "past-events": "Past Events",
       "group-studies": "Group Studies",
-      "pei": "PEI",
+      "fei": "Farm Experience Interenship",
       "teachers": "Teachers",
       "auditorium": "Auditorium",
       "forum-reader": "Forum Reader",
       "soup-kitchen": "Soup Kitchen",
       "internships": "Internships",
       "coordinator": "Coordinator",
-      "freelance": "Freelance/Temporary",
+      "board": "Board",
       "volunteers": "Volunteers",
       "news": "News",
       "landscape": "Landscape",
@@ -344,10 +344,10 @@
         "navTitle": "Coordinator",
         "noOpportunities": "No coordinator positions available at the moment."
       },
-      "freelance": {
-        "title": "Freelance & Temporary Positions",
-        "navTitle": "Freelance/Temporary",
-        "noOpportunities": "No freelance or temporary positions available at the moment."
+      "board": {
+        "title": "Board Positions",
+        "navTitle": "Board",
+        "noOpportunities": "No board positions available at the moment."
       },
       "other": {
         "title": "Other Opportunities",
