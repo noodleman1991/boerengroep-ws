@@ -393,20 +393,37 @@ export const getEventsForYear = (events: IEvent[], date: Date): IEvent[] => {
     });
 };
 
-// BRAND COLOR CLASSES - USING CSS CUSTOM PROPERTIES
+export const getBulletColor = (color: TEventColor): string => {
+    const colorClasses: Record<TEventColor, string> = {
+        red: "bg-red-500 dark:bg-red-400",
+        yellow: "bg-yellow-500 dark:bg-yellow-400",
+        green: "bg-brand-green",
+        blue: "bg-brand-blue",
+        orange: "bg-brand-orange",
+        lime: "bg-brand-lime",
+        tan: "bg-brand-tan",
+        navy: "bg-brand-navy",
+        purple: "bg-purple-500 dark:bg-purple-400",
+        pink: "bg-pink-500 dark:bg-pink-400",
+        teal: "bg-teal-500 dark:bg-teal-400",
+    };
+    return colorClasses[color] || colorClasses.green;
+};
+
+// Also update the other color functions for consistency
 export const getColorClass = (color: TEventColor): string => {
     const colorClasses: Record<TEventColor, string> = {
-        red: "border-red-500 bg-red-100 text-red-800 dark:border-red-400 dark:bg-red-900 dark:text-red-100",
-        yellow: "border-yellow-500 bg-yellow-100 text-yellow-800 dark:border-yellow-400 dark:bg-yellow-900 dark:text-yellow-100",
-        green: "border-[var(--color-brand-green)] bg-green-50 text-green-900 dark:border-green-400 dark:bg-green-900 dark:text-green-100",
-        blue: "border-[var(--color-brand-blue)] bg-blue-50 text-blue-900 dark:border-blue-400 dark:bg-blue-900 dark:text-blue-100",
-        orange: "border-[var(--color-brand-orange)] bg-orange-50 text-orange-900 dark:border-orange-400 dark:bg-orange-900 dark:text-orange-100",
-        lime: "border-[var(--color-brand-lime)] bg-lime-50 text-lime-900 dark:border-lime-400 dark:bg-lime-900 dark:text-lime-100",
-        tan: "border-[var(--color-brand-tan)] bg-amber-50 text-amber-900 dark:border-amber-400 dark:bg-amber-900 dark:text-amber-100",
-        navy: "border-[var(--color-brand-navy)] bg-indigo-50 text-indigo-900 dark:border-indigo-400 dark:bg-indigo-900 dark:text-indigo-100",
-        purple: "border-purple-500 bg-purple-50 text-purple-800 dark:border-purple-400 dark:bg-purple-900 dark:text-purple-100",
-        pink: "border-pink-500 bg-pink-50 text-pink-800 dark:border-pink-400 dark:bg-pink-900 dark:text-pink-100",
-        teal: "border-teal-500 bg-teal-50 text-teal-800 dark:border-teal-400 dark:bg-teal-900 dark:text-teal-100",
+        red: "border-red-500 bg-red-500/25 text-red-900 dark:border-red-400 dark:bg-red-900 dark:text-red-100",
+        yellow: "border-yellow-500 bg-yellow-500/25 text-yellow-900 dark:border-yellow-400 dark:bg-yellow-900 dark:text-yellow-100",
+        green: "border-brand-green-500 bg-brand-green-500/25 text-green-900 dark:border-brand-green-400 dark:bg-brand-green-900 dark:text-brand-green-100",
+        blue: "border-brand-blue-500 bg-brand-blue-500/25 text-blue-900 dark:border-brand-blue-400 dark:bg-brand-blue-900 dark:text-brand-blue-100",
+        orange: "border-brand-orange-500 bg-brand-orange-500/25 text-orange-900 dark:border-brand-orange-400 dark:bg-brand-orange-900 dark:text-brand-orange-100",
+        lime: "border-brand-lime-500 bg-brand-lime-500/25 text-green-900 dark:border-lime-400 dark:bg-lime-900 dark:text-lime-100",
+        tan: "border-brand-tan-500 bg-brand-tan-500/25 text-amber-900 dark:border-amber-400 dark:bg-amber-900 dark:text-amber-100",
+        navy: "border-brand-navy-500 bg-brand-navy-500/25 text-indigo-900 dark:border-indigo-400 dark:bg-indigo-900 dark:text-indigo-100",
+        purple: "border-purple-500 bg-purple-500/25 text-purple-900 dark:border-purple-400 dark:bg-purple-900 dark:text-purple-100",
+        pink: "border-pink-500 bg-pink-500/25 text-pink-900 dark:border-pink-400 dark:bg-pink-900 dark:text-pink-100",
+        teal: "border-teal-500 bg-teal-500/25 text-teal-900 dark:border-teal-400 dark:bg-teal-900 dark:text-teal-100",
     };
     return colorClasses[color] || colorClasses.green;
 };
@@ -415,32 +432,15 @@ export const getBgColor = (color: TEventColor): string => {
     const colorClasses: Record<TEventColor, string> = {
         red: "bg-red-500 dark:bg-red-600 text-white",
         yellow: "bg-yellow-500 dark:bg-yellow-600 text-white",
-        green: "bg-[var(--color-brand-green)] text-white",
-        blue: "bg-[var(--color-brand-blue)] text-white",
-        orange: "bg-[var(--color-brand-orange)] text-white",
-        lime: "bg-[var(--color-brand-lime)] text-white",
-        tan: "bg-[var(--color-brand-tan)] text-white",
-        navy: "bg-[var(--color-brand-navy)] text-white",
+        green: "bg-brand-green-500 text-white",
+        blue: "bg-brand-blue-500 text-white",
+        orange: "bg-brand-orange-500 text-white",
+        lime: "bg-brand-lime-500 text-white",
+        tan: "bg-brand-tan-500 text-white",
+        navy: "bg-brand-navy-500 text-white",
         purple: "bg-purple-500 dark:bg-purple-600 text-white",
         pink: "bg-pink-500 dark:bg-pink-600 text-white",
         teal: "bg-teal-500 dark:bg-teal-600 text-white",
-    };
-    return colorClasses[color] || colorClasses.green;
-};
-
-export const getBulletColor = (color: TEventColor): string => {
-    const colorClasses: Record<TEventColor, string> = {
-        red: "bg-red-500 dark:bg-red-400",
-        yellow: "bg-yellow-500 dark:bg-yellow-400",
-        green: "bg-[var(--color-brand-green)]",
-        blue: "bg-[var(--color-brand-blue)]",
-        orange: "bg-[var(--color-brand-orange)]",
-        lime: "bg-[var(--color-brand-lime)]",
-        tan: "bg-[var(--color-brand-tan)]",
-        navy: "bg-[var(--color-brand-navy)]",
-        purple: "bg-purple-500 dark:bg-purple-400",
-        pink: "bg-pink-500 dark:bg-pink-400",
-        teal: "bg-teal-500 dark:bg-teal-400",
     };
     return colorClasses[color] || colorClasses.green;
 };

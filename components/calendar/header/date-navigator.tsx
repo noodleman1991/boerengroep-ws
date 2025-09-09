@@ -1,6 +1,6 @@
 import { formatDate } from "date-fns";
 import { nl } from "date-fns/locale";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";

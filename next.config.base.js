@@ -49,18 +49,12 @@ const baseConfig = {
   },
   // React strict mode
   reactStrictMode: true,
-  // SWC minification
-  swcMinify: true,
   // PoweredBy header
   poweredByHeader: false,
   
   // Transpile motion package properly for Next.js
   transpilePackages: ['motion'],
   
-  // Experimental features 
-  experimental: {
-    esmExternals: 'loose',
-  },
 };
 
 module.exports = baseConfig;

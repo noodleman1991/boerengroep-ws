@@ -16,9 +16,6 @@ import {
     Clock,
     Euro,
     FileText,
-    Users,
-    Briefcase,
-    GraduationCap,
 } from 'lucide-react';
 
 // === Types ===
@@ -68,11 +65,11 @@ interface VacanciesPageProps {
 }
 
 const VACANCY_TYPES = [
-    { type: 'volunteer', icon: Users, color: 'green' },
-    { type: 'internship', icon: GraduationCap, color: 'blue' },
-    { type: 'coordinator', icon: Briefcase, color: 'purple' },
-    { type: 'board', icon: Briefcase, color: 'orange' },
-    { type: 'other', icon: Briefcase, color: 'gray' },
+    { type: 'volunteer'},
+    { type: 'internship'},
+    { type: 'coordinator'},
+    { type: 'board'},
+    { type: 'other'},
 ] as const;
 
 export const VacanciesPage = ({
@@ -104,6 +101,26 @@ export const VacanciesPage = ({
                 day: 'numeric',
             }
         );
+    };
+
+    // Helper function to check if TinaMarkdown content is empty
+    const hasContent = (content: any): boolean => {
+        if (!content) return false;
+        if (typeof content === 'string') return content.trim().length > 0;
+        if (typeof content === 'object') {
+            // Check if it's a rich text object with actual content
+            if (content.children && Array.isArray(content.children)) {
+                return content.children.some((child: any) => {
+                    if (child.type === 'p' && child.children) {
+                        return child.children.some((textNode: any) => 
+                            textNode.type === 'text' && textNode.text && textNode.text.trim().length > 0
+                        );
+                    }
+                    return false;
+                });
+            }
+        }
+        return false;
     };
 
     const filterVacanciesByType = (type: string): VacancyEdge[] => {
@@ -139,13 +156,9 @@ export const VacanciesPage = ({
     const VacancyAccordion = ({
                                   vacancies: typeVacancies,
                                   type,
-                                  icon: Icon,
-                                  color,
                               }: {
         vacancies: VacancyEdge[];
         type: string;
-        icon: React.ComponentType<any>;
-        color: string;
     }) => {
         if (typeVacancies.length === 0) {
             return (
@@ -154,7 +167,6 @@ export const VacanciesPage = ({
                     className="space-y-6 scroll-mt-24"
                 >
                     <div className="flex items-center gap-3">
-                        <Icon className={`h-7 w-7 text-${color}-600 flex-shrink-0`} />
                         <h2 className="text-2xl font-semibold">
                             {t(`types.${type}.title`)}
                         </h2>
@@ -172,7 +184,6 @@ export const VacanciesPage = ({
                 className="space-y-6 scroll-mt-24"
             >
                 <div className="flex items-center gap-3">
-                    <Icon className={`h-7 w-7 text-${color}-600 flex-shrink-0`} />
                     <h2 className="text-2xl font-semibold">
                         {t(`types.${type}.title`)}
                     </h2>
@@ -328,7 +339,7 @@ export const VacanciesPage = ({
                                     )}
 
                                     {/* Responsibilities */}
-                                    {vacancy.responsibilities && (
+                                    {hasContent(vacancy.responsibilities) && (
                                         <div>
                                             <h4 className="font-medium mb-2">
                                                 {t('fields.responsibilities')}
@@ -366,7 +377,7 @@ export const VacanciesPage = ({
                                                 </div>
                                             )}
 
-                                        {vacancy.preferredQualities && (
+                                        {hasContent(vacancy.preferredQualities) && (
                                             <div>
                                                 <h4 className="font-medium mb-2">
                                                     {t('fields.preferredQualities')}
@@ -417,7 +428,7 @@ export const VacanciesPage = ({
                                     )}
 
                                     {/* Supporting Document */}
-                                    {vacancy.supportingDocument && (
+                                    {vacancy.supportingDocument && vacancy.supportingDocument.trim() && (
                                         <div>
                                             <h4 className="font-medium mb-2">
                                                 {t('fields.supportingDocument')}
@@ -435,7 +446,7 @@ export const VacanciesPage = ({
                                     )}
 
                                     {/* Values Statement */}
-                                    {vacancy.valuesStatement && (
+                                    {hasContent(vacancy.valuesStatement) && (
                                         <div>
                                             <h4 className="font-medium mb-2">
                                                 {t('fields.valuesStatement')}
@@ -449,7 +460,7 @@ export const VacanciesPage = ({
                                     )}
 
                                     {/* How to Apply & Contact Info */}
-                                    {vacancy.howToApply && (
+                                    {hasContent(vacancy.howToApply) && (
                                         <div className="border-t pt-4">
                                             <h4 className="font-medium mb-2">
                                                 {t('fields.howToApply')}
@@ -522,28 +533,25 @@ export const VacanciesPage = ({
 
                 {/* Quick Navigation */}
                 <div className="flex flex-wrap justify-center gap-4">
-                    {VACANCY_TYPES.map(({ type, icon: Icon }) => (
+                    {VACANCY_TYPES.map(({ type }) => (
                         <a
                             key={type}
                             href={`#${type}`}
                             className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
                         >
-                            <Icon className="w-4 h-4" />
                             {t(`types.${type}.navTitle`)}
                         </a>
                     ))}
                 </div>
 
                 {/* Vacancy Sections */}
-                {VACANCY_TYPES.map(({ type, icon, color }) => {
+                {VACANCY_TYPES.map(({ type }) => {
                     const typeVacancies = filterVacanciesByType(type);
                     return (
                         <VacancyAccordion
                             key={type}
                             vacancies={typeVacancies}
                             type={type}
-                            icon={icon}
-                            color={color}
                         />
                     );
                 })}

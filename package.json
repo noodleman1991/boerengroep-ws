@@ -59,7 +59,6 @@
     "dotenv": "^17.2.1",
     "drizzle-orm": "^0.44.4",
     "fast-xml-parser": "^5.2.5",
-    "framer-motion": "^12.23.12",
     "lodash": "^4.17.21",
     "lucide-react": "^0.484.0",
     "mermaid": "^11.8.0",

@@ -1,6 +1,6 @@
 import { formatDate } from "date-fns";
 import { nl } from "date-fns/locale";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {

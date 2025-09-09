@@ -1,8 +1,68 @@
 @import "tailwindcss";
 
+/* ===== TAILWIND 4 THEME CONFIGURATION ===== */
+@theme {
+    /* Map your existing CSS variables to Tailwind utilities */
+    --color-brand-green: #44AD39;    /* Creates bg-brand-green */
+    --color-brand-orange: #F28F07;   /* Creates bg-brand-orange */
+    --color-brand-blue: #4169E1;     /* Creates bg-brand-blue */
+    --color-brand-lime: #32CD32;     /* Creates bg-brand-lime */
+    --color-brand-tan: #D2B48C;      /* Creates bg-brand-tan */
+    --color-brand-navy: #1E40AF;     /* Creates bg-brand-navy */
+
+    /* Brand color scales for more flexibility */
+    --color-brand-green-50: #f0fdf4;
+    --color-brand-green-100: #dcfce7;
+    --color-brand-green-200: #bbf7d0;
+    --color-brand-green-300: #86efac;
+    --color-brand-green-400: #4ade80;
+    --color-brand-green-500: #44AD39;
+    --color-brand-green-600: #16a34a;
+    --color-brand-green-700: #15803d;
+    --color-brand-green-800: #166534;
+    --color-brand-green-900: #14532d;
+
+    --color-brand-orange-50: #fff7ed;
+    --color-brand-orange-100: #ffedd5;
+    --color-brand-orange-200: #fed7aa;
+    --color-brand-orange-300: #fdba74;
+    --color-brand-orange-400: #fb923c;
+    --color-brand-orange-500: #F28F07;
+    --color-brand-orange-600: #ea580c;
+    --color-brand-orange-700: #c2410c;
+    --color-brand-orange-800: #9a3412;
+    --color-brand-orange-900: #7c2d12;
+
+    --color-brand-blue-50: #eff6ff;
+    --color-brand-blue-100: #dbeafe;
+    --color-brand-blue-200: #bfdbfe;
+    --color-brand-blue-300: #93c5fd;
+    --color-brand-blue-400: #60a5fa;
+    --color-brand-blue-500: #4169E1;
+    --color-brand-blue-600: #2563eb;
+    --color-brand-blue-700: #1d4ed8;
+    --color-brand-blue-800: #1e40af;
+    --color-brand-blue-900: #1e3a8a;
+
+    /* Additional brand colors */
+    --color-brand-lime-500: #32CD32;
+    --color-brand-tan-500: #D2B48C;
+    --color-brand-navy-500: #1E40AF;
+
+    /* Neutral colors with brand tint */
+    --color-neutral-warm-50: #F5F5F0;
+    --color-neutral-cool-50: #F8F9FA;
+    --color-accent-light-50: #E8F4FD;
+
+    /* Custom font families */
+    --font-family-roboto-flex: "Roboto Flex", ui-sans-serif, system-ui, sans-serif;
+    --font-family-enriqueta: "Enriqueta", ui-serif, Georgia, serif;
+    --font-family-public-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
 /* ===== BOERENGROEP BRAND SYSTEM - REFINED & POLISHED ===== */
 :root {
-    /* Core brand colors with refined approach */
+    /* Core brand colors with refined approach - for shadcn/ui components */
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
 
@@ -41,7 +101,7 @@
     --ring: 120 49% 45%; /* Focus rings use primary */
     --radius: 8px; /* Slightly more organic radius */
 
-    /* Brand color palette for direct usage */
+    /* Brand color palette for direct usage (legacy support) */
     --color-brand-green: #44AD39;
     --color-brand-orange: #F28F07;
     --color-brand-blue: #4169E1;
@@ -382,7 +442,7 @@ button, [role="button"] {
     font-family: var(--font-family-roboto-flex) !important;
 }
 
-/* ===== UTILITY CLASSES ===== */
+/* ===== UTILITY CLASSES (Updated for Tailwind 4) ===== */
 .text-brand-green { color: var(--color-brand-green); }
 .text-brand-orange { color: var(--color-brand-orange); }
 .text-brand-blue { color: var(--color-brand-blue); }

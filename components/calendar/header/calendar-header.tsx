@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import {
     CalendarRange,
     Grid3X3,
@@ -102,23 +102,23 @@ export function CalendarHeader({ isFullscreen = false, onToggleFullscreen }: Cal
                         </Button>
                     </ButtonGroup>
 
-                    {onToggleFullscreen && (
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={onToggleFullscreen}
-                            title={isFullscreen ? t('fullscreen.exit') : t('fullscreen.enter')}
-                        >
-                            {isFullscreen ? (
-                                <Minimize className="h-4 w-4" />
-                            ) : (
-                                <Maximize className="h-4 w-4" />
-                            )}
-                        </Button>
-                    )}
+                    {/*{onToggleFullscreen && (*/}
+                    {/*    <Button*/}
+                    {/*        variant="outline"*/}
+                    {/*        size="icon"*/}
+                    {/*        onClick={onToggleFullscreen}*/}
+                    {/*        title={isFullscreen ? t('fullscreen.exit') : t('fullscreen.enter')}*/}
+                    {/*    >*/}
+                    {/*        {isFullscreen ? (*/}
+                    {/*            <Minimize className="h-4 w-4" />*/}
+                    {/*        ) : (*/}
+                    {/*            <Maximize className="h-4 w-4" />*/}
+                    {/*        )}*/}
+                    {/*    </Button>*/}
+                    {/*)}*/}
                 </div>
 
-                <Settings />
+                {/*<Settings />*/}
             </motion.div>
         </div>
     );
