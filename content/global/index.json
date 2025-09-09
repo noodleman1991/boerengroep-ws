@@ -1,6 +1,6 @@
 {
   "header": {
-    "logoSrc": "/uploads/branding/boerengroep-logo-zwart.png",
+    "logo": "/uploads/branding/boerengroep-logo-zwart.png",
     "logoAlt": "Stichting Boerengroep Logo",
     "name": "Boerengroep",
     "color": "primary",
