@@ -6,15 +6,28 @@ import { Button } from '@/components/ui/button'
 import { PageBlocksCta } from '@/tina/__generated__/types';
 import { Icon } from '../icon';
 import { Section } from '../layout/section';
+import { motion } from 'motion/react';
 
 export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
     return (
         <Section>
-            <div className="text-center">
+            <motion.div 
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                viewport={{ once: true, margin: "-100px" }}
+            >
                 <h2 className="text-balance text-4xl font-semibold lg:text-5xl" data-tina-field={tinaField(data, 'title')}>{data.title}</h2>
                 <p className="mt-4" data-tina-field={tinaField(data, 'description')}>{data.description}</p>
 
-                <div className="mt-12 flex flex-wrap justify-center gap-4">
+                <motion.div 
+                    className="mt-12 flex flex-wrap justify-center gap-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+                    viewport={{ once: true, margin: "-100px" }}
+                >
                     {data.actions && data.actions.map(action => (
                         <div
                             key={action!.label}
@@ -32,8 +45,8 @@ export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
                             </Button>
                         </div>
                     ))}
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </Section>
     )
 }
@@ -84,7 +97,11 @@ export const ctaBlockSchema: TinaTemplate = {
                 defaultItem: {
                     label: 'Action Label',
                     type: 'button',
-                    icon: true,
+                    icon: {
+                        name: 'ArrowRight',
+                        color: 'primary',
+                        style: 'outline'
+                    },
                     link: '/',
                 },
                 itemProps: (item: any)  => ({ label: item.label }),

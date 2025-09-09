@@ -140,7 +140,7 @@ export const Footer = () => {
                 {/* Legal Links */}
                 <div className="border-t border-border py-4">
                     <div className="flex flex-wrap justify-center gap-6 text-xs text-muted-foreground md:justify-start">
-                        <Link href="/privacy" className="hover:text-accent-foreground transition-colors duration-150">
+                        <Link href="/privacy-policy" className="hover:text-accent-foreground transition-colors duration-150">
                             {t('legal.privacy')}
                         </Link>
                         <Link href="/cookies" className="hover:text-accent-foreground transition-colors duration-150">

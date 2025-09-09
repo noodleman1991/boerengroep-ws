@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
 
     return {
         title: `${t('news')} - Stichting Boerengroep`,
-        description: 'Stay updated with the latest news from Stichting Boerengroep and our partner organizations.',
+        description: 'Stay updated with the latest news from Stichting Boerengroep and friends news.',
     };
 }
 
@@ -42,7 +42,7 @@ export default async function NewsPage({ params }: NewsPageProps) {
                             {t('news')}
                         </h1>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                            Stay updated with the latest news from Stichting Boerengroep and our partner organizations.
+                            Stay updated with the latest news from Stichting Boerengroep and friends news.
                         </p>
                     </div>
 
@@ -83,7 +83,7 @@ export default async function NewsPage({ params }: NewsPageProps) {
                                     <div>
                                         <CardTitle>{t('friends-news')}</CardTitle>
                                         <CardDescription>
-                                            News and updates from our partner organizations and friends.
+                                            News and updates from our friends.
                                         </CardDescription>
                                     </div>
                                 </div>

@@ -58,7 +58,6 @@ const Newsletter: Collection = {
             options: [
                 { label: "Boerengroep", value: "Boerengroep" },
                 { label: "Inspringtheater", value: "Inspringtheater" },
-                { label: "Friend Organization", value: "partner" },
                 { label: "Other", value: "other" },
             ],
         },
@@ -149,7 +148,6 @@ const Newsletter: Collection = {
             label: "Published",
             name: "published",
             description: "Make this newsletter visible",
-            required: true,
         },
     ],
 };

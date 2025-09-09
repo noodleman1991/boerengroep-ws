@@ -1,47 +1,47 @@
 import Layout from '@/components/layout/layout';
 import client from '@/tina/__generated__/client';
-import PostsClientPage from './client-page';
+import PastEventsClientPage from './client-page';
 
 export const revalidate = 300;
 
-export default async function PostsPage({
+export default async function PastEventsPage({
                                             params,
                                         }: {
     params: Promise<{ locale: string }>;
 }) {
     const { locale } = await params;
 
-    let posts = await client.queries.postConnection({
+    let pastEvents = await client.queries.pastEventConnection({
         sort: 'date',
         last: 1
     });
-    const allPosts = posts;
+    const allPastEvents = pastEvents;
 
-    if (!allPosts.data.postConnection.edges) {
+    if (!allPastEvents.data.pastEventConnection.edges) {
         return [];
     }
 
-    while (posts.data?.postConnection.pageInfo.hasPreviousPage) {
-        posts = await client.queries.postConnection({
+    while (pastEvents.data?.pastEventConnection.pageInfo.hasPreviousPage) {
+        pastEvents = await client.queries.pastEventConnection({
             sort: 'date',
-            before: posts.data.postConnection.pageInfo.endCursor,
+            before: pastEvents.data.pastEventConnection.pageInfo.endCursor,
         });
 
-        if (!posts.data.postConnection.edges) {
+        if (!pastEvents.data.pastEventConnection.edges) {
             break;
         }
 
-        allPosts.data.postConnection.edges.push(...posts.data.postConnection.edges.reverse());
+        allPastEvents.data.pastEventConnection.edges.push(...pastEvents.data.pastEventConnection.edges.reverse());
     }
 
-    // Filter posts by locale or show all if no locale-specific posts
-    const localeFilteredPosts = {
-        ...allPosts,
+    // Filter past events by locale or show all if no locale-specific past events
+    const localeFilteredPastEvents = {
+        ...allPastEvents,
         data: {
-            ...allPosts.data,
-            postConnection: {
-                ...allPosts.data.postConnection,
-                edges: allPosts.data.postConnection.edges?.filter(edge => {
+            ...allPastEvents.data,
+            pastEventConnection: {
+                ...allPastEvents.data.pastEventConnection,
+                edges: allPastEvents.data.pastEventConnection.edges?.filter(edge => {
                     const breadcrumbs = edge?.node?._sys.breadcrumbs || [];
                     return breadcrumbs[0] === locale || !['nl', 'en'].includes(breadcrumbs[0]);
                 }) || []
@@ -50,8 +50,9 @@ export default async function PostsPage({
     };
 
     return (
-        <Layout rawPageData={localeFilteredPosts.data}>
-            <PostsClientPage {...localeFilteredPosts} />
+        <Layout rawPageData={localeFilteredPastEvents.data}>
+            <PastEventsClientPage {...localeFilteredPastEvents} />
         </Layout>
     );
 }
+

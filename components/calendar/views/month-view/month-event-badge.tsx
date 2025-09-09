@@ -10,36 +10,36 @@ import type { IEvent } from "../../interfaces";
 import {EventBullet} from "../../views/month-view/event-bullet";
 
 const eventBadgeVariants = cva(
-	"mx-1 flex size-auto h-6.5 select-none items-center justify-between gap-1.5 truncate whitespace-nowrap rounded-md border px-2 text-xs",
+	"mx-1 flex size-auto h-7 select-none items-center justify-between gap-1.5 truncate whitespace-nowrap rounded-md border px-2 text-xs font-medium",
 	{
 		variants: {
 			color: {
-				// Colored variants
-				blue: "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300",
-				green:
-					"border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-300",
-				red: "border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300",
-				yellow:
-					"border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-300",
-				purple:
-					"border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800 dark:bg-purple-950 dark:text-purple-300",
-				orange:
-					"border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300",
+				// Brand color variants using vibrant colors with CSS custom properties
+				blue: "border-[var(--color-brand-blue)] bg-[var(--color-brand-blue)]/15 text-blue-900 dark:border-blue-400 dark:bg-blue-900 dark:text-blue-100",
+				green: "border-[var(--color-brand-green)] bg-[var(--color-brand-green)]/15 text-green-900 dark:border-green-400 dark:bg-green-900 dark:text-green-100",
+				orange: "border-[var(--color-brand-orange)] bg-[var(--color-brand-orange)]/15 text-orange-900 dark:border-orange-400 dark:bg-orange-900 dark:text-orange-100",
+				lime: "border-[var(--color-brand-lime)] bg-[var(--color-brand-lime)]/15 text-green-900 dark:border-lime-400 dark:bg-lime-900 dark:text-lime-100",
+				tan: "border-[var(--color-brand-tan)] bg-[var(--color-brand-tan)]/15 text-amber-900 dark:border-amber-400 dark:bg-amber-900 dark:text-amber-100",
+				navy: "border-[var(--color-brand-navy)] bg-[var(--color-brand-navy)]/15 text-indigo-900 dark:border-indigo-400 dark:bg-indigo-900 dark:text-indigo-100",
+				red: "border-red-500 bg-red-500/15 text-red-900 dark:border-red-400 dark:bg-red-900 dark:text-red-100",
+				purple: "border-purple-500 bg-purple-500/15 text-purple-900 dark:border-purple-400 dark:bg-purple-900 dark:text-purple-100",
 
-				// Dot variants
-				"blue-dot": "bg-bg-secondary text-t-primary [&_svg]:fill-blue-600",
-				"green-dot": "bg-bg-secondary text-t-primary [&_svg]:fill-green-600",
-				"red-dot": "bg-bg-secondary text-t-primary [&_svg]:fill-red-600",
-				"orange-dot": "bg-bg-secondary text-t-primary [&_svg]:fill-orange-600",
-				"purple-dot": "bg-bg-secondary text-t-primary [&_svg]:fill-purple-600",
-				"yellow-dot": "bg-bg-secondary text-t-primary [&_svg]:fill-yellow-600",
+				// Dot variants using brand colors
+				"blue-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-blue)]",
+				"green-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-green)]",
+				"orange-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-orange)]",
+				"lime-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-lime)]",
+				"tan-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-tan)]",
+				"navy-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-navy)]",
+				"red-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-red-500",
+				"purple-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-purple-500",
 			},
 			multiDayPosition: {
 				first:
 					"relative z-10 mr-0 rounded-r-none border-r-0 [&>span]:mr-2.5",
 				middle:
-					"relative z-10 mx-0 w-[calc(100%_+_1px)] rounded-none border-x-0",
-				last: "ml-0 rounded-l-none border-l-0",
+					"relative z-10 mx-0 w-[calc(100%_+_2px)] rounded-none border-x-0 -ml-px -mr-px",
+				last: "ml-0 rounded-l-none border-l-0 -ml-px",
 				none: "",
 			},
 		},
@@ -108,27 +108,27 @@ export function MonthEventBadge({
 		<DraggableEvent event={event}>
 			<EventDetailsDialog event={event}>
 				<div role="button" tabIndex={0} className={eventBadgeClasses}>
-					<div className="flex items-center gap-1.5 truncate">
+					<div className="flex items-center gap-1.5 truncate min-h-full">
 						{!["middle", "last"].includes(position) &&
 							badgeVariant === "dot" && (
 								<EventBullet color={event.color} />
 							)}
 
 						{renderBadgeText && (
-							<p className="flex-1 truncate font-semibold">
+							<p className="flex-1 truncate font-medium leading-tight flex items-center">
 								{eventCurrentDay && (
-									<span className="text-xs">
+									<span className="text-xs opacity-75 mr-1">
 										Day {eventCurrentDay} of {eventTotalDays} •{" "}
 									</span>
 								)}
-								{event.title}
+								<span className="truncate">{event.title}</span>
 							</p>
 						)}
 					</div>
 
-					<div className="hidden sm:block">
+					<div className="hidden sm:flex items-center">
 						{renderBadgeTime && (
-							<span>
+							<span className="text-xs opacity-90">
 							{formatTime(new Date(event.startDate), use24HourFormat)}
 						</span>
 						)}

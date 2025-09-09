@@ -51,11 +51,15 @@ export const AgendaEvents: FC = () => {
     }
 
     return (
-        <Command className="py-4 h-[80vh] bg-transparent">
-            <div className="mb-4 mx-4">
-                <CommandInput placeholder={t('search.placeholder')} />
-            </div>
-            <CommandList className="max-h-max px-3 border-t">
+        <div className="py-4 h-[80vh] bg-transparent">
+            <Command className="bg-transparent">
+                <div className="mx-4 mb-6">
+                    <CommandInput 
+                        placeholder={locale === 'nl' ? 'Zoek gebeurtenissen...' : 'Search events...'} 
+                        className="h-10 border-gray-200 bg-white shadow-sm rounded-lg [&_div]:border-0 [&_svg]:hidden" 
+                    />
+                </div>
+                <CommandList className="max-h-max px-0">
                 {groupedAndSortedEvents.map(([key, groupedEvents]) => {
                     if (!groupedEvents || groupedEvents.length === 0) return null;
 
@@ -68,65 +72,69 @@ export const AgendaEvents: FC = () => {
                         <CommandGroup
                             key={key}
                             heading={formattedDate}
+                            className="mb-8"
                         >
-                            {groupedEvents.map((event: IEvent) => (
-                                <CommandItem
-                                    key={event.id}
-                                    className={cn(
-                                        "mb-2 p-4 border rounded-md data-[selected=true]:bg-bg transition-all data-[selected=true]:text-none hover:cursor-pointer",
-                                        {
-                                            [getColorClass(event.color)]: badgeVariant === "colored",
-                                            "hover:bg-zinc-200 dark:hover:bg-gray-900":
-                                                badgeVariant === "dot",
-                                            "hover:opacity-60": badgeVariant === "colored",
-                                        },
-                                    )}
-                                >
+                            <div className="space-y-4">
+                                {groupedEvents.map((event: IEvent) => (
+                                    <CommandItem
+                                        key={event.id}
+                                        className={cn(
+                                            "p-5 border border-gray-200 rounded-xl bg-white shadow-sm hover:shadow-md data-[selected=true]:bg-gray-50 transition-all data-[selected=true]:text-none hover:cursor-pointer hover:border-gray-300",
+                                            {
+                                                [getColorClass(event.color)]: badgeVariant === "colored",
+                                                "hover:bg-gray-50 dark:hover:bg-gray-800":
+                                                    badgeVariant === "dot",
+                                                "hover:opacity-90": badgeVariant === "colored",
+                                            },
+                                        )}
+                                    >
                                     <EventDetailsDialog event={event}>
-                                        <div className="w-full flex items-center justify-between gap-4">
-                                            <div className="flex items-center gap-2">
+                                        <div className="w-full flex items-center justify-between gap-6">
+                                            <div className="flex items-center gap-4">
                                                 {badgeVariant === "dot" ? (
                                                     <EventBullet color={event.color} />
                                                 ) : (
-                                                    <Avatar>
+                                                    <Avatar className="h-10 w-10">
                                                         <AvatarImage src="" alt="@event" />
                                                         <AvatarFallback className={getBgColor(event.color)}>
                                                             {getFirstLetters(event.title)}
                                                         </AvatarFallback>
                                                     </Avatar>
                                                 )}
-                                                <div className="flex flex-col">
+                                                <div className="flex flex-col min-w-0 flex-1">
                                                     <p
-                                                        className={cn({
+                                                        className={cn("font-semibold text-gray-900 truncate", {
                                                             "font-medium": badgeVariant === "dot",
                                                             "text-foreground": badgeVariant === "dot",
                                                         })}
                                                     >
                                                         {event.title}
                                                     </p>
-                                                    <p className="text-muted-foreground text-sm line-clamp-1 text-ellipsis md:text-clip w-1/3">
-                                                        {event.description}
-                                                    </p>
+                                                    {event.description && (
+                                                        <p className="text-gray-600 text-sm line-clamp-2 mt-1">
+                                                            {event.description}
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </div>
-                                            <div className="w-40 flex justify-center items-center gap-1">
-                                                <p className="text-sm">
+                                            <div className="flex flex-col items-end gap-1 shrink-0">
+                                                <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
                                                     {formatTime(event.startDate, use24HourFormat)}
-                                                </p>
-                                                <span className="text-muted-foreground">-</span>
-                                                <p className="text-sm">
+                                                    <span className="text-gray-400">-</span>
                                                     {formatTime(event.endDate, use24HourFormat)}
-                                                </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </EventDetailsDialog>
-                                </CommandItem>
-                            ))}
+                                    </CommandItem>
+                                ))}
+                            </div>
                         </CommandGroup>
                     );
-                })}
-                <CommandEmpty>{t('search.noResults')}</CommandEmpty>
-            </CommandList>
-        </Command>
+                    })}
+                    <CommandEmpty>{t('search.noResults')}</CommandEmpty>
+                </CommandList>
+            </Command>
+        </div>
     );
 };

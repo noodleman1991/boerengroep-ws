@@ -9,17 +9,25 @@ import { Section } from '../layout/section';
 import { Mermaid } from './mermaid';
 import { sectionBlockSchemaField } from '../layout/section';
 import { scriptCopyBlockSchema, ScriptCopyBtn } from '../magicui/script-copy-btn';
+import { motion } from 'motion/react';
 
 export const Content = ({ data }: { data: PageBlocksContent }) => {
     return (
         <Section background={data.background!} className='prose prose-lg' data-tina-field={tinaField(data, 'body')}>
-            <TinaMarkdown
-                content={data.body}
-                components={{
-                    mermaid: (props: any) => <Mermaid {...props} />,
-                    scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
-                }}
-            />
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                viewport={{ once: true, margin: "-100px" }}
+            >
+                <TinaMarkdown
+                    content={data.body}
+                    components={{
+                        mermaid: (props: any) => <Mermaid {...props} />,
+                        scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
+                    }}
+                />
+            </motion.div>
         </Section>
     );
 };

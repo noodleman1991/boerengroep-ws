@@ -28,11 +28,32 @@ export default async function Page({
 
     const filepath = urlSegments.join('/');
 
+    // Function to get the correct file path for the given locale
+    const getLocalizedFilePath = (segments: string[], locale: string) => {
+        // For Dutch locale, we need to translate URL segments back to file system paths
+        if (locale === 'nl') {
+            const translatedSegments = segments.map(segment => {
+                switch (segment) {
+                    case 'activities': return 'activiteiten';
+                    case 'about-us': return 'over-ons';
+                    case 'news': return 'nieuws';
+                    case 'vacancies': return 'vacatures';
+                    case 'library': return 'bibliotheek';
+                    default: return segment;
+                }
+            });
+            return translatedSegments.join('/');
+        }
+        return segments.join('/');
+    };
+
+    const localizedFilePath = getLocalizedFilePath(urlSegments, locale);
+
     let data;
     try {
         // Include locale in relativePath following TinaCMS i18n pattern
         data = await client.queries.page({
-            relativePath: `${locale}/${filepath}.mdx`,
+            relativePath: `${locale}/${localizedFilePath}.mdx`,
         });
     } catch (error) {
         // Fallback to default locale or non-localized content
@@ -41,9 +62,9 @@ export default async function Page({
                 relativePath: `${filepath}.mdx`,
             });
         } catch (fallbackError) {
-            console.error(`Failed to find page: ${filepath}`, {
+            console.error(`Failed to find page: ${localizedFilePath}`, {
                 locale,
-                filepath,
+                filepath: localizedFilePath,
                 error: fallbackError instanceof Error ? fallbackError.message : 'Unknown error'
             });
             notFound();

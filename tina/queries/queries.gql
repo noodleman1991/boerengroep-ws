@@ -1,6 +1,6 @@
 query pageQuery {
     ...LayoutQueryFragment
-    postConnection {
+    pastEventConnection {
         edges {
             node {
                 id
@@ -27,10 +27,10 @@ query contentQuery($relativePath: String!) {
     }
 }
 
-query blogPostQuery($relativePath: String!) {
+query pastEventQuery($relativePath: String!) {
     ...LayoutQueryFragment
-    post(relativePath: $relativePath) {
-        ...PostParts
+    pastEvent(relativePath: $relativePath) {
+        ...PastEventParts
         author {
             ... on Author {
                 name
@@ -93,6 +93,7 @@ query vacancyQuery {
                 }
                 startDate
                 duration
+                openApplication
                 applicationDeadline
                 description
                 responsibilities

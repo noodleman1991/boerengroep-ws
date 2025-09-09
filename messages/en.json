@@ -13,26 +13,24 @@
       "activities": "Activities",
       "calendar": "Calendar",
       "past-events": "Past Events",
-      "group-studies": "Group Studies",
-      "fei": "Farm Experience Interenship",
-      "teachers": "Teachers",
-      "auditorium": "Auditorium",
-      "forum-reader": "Forum Reader",
+      "fei": "Farm Experience Internship",
+      "farm-experience-internship": "Farm Experience Internship",
+      "breaks": "Breaks",
+      "reclaim-the-seeds": "Reclaim the Seeds",
+      "open-meetings": "Open Meetings",
       "soup-kitchen": "Soup Kitchen",
       "internships": "Internships",
       "coordinator": "Coordinator",
       "board": "Board",
       "volunteers": "Volunteers",
       "news": "News",
-      "landscape": "Landscape",
       "newsletter": "Newsletter",
       "friends-news": "Friends News",
-      "inspiration-theater": "Inspiration Theater",
-      "legendary-network": "Legendary Network",
-      "event-materials": "Event Materials",
+      "inspringtheater": "Inspringtheater",
+      "library": "Library",
       "library-media": "Library & Media",
       "podcast": "Podcast",
-      "audio-videos": "Audio & Videos",
+      "picture-video-gallery": "Picture & Video Gallery",
       "50-years-bg": "50 Years BG",
       "contact": "Contact",
       "vacancies": "Vacancies"
@@ -40,7 +38,7 @@
   },
   "newsletter": {
     "title": "Newsletter",
-    "description": "Stay updated with the latest news from Stichting Boerengroep and our partner organizations.",
+    "description": "Stay updated with the latest news from Stichting Boerengroep and friends news.",
     "read_more": "Read more",
     "visit_link": "Visit link",
     "no_newsletters": "No newsletters found.",
@@ -275,8 +273,7 @@
         "title": "Activities",
         "links": {
           "calendar": "Calendar",
-          "group-studies": "Group Studies",
-          "soup-kitchen": "Soup Kitchen"
+              "soup-kitchen": "Soup Kitchen"
         }
       },
       "get-involved": {
@@ -326,6 +323,7 @@
     "downloadDocument": "Download Document",
     "status": {
       "open": "Open",
+      "openNoDeadline": "Open",
       "closed": "Closed"
     },
     "types": {
@@ -406,5 +404,17 @@
       "duration": "Duration",
       "progressBar": "Audio progress"
     }
+  },
+  "pastEvents": {
+    "title": "Past Events",
+    "description": "Read how past events went and discover highlights from our activities and gatherings.",
+    "readMore": "Read more",
+    "eventDate": "Event Date",
+    "author": "Event Report by",
+    "tags": "Tags",
+    "relatedEvent": "Related Calendar Event",
+    "backToPastEvents": "Back to Past Events",
+    "noPastEvents": "No past events found.",
+    "eventSummary": "Event Summary"
   }
 }

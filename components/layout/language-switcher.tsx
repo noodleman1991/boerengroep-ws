@@ -17,11 +17,10 @@ export const LanguageSwitcher = () => {
         <Link
             href={pathname}
             locale={targetLocale}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-accent-foreground transition-colors duration-150 rounded-md hover:bg-gray-50"
+            className="text-black hover:text-gray-600 text-sm font-medium transition-colors duration-200"
             aria-label={`Switch to ${targetLocale === 'nl' ? 'Dutch' : 'English'}`}
         >
-            {/*<Globe className="size-4" />*/}
-            <span className="font-medium">{displayText}</span>
+            <span>{displayText}</span>
         </Link>
     );
 };

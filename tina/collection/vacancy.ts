@@ -66,6 +66,7 @@ const Vacancy: Collection = {
             type: "datetime",
             label: "Start Date",
             name: "startDate",
+            required: false,
             ui: {
                 dateFormat: "YYYY-MM-DD",
             },
@@ -77,10 +78,16 @@ const Vacancy: Collection = {
             description: "e.g., 3 months, 1 year",
         },
         {
+            type: "boolean",
+            label: "Open Application (No Deadline)",
+            name: "openApplication",
+            description: "Enable this for positions with no application deadline",
+        },
+        {
             type: "datetime",
             label: "Application Deadline",
             name: "applicationDeadline",
-            required: true,
+            required: false,
             ui: {
                 dateFormat: "YYYY-MM-DD",
             },

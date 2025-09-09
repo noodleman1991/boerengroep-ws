@@ -11,22 +11,43 @@ import { iconSchema } from "../../tina/fields/icon";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Section } from "../layout/section";
 import { sectionBlockSchemaField } from '../layout/section';
+import { motion } from 'motion/react';
 
 export const Features = ({ data }: { data: PageBlocksFeatures }) => {
     return (
         <Section background={data.background!}>
-            <div className="@container mx-auto max-w-5xl px-6">
+            <motion.div 
+                className="@container mx-auto max-w-5xl px-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                viewport={{ once: true, margin: "-100px" }}
+            >
                 <div className="text-center">
                     <h2 data-tina-field={tinaField(data, 'title')} className="text-balance text-4xl font-semibold lg:text-5xl">{data.title}</h2>
                     <p data-tina-field={tinaField(data, 'description')} className="mt-4">{data.description}</p>
                 </div>
-                <Card className="@min-4xl:max-w-full @min-4xl:grid-cols-3 @min-4xl:divide-x @min-4xl:divide-y-0 mx-auto mt-8 grid max-w-sm divide-y overflow-hidden shadow-zinc-950/5 *:text-center md:mt-16">
+                <Card className="mx-auto mt-8 grid max-w-sm md:max-w-full md:grid-cols-3 md:divide-x md:divide-y-0 divide-y overflow-hidden shadow-zinc-950/5 *:text-center md:mt-16">
                     {data.items &&
                         data.items.map(function (block, i) {
-                            return <Feature key={i} {...block!} />;
+                            return (
+                                <motion.div
+                                    key={i}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ 
+                                        duration: 0.5, 
+                                        ease: "easeOut",
+                                        delay: i * 0.1 
+                                    }}
+                                    viewport={{ once: true, margin: "-100px" }}
+                                >
+                                    <Feature {...block!} />
+                                </motion.div>
+                            );
                         })}
                 </Card>
-            </div>
+            </motion.div>
         </Section>
     )
 }

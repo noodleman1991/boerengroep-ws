@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: FriendsNewsPageProps): Promis
 
     return {
         title: `${t('filters.friends')} - Stichting Boerengroep`,
-        description: 'News and updates from our partner organizations.',
+        description: 'News and updates from our friends.',
     };
 }
 
@@ -50,7 +50,7 @@ export default async function FriendsNewsPage({ params }: FriendsNewsPageProps) 
                 locale={locale}
                 filter="friends"
                 title={t('filters.friends')}
-                description="News and updates from our partner organizations and friends in the sustainable agriculture community."
+                description="News and updates from our friends in the sustainable agriculture community."
             />
         </Layout>
     );

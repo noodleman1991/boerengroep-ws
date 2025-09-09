@@ -47,7 +47,7 @@ export function CalendarHeader({ isFullscreen = false, onToggleFullscreen }: Cal
                     <div className="h-14 w-14 rounded border" /> {/* TodayButton placeholder */}
                     <div className="h-8 w-32 rounded border" /> {/* DateNavigator placeholder */}
                 </div>
-                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-1.5">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-3">
                     <div className="flex h-10 w-40 rounded border" /> {/* ButtonGroup placeholder */}
                     <div className="h-10 w-10 rounded border" /> {/* Settings placeholder */}
                 </div>
@@ -69,13 +69,13 @@ export function CalendarHeader({ isFullscreen = false, onToggleFullscreen }: Cal
             </motion.div>
 
             <motion.div
-                className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-1.5"
+                className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-3"
                 variants={slideFromRight}
                 initial="initial"
                 animate="animate"
                 transition={transition}
             >
-                <div className="options flex-wrap flex items-center gap-4 md:gap-2">
+                <div className="options flex-wrap flex items-center gap-3">
                     <FilterEvents />
 
                     <ButtonGroup className="flex">

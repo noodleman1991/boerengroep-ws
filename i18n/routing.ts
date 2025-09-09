@@ -132,9 +132,9 @@ export const routing = defineRouting({
         '/contact': '/contact',
 
         // Legal pages
-        '/privacy': {
-            en: '/privacy',
-            nl: '/privacy'
+        '/privacy-policy': {
+            en: '/privacy-policy',
+            nl: '/privacybeleid'
         },
         '/cookies': {
             en: '/cookies',

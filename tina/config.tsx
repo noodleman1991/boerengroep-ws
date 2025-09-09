@@ -1,7 +1,7 @@
 import { defineConfig } from "tinacms";
 import baseConfig from "../next.config.base";
 
-import Post from "./collection/post";
+import PastEvent from "./collection/past-event";
 import Global from "./collection/global";
 import Author from "./collection/author";
 import Page from "./collection/page";
@@ -36,7 +36,7 @@ const config = defineConfig({
         //basePath: baseConfig.basePath?.replace(/^\//, '') || '',
     },
     schema: {
-        collections: [Event, Page, Tag,  Speaker, Vacancy, Newsletter, Global, Post, Author],
+        collections: [Event, Page, Tag, Speaker, Vacancy, Newsletter, Global, PastEvent, Author],
     },
 });
 

@@ -1,0 +1,18 @@
+
+> @tinacms/starter@0.1.0 dev /Users/amitlockshinski/WebstormProjects/next-bg-website
+> tinacms dev -c "next dev --turbopack"
+
+🦙 TinaCMS Dev Server is initializing...
+/Users/amitlockshinski/WebstormProjects/next-bg-website/node_modules/.pnpm/@tinacms+cli@1.10.2_@codemirror+language@6.0.0_@types+hoist-non-react-statics@3.3.7_@ty_2511bc21a146a7557aee8730bafab6fb/node_modules/@tinacms/cli/dist/index.js:1168
+      throw new Error(
+      ^
+
+Error: Tina Dev server is already in use. Datalayer server is busy on port 9000
+    at Server.<anonymous> (/Users/amitlockshinski/WebstormProjects/next-bg-website/node_modules/.pnpm/@tinacms+cli@1.10.2_@codemirror+language@6.0.0_@types+hoist-non-react-statics@3.3.7_@ty_2511bc21a146a7557aee8730bafab6fb/node_modules/@tinacms/cli/dist/index.js:1168:13)
+    at Object.onceWrapper (node:events:622:26)
+    at Server.emit (node:events:507:28)
+    at emitErrorNT (node:net:1975:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+
+Node.js v23.10.0
+ ELIFECYCLE  Command failed with exit code 1.

@@ -1,14 +1,10 @@
 {
   "header": {
-    "logo": "/uploads/logo/boerengroep-logo.svg",
+    "logo": "/uploads/branding/boerengroep logo zwart.png",
     "logoAlt": "Stichting Boerengroep Logo",
-    "name": "BS",
+    "name": "Boerengroep",
     "color": "primary",
     "nav": [
-      {
-        "href": "/",
-        "label": "home"
-      },
       {
         "href": "/about-us",
         "label": "about-us",
@@ -44,28 +40,24 @@
             "label": "past-events"
           },
           {
-            "href": "/activities/group-studies",
-            "label": "group-studies"
-          },
-          {
             "href": "/activities/fei",
             "label": "farm-experience-internship"
           },
           {
-            "href": "/activities/teachers",
-            "label": "teachers"
+            "href": "/activities/calendar#breaks",
+            "label": "breaks"
           },
           {
-            "href": "/activities/auditorium",
-            "label": "auditorium"
+            "href": "/activities/reclaim-the-seeds",
+            "label": "reclaim-the-seeds"
           },
           {
-            "href": "/activities/forum-reader",
-            "label": "forum-reader"
-          },
-          {
-            "href": "/activities/soup-kitchen",
+            "href": "/activities/calendar#soup-kitchen",
             "label": "soup-kitchen"
+          },
+          {
+            "href": "/activities/calendar#open-meetings",
+            "label": "open-meetings"
           }
         ]
       },
@@ -96,10 +88,6 @@
         "label": "news",
         "submenu": [
           {
-            "href": "/news/landscape",
-            "label": "landscape"
-          },
-          {
             "href": "/news/newsletter",
             "label": "newsletter"
           },
@@ -111,21 +99,11 @@
       },
       {
         "href": "/inspringtheater",
-        "label": "inspringtheater",
-        "submenu": [
-          {
-            "href": "/inspiration-theater/network",
-            "label": "legendary-network"
-          },
-          {
-            "href": "/inspiration-theater/events",
-            "label": "event-materials"
-          }
-        ]
+        "label": "inspringtheater"
       },
       {
         "href": "/library",
-        "label": "library-media",
+        "label": "library",
         "submenu": [
           {
             "href": "/library/podcast",
@@ -133,7 +111,7 @@
           },
           {
             "href": "/library/media",
-            "label": "audio-videos"
+            "label": "picture-video-gallery"
           },
           {
             "href": "/library/50-years-bg",
@@ -194,10 +172,6 @@
           {
             "href": "/activities/calendar",
             "label": "calendar"
-          },
-          {
-            "href": "/activities/group-studies",
-            "label": "group-studies"
           },
           {
             "href": "/activities/soup-kitchen",

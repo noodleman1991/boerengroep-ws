@@ -36,8 +36,8 @@
     --stroke-light: 0 0% 0% / 0.1; /* Light stroke for subtle borders */
 
     /* Minimal borders - much lighter */
-    --border: 120 8% 92%; /* Very subtle green-tinted border */
-    --input: 120 8% 94%; /* Slightly more prominent for inputs */
+    --border: 120 8% 95%; /* Even lighter green-tinted border */
+    --input: 120 8% 96%; /* Very subtle for inputs */
     --ring: 120 49% 45%; /* Focus rings use primary */
     --radius: 8px; /* Slightly more organic radius */
 
@@ -455,4 +455,23 @@ button, [role="button"] {
     .header-menu-item, .nav-header-item, nav > .menu-item {
         padding: 0.5rem 0.75rem;
     }
+}
+
+/* ===== LIGHTER BORDER UTILITIES ===== */
+.border-light {
+    border-color: hsl(var(--stroke-light)) !important;
+}
+
+.border-neutral {
+    border-color: hsl(var(--stroke-neutral)) !important;
+}
+
+/* Apply lighter borders globally */
+.border, [class*="border-"], .shadow, [class*="shadow-"] {
+    border-color: hsl(var(--border)) !important;
+}
+
+/* Account for fixed header */
+body {
+    padding-top: 80px; /* 20 * 4 = 80px header height */
 }

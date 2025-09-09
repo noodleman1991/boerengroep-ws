@@ -39,8 +39,8 @@ export const Logo: React.FC<LogoProps> = ({
             text: 'text-sm font-medium'
         },
         md: {
-            container: 'h-12',
-            logo: { width: 144, height: 48 }, // 3:1 ratio
+            container: 'h-14',
+            logo: { width: 168, height: 56 }, // 3:1 ratio, 20% bigger than original
             text: 'text-base font-medium'
         },
         lg: {

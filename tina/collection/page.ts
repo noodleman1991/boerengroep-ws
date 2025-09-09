@@ -43,6 +43,18 @@ const Page: Collection = {
     },
     fields: [
         {
+            type: 'string',
+            name: 'title',
+            label: 'Title',
+            required: false,
+        },
+        {
+            type: 'rich-text',
+            name: 'body',
+            label: 'Body',
+            isBody: true,
+        },
+        {
             type: 'object',
             list: true,
             name: 'blocks',

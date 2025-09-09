@@ -41,7 +41,7 @@ export const FriendNewsPage = ({ newsletters, locale }: FriendNewsPageProps) => 
             locale={locale}
             filter="friends"
             title={t('filters.friends')}
-            description="News and updates from our partner organizations and friends in the sustainable agriculture community."
+            description="News and updates from our friends in the sustainable agriculture community."
         />
     );
 };

@@ -35,30 +35,39 @@ const Block = (block: BlockType) => {
     switch (block.__typename) {
         case "PageBlocksVideo":
         case "NewsletterBodyVideo":
+        case "PastEventBlocksVideo":
             return <Video data={block} />;
         case "PageBlocksHero":
         case "NewsletterBodyHero":
+        case "PastEventBlocksHero":
             return <Hero data={block} />;
         case "PageBlocksCallout":
         case "NewsletterBodyCallout":
+        case "PastEventBlocksCallout":
             return <Callout data={block} />;
         case "PageBlocksStats":
         case "NewsletterBodyStats":
+        case "PastEventBlocksStats":
             return <Stats data={block} />;
         case "PageBlocksContent":
         case "NewsletterBodyContent":
+        case "PastEventBlocksContent":
             return <Content data={block} />;
         case "PageBlocksFeatures":
         case "NewsletterBodyFeatures":
+        case "PastEventBlocksFeatures":
             return <Features data={block} />;
         case "PageBlocksTestimonial":
         case "NewsletterBodyTestimonial":
+        case "PastEventBlocksTestimonial":
             return <Testimonial data={block} />;
         case "PageBlocksCta":
         case "NewsletterBodyCta":
+        case "PastEventBlocksCta":
             return <CallToAction data={block} />;
         case "PageBlocksImageText":
         case "NewsletterBodyImageText":
+        case "PastEventBlocksImageText":
             return <ImageText data={block} />;
         default:
             return null;

@@ -84,8 +84,8 @@ export function DayCell({ cell, events, eventPositions }: IProps) {
                     transition={{ delay: position * 0.1, ...transition }}
                 >
                     <>
-                        {showBullet && <EventBullet className="lg:hidden" color={event.color} />}
-                        <MonthEventBadge className="hidden lg:flex" event={event} cellDate={startOfDay(date)} />
+                        {showBullet && <EventBullet className="md:hidden" color={event.color} />}
+                        <MonthEventBadge className="hidden md:flex" event={event} cellDate={startOfDay(date)} />
                     </>
                 </motion.div>
             );

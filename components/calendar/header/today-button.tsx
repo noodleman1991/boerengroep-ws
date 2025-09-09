@@ -36,7 +36,7 @@ export function TodayButton() {
             title={t('navigation.today')}
         >
             <motion.span
-                className="w-full bg-primary py-1 text-xs font-semibold text-primary-foreground"
+                className="w-full bg-[var(--color-brand-green)] py-1 text-xs font-semibold text-white"
                 initial={{ y: -10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1, ...transition }}

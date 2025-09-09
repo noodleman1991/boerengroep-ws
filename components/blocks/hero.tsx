@@ -164,7 +164,11 @@ export const heroBlockSchema: TinaTemplate = {
         defaultItem: {
           label: 'Action Label',
           type: 'button',
-          icon: true,
+          icon: {
+            name: 'ArrowRight',
+            color: 'primary',
+            style: 'outline'
+          },
           link: '/',
         },
         itemProps: (item: any) => ({ label: item.label }),

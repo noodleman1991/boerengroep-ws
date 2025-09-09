@@ -70,7 +70,7 @@ export function FilterEvents() {
                 <Separator className="my-2" />
                 <DropdownMenuItem
                     disabled={selectedEventTypes.length === 0}
-                    className="flex gap-2 cursor-pointer"
+                    className="flex items-center gap-2 cursor-pointer"
                     onClick={(e) => {
                         e.preventDefault();
                         clearFilter();

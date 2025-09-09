@@ -32,6 +32,7 @@ interface VacancyNode {
     } | null;
     startDate?: string | null;
     duration?: string | null;
+    openApplication?: boolean | null;
     applicationDeadline?: string | null;
     description?: any;
     responsibilities?: any;
@@ -110,15 +111,25 @@ export const VacanciesPage = ({
         return vacancies.edges
             .filter((edge): edge is VacancyEdge => {
                 const vacancy = edge?.node;
-                if (
-                    !vacancy?.opportunityType ||
-                    !vacancy?.applicationDeadline
-                )
-                    return false;
+                if (!vacancy?.opportunityType) return false;
+                
+                // If it's an open application, always include it
+                if (vacancy.openApplication) return vacancy.opportunityType === type;
+                
+                // Otherwise, check deadline
+                if (!vacancy.applicationDeadline) return false;
                 if (isExpired(vacancy.applicationDeadline)) return false;
                 return vacancy.opportunityType === type;
             })
             .sort((a, b) => {
+                // Sort open applications first, then by deadline
+                const aOpen = a.node?.openApplication;
+                const bOpen = b.node?.openApplication;
+                
+                if (aOpen && !bOpen) return -1;
+                if (!aOpen && bOpen) return 1;
+                
+                // Both are the same type (open or deadline), sort by date
                 const da = new Date(a.node?.applicationDeadline || '');
                 const db = new Date(b.node?.applicationDeadline || '');
                 return da.getTime() - db.getTime();
@@ -142,7 +153,7 @@ export const VacanciesPage = ({
                     id={type}
                     className="space-y-6 scroll-mt-24"
                 >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                         <Icon className={`h-6 w-6 text-${color}-600`} />
                         <h2 className="text-2xl font-semibold">
                             {t(`types.${type}.title`)}
@@ -160,7 +171,7 @@ export const VacanciesPage = ({
                 id={type}
                 className="space-y-6 scroll-mt-24"
             >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                     <Icon className={`h-6 w-6 text-${color}-600`} />
                     <h2 className="text-2xl font-semibold">
                         {t(`types.${type}.title`)}
@@ -185,15 +196,14 @@ export const VacanciesPage = ({
                         const vacancy = edge.node;
                         if (!vacancy) return null;
 
-                        const applicationOpen = vacancy.applicationDeadline
-                            ? isApplicationOpen(vacancy.applicationDeadline)
-                            : false;
+                        const applicationOpen = vacancy.openApplication || 
+                            (vacancy.applicationDeadline ? isApplicationOpen(vacancy.applicationDeadline) : false);
 
                         return (
                             <AccordionItem
                                 key={vacancy.id || index}
                                 value={`vacancy-${type}-${index}`}
-                                className="border rounded-lg overflow-hidden bg-white shadow-sm"
+                                className="border rounded-lg overflow-hidden bg-white shadow-sm last:border-b"
                             >
                                 <AccordionTrigger className="hover:no-underline px-4 py-3">
                                     <div className="flex items-center justify-between w-full mr-4">
@@ -216,7 +226,9 @@ export const VacanciesPage = ({
                                             }
                                         >
                                             {applicationOpen
-                                                ? t('status.open')
+                                                ? vacancy.openApplication 
+                                                    ? t('status.openNoDeadline') 
+                                                    : t('status.open')
                                                 : t('status.closed')}
                                         </Badge>
                                     </div>
@@ -225,7 +237,8 @@ export const VacanciesPage = ({
                                 <AccordionContent className="pt-4 px-4 pb-6 space-y-6">
                                     {/* Quick Info */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-                                        {vacancy.applicationDeadline && (
+                                        {/* Only show fields that have content */}
+                                        {!vacancy.openApplication && vacancy.applicationDeadline && (
                                             <div className="flex items-center gap-2">
                                                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                                                 <div>
@@ -241,7 +254,7 @@ export const VacanciesPage = ({
                                             </div>
                                         )}
 
-                                        {vacancy.location && (
+                                        {vacancy.location && (vacancy.location.type || vacancy.location.cityRegion) && (
                                             <div className="flex items-center gap-2">
                                                 <MapPin className="h-4 w-4 text-muted-foreground" />
                                                 <div>
@@ -271,7 +284,7 @@ export const VacanciesPage = ({
                                             </div>
                                         )}
 
-                                        {vacancy.duration && (
+                                        {vacancy.duration && vacancy.duration.trim() && (
                                             <div className="flex items-center gap-2">
                                                 <Clock className="h-4 w-4 text-muted-foreground" />
                                                 <div>
@@ -285,7 +298,7 @@ export const VacanciesPage = ({
                                             </div>
                                         )}
 
-                                        {vacancy.compensation?.details && (
+                                        {vacancy.compensation?.details && vacancy.compensation.details.trim() && (
                                             <div className="flex items-center gap-2">
                                                 <Euro className="h-4 w-4 text-muted-foreground" />
                                                 <div>
@@ -392,7 +405,7 @@ export const VacanciesPage = ({
                                         )}
 
                                     {/* Accessibility Notes */}
-                                    {vacancy.accessibilityNotes && (
+                                    {vacancy.accessibilityNotes && vacancy.accessibilityNotes.trim() && (
                                         <div>
                                             <h4 className="font-medium mb-2">
                                                 {t('fields.accessibilityNotes')}
@@ -416,7 +429,7 @@ export const VacanciesPage = ({
                                                 className="inline-flex items-center gap-2 text-primary hover:underline"
                                             >
                                                 <FileText className="h-4 w-4" />
-                                                {t('downloadDocument')}
+                                                Download - {vacancy.supportingDocument.split('/').pop()?.split('?')[0] || t('downloadDocument')}
                                             </a>
                                         </div>
                                     )}
@@ -513,9 +526,9 @@ export const VacanciesPage = ({
                         <a
                             key={type}
                             href={`#${type}`}
-                            className="px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
                         >
-                            <Icon className="inline-block w-4 h-4 mr-2" />
+                            <Icon className="w-4 h-4" />
                             {t(`types.${type}.navTitle`)}
                         </a>
                     ))}

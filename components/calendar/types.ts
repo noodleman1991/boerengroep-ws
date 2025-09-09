@@ -10,7 +10,10 @@ export type TEventColor =
     | "purple"
     | "orange"
     | "pink"
-    | "teal";
+    | "teal"
+    | "lime"
+    | "tan"
+    | "navy";
 
 // Event types
 export type TEventType =
@@ -23,15 +26,15 @@ export type TEventType =
     | "csa"
     | "excursion";
 
-// Event → Color mapping
+// Event → Color mapping using brand colors
 export const EVENT_COLORS: Record<TEventType, TEventColor> = {
-    talk: "blue",
-    workshop: "green",
-    lecture: "purple",
-    meeting: "orange",
+    talk: "blue",        // Brand blue
+    workshop: "green",   // Brand green  
+    lecture: "navy",     // Brand navy
+    meeting: "orange",   // Brand orange
     "board-meeting": "red",
-    "soup-kitchen": "yellow",
-    csa: "pink",
+    "soup-kitchen": "lime",  // Brand lime
+    csa: "tan",         // Brand tan
     excursion: "teal",
 };
 

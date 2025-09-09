@@ -1,15 +1,25 @@
 import React from 'react';
-import { videoBlockSchema } from '@/components/blocks/video';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Collection } from '@tinacms/cli';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-const Post: Collection = {
-    label: 'Past Activities',
-    name: 'post',
-    path: 'content/posts',
+// Import all content block schemas
+import { videoBlockSchema } from '@/components/blocks/video';
+import { heroBlockSchema } from '@/components/blocks/hero';
+import { contentBlockSchema } from '@/components/blocks/content';
+import { featureBlockSchema } from '@/components/blocks/features';
+import { testimonialBlockSchema } from '@/components/blocks/testimonial';
+import { calloutBlockSchema } from '@/components/blocks/callout';
+import { statsBlockSchema } from '@/components/blocks/stats';
+import { ctaBlockSchema } from '@/components/blocks/call-to-action';
+import { imageTextBlockSchema } from '@/components/blocks/image-text';
+
+const PastEvent: Collection = {
+    label: 'Past Events',
+    name: 'pastEvent',
+    path: 'content/past-events',
     format: 'mdx',
     ui: {
-        router: ({ document } : any) => {
+        router: ({ document }: any) => {
             const breadcrumbs = document._sys.breadcrumbs;
             const locales = ['nl', 'en'];
 
@@ -17,10 +27,10 @@ const Post: Collection = {
             if (breadcrumbs.length >= 1 && locales.includes(breadcrumbs[0])) {
                 const locale = breadcrumbs[0];
                 const path = breadcrumbs.slice(1);
-                return `/${locale}/posts/${path.join('/')}`;
+                return `/${locale}/activities/past-events/${path.join('/')}`;
             } else {
                 // Non-localized content - default to first locale
-                return `/nl/posts/${breadcrumbs.join('/')}`;
+                return `/nl/activities/past-events/${breadcrumbs.join('/')}`;
             }
         },
     },
@@ -37,12 +47,13 @@ const Post: Collection = {
             name: 'heroImg',
             label: 'Hero Image',
             // @ts-ignore
-            uploadDir: () => 'posts',
+            uploadDir: () => 'past-events',
         },
         {
             type: 'rich-text',
             label: 'Excerpt',
             name: 'excerpt',
+            description: 'Brief summary of what happened at this event',
             overrides: {
                 toolbar: ['bold', 'italic', 'link'],
             },
@@ -83,12 +94,21 @@ const Post: Collection = {
         },
         {
             type: 'datetime',
-            label: 'Posted Date',
+            label: 'Event Date',
             name: 'date',
+            required: true,
+            description: 'The date when the event took place',
             ui: {
                 dateFormat: 'MMMM DD YYYY',
                 timeFormat: 'hh:mm A',
             },
+        },
+        {
+            type: 'reference',
+            label: 'Related Calendar Event',
+            name: 'relatedEvent',
+            collections: ['event'],
+            description: 'Link to the original calendar event (optional)',
         },
         {
             type: 'object',
@@ -115,6 +135,26 @@ const Post: Collection = {
                 itemProps: (item: any) => {
                     return { label: item?.tag };
                 },
+            },
+        },
+        {
+            type: 'object',
+            label: 'Content Blocks',
+            name: 'blocks',
+            list: true,
+            templates: [
+                heroBlockSchema,
+                contentBlockSchema,
+                featureBlockSchema,
+                testimonialBlockSchema,
+                videoBlockSchema,
+                calloutBlockSchema,
+                statsBlockSchema,
+                ctaBlockSchema,
+                imageTextBlockSchema,
+            ],
+            ui: {
+                visualSelector: true,
             },
         },
         {
@@ -196,4 +236,4 @@ const Post: Collection = {
     ],
 };
 
-export default Post;
+export default PastEvent;

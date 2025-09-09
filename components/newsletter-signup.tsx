@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslations, useLocale } from 'next-intl';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -84,22 +84,22 @@ export function NewsletterSignup({
     const renderGdprLinks = () => (
         <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
             <Link
-                href={`/${locale}/privacy-policy`}
-                className="flex items-center gap-1 hover:text-primary"
+                href="/privacy-policy"
+                className="flex items-center gap-2 hover:text-primary"
             >
                 <Shield className="h-3 w-3" />
                 {t('privacy_policy')}
             </Link>
             <Link
-                href={`/${locale}/newsletter/export-data`}
-                className="flex items-center gap-1 hover:text-primary"
+                href="/newsletter/export-data"
+                className="flex items-center gap-2 hover:text-primary"
             >
                 <Eye className="h-3 w-3" />
                 {t('export_data')}
             </Link>
             <Link
-                href={`/${locale}/newsletter/delete-data`}
-                className="flex items-center gap-1 hover:text-primary"
+                href="/newsletter/delete-data"
+                className="flex items-center gap-2 hover:text-primary"
             >
                 <Trash2 className="h-3 w-3" />
                 {t('delete_data')}

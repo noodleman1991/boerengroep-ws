@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { client } from '@/tina/__generated__/client';
 import { Calendar } from '@/components/calendar/calendar';
+import { CalendarSections } from '@/components/calendar/calendar-sections';
 import Layout from '@/components/layout/layout';
 import { Section } from '@/components/layout/section';
 
@@ -75,6 +76,8 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
                     />
                 </div>
             </Section>
+            
+            <CalendarSections locale={locale} />
         </Layout>
     );
 }

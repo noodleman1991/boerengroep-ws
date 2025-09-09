@@ -13,26 +13,24 @@
       "activities": "Activiteiten",
       "calendar": "Agenda",
       "past-events": "Terugblik",
-      "group-studies": "Groepsstudies",
       "fei": "Ervaringsstage Boerderij",
-      "teachers": "Docenten",
-      "auditorium": "Auditorium",
-      "forum-reader": "Forum Lezer",
+      "farm-experience-internship": "Ervaringsstage Boerderij",
+      "breaks": "Pauzes",
+      "reclaim-the-seeds": "Herovering van het Zaad",
+      "open-meetings": "Open Vergaderingen",
       "soup-kitchen": "Soepkeuken",
       "internships": "Stages",
       "coordinator": "Coördinator",
-      "board": "board",
+      "board": "Bestuur",
       "volunteers": "Vrijwilligers",
       "news": "Nieuws",
-      "landscape": "Landschap",
       "newsletter": "Nieuwsbrief",
       "friends-news": "Vrienden Nieuws",
-      "inspiration-theater": "Inspiratietheater",
-      "legendary-network": "Legendarisch Netwerk",
-      "event-materials": "Materiaal Evenementen",
+      "inspringtheater": "Inspringtheater",
+      "library": "Bibliotheek",
       "library-media": "Bibliotheek & Media",
       "podcast": "Podcast",
-      "audio-videos": "Geluid & Video's",
+      "picture-video-gallery": "Foto & Video Galerij",
       "50-years-bg": "50 Jaar BG",
       "contact": "Contact",
       "vacancies": "Vacatures"
@@ -40,7 +38,7 @@
   },
   "newsletter": {
     "title": "Nieuwsbrief",
-    "description": "Blijf op de hoogte van het laatste nieuws van Stichting Boerengroep en onze partnerorganisaties.",
+    "description": "Blijf op de hoogte van het laatste nieuws van Stichting Boerengroep en vrienden nieuws.",
     "read_more": "Lees meer",
     "visit_link": "Bezoek link",
     "no_newsletters": "Geen nieuwsbrieven gevonden.",
@@ -275,8 +273,7 @@
         "title": "Activiteiten",
         "links": {
           "calendar": "Agenda",
-          "group-studies": "Groepsstudies",
-          "soup-kitchen": "Soepkeuken"
+              "soup-kitchen": "Soepkeuken"
         }
       },
       "get-involved": {
@@ -326,6 +323,7 @@
     "downloadDocument": "Document downloaden",
     "status": {
       "open": "Open",
+      "openNoDeadline": "Open",
       "closed": "Gesloten"
     },
     "types": {
@@ -406,5 +404,17 @@
       "duration": "Duur",
       "progressBar": "Audio voortgang"
     }
+  },
+  "pastEvents": {
+    "title": "Terugblik",
+    "description": "Lees hoe eerdere evenementen verliepen en ontdek hoogtepunten van onze activiteiten en bijeenkomsten.",
+    "readMore": "Lees meer",
+    "eventDate": "Evenementdatum",
+    "author": "Verslag door",
+    "tags": "Tags",
+    "relatedEvent": "Gerelateerd Agenda-evenement",
+    "backToPastEvents": "Terug naar Terugblik",
+    "noPastEvents": "Geen eerdere evenementen gevonden.",
+    "eventSummary": "Evenementoverzicht"
   }
 }
