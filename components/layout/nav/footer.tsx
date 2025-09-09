@@ -143,15 +143,15 @@ export const Footer = () => {
                         <Link href="/privacy-policy" className="hover:text-accent-foreground transition-colors duration-150">
                             {t('legal.privacy')}
                         </Link>
-                        <Link href="/cookies" className="hover:text-accent-foreground transition-colors duration-150">
-                            {t('legal.cookies')}
-                        </Link>
-                        <Link href="/terms-conditions" className="hover:text-accent-foreground transition-colors duration-150">
-                            {t('legal.terms')}
-                        </Link>
-                        <Link href="/accessibility" className="hover:text-accent-foreground transition-colors duration-150">
-                            {t('legal.accessibility')}
-                        </Link>
+                        {/*<Link href="/cookies" className="hover:text-accent-foreground transition-colors duration-150">*/}
+                        {/*    {t('legal.cookies')}*/}
+                        {/*</Link>*/}
+                        {/*<Link href="/terms-conditions" className="hover:text-accent-foreground transition-colors duration-150">*/}
+                        {/*    {t('legal.terms')}*/}
+                        {/*</Link>*/}
+                        {/*<Link href="/accessibility" className="hover:text-accent-foreground transition-colors duration-150">*/}
+                        {/*    {t('legal.accessibility')}*/}
+                        {/*</Link>*/}
                     </div>
                 </div>
 
