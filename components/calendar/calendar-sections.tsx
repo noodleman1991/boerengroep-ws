@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react';
 import { client } from '@/tina/__generated__/client';
 import { Section } from '@/components/layout/section';

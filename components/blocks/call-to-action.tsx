@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import type { TinaTemplate } from '@tinacms/cli'
 import { tinaField } from 'tinacms/dist/react';
