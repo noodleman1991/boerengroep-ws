@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { PageBlocksCta } from '@/tina/__generated__/types';
 import { Icon } from '../icon';
 import { Section } from '../layout/section';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 
 export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
     return (

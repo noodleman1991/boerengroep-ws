@@ -7,7 +7,7 @@ import { HeaderLogo } from "../../logo";
 import { useLayout } from "../layout-context";
 import { LanguageSwitcher } from "../language-switcher";
 import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export const Header = () => {
     const { globalSettings } = useLayout();

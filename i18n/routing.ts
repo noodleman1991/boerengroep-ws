@@ -95,6 +95,14 @@ export const routing = defineRouting({
             en: '/newsletters',
             nl: '/nieuwsbrieven'
         },
+        '/newsletter/export-data': {
+            en: '/newsletter/export-data',
+            nl: '/nieuwsbrief/exporteer-gegevens'
+        },
+        '/newsletter/delete-data': {
+            en: '/newsletter/delete-data',
+            nl: '/nieuwsbrief/verwijder-gegevens'
+        },
 
         // Inspringtheater
         '/inspringtheater': {

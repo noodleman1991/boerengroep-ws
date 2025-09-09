@@ -9,7 +9,7 @@ import { Section } from '../layout/section';
 import { Mermaid } from './mermaid';
 import { sectionBlockSchemaField } from '../layout/section';
 import { scriptCopyBlockSchema, ScriptCopyBtn } from '../magicui/script-copy-btn';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 
 export const Content = ({ data }: { data: PageBlocksContent }) => {
     return (

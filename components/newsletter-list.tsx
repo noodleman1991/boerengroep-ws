@@ -64,7 +64,7 @@ export const NewsletterList = ({ newsletters, locale, filter, title, description
         if (filter === 'main') {
             return node.organization === 'Boerengroep' || node.organization === 'Inspiratietheater';
         } else if (filter === 'friends') {
-            return node.organization !== 'Boerengroep' && node.organization !== 'Inspiratietheater';
+            return node.organization === 'friends';
         }
         return false;
     }) || [];

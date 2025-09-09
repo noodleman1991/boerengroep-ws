@@ -1,7 +1,4 @@
-'use client'
-
 import { Metadata } from 'next';
-import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { client } from '@/tina/__generated__/client';
 import { Calendar } from '@/components/calendar/calendar';
