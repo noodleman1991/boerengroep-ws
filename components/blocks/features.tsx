@@ -64,14 +64,14 @@ export const Feature: React.FC<PageBlocksFeaturesItems> = (data) => {
     return (
         <div className="group shadow-zinc-950/5">
             <CardHeader className="pb-3">
-                <CardDecorator>
-                    {data.icon && (
-                        <Icon
-                            tinaField={tinaField(data, "icon")}
-                            data={{ size: "large", ...data.icon }}
-                        />
-                    )}
-                </CardDecorator>
+                {/*<CardDecorator>*/}
+                {/*    {data.icon && (*/}
+                {/*        <Icon*/}
+                {/*            tinaField={tinaField(data, "icon")}*/}
+                {/*            data={{ size: "large", ...data.icon }}*/}
+                {/*        />*/}
+                {/*    )}*/}
+                {/*</CardDecorator>*/}
 
                 <h3
                     data-tina-field={tinaField(data, "title")}
