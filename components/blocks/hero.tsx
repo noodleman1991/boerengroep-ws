@@ -12,7 +12,7 @@ import { AnimatedGroup } from '../motion-primitives/animated-group';
 import { TextEffect } from '../motion-primitives/text-effect';
 import { Button } from '../ui/button';
 import HeroVideoDialog from '../ui/hero-video-dialog';
-import { Transition } from 'framer-motion';
+import { Transition } from 'motion/react';
 const transitionVariants = {
   container: {
     visible: {

@@ -11,7 +11,7 @@ import { iconSchema } from "../../tina/fields/icon";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Section } from "../layout/section";
 import { sectionBlockSchemaField } from '../layout/section';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 export const Features = ({ data }: { data: PageBlocksFeatures }) => {
     return (

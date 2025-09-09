@@ -1,7 +1,7 @@
 "use client";
 
 import { isSameDay, parseISO } from "date-fns";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import React from "react";
 import { useTranslations } from "next-intl";
 import { fadeIn, transition } from "./animations";

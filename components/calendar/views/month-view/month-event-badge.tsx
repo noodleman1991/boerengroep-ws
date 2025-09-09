@@ -15,24 +15,24 @@ const eventBadgeVariants = cva(
 		variants: {
 			color: {
 				// Brand color variants using vibrant colors with CSS custom properties
-				blue: "border-[var(--color-brand-blue)] bg-[var(--color-brand-blue)]/15 text-blue-900 dark:border-blue-400 dark:bg-blue-900 dark:text-blue-100",
-				green: "border-[var(--color-brand-green)] bg-[var(--color-brand-green)]/15 text-green-900 dark:border-green-400 dark:bg-green-900 dark:text-green-100",
-				orange: "border-[var(--color-brand-orange)] bg-[var(--color-brand-orange)]/15 text-orange-900 dark:border-orange-400 dark:bg-orange-900 dark:text-orange-100",
-				lime: "border-[var(--color-brand-lime)] bg-[var(--color-brand-lime)]/15 text-green-900 dark:border-lime-400 dark:bg-lime-900 dark:text-lime-100",
-				tan: "border-[var(--color-brand-tan)] bg-[var(--color-brand-tan)]/15 text-amber-900 dark:border-amber-400 dark:bg-amber-900 dark:text-amber-100",
-				navy: "border-[var(--color-brand-navy)] bg-[var(--color-brand-navy)]/15 text-indigo-900 dark:border-indigo-400 dark:bg-indigo-900 dark:text-indigo-100",
-				red: "border-red-500 bg-red-500/15 text-red-900 dark:border-red-400 dark:bg-red-900 dark:text-red-100",
-				purple: "border-purple-500 bg-purple-500/15 text-purple-900 dark:border-purple-400 dark:bg-purple-900 dark:text-purple-100",
+				blue: "border-[var(--color-brand-blue)] bg-[var(--color-brand-blue)]/25 text-blue-900 dark:border-blue-400 dark:bg-blue-900 dark:text-blue-100",
+				green: "border-[var(--color-brand-green)] bg-[var(--color-brand-green)]/25 text-green-900 dark:border-green-400 dark:bg-green-900 dark:text-green-100",
+				orange: "border-[var(--color-brand-orange)] bg-[var(--color-brand-orange)]/25 text-orange-900 dark:border-orange-400 dark:bg-orange-900 dark:text-orange-100",
+				lime: "border-[var(--color-brand-lime)] bg-[var(--color-brand-lime)]/25 text-green-900 dark:border-lime-400 dark:bg-lime-900 dark:text-lime-100",
+				tan: "border-[var(--color-brand-tan)] bg-[var(--color-brand-tan)]/25 text-amber-900 dark:border-amber-400 dark:bg-amber-900 dark:text-amber-100",
+				navy: "border-[var(--color-brand-navy)] bg-[var(--color-brand-navy)]/25 text-indigo-900 dark:border-indigo-400 dark:bg-indigo-900 dark:text-indigo-100",
+				red: "border-red-500 bg-red-500/25 text-red-900 dark:border-red-400 dark:bg-red-900 dark:text-red-100",
+				purple: "border-purple-500 bg-purple-500/25 text-purple-900 dark:border-purple-400 dark:bg-purple-900 dark:text-purple-100",
 
-				// Dot variants using brand colors
-				"blue-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-blue)]",
-				"green-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-green)]",
-				"orange-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-orange)]",
-				"lime-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-lime)]",
-				"tan-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-tan)]",
-				"navy-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-[var(--color-brand-navy)]",
-				"red-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-red-500",
-				"purple-dot": "bg-white border-gray-200 text-gray-800 [&_svg]:fill-purple-500",
+				// Dot variants using brand colors with colored borders
+				"blue-dot": "bg-white border-[var(--color-brand-blue)]/40 text-blue-800 [&_svg]:fill-[var(--color-brand-blue)]",
+				"green-dot": "bg-white border-[var(--color-brand-green)]/40 text-green-800 [&_svg]:fill-[var(--color-brand-green)]",
+				"orange-dot": "bg-white border-[var(--color-brand-orange)]/40 text-orange-800 [&_svg]:fill-[var(--color-brand-orange)]",
+				"lime-dot": "bg-white border-[var(--color-brand-lime)]/40 text-green-800 [&_svg]:fill-[var(--color-brand-lime)]",
+				"tan-dot": "bg-white border-[var(--color-brand-tan)]/40 text-amber-800 [&_svg]:fill-[var(--color-brand-tan)]",
+				"navy-dot": "bg-white border-[var(--color-brand-navy)]/40 text-indigo-800 [&_svg]:fill-[var(--color-brand-navy)]",
+				"red-dot": "bg-white border-red-500/40 text-red-800 [&_svg]:fill-red-500",
+				"purple-dot": "bg-white border-purple-500/40 text-purple-800 [&_svg]:fill-purple-500",
 			},
 			multiDayPosition: {
 				first:

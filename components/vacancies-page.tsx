@@ -153,8 +153,8 @@ export const VacanciesPage = ({
                     id={type}
                     className="space-y-6 scroll-mt-24"
                 >
-                    <div className="flex items-center gap-2">
-                        <Icon className={`h-6 w-6 text-${color}-600`} />
+                    <div className="flex items-center gap-3">
+                        <Icon className={`h-7 w-7 text-${color}-600 flex-shrink-0`} />
                         <h2 className="text-2xl font-semibold">
                             {t(`types.${type}.title`)}
                         </h2>
@@ -171,8 +171,8 @@ export const VacanciesPage = ({
                 id={type}
                 className="space-y-6 scroll-mt-24"
             >
-                <div className="flex items-center gap-2">
-                    <Icon className={`h-6 w-6 text-${color}-600`} />
+                <div className="flex items-center gap-3">
+                    <Icon className={`h-7 w-7 text-${color}-600 flex-shrink-0`} />
                     <h2 className="text-2xl font-semibold">
                         {t(`types.${type}.title`)}
                     </h2>
@@ -209,8 +209,8 @@ export const VacanciesPage = ({
                                     <div className="flex items-center justify-between w-full mr-4">
                                         <div className="text-left">
                                             <div className="font-medium">
-                                                {vacancy.title ||
-                                                    t('untitledPosition')}
+                                                {vacancy.title && vacancy.title.trim() ? 
+                                                    vacancy.title : t('untitledPosition')}
                                             </div>
                                         </div>
                                         <Badge
