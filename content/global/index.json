@@ -1,6 +1,6 @@
 {
   "header": {
-    "logo": "/uploads/branding/boerengroep logo zwart.png",
+    "logo": "/uploads/branding/boerengroep-logo-zwart.png",
     "logoAlt": "Stichting Boerengroep Logo",
     "name": "Boerengroep",
     "color": "primary",
@@ -129,23 +129,15 @@
     "social": [
       {
         "platform": "LinkedIn",
-        "url": "https://www.linkedin.com/company/stichting-boerengroep"
+        "url": "https://www.linkedin.com/company/boerengroep"
       },
       {
         "platform": "Facebook",
-        "url": "https://www.facebook.com/boerengroep"
+        "url": "https://www.facebook.com/Boerengroepwageningen"
       },
       {
         "platform": "Instagram",
         "url": "https://www.instagram.com/boerengroep"
-      },
-      {
-        "platform": "Twitter",
-        "url": "https://twitter.com/boerengroep"
-      },
-      {
-        "platform": "YouTube",
-        "url": "https://www.youtube.com/@Boerengroep"
       }
     ],
     "quickLinks": [

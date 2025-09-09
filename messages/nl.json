@@ -250,14 +250,14 @@
       "title": "Contact",
       "organization": "Stichting Boerengroep",
       "address": {
-        "street": "Droevendaalsesteeg 1",
-        "city": "6708 PB Wageningen",
+        "street": "Generaal Foulkesweg 37",
+        "city": "6703 PL Wageningen",
         "country": "Nederland"
       },
-      "email": "info@boerengroep.nl",
+      "email": "st.boerengroep@wur.nl",
       "phone": {
-        "raw": "+31317481100",
-        "display": "+31 (0)317 48 11 00"
+        "raw": "+31657230065",
+        "display": "+31 (0)657 23 00 65"
       }
     },
     "quick-links": {
