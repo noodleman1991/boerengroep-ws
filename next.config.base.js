@@ -6,6 +6,11 @@ const baseConfig = {
       { protocol: 'https', hostname: 'assets.tina.io', port: '' },
       { protocol: 'https', hostname: 'res.cloudinary.com', port: '' }
     ],
+    // Allow optimization of images in public folder
+    unoptimized: false,
+    formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   async headers() {
     return [
@@ -26,6 +31,16 @@ const baseConfig = {
           },
         ],
       },
+      {
+        // Apply headers to uploads folder (TinaCMS media)
+        source: '/uploads/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, s-maxage=31536000',
+          },
+        ],
+      },
     ];
   },
   async rewrites() {
@@ -40,6 +55,11 @@ const baseConfig = {
         {
           source: '/manifest.json',
           destination: '/manifest.json',
+        },
+        // Ensure uploads folder is accessible
+        {
+          source: '/uploads/:path*',
+          destination: '/uploads/:path*',
         },
       ],
       afterFiles: [

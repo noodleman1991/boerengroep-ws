@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@udecode/plate-core': ^48.0.5
+
 importers:
 
   .:

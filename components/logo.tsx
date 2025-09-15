@@ -69,12 +69,16 @@ export const Logo: React.FC<LogoProps> = ({
                     currentSize.container
                 )}>
                     <Image
-                        src='/uploads/branding/boerengroep-logo-zwart.png' // {logoSrc} //
+                        src={logoSrc || '/uploads/branding/boerengroep-logo-zwart.png'}
                         alt={alt}
                         width={currentSize.logo.width}
                         height={currentSize.logo.height}
                         className="h-full w-auto object-contain object-left"
                         priority={priority}
+                        onError={(e) => {
+                            console.warn('Logo failed to load:', logoSrc);
+                            // Fallback handled by src fallback above
+                        }}
                         style={{
                             maxWidth: 'none', // Allow image to use full calculated width
                         }}
@@ -109,6 +113,15 @@ export const Logo: React.FC<LogoProps> = ({
 // hook for TinaCMS integration with better error handling
 export const useGlobalLogo = (globalData: any) => {
     const header = globalData?.header;
+
+    // Debug logging for production issues
+    if (typeof window !== 'undefined' && process.env.NODE_ENV === 'production') {
+        console.log('Logo data:', {
+            logoSrc: header?.logo,
+            hasLogo: Boolean(header?.logo),
+            globalData: Boolean(globalData)
+        });
+    }
 
     return {
         logoSrc: header?.logo,
