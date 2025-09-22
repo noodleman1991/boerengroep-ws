@@ -13,7 +13,7 @@ import { motion } from 'motion/react';
 export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
     return (
         <Section>
-            <motion.div 
+            <motion.div
                 className="text-center"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -23,7 +23,7 @@ export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
                 <h2 className="text-balance text-4xl font-semibold lg:text-5xl" data-tina-field={tinaField(data, 'title')}>{data.title}</h2>
                 <p className="mt-4" data-tina-field={tinaField(data, 'description')}>{data.description}</p>
 
-                <motion.div 
+                <motion.div
                     className="mt-12 flex flex-wrap justify-center gap-4"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
