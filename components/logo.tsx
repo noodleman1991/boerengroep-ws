@@ -80,7 +80,6 @@ export const Logo: React.FC<LogoProps> = ({
                                 console.warn('Logo failed to load:', logoSrc);
                             }
                         }}
-                        unoptimized={process.env.NODE_ENV === 'production'}
                         style={{
                             maxWidth: 'none', // Allow image to use full calculated width
                         }}

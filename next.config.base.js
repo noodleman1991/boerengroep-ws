@@ -6,11 +6,13 @@ const baseConfig = {
       { protocol: 'https', hostname: 'assets.tina.io', port: '' },
       { protocol: 'https', hostname: 'res.cloudinary.com', port: '' }
     ],
-    // Allow optimization of images in public folder
+    // Allow optimization of images in public folder and uploads
     unoptimized: false,
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Ensure local images are properly optimized
+    domains: [],
   },
   async headers() {
     return [

@@ -19,10 +19,12 @@
     {
       "source": "/uploads/(.*)",
       "destination": "/uploads/$1"
-    },
+    }
+  ],
+  "routes": [
     {
-      "source": "/uploads/branding/(.*)",
-      "destination": "/uploads/branding/$1"
+      "src": "/uploads/(.*)",
+      "dest": "/uploads/$1"
     }
   ]
 }
