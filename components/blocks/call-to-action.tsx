@@ -13,6 +13,7 @@ import { motion } from 'motion/react';
 export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
     return (
         <Section>
+            
             <motion.div 
                 className="text-center"
                 initial={{ opacity: 0, y: 20 }}
