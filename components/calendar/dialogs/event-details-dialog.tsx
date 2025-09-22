@@ -5,6 +5,7 @@ import { nl } from "date-fns/locale";
 import { Calendar, Clock, Text } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import Image from "next/image";
 import {
     Dialog,
     DialogClose,
@@ -46,6 +47,17 @@ export function EventDetailsDialog({ event, children }: IProps) {
 
                 <ScrollArea className="max-h-[60vh] pr-2">
                     <div className="space-y-6 pb-2">
+                        {event.image && (
+                            <div className="relative w-full">
+                                <Image
+                                    src={event.image}
+                                    alt={event.title}
+                                    width={400}
+                                    height={200}
+                                    className="w-full h-48 object-cover rounded-lg"
+                                />
+                            </div>
+                        )}
 
                         <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50">
                             <Calendar className="mt-1 size-4 shrink-0 text-muted-foreground" />

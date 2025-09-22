@@ -20,6 +20,10 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
                 return 'lg:grid-cols-2 lg:gap-16 items-center';
             case 'image-center':
                 return 'grid-cols-1 gap-8 text-center';
+            case 'text-above-center':
+                return 'grid-cols-1 gap-8';
+            case 'text-below-center':
+                return 'grid-cols-1 gap-8';
             default:
                 return 'lg:grid-cols-2 lg:gap-16 items-center';
         }
@@ -53,6 +57,9 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
 
     const isImageRight = data.layout === 'image-right';
     const isImageCenter = data.layout === 'image-center';
+    const isTextAboveCenter = data.layout === 'text-above-center';
+    const isTextBelowCenter = data.layout === 'text-below-center';
+    const isCenterLayout = isImageCenter || isTextAboveCenter || isTextBelowCenter;
 
     // Early return if no image is provided
     if (!data.image?.src) {
@@ -73,10 +80,26 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
 
     return (
         <Section background={data.background!}>
-            <div className={`grid ${getLayoutClasses()} ${!isImageCenter ? getVerticalAlignmentClasses() : ''}`}>
+            <div className={`grid ${getLayoutClasses()} ${!isCenterLayout ? getVerticalAlignmentClasses() : ''}`}>
+                {/* Content - Above for text-above-center layout */}
+                {isTextAboveCenter && (
+                    <div
+                        className="prose prose-lg max-w-none mb-4 text-center"
+                        data-tina-field={tinaField(data, 'content')}
+                    >
+                        <TinaMarkdown
+                            content={data.content}
+                            components={{
+                                mermaid: (props: any) => <Mermaid {...props} />,
+                                scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
+                            }}
+                        />
+                    </div>
+                )}
+
                 {/* Image */}
                 <div
-                    className={`${isImageRight ? 'lg:order-2' : ''} ${getImageSizeClasses()}`}
+                    className={`${isImageRight ? 'lg:order-2' : ''} ${isCenterLayout ? 'mx-auto' : ''} ${getImageSizeClasses()}`}
                     data-tina-field={tinaField(data, 'image')}
                 >
                     <Image
@@ -88,19 +111,25 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
                     />
                 </div>
 
-                {/* Content */}
-                <div
-                    className={`prose prose-lg max-w-none ${isImageCenter ? 'mt-8' : ''} ${isImageRight ? 'lg:order-1' : ''}`}
-                    data-tina-field={tinaField(data, 'content')}
-                >
-                    <TinaMarkdown
-                        content={data.content}
-                        components={{
-                            mermaid: (props: any) => <Mermaid {...props} />,
-                            scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
-                        }}
-                    />
-                </div>
+                {/* Content - For standard layouts and text-below-center */}
+                {(!isTextAboveCenter) && (
+                    <div
+                        className={`prose prose-lg max-w-none ${
+                            isImageCenter ? 'mt-8 text-center' :
+                            isTextBelowCenter ? 'mt-4 text-center' :
+                            isImageRight ? 'lg:order-1' : ''
+                        }`}
+                        data-tina-field={tinaField(data, 'content')}
+                    >
+                        <TinaMarkdown
+                            content={data.content}
+                            components={{
+                                mermaid: (props: any) => <Mermaid {...props} />,
+                                scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
+                            }}
+                        />
+                    </div>
+                )}
             </div>
         </Section>
     );
@@ -186,6 +215,8 @@ export const imageTextBlockSchema: TinaTemplate = {
                 { label: 'Image Left', value: 'image-left' },
                 { label: 'Image Right', value: 'image-right' },
                 { label: 'Image Center', value: 'image-center' },
+                { label: 'Text Above Image (Center)', value: 'text-above-center' },
+                { label: 'Text Below Image (Center)', value: 'text-below-center' },
             ],
         },
         {

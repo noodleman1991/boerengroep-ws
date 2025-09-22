@@ -49,7 +49,13 @@ export function Calendar({ events = [], className = "", defaultHeight = "600px" 
     const calendarContent = (
         <CalendarProvider initialEvents={events} view="month">
             <DndProvider showConfirmation={false}>
-                <div className={`w-full border rounded-xl bg-background ${isFullscreen ? 'h-screen rounded-none' : ''}`}>
+                <motion.div
+                    className={`w-full border rounded-xl bg-background ${isFullscreen ? 'h-screen rounded-none' : ''}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
+                    viewport={{ once: true, margin: "-100px" }}
+                >
                     <CalendarHeader
                         isFullscreen={isFullscreen}
                         onToggleFullscreen={toggleFullscreen}
@@ -57,7 +63,7 @@ export function Calendar({ events = [], className = "", defaultHeight = "600px" 
                     <div className={isFullscreen ? 'h-[calc(100vh-80px)]' : ''} style={{ height: isFullscreen ? undefined : defaultHeight }}>
                         <CalendarBody />
                     </div>
-                </div>
+                </motion.div>
             </DndProvider>
         </CalendarProvider>
     );

@@ -8,6 +8,7 @@ import { calloutBlockSchema } from '@/components/blocks/callout';
 import { statsBlockSchema } from '@/components/blocks/stats';
 import { ctaBlockSchema } from '@/components/blocks/call-to-action';
 import { imageTextBlockSchema } from '@/components/blocks/image-text';
+import { eventsCalendarPreviewBlockSchema } from '@/components/blocks/events-calendar-preview';
 
 const Page: Collection = {
     label: 'Pages',
@@ -64,6 +65,7 @@ const Page: Collection = {
             },
             templates: [
                 heroBlockSchema,
+                eventsCalendarPreviewBlockSchema,
                 calloutBlockSchema,
                 featureBlockSchema,
                 statsBlockSchema,

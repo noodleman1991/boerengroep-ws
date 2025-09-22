@@ -340,6 +340,24 @@ const Global: Collection = {
         },
         {
             type: "object",
+            label: "Homepage Settings",
+            name: "homepage",
+            description: "Configuration options for the homepage",
+            fields: [
+                {
+                    type: "boolean",
+                    label: "Show calendar widget on homepage",
+                    name: "showCalendarWidget",
+                    description: "Toggle to show/hide the calendar widget in the events section on the homepage",
+                    // @ts-ignore
+                    ui: {
+                        component: "toggle",
+                    },
+                },
+            ],
+        },
+        {
+            type: "object",
             label: "Footer",
             name: "footer",
             fields: [

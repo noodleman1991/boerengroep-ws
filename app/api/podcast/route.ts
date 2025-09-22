@@ -95,7 +95,7 @@ function transformPodcastData(feedData: any, limit = 10, offset = 0) {
 function cleanDescription(description: any): string {
   if (!description) return '';
 
-  let text = typeof description === 'string' ? description : String(description);
+  const text = typeof description === 'string' ? description : String(description);
 
   return text
     .replace(/<!\[CDATA\[/, '')

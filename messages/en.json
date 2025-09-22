@@ -6,7 +6,7 @@
     "items": {
       "home": "Home",
       "about-us": "About Us",
-      "what-is-bg": "What is BG?",
+      "what-is-boerengroep": "What is Boerengroep?",
       "history": "History",
       "who-are-we": "Who are we?",
       "network": "Network",
@@ -31,10 +31,17 @@
       "library-media": "Library & Media",
       "podcast": "Podcast",
       "picture-video-gallery": "Picture & Video Gallery",
-      "50-years-bg": "50 Years BG",
+      "50-years-boerengroep": "50 Years Boerengroep",
+      "agroecologie-netwerk": "Agroecology Network",
       "contact": "Contact",
       "vacancies": "Vacancies"
     }
+  },
+  "events": {
+    "upcomingEvents": "Upcoming Events",
+    "upcomingEventsDescription": "Discover our latest activities and events",
+    "noUpcomingEvents": "No upcoming events found",
+    "viewFullCalendar": "View Full Calendar"
   },
   "newsletter": {
     "title": "Newsletter",
@@ -264,7 +271,7 @@
       "about-us": {
         "title": "About Us",
         "links": {
-          "what-is-bg": "What is BG?",
+          "what-is-boerengroep": "What is Boerengroep?",
           "history": "History",
           "network": "Network"
         }

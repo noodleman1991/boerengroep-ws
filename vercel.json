@@ -19,6 +19,10 @@
     {
       "source": "/uploads/(.*)",
       "destination": "/uploads/$1"
+    },
+    {
+      "source": "/uploads/branding/(.*)",
+      "destination": "/uploads/branding/$1"
     }
   ]
 }

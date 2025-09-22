@@ -10,8 +10,8 @@
         "label": "about-us",
         "submenu": [
           {
-            "href": "/about-us/what-is-bg",
-            "label": "what-is-bg"
+            "href": "/about-us/what-is-boerengroep",
+            "label": "what-is-boerengroep"
           },
           {
             "href": "/about-us/history",
@@ -114,8 +114,12 @@
             "label": "picture-video-gallery"
           },
           {
-            "href": "/library/50-years-bg",
-            "label": "50-years-bg"
+            "href": "/library/50-years-boerengroep",
+            "label": "50-years-boerengroep"
+          },
+          {
+            "href": "/library/agroecologie-netwerk",
+            "label": "agroecologie-netwerk"
           }
         ]
       },
@@ -145,8 +149,8 @@
         "title": "about-us",
         "links": [
           {
-            "href": "/about-us/what-is-bg",
-            "label": "what-is-bg"
+            "href": "/about-us/what-is-boerengroep",
+            "label": "what-is-boerengroep"
           },
           {
             "href": "/about-us/history",

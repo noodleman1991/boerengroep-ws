@@ -41,6 +41,16 @@ const baseConfig = {
           },
         ],
       },
+      {
+        // Ensure branding assets are properly cached
+        source: '/uploads/branding/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, s-maxage=31536000',
+          },
+        ],
+      },
     ];
   },
   async rewrites() {
@@ -60,6 +70,11 @@ const baseConfig = {
         {
           source: '/uploads/:path*',
           destination: '/uploads/:path*',
+        },
+        // Explicitly handle branding assets
+        {
+          source: '/uploads/branding/:path*',
+          destination: '/uploads/branding/:path*',
         },
       ],
       afterFiles: [

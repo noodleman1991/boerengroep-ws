@@ -12,13 +12,17 @@ export interface ClientPageProps {
         relativePath: string;
     };
     query: string;
+    events?: any[];
+    globalData?: any;
 }
 
 export default function ClientPage(props: ClientPageProps) {
     const { data } = useTina({ ...props });
+    const { events = [], globalData } = props;
+
     return (
         <ErrorBoundary>
-            <Blocks {...data?.page} />
+            <Blocks {...data?.page} events={events} globalData={globalData} />
         </ErrorBoundary>
     );
 }

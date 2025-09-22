@@ -76,9 +76,11 @@ export const Logo: React.FC<LogoProps> = ({
                         className="h-full w-auto object-contain object-left"
                         priority={priority}
                         onError={(e) => {
-                            console.warn('Logo failed to load:', logoSrc);
-                            // Fallback handled by src fallback above
+                            if (process.env.NODE_ENV === 'development') {
+                                console.warn('Logo failed to load:', logoSrc);
+                            }
                         }}
+                        unoptimized={process.env.NODE_ENV === 'production'}
                         style={{
                             maxWidth: 'none', // Allow image to use full calculated width
                         }}

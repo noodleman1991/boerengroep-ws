@@ -122,6 +122,12 @@ const Event: Collection = {
             },
         },
         {
+            type: "image",
+            label: "Event Image",
+            name: "image",
+            description: "Optional image for the event",
+        },
+        {
             type: "boolean",
             label: "Featured Event",
             name: "featured",

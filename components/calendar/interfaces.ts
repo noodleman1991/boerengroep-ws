@@ -15,6 +15,7 @@ export interface IEvent {
     eventType: TEventType;
 	description: string;
 	user: IUser;
+	image?: string;
 }
 
 export interface ICalendarCell {

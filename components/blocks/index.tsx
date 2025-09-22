@@ -11,12 +11,21 @@ import { Callout } from "./callout";
 import { Stats } from "./stats";
 import { CallToAction } from "./call-to-action";
 import { ImageText } from "./image-text";
+import { EventsCalendarPreview } from "./events-calendar-preview";
 
 // Union type for both page blocks and newsletter body blocks
 type BlockType = PageBlocks | any;
 
-export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values"> | { blocks: BlockType[] }) => {
+interface BlocksProps {
+    blocks?: BlockType[];
+    events?: any[];
+    globalData?: any;
+}
+
+export const Blocks = (props: (Omit<Page, "id" | "_sys" | "_values"> & { events?: any[]; globalData?: any }) | BlocksProps) => {
     const blocks = 'blocks' in props ? props.blocks : props.blocks;
+    const events = props.events || [];
+    const globalData = props.globalData;
 
     if (!blocks) return null;
 
@@ -25,7 +34,7 @@ export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values"> | { blocks: 
             {blocks.map(function (block: BlockType, i: number) {
                 return (
                     <div key={i} data-tina-field={tinaField(block)}>
-                        <Block {...block} />
+                        <Block {...block} events={events} globalData={globalData} />
                     </div>
                 );
             })}
@@ -33,7 +42,7 @@ export const Blocks = (props: Omit<Page, "id" | "_sys" | "_values"> | { blocks: 
     );
 };
 
-const Block = (block: BlockType) => {
+const Block = (block: BlockType & { events?: any[]; globalData?: any }) => {
     switch (block.__typename) {
         case "PageBlocksVideo":
         case "NewsletterBodyVideo":
@@ -71,6 +80,8 @@ const Block = (block: BlockType) => {
         case "NewsletterBodyImageText":
         case "PastEventBlocksImageText":
             return <ImageText data={block} />;
+        case "PageBlocksEventsCalendarPreview":
+            return <EventsCalendarPreview data={block} events={block.events} globalData={block.globalData} />;
         default:
             return null;
     }
