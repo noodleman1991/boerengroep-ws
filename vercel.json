@@ -20,11 +20,5 @@
       "source": "/uploads/(.*)",
       "destination": "/uploads/$1"
     }
-  ],
-  "routes": [
-    {
-      "src": "/uploads/(.*)",
-      "dest": "/uploads/$1"
-    }
   ]
 }
