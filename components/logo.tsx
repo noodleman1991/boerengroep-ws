@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 
@@ -62,27 +63,23 @@ export const Logo: React.FC<LogoProps> = ({
             currentSize.container,
             className
         )}>
-            {logoSrc && (
-                <div className={cn(
-                    'relative flex-shrink-0 overflow-hidden',
-                    currentSize.container
-                )}>
-                    <img
-                        src={logoSrc || '/logo.png'}
-                        alt={alt}
-                        width={currentSize.logo.width}
-                        height={currentSize.logo.height}
-                        className="h-full w-auto object-contain object-left"
-                        onError={(e) => {
-                            console.error('Logo failed to load:', logoSrc || '/logo.png');
-                            console.error('Error details:', e);
-                        }}
-                        style={{
-                            maxWidth: 'none', // Allow image to use full calculated width
-                        }}
-                    />
-                </div>
-            )}
+            <div className={cn(
+                'relative flex-shrink-0 overflow-hidden',
+                currentSize.container
+            )}>
+                <Image
+                    src="/uploads/branding/boerengroep-logo-zwart.png"
+                    alt="Boerengroep Logo"
+                    width={currentSize.logo.width}
+                    height={currentSize.logo.height}
+                    className="h-full w-auto object-contain object-left"
+                    unoptimized
+                    priority
+                    style={{
+                        maxWidth: 'none', // Allow image to use full calculated width
+                    }}
+                />
+            </div>
 
             {showText && orgName && (
                 <span className={cn(
@@ -178,15 +175,23 @@ export const AppLogo: React.FC<{
 export const HeaderLogo: React.FC<{
     globalData?: any;
     className?: string;
-}> = ({ globalData, className }) => (
-    <AppLogo
-        globalData={globalData}
-        size="md"
-        showText={false} // note: logo text set to false
-        href="/"
-        priority={true}
-        className={cn("transition-opacity hover:opacity-80", className)}
-    />
+}> = ({ className }) => (
+    <Link href="/" className="inline-flex">
+        <div className={cn(
+            'flex items-center h-14 transition-opacity hover:opacity-80',
+            className
+        )}>
+            <Image
+                src="/uploads/branding/boerengroep-logo-zwart.png"
+                alt="Boerengroep Logo"
+                width={168}
+                height={56}
+                className="h-full w-auto object-contain object-left"
+                unoptimized
+                priority
+            />
+        </div>
+    </Link>
 );
 
 export const FooterLogo: React.FC<{
