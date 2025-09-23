@@ -68,16 +68,6 @@ const baseConfig = {
           source: '/manifest.json',
           destination: '/manifest.json',
         },
-        // Ensure uploads folder is accessible
-        {
-          source: '/uploads/:path*',
-          destination: '/uploads/:path*',
-        },
-        // Explicitly handle branding assets
-        {
-          source: '/uploads/branding/:path*',
-          destination: '/uploads/branding/:path*',
-        },
       ],
       afterFiles: [
         { source: '/admin', destination: '/admin/index.html' },
