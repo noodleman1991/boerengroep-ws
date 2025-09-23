@@ -68,7 +68,7 @@ export const Logo: React.FC<LogoProps> = ({
                     currentSize.container
                 )}>
                     <img
-                        src={logoSrc || '/logo.png'}
+                        src={logoSrc || '/icon.png'}
                         alt={alt}
                         width={currentSize.logo.width}
                         height={currentSize.logo.height}
