@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 
@@ -68,17 +67,15 @@ export const Logo: React.FC<LogoProps> = ({
                     'relative flex-shrink-0 overflow-hidden',
                     currentSize.container
                 )}>
-                    <Image
+                    <img
                         src={logoSrc || '/logo.png'}
                         alt={alt}
                         width={currentSize.logo.width}
                         height={currentSize.logo.height}
                         className="h-full w-auto object-contain object-left"
-                        priority={priority}
                         onError={(e) => {
-                            if (process.env.NODE_ENV === 'development') {
-                                console.warn('Logo failed to load:', logoSrc);
-                            }
+                            console.error('Logo failed to load:', logoSrc || '/logo.png');
+                            console.error('Error details:', e);
                         }}
                         style={{
                             maxWidth: 'none', // Allow image to use full calculated width
