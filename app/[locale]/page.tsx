@@ -2,7 +2,7 @@ import React from "react";
 import client from "@/tina/__generated__/client";
 import Layout from "@/components/layout/layout";
 import ClientPage from "../[locale]/[...urlSegments]/client-page";
-//comment
+
 export const revalidate = 300;
 
 async function getHomeData(locale: string) {
