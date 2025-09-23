@@ -69,7 +69,7 @@ export const Logo: React.FC<LogoProps> = ({
                     currentSize.container
                 )}>
                     <Image
-                        src={logoSrc || '/uploads/branding/boerengroep-logo-zwart.png'}
+                        src={logoSrc || '/images/logo.png'}
                         alt={alt}
                         width={currentSize.logo.width}
                         height={currentSize.logo.height}
