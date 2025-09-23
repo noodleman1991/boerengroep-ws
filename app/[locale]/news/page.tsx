@@ -5,7 +5,7 @@ import Layout from '@/components/layout/layout';
 import { Section } from '@/components/layout/section';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Globe, Users } from 'lucide-react';
+import { ArrowRight, Users, Mail } from 'lucide-react';
 
 interface NewsPageProps {
     params: Promise<{ locale: string }>;
@@ -53,7 +53,7 @@ export default async function NewsPage({ params }: NewsPageProps) {
                             <CardHeader>
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-primary/10 rounded-lg">
-                                        <Globe className="h-6 w-6 text-primary" />
+                                        <Mail className="h-6 w-6 text-primary" />
                                     </div>
                                     <div>
                                         <CardTitle>{t('newsletter')}</CardTitle>
@@ -98,30 +98,6 @@ export default async function NewsPage({ params }: NewsPageProps) {
                             </CardContent>
                         </Card>
 
-                        {/* Landscape */}
-                        <Card className="hover:shadow-md transition-shadow">
-                            <CardHeader>
-                                <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-primary/10 rounded-lg">
-                                        <Globe className="h-6 w-6 text-primary" />
-                                    </div>
-                                    <div>
-                                        <CardTitle>{t('landscape')}</CardTitle>
-                                        <CardDescription>
-                                            Insights and analysis of the sustainable agriculture landscape.
-                                        </CardDescription>
-                                    </div>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <Button asChild variant="outline" className="w-full">
-                                    <Link href="/news/landscape">
-                                        View Landscape
-                                        <ArrowRight className="ml-2 h-4 w-4" />
-                                    </Link>
-                                </Button>
-                            </CardContent>
-                        </Card>
                     </div>
                 </div>
             </Section>

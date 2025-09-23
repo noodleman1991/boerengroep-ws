@@ -77,10 +77,6 @@ export const routing = defineRouting({
             en: '/news',
             nl: '/nieuws'
         },
-        '/news/landscape': {
-            en: '/news/landscape',
-            nl: '/nieuws/landschap'
-        },
         '/news/newsletter': {
             en: '/news/newsletter',
             nl: '/nieuws/nieuwsbrief'
