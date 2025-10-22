@@ -1,6 +1,6 @@
 {
   "header": {
-    "logo": "/logo.png",
+    "logo": "/uploads/logo.png",
     "logoAlt": "Stichting Boerengroep Logo",
     "name": "Boerengroep",
     "color": "primary",
@@ -70,16 +70,16 @@
             "label": "volunteers"
           },
           {
-            "href": "/vacancies#internships",
-            "label": "internships"
+            "href": "/vacancies#board",
+            "label": "board"
           },
           {
             "href": "/vacancies#coordinator",
             "label": "coordinator"
           },
           {
-            "href": "/vacancies#board",
-            "label": "board"
+            "href": "/vacancies#internships",
+            "label": "internships"
           }
         ]
       },
