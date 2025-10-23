@@ -34,11 +34,38 @@ export default async function Page({
         if (locale === 'nl') {
             const translatedSegments = segments.map(segment => {
                 switch (segment) {
-                    case 'activities': return 'activiteiten';
-                    case 'about-us': return 'over-ons';
-                    case 'news': return 'nieuws';
-                    case 'vacancies': return 'vacatures';
-                    case 'library': return 'bibliotheek';
+                    // Main routes
+                    case 'activiteiten': return 'activities';
+                    case 'over-ons': return 'about-us';
+                    case 'nieuws': return 'news';
+                    case 'vacatures': return 'vacancies';
+                    case 'bibliotheek': return 'library';
+                    case 'nieuwsbrieven': return 'newsletters';
+                    case 'nieuwsbrief': return 'newsletter';
+                    // About-us subroutes
+                    case 'wat-is-bg': return 'what-is-bg';
+                    case 'geschiedenis': return 'history';
+                    case 'wie-zijn-wij': return 'who-are-we';
+                    case 'netwerk': return 'network';
+                    // Activities subroutes
+                    case 'agenda': return 'calendar';
+                    case 'terugblik': return 'past-events';
+                    case 'groepsstudies': return 'group-studies';
+                    case 'docenten': return 'teachers';
+                    case 'forumlezer': return 'forum-reader';
+                    case 'soepkeuken': return 'soup-kitchen';
+                    // News subroutes
+                    case 'nieuwsbrief': return 'newsletter';
+                    case 'vrienden-nieuws': return 'friends-news';
+                    // Library subroutes
+                    case '50-jaar-bg': return '50-years-bg';
+                    // Legal pages
+                    case 'privacybeleid': return 'privacy-policy';
+                    case 'algemene-voorwaarden': return 'terms-conditions';
+                    case 'toegankelijkheid': return 'accessibility';
+                    case 'evenementen': return 'events';
+                    case 'exporteer-gegevens': return 'export-data';
+                    case 'verwijder-gegevens': return 'delete-data';
                     default: return segment;
                 }
             });
