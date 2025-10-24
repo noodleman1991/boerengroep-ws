@@ -11,9 +11,9 @@ export const routing = defineRouting({
             en: '/about-us',
             nl: '/over-ons'
         },
-        '/about-us/what-is-bg': {
-            en: '/about-us/what-is-bg',
-            nl: '/over-ons/wat-is-bg'
+        '/about-us/what-is-boerengroep': {
+            en: '/about-us/what-is-boerengroep',
+            nl: '/over-ons/wat-is-boerengroep'
         },
         '/about-us/history': {
             en: '/about-us/history',

@@ -43,7 +43,7 @@ export default async function Page({
                     case 'nieuwsbrieven': return 'newsletters';
                     case 'nieuwsbrief': return 'newsletter';
                     // About-us subroutes
-                    case 'wat-is-bg': return 'what-is-bg';
+                    case 'wat-is-boerengroep': return 'what-is-boerengroep';
                     case 'geschiedenis': return 'history';
                     case 'wie-zijn-wij': return 'who-are-we';
                     case 'netwerk': return 'network';
