@@ -67,6 +67,7 @@ query calendarQuery {
                     role
                 }
                 featured
+                registrationLink
                 _sys {
                     filename
                     basename

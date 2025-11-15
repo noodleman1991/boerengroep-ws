@@ -209,7 +209,8 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "description": "Description",
-      "at": "at"
+      "at": "at",
+      "register": "Register for this event"
     },
     "eventTypes": {
       "talk": "Talk",

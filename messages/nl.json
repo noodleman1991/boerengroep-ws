@@ -209,7 +209,8 @@
       "startDate": "Startdatum",
       "endDate": "Einddatum",
       "description": "Beschrijving",
-      "at": "om"
+      "at": "om",
+      "register": "Aanmelden voor dit evenement"
     },
     "eventTypes": {
       "talk": "Lezing",
