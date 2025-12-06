@@ -10,7 +10,7 @@ async function getHomeData(locale: string) {
         // Fetch page data
         let pageData;
         try {
-            // Try locale-specific home page first
+            // Try locale-specific home page firstclaude
             pageData = await client.queries.page({
                 relativePath: `${locale}/home.mdx`,
             });
