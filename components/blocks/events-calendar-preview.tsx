@@ -44,6 +44,7 @@ function transformEventForDialog(event: any): IEvent {
             picturePath: event.speakers?.[0]?.speaker?.avatar || null,
         },
         image: event.image,
+        registrationLink: event.registrationLink,
     };
 }
 
@@ -105,24 +106,24 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
     return (
         <CalendarProvider initialEvents={[]} view="month">
             <Section background={data.background!}>
-                <div className="container mx-auto px-4">
-                    <div className={`grid gap-8 md:gap-12 ${showCalendarWidget ? 'md:grid-cols-3' : 'md:grid-cols-1'} items-start justify-center`}>
+                <div className="container mx-auto px-4 sm:px-6">
+                    <div className={`grid gap-6 sm:gap-8 md:gap-12 ${showCalendarWidget ? 'lg:grid-cols-3' : 'grid-cols-1'} items-start`}>
                         {/* Left Column - Upcoming Events (takes 2 columns when calendar is shown) */}
                         <motion.div
-                            className={`space-y-6 flex flex-col items-center md:items-start ${showCalendarWidget ? 'md:col-span-2' : ''}`}
+                            className={`space-y-4 sm:space-y-6 flex flex-col w-full ${showCalendarWidget ? 'lg:col-span-2' : ''}`}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, ease: "easeOut" }}
                             viewport={{ once: true, margin: "-100px" }}
                         >
                             <motion.div
-                                className="text-center md:text-left w-full"
+                                className="text-left w-full"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
                                 viewport={{ once: true, margin: "-100px" }}
                             >
-                                <h2 className="text-2xl font-heading font-bold mb-4" data-tina-field={tinaField(data, 'title')}>
+                                <h2 className="text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4" data-tina-field={tinaField(data, 'title')}>
                                     {data.title || t('upcomingEvents')}
                                 </h2>
                             </motion.div>
@@ -152,50 +153,50 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                                                 viewport={{ once: true, margin: "-100px" }}
                                             >
                                                 <EventDetailsDialog event={transformedEvent}>
-                                                    <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                                                    <CardContent className="p-4">
-                                                        <div className="flex items-start gap-4">
+                                                    <Card className="hover:shadow-md transition-shadow cursor-pointer w-full">
+                                                    <CardContent className="p-3 sm:p-4">
+                                                        <div className="flex items-start gap-3 sm:gap-4">
                                                             <div className="flex-shrink-0">
                                                                 {event?.image ? (
                                                                     <Image
                                                                         src={event.image}
                                                                         alt={event?.title || 'Event image'}
-                                                                        width={50}
-                                                                        height={50}
-                                                                        className="rounded-lg object-cover"
+                                                                        width={60}
+                                                                        height={60}
+                                                                        className="rounded-lg object-cover w-12 h-12 sm:w-14 sm:h-14"
                                                                     />
                                                                 ) : (
-                                                                    <div className="bg-primary/10 rounded-lg p-3">
-                                                                        <CalendarIcon className="w-5 h-5 text-primary" />
+                                                                    <div className="bg-primary/10 rounded-lg p-2 sm:p-3">
+                                                                        <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                                                     </div>
                                                                 )}
                                                             </div>
                                                             <div className="flex-1 min-w-0">
-                                                                <h3 className="font-semibold text-sm sm:text-base line-clamp-2 mb-1">
+                                                                <h3 className="font-semibold text-sm sm:text-base line-clamp-2 mb-1 break-words">
                                                                     {event?.title}
                                                                 </h3>
                                                                 {event?.description && (
-                                                                    <p className="text-muted-foreground text-sm line-clamp-2 mb-2">
+                                                                    <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-2 break-words">
                                                                         {event.description}
                                                                     </p>
                                                                 )}
-                                                                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                                                                    <div className="flex items-center gap-1">
-                                                                        <Clock className="w-3 h-3" />
-                                                                        <span>
+                                                                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1.5 sm:gap-2 text-xs text-muted-foreground">
+                                                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                                                        <Clock className="w-3 h-3 flex-shrink-0" />
+                                                                        <span className="break-all">
                                                                             {formatEventDate(event?.startDate)} {formatEventTime(event?.startDate)}
                                                                         </span>
                                                                     </div>
                                                                     {event?.location?.address && (
-                                                                        <div className="flex items-center gap-1">
-                                                                            <MapPin className="w-3 h-3" />
-                                                                            <span className="truncate max-w-[120px]">
+                                                                        <div className="flex items-center gap-1 min-w-0">
+                                                                            <MapPin className="w-3 h-3 flex-shrink-0" />
+                                                                            <span className="truncate">
                                                                                 {event.location.address}
                                                                             </span>
                                                                         </div>
                                                                     )}
                                                                     {event?.eventType && (
-                                                                        <span className="bg-secondary px-2 py-1 rounded text-xs">
+                                                                        <span className="bg-secondary px-2 py-0.5 sm:py-1 rounded text-xs inline-block">
                                                                             {event.eventType}
                                                                         </span>
                                                                     )}
@@ -216,7 +217,7 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                     {/* Right Column - Mini Calendar */}
                     {showCalendarWidget && (
                         <motion.div
-                            className="space-y-6 flex flex-col items-center md:items-start"
+                            className="space-y-4 sm:space-y-6 flex flex-col w-full"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
@@ -230,17 +231,17 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                             >
                                 <MiniCalendarWidget
                                     events={events}
-                                    className="w-full max-w-sm mx-auto md:mx-0"
+                                    className="w-full max-w-sm mx-auto lg:mx-0"
                                 />
                             </motion.div>
                             <motion.div
-                                className="flex justify-center md:justify-start"
+                                className="flex justify-center lg:justify-start w-full"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}
                                 viewport={{ once: true, margin: "-100px" }}
                             >
-                                <Button asChild variant="outline" size="sm">
+                                <Button asChild variant="outline" size="sm" className="w-full sm:w-auto min-h-[44px]">
                                     <Link href={`/${locale}/activities/calendar`}>
                                         {t('viewFullCalendar')}
                                     </Link>

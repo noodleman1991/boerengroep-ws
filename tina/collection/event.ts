@@ -133,6 +133,12 @@ const Event: Collection = {
             name: "featured",
             description: "Highlight this event",
         },
+        {
+            type: "string",
+            label: "Registration Link",
+            name: "registrationLink",
+            description: "URL for event registration (e.g., Google Forms, Eventbrite)",
+        },
     ],
 };
 

@@ -11,7 +11,7 @@ export const LanguageSwitcher = () => {
 
     // Determine the target locale and display text
     const targetLocale = locale === 'en' ? 'nl' : 'en';
-    const displayText = locale === 'en' ? 'in het Nederlands' : 'in English';
+    const displayText = locale === 'en' ? 'Nederlands' : 'English';
 
     return (
         <Link
