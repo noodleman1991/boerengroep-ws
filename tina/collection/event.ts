@@ -128,16 +128,26 @@ const Event: Collection = {
             description: "Optional image for the event",
         },
         {
+            type: "image",
+            label: "Cover Image",
+            name: "coverImage",
+            description: "Large cover image displayed prominently in event cards and details (separate from event icon image)",
+        },
+        {
             type: "boolean",
             label: "Featured Event",
             name: "featured",
             description: "Highlight this event",
         },
         {
-            type: "string",
+            type: "rich-text",
             label: "Registration Link",
             name: "registrationLink",
-            description: "URL for event registration (e.g., Google Forms, Eventbrite)",
+            description: "Add registration link with custom text (e.g., 'Register here' linking to form)",
+            ui: {
+                component: "textarea",
+            },
+            templates: [],
         },
     ],
 };

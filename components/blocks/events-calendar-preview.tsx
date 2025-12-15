@@ -44,6 +44,7 @@ function transformEventForDialog(event: any): IEvent {
             picturePath: event.speakers?.[0]?.speaker?.avatar || null,
         },
         image: event.image,
+        coverImage: event.coverImage,
         registrationLink: event.registrationLink,
     };
 }
@@ -107,7 +108,7 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
         <CalendarProvider initialEvents={[]} view="month">
             <Section background={data.background!}>
                 <div className="container mx-auto px-4 sm:px-6">
-                    <div className={`grid gap-6 sm:gap-8 md:gap-12 ${showCalendarWidget ? 'lg:grid-cols-3' : 'grid-cols-1'} items-start`}>
+                    <div className={`grid gap-6 sm:gap-8 md:gap-12 ${showCalendarWidget ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} items-start`}>
                         {/* Left Column - Upcoming Events (takes 2 columns when calendar is shown) */}
                         <motion.div
                             className={`space-y-4 sm:space-y-6 flex flex-col w-full ${showCalendarWidget ? 'lg:col-span-2' : ''}`}
@@ -153,11 +154,25 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                                                 viewport={{ once: true, margin: "-100px" }}
                                             >
                                                 <EventDetailsDialog event={transformedEvent}>
-                                                    <Card className="hover:shadow-md transition-shadow cursor-pointer w-full">
+                                                    <Card className="bg-white hover:shadow-md transition-shadow cursor-pointer w-full">
                                                     <CardContent className="p-3 sm:p-4">
+                                                        {/* Cover Image - Full width banner */}
+                                                        {event?.coverImage && (
+                                                            <div className="relative w-full mb-3 -mx-3 sm:-mx-4 -mt-3 sm:-mt-4">
+                                                                <Image
+                                                                    src={event.coverImage}
+                                                                    alt={event?.title || 'Event cover image'}
+                                                                    width={400}
+                                                                    height={200}
+                                                                    className="w-full h-32 sm:h-40 object-cover rounded-t-lg"
+                                                                />
+                                                            </div>
+                                                        )}
+
                                                         <div className="flex items-start gap-3 sm:gap-4">
-                                                            <div className="flex-shrink-0">
-                                                                {event?.image ? (
+                                                            {/* Small icon image - only show if no cover image */}
+                                                            {!event?.coverImage && event?.image && (
+                                                                <div className="flex-shrink-0">
                                                                     <Image
                                                                         src={event.image}
                                                                         alt={event?.title || 'Event image'}
@@ -165,12 +180,18 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                                                                         height={60}
                                                                         className="rounded-lg object-cover w-12 h-12 sm:w-14 sm:h-14"
                                                                     />
-                                                                ) : (
+                                                                </div>
+                                                            )}
+
+                                                            {/* Event icon placeholder if no images */}
+                                                            {!event?.coverImage && !event?.image && (
+                                                                <div className="flex-shrink-0">
                                                                     <div className="bg-primary/10 rounded-lg p-2 sm:p-3">
                                                                         <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                                                     </div>
-                                                                )}
-                                                            </div>
+                                                                </div>
+                                                            )}
+
                                                             <div className="flex-1 min-w-0">
                                                                 <h3 className="font-semibold text-sm sm:text-base line-clamp-2 mb-1 break-words">
                                                                     {event?.title}

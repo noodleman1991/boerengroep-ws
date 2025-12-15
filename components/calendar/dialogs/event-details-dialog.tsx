@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
+import { TinaMarkdown } from 'tinacms/dist/rich-text';
 import {
     Dialog,
     DialogClose,
@@ -48,10 +49,11 @@ export function EventDetailsDialog({ event, children }: IProps) {
 
                 <ScrollArea className="max-h-[65vh] sm:max-h-[60vh] pr-2">
                     <div className="space-y-4 sm:space-y-6 pb-2">
-                        {event.image && (
+                        {/* Cover Image takes priority, fallback to regular image */}
+                        {(event.coverImage || event.image) && (
                             <div className="relative w-full -mx-0.5">
                                 <Image
-                                    src={event.image}
+                                    src={event.coverImage || event.image!}
                                     alt={event.title}
                                     width={400}
                                     height={200}
@@ -97,15 +99,19 @@ export function EventDetailsDialog({ event, children }: IProps) {
                         )}
 
                         {event.registrationLink && (
-                            <Link
-                                href={event.registrationLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center justify-center gap-2 w-full bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-medium transition-colors min-h-[44px]"
-                            >
-                                {t('events.register')}
-                                <ExternalLink className="size-4" />
-                            </Link>
+                            <div className="text-sm">
+                                <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-gray-50">
+                                    <ExternalLink className="mt-0.5 sm:mt-1 size-4 shrink-0 text-muted-foreground" />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-xs sm:text-sm font-medium text-gray-900 mb-1">
+                                            {t('events.register')}
+                                        </p>
+                                        <div className="prose prose-sm max-w-none [&_a]:text-primary [&_a]:hover:underline [&_a]:font-medium [&_a]:break-words">
+                                            <TinaMarkdown content={event.registrationLink} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </ScrollArea>

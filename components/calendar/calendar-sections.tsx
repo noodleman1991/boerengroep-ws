@@ -77,7 +77,7 @@ export async function CalendarSections({ locale }: CalendarSectionsProps) {
             {sections.map((section) => (
                 <div key={section.id} id={section.id} className="scroll-mt-20">
                     <Section className="py-8">
-                        <div className="container mx-auto px-4">
+                        <div className="container mx-auto px-4 sm:px-6">
                             {section.title && (
                                 <h2 className="text-2xl font-bold mb-6">{section.title}</h2>
                             )}

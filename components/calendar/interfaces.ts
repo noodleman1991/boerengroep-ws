@@ -16,6 +16,7 @@ export interface IEvent {
 	description: string;
 	user: IUser;
 	image?: string;
+	coverImage?: string;
 	registrationLink?: string;
 }
 

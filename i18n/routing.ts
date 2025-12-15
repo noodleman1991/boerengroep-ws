@@ -49,6 +49,10 @@ export const routing = defineRouting({
             en: '/activities/fei',
             nl: '/activiteiten/fei'
         },
+        '/activities/reclaim-the-seeds': {
+            en: '/activities/reclaim-the-seeds',
+            nl: '/activiteiten/reclaim-the-seeds'
+        },
         '/activities/teachers': {
             en: '/activities/teachers',
             nl: '/activiteiten/docenten'
