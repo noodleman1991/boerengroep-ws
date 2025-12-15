@@ -66,6 +66,8 @@ query calendarQuery {
                     }
                     role
                 }
+                image
+                coverImage
                 featured
                 registrationLink
                 _sys {

@@ -192,32 +192,32 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                                                                 </div>
                                                             )}
 
-                                                            <div className="flex-1 min-w-0">
-                                                                <h3 className="font-semibold text-sm sm:text-base line-clamp-2 mb-1 break-words">
+                                                            <div className="flex-1 min-w-0 overflow-hidden">
+                                                                <h3 className="font-semibold text-sm sm:text-base line-clamp-2 mb-1 break-words leading-tight">
                                                                     {event?.title}
                                                                 </h3>
                                                                 {event?.description && (
-                                                                    <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-2 break-words">
+                                                                    <p className="text-muted-foreground text-xs sm:text-sm line-clamp-2 mb-2 break-words leading-relaxed">
                                                                         {event.description}
                                                                     </p>
                                                                 )}
                                                                 <div className="flex flex-col sm:flex-row sm:flex-wrap gap-1.5 sm:gap-2 text-xs text-muted-foreground">
-                                                                    <div className="flex items-center gap-1 flex-shrink-0">
+                                                                    <div className="flex items-center gap-1 min-w-0">
                                                                         <Clock className="w-3 h-3 flex-shrink-0" />
-                                                                        <span className="break-all">
+                                                                        <span className="break-words">
                                                                             {formatEventDate(event?.startDate)} {formatEventTime(event?.startDate)}
                                                                         </span>
                                                                     </div>
                                                                     {event?.location?.address && (
-                                                                        <div className="flex items-center gap-1 min-w-0">
+                                                                        <div className="flex items-center gap-1 min-w-0 max-w-full overflow-hidden">
                                                                             <MapPin className="w-3 h-3 flex-shrink-0" />
-                                                                            <span className="truncate">
+                                                                            <span className="truncate text-xs">
                                                                                 {event.location.address}
                                                                             </span>
                                                                         </div>
                                                                     )}
                                                                     {event?.eventType && (
-                                                                        <span className="bg-secondary px-2 py-0.5 sm:py-1 rounded text-xs inline-block">
+                                                                        <span className="bg-secondary px-2 py-0.5 sm:py-1 rounded text-xs inline-block whitespace-nowrap">
                                                                             {event.eventType}
                                                                         </span>
                                                                     )}
