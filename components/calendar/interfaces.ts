@@ -17,7 +17,7 @@ export interface IEvent {
 	user: IUser;
 	image?: string;
 	coverImage?: string;
-	registrationLink?: string;
+	registrationLink?: any; // Can be string (legacy) or TinaMarkdownContent (rich-text)
 }
 
 export interface ICalendarCell {
