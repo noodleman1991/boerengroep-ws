@@ -30,9 +30,54 @@ export default async function Page({
 
     // Function to get the correct file path for the given locale
     const getLocalizedFilePath = (segments: string[], locale: string) => {
-        // For Dutch locale, files are stored with Dutch names, so use segments as-is
-        // For English locale, use segments as-is as well (files are in English)
-        // The next-intl routing handles URL translation, not the filesystem
+        // next-intl middleware normalizes URLs to canonical English paths
+        // We need to translate them BACK to locale-specific paths for file lookup
+        if (locale === 'nl') {
+            // Translate English canonical paths back to Dutch file paths
+            const translatedSegments = segments.map(segment => {
+                switch (segment) {
+                    // Main routes
+                    case 'about-us': return 'over-ons';
+                    case 'activities': return 'activiteiten';
+                    case 'news': return 'nieuws';
+                    case 'vacancies': return 'vacatures';
+                    case 'library': return 'bibliotheek';
+                    case 'newsletters': return 'nieuwsbrieven';
+                    case 'newsletter': return 'nieuwsbrief';
+                    // About-us subroutes
+                    case 'what-is-boerengroep': return 'wat-is-boerengroep';
+                    case 'history': return 'geschiedenis';
+                    case 'who-are-we': return 'wie-zijn-wij';
+                    case 'network': return 'netwerk';
+                    // Activities subroutes
+                    case 'calendar': return 'agenda';
+                    case 'past-events': return 'terugblik';
+                    case 'group-studies': return 'groepsstudies';
+                    case 'teachers': return 'docenten';
+                    case 'forum-reader': return 'forumlezer';
+                    case 'soup-kitchen': return 'soepkeuken';
+                    case 'calendar-sections': return 'agenda-secties';
+                    // News subroutes
+                    case 'friends-news': return 'vrienden-nieuws';
+                    // Library subroutes
+                    case '50-years-bg': return '50-jaar-bg';
+                    case 'media': return 'media';
+                    case 'podcast': return 'podcast';
+                    case '50-years-boerengroep': return '50-years-boerengroep';
+                    case 'agroecologie-netwerk': return 'agroecologie-netwerk';
+                    // Legal pages
+                    case 'privacy-policy': return 'privacybeleid';
+                    case 'terms-conditions': return 'algemene-voorwaarden';
+                    case 'accessibility': return 'toegankelijkheid';
+                    case 'events': return 'evenementen';
+                    case 'export-data': return 'exporteer-gegevens';
+                    case 'delete-data': return 'verwijder-gegevens';
+                    default: return segment;
+                }
+            });
+            return translatedSegments.join('/');
+        }
+        // For English, use segments as-is (canonical paths match file paths)
         return segments.join('/');
     };
 
@@ -45,18 +90,25 @@ export default async function Page({
             relativePath: `${locale}/${localizedFilePath}.mdx`,
         });
     } catch (error) {
-        // Fallback to default locale or non-localized content
+        // Try with /index.mdx for directory index pages
         try {
             data = await client.queries.page({
-                relativePath: `${filepath}.mdx`,
+                relativePath: `${locale}/${localizedFilePath}/index.mdx`,
             });
-        } catch (fallbackError) {
-            console.error(`Failed to find page: ${localizedFilePath}`, {
-                locale,
-                filepath: localizedFilePath,
-                error: fallbackError instanceof Error ? fallbackError.message : 'Unknown error'
-            });
-            notFound();
+        } catch (indexError) {
+            // Final fallback to non-localized content
+            try {
+                data = await client.queries.page({
+                    relativePath: `${filepath}.mdx`,
+                });
+            } catch (fallbackError) {
+                console.error(`Failed to find page: ${localizedFilePath}`, {
+                    locale,
+                    filepath: localizedFilePath,
+                    error: fallbackError instanceof Error ? fallbackError.message : 'Unknown error'
+                });
+                notFound();
+            }
         }
     }
 
