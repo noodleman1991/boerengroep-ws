@@ -1,0 +1,122 @@
+
+> Stichting Boerengroep@1.0.0 build /Users/amitlockshinski/WebstormProjects/next-bg-website
+> tinacms build && next build
+
+Starting Tina build
+
+
+[2K[1GChecking indexing process in TinaCloud... ⠋[2K[1GChecking indexing process in TinaCloud... ⠙[2K[1GChecking indexing process in TinaCloud... ⠹[2K[1GChecking indexing process in TinaCloud... ⠸[2K[1GChecking indexing process in TinaCloud... ⠼[2K[1GChecking indexing process in TinaCloud... ⠴[2K[1GChecking indexing process in TinaCloud... ⠦[2K[1GChecking indexing process in TinaCloud... ⠧
+
+
+
+│
+○  Tina build complete ───────────────────────────────────────────────────────────────────────────────────────────╮
+│                                                                                                                 │
+│  🦙 Tina Config                                                                                                 │
+│     API url:            https://content.tinajs.io/1.6/content/fbbafd20-e72e-48a2-bb11-70ea9ed9a361/github/main  │
+│                                                                                                                 │
+│  🤖 Auto-generated files                                                                                        │
+│     GraphQL Client:     tina/__generated__/client.ts                                                            │
+│     Typescript Types:   tina/__generated__/types.ts                                                             │
+│     Static HTML file:   public/admin/index.html                                                                 │
+│                                                                                                                 │
+│                                                                                                                 │
+├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/amitlockshinski/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /Users/amitlockshinski/WebstormProjects/next-bg-website/pnpm-lock.yaml
+
+   ▲ Next.js 15.5.7
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 92s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/105) ...
+   Generating static pages (26/105) 
+Error fetching podcast data: Error: Failed to fetch podcast data
+    at j (.next/server/app/[locale]/library/podcast/page.js:1:1874)
+    at async k (.next/server/app/[locale]/library/podcast/page.js:1:2181)
+   Generating static pages (52/105) 
+   Generating static pages (78/105) 
+ ✓ Generating static pages (105/105)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                                                       Size  First Load JS
+┌ ○ /_not-found                                                                1.01 kB         109 kB
+├ ● /[locale]                                                                    619 B         1.9 MB
+├   ├ /nl
+├   └ /en
+├ ● /[locale]/[...urlSegments]                                                   619 B         1.9 MB
+├   ├ /nl/about
+├   ├ /en/about
+├   ├ /en/about-us/history
+├   └ [+63 more paths]
+├ ● /[locale]/activities/calendar                                              12.5 kB        1.92 MB
+├   ├ /nl/activities/calendar
+├   └ /en/activities/calendar
+├ ● /[locale]/activities/past-events                                           2.39 kB         222 kB
+├   ├ /nl/activities/past-events
+├   └ /en/activities/past-events
+├ ● /[locale]/activities/past-events/[...urlSegments]                          28.2 kB        1.93 MB
+├   ├ /nl/activities/past-events/Boerengroep-Weekend
+├   ├ /en/activities/past-events/Boerengroep-Weekend
+├   ├ /nl/activities/past-events/Farm-Experience-Internship-recap
+├   └ /en/activities/past-events/Farm-Experience-Internship-recap
+├ ● /[locale]/library/podcast                                                  18.3 kB         232 kB
+├   ├ /nl/library/podcast
+├   └ /en/library/podcast
+├ ● /[locale]/news                                                               317 B         212 kB
+├   ├ /nl/news
+├   └ /en/news
+├ ● /[locale]/news/friends-news                                                2.63 kB         214 kB
+├   ├ /nl/news/friends-news
+├   └ /en/news/friends-news
+├ ● /[locale]/news/friends-news/[...slug]                                      2.78 kB        1.91 MB
+├   ├ /en/news/friends-news/Newsletter-1
+├   ├ /en/news/friends-news/Newsletter-2
+├   ├ /nl/news/friends-news/Volunteers-needed-for-the-StreekWaar-market-stall
+├   └ /nl/news/friends-news/welcome-partners
+├ ● /[locale]/news/newsletter                                                  2.63 kB         214 kB
+├   ├ /nl/news/newsletter
+├   └ /en/news/newsletter
+├ ● /[locale]/news/newsletter/[...slug]                                        2.78 kB        1.91 MB
+├   └ /nl/news/newsletter/voorbeeld-externe-link
+├ ● /[locale]/newsletter/delete-data                                           2.45 kB         214 kB
+├   ├ /nl/newsletter/delete-data
+├   └ /en/newsletter/delete-data
+├ ● /[locale]/newsletter/export-data                                           1.97 kB         213 kB
+├   ├ /nl/newsletter/export-data
+├   └ /en/newsletter/export-data
+├ ● /[locale]/newsletter/unsubscribe                                           2.36 kB         214 kB
+├   ├ /nl/newsletter/unsubscribe
+├   └ /en/newsletter/unsubscribe
+├ ● /[locale]/newsletter/verify                                                1.63 kB         213 kB
+├   ├ /nl/newsletter/verify
+├   └ /en/newsletter/verify
+├ ● /[locale]/vacancies                                                        7.45 kB         221 kB
+├   ├ /nl/vacancies
+├   └ /en/vacancies
+├ ƒ /api/newsletter/delete-data                                                  145 B         108 kB
+├ ƒ /api/newsletter/export-data                                                  145 B         108 kB
+├ ƒ /api/newsletter/subscribe                                                    145 B         108 kB
+├ ƒ /api/newsletter/unsubscribe                                                  145 B         108 kB
+├ ƒ /api/newsletter/verify                                                       145 B         108 kB
+└ ƒ /api/podcast                                                                 145 B         108 kB
++ First Load JS shared by all                                                   108 kB
+  ├ chunks/5908-62d8644c5f9a2cf7.js                                            46.1 kB
+  ├ chunks/a43a0807-f755af7dc84da2d8.js                                        54.2 kB
+  └ other shared chunks (total)                                                7.27 kB
+
+
+ƒ Middleware                                                                   45.9 kB
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
