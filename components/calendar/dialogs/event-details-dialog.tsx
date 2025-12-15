@@ -98,7 +98,7 @@ export function EventDetailsDialog({ event, children }: IProps) {
                             </div>
                         )}
 
-                        {event.registrationLink && (
+                        {event.registrationLink && event.registrationLink.children && event.registrationLink.children.length > 0 && (
                             <div className="text-sm">
                                 <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-gray-50">
                                     <ExternalLink className="mt-0.5 sm:mt-1 size-4 shrink-0 text-muted-foreground" />

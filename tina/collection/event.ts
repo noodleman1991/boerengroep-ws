@@ -146,15 +146,12 @@ const Event: Collection = {
             description: `How to add a registration link with custom text:
 1. Type your desired text (e.g., "Register for this workshop" or "Sign up here")
 2. Select the text you just typed
-3. Click the link button (🔗) in the toolbar
+3. Click the link button (🔗) in the toolbar above the editor
 4. Paste the registration URL (Google Forms, Eventbrite, etc.)
 5. Click "OK" to save
 
 The link will appear in the event details with your custom text.
 Leave empty if no registration is needed - the field will not appear on the event.`,
-            ui: {
-                component: "textarea",
-            },
             templates: [],
         },
     ],
