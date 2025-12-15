@@ -154,21 +154,21 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                                                 viewport={{ once: true, margin: "-100px" }}
                                             >
                                                 <EventDetailsDialog event={transformedEvent}>
-                                                    <Card className="bg-white hover:shadow-md transition-shadow cursor-pointer w-full">
-                                                    <CardContent className="p-3 sm:p-4">
-                                                        {/* Cover Image - Full width banner */}
+                                                    <Card className="bg-white hover:shadow-md transition-shadow cursor-pointer w-full overflow-hidden">
+                                                        {/* Cover Image - Full width banner outside padding */}
                                                         {event?.coverImage && (
-                                                            <div className="relative w-full mb-3 -mx-3 sm:-mx-4 -mt-3 sm:-mt-4">
+                                                            <div className="relative w-full">
                                                                 <Image
                                                                     src={event.coverImage}
                                                                     alt={event?.title || 'Event cover image'}
                                                                     width={400}
                                                                     height={200}
-                                                                    className="w-full h-32 sm:h-40 object-cover rounded-t-lg"
+                                                                    className="w-full h-32 sm:h-40 object-cover"
                                                                 />
                                                             </div>
                                                         )}
 
+                                                        <CardContent className="p-3 sm:p-4">
                                                         <div className="flex items-start gap-3 sm:gap-4">
                                                             {/* Small icon image - only show if no cover image */}
                                                             {!event?.coverImage && event?.image && (
@@ -224,9 +224,9 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </CardContent>
-                                                </Card>
-                                            </EventDetailsDialog>
+                                                        </CardContent>
+                                                    </Card>
+                                                </EventDetailsDialog>
                                             </motion.div>
                                         );
                                     })
