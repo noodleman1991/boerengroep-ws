@@ -103,9 +103,6 @@ export function EventDetailsDialog({ event, children }: IProps) {
                                 <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-gray-50">
                                     <ExternalLink className="mt-0.5 sm:mt-1 size-4 shrink-0 text-muted-foreground" />
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-xs sm:text-sm font-medium text-gray-900 mb-1">
-                                            {t('events.register')}
-                                        </p>
                                         <div className="prose prose-sm max-w-none [&_a]:text-primary [&_a]:hover:underline [&_a]:font-medium [&_a]:break-words">
                                             <TinaMarkdown content={event.registrationLink} />
                                         </div>
