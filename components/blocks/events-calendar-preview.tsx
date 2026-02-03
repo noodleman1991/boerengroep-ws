@@ -108,7 +108,7 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
         <CalendarProvider initialEvents={[]} view="month">
             <Section background={data.background!}>
                 <div className="container mx-auto px-4 sm:px-6">
-                    <div className={`grid gap-6 sm:gap-8 md:gap-12 ${showCalendarWidget ? 'md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} items-start`}>
+                    <div className={`grid gap-6 sm:gap-8 ${showCalendarWidget ? 'lg:grid-cols-3' : 'grid-cols-1'} items-start`}>
                         {/* Left Column - Upcoming Events (takes 2 columns when calendar is shown) */}
                         <motion.div
                             className={`space-y-4 sm:space-y-6 flex flex-col w-full ${showCalendarWidget ? 'lg:col-span-2' : ''}`}
@@ -252,11 +252,11 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                             >
                                 <MiniCalendarWidget
                                     events={events}
-                                    className="w-full max-w-sm mx-auto lg:mx-0"
+                                    className="w-full max-w-sm mx-auto"
                                 />
                             </motion.div>
                             <motion.div
-                                className="flex justify-center lg:justify-start w-full"
+                                className="flex justify-center w-full"
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}

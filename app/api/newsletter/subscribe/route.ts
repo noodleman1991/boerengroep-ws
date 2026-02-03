@@ -1,173 +1,225 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
+import { createBrevoContact, isBrevoConfigured } from '@/lib/email/brevo';
+import {
+  generateSecureToken,
+  getClientIP,
+  getUserAgent,
+  normalizeEmail,
+  isDisposableEmail,
+} from '@/lib/newsletter/utils';
+import {
+  createSubscriber,
+  getSubscriberByEmail,
+  logConsent,
+  updateSubscriberStatus,
+} from '@/lib/db/queries';
+import { sendWelcomeEmail } from '@/lib/email';
+
+const subscribeSchema = z.object({
+  email: z.string().email().toLowerCase().trim(),
+  language: z.enum(['en', 'nl']).default('en'),
+  source: z.string().optional().default('website'),
+});
 
 export async function POST(request: NextRequest) {
   try {
+    // Parse request body
     let body;
     try {
       body = await request.json();
-    } catch (error) {
-      console.error('❌ Request body parsing failed:', error);
+    } catch {
       return NextResponse.json(
-        { error: 'Invalid request format', step: 'body_parsing' },
+        { error: 'Invalid request format' },
         { status: 400 }
       );
     }
 
-    // Step 3: Test validation
-    try {
-      const validationSchema = z.object({
-        email: z.string().email().toLowerCase().trim(),
-        consent: z.boolean().refine(val => val === true, 'Consent is required'),
-        language: z.enum(['en', 'nl']).default('en'),
-        source: z.string().optional().default('website'),
-      });
+    // Validate input
+    const validationResult = subscribeSchema.safeParse(body);
+    if (!validationResult.success) {
+      return NextResponse.json(
+        {
+          error: 'Invalid request data',
+          details: validationResult.error.issues.map((issue) => issue.message),
+        },
+        { status: 400 }
+      );
+    }
 
-      const validatedData = validationSchema.parse(body);
-    } catch (error) {
-      console.error('❌ Validation failed:', error);
-      if (error instanceof z.ZodError) {
+    const { email, language, source } = validationResult.data;
+    const normalizedEmail = normalizeEmail(email);
+
+    // Check for disposable email
+    if (isDisposableEmail(normalizedEmail)) {
+      return NextResponse.json(
+        { error: 'Please use a valid email address' },
+        { status: 400 }
+      );
+    }
+
+    // Get client info for consent logging
+    const clientIP = getClientIP(request);
+    const userAgent = getUserAgent(request);
+
+    // Check if subscriber already exists
+    const existingSubscriber = await getSubscriberByEmail(normalizedEmail);
+
+    if (existingSubscriber) {
+      // Handle existing subscriber
+      if (existingSubscriber.status === 'active') {
         return NextResponse.json(
-          {
-            error: 'Invalid request data',
-            details: error.issues.map((issue: z.ZodIssue) => issue.message),
-            step: 'validation'
-          },
+          { error: 'This email is already subscribed to our newsletter' },
           { status: 400 }
         );
       }
+
+      if (existingSubscriber.status === 'pending') {
+        // Resend verification email
+        try {
+          await sendWelcomeEmail(
+            normalizedEmail,
+            language,
+            existingSubscriber.verificationToken!
+          );
+        } catch (emailError) {
+          console.error('Failed to resend verification email:', emailError);
+        }
+
+        return NextResponse.json({
+          message: 'Verification email resent. Please check your inbox.',
+          status: 'pending',
+        });
+      }
+
+      // Re-subscribe unsubscribed user
+      const verificationToken = generateSecureToken();
+      const unsubscribeToken = generateSecureToken();
+
+      await updateSubscriberStatus(normalizedEmail, 'pending', {
+        verificationToken,
+        unsubscribeToken,
+        preferredLanguage: language,
+        subscribedDate: new Date(),
+      });
+
+      // Log consent
+      await logConsent({
+        email: normalizedEmail,
+        action: 'subscribe',
+        ipAddress: clientIP,
+        userAgent: userAgent,
+        language,
+        details: JSON.stringify({ source, resubscribe: true }),
+      });
+
+      // Send verification email
+      try {
+        await sendWelcomeEmail(normalizedEmail, language, verificationToken);
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+      }
+
+      // Sync with Brevo (if configured)
+      if (isBrevoConfigured()) {
+        await createBrevoContact({
+          email: normalizedEmail,
+          attributes: { LANGUAGE: language.toUpperCase() },
+          updateEnabled: true,
+        });
+      }
+
+      return NextResponse.json({
+        message: 'Please check your email to verify your subscription.',
+        status: 'pending',
+      });
+    }
+
+    // Create new subscriber
+    const verificationToken = generateSecureToken();
+    const unsubscribeToken = generateSecureToken();
+
+    const newSubscriber = await createSubscriber({
+      email: normalizedEmail,
+      preferredLanguage: language,
+      status: 'pending',
+      verificationToken,
+      unsubscribeToken,
+      consentTimestamp: new Date(),
+      consentIp: clientIP,
+      consentUserAgent: userAgent,
+      subscribedDate: new Date(),
+    });
+
+    if (!newSubscriber) {
       return NextResponse.json(
-        { error: 'Validation error', step: 'validation' },
-        { status: 400 }
+        { error: 'Failed to create subscription. Please try again.' },
+        { status: 500 }
       );
     }
 
-    let utilityFunctions: any = {};
+    // Log consent
+    await logConsent({
+      email: normalizedEmail,
+      action: 'subscribe',
+      ipAddress: clientIP,
+      userAgent: userAgent,
+      language,
+      details: JSON.stringify({ source }),
+    });
+
+    // Send verification email
     try {
-      const utilsModule = await import('@/lib/newsletter/utils');
-      utilityFunctions = {
-        generateSecureToken: utilsModule.generateSecureToken,
-        getClientIP: utilsModule.getClientIP,
-        getUserAgent: utilsModule.getUserAgent,
-        normalizeEmail: utilsModule.normalizeEmail,
-        isValidEmail: utilsModule.isValidEmail,
-        validateSubscriptionSource: utilsModule.validateSubscriptionSource,
-      };
-    } catch (error) {
-      console.error('❌ Utility import failed:', error);
-      return NextResponse.json(
-        {
-          error: 'Server configuration error - utilities',
-          step: 'utility_import',
-          details: error instanceof Error ? error.message : 'Unknown error'
-        },
-        { status: 500 }
-      );
+      await sendWelcomeEmail(normalizedEmail, language, verificationToken);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // Continue - subscription is created, email can be resent
     }
 
-    let dbFunctions: any = {};
-    try {
-      const dbModule = await import('@/lib/db/queries');
-      dbFunctions = {
-        createSubscriber: dbModule.createSubscriber,
-        getSubscriberByEmail: dbModule.getSubscriberByEmail,
-        logConsent: dbModule.logConsent,
-      };
-    } catch (error) {
-      console.error('❌ Database import failed:', error);
-      return NextResponse.json(
-        {
-          error: 'Database service unavailable',
-          step: 'database_import',
-          details: error instanceof Error ? error.message : 'Unknown error'
-        },
-        { status: 500 }
-      );
-    }
+    // Sync with Brevo (if configured)
+    if (isBrevoConfigured()) {
+      const brevoResult = await createBrevoContact({
+        email: normalizedEmail,
+        attributes: { LANGUAGE: language.toUpperCase() },
+        updateEnabled: true,
+      });
 
-    let emailFunctions: any = {};
-    try {
-      const emailModule = await import('@/lib/email');
-      emailFunctions = {
-        sendWelcomeEmail: emailModule.sendWelcomeEmail,
-      };
-    } catch (error) {
-      console.error('❌ Email import failed:', error);
-      return NextResponse.json(
-        {
-          error: 'Email service unavailable',
-          step: 'email_import',
-          details: error instanceof Error ? error.message : 'Unknown error'
-        },
-        { status: 500 }
-      );
-    }
-
-    const requiredEnvVars = ['DATABASE_URL', 'RESEND_BOERENGROEP', 'FROM_EMAIL'];
-    const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
-
-    if (missingEnvVars.length > 0) {
-      console.error('❌ Missing environment variables:', missingEnvVars);
-      return NextResponse.json(
-        {
-          error: 'Server configuration error - environment variables',
-          step: 'environment_check',
-          missing: missingEnvVars
-        },
-        { status: 500 }
-      );
-    }
-
-    try {
-      const testEmail = 'test@example.com';
-      const existingSubscriber = await dbFunctions.getSubscriberByEmail(testEmail);
-    } catch (error) {
-      console.error('❌ Database connection failed:', error);
-      return NextResponse.json(
-        {
-          error: 'Database connection failed',
-          step: 'database_connection',
-          details: error instanceof Error ? error.message : 'Unknown error'
-        },
-        { status: 500 }
-      );
+      if (!brevoResult.success && !brevoResult.skipped) {
+        console.error('Brevo sync failed:', brevoResult.error);
+        // Continue - local subscription is created, Brevo sync can retry later
+      }
     }
 
     return NextResponse.json({
-      message: 'Debug successful - all systems operational',
-      steps_passed: 8,
-      timestamp: new Date().toISOString(),
-      next_action: 'Replace this debug route with full implementation'
+      message: 'Please check your email to verify your subscription.',
+      status: 'pending',
     });
-
   } catch (error) {
-    console.error('❌ CRITICAL ERROR in newsletter API:', error);
+    console.error('Newsletter subscription error:', error);
 
     return NextResponse.json(
-      {
-        error: 'Critical server error',
-        details: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined,
-        step: 'critical_error'
-      },
+      { error: 'An unexpected error occurred. Please try again.' },
       { status: 500 }
     );
   }
 }
 
 export async function GET() {
+  const brevoConfigured = isBrevoConfigured();
 
   const health = {
     status: 'ok',
     timestamp: new Date().toISOString(),
+    brevo: brevoConfigured ? 'configured' : 'not configured',
     environment: {
       NODE_ENV: process.env.NODE_ENV,
-      DATABASE_URL: process.env.DATABASE_URL ? '✅ Set' : '❌ Missing',
-      RESEND_BOERENGROEP: process.env.RESEND_BOERENGROEP ? '✅ Set' : '❌ Missing',
-      FROM_EMAIL: process.env.FROM_EMAIL ? '✅ Set' : '❌ Missing',
-    }
+      DATABASE_URL: process.env.DATABASE_URL ? 'set' : 'missing',
+      RESEND_BOERENGROEP: process.env.RESEND_BOERENGROEP ? 'set' : 'missing',
+      FROM_EMAIL: process.env.FROM_EMAIL ? 'set' : 'missing',
+      BREVO_API_KEY: brevoConfigured ? 'set' : 'not set (optional)',
+      BREVO_LIST_ID: process.env.BREVO_LIST_ID ? 'set' : 'not set (optional)',
+    },
   };
 
-  console.log('🏥 Health check:', health);
   return NextResponse.json(health);
 }

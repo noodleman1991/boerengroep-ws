@@ -131,9 +131,9 @@ export const routing = defineRouting({
             en: '/library/media',
             nl: '/bibliotheek/media'
         },
-        '/library/50-years-bg': {
-            en: '/library/50-years-bg',
-            nl: '/bibliotheek/50-jaar-bg'
+        '/library/archive': {
+            en: '/library/archive',
+            nl: '/bibliotheek/archief'
         },
 
         // Contact

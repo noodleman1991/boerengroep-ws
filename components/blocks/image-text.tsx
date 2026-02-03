@@ -15,30 +15,40 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
     const getLayoutClasses = () => {
         switch (data.layout) {
             case 'image-left':
-                return 'lg:grid-cols-2 lg:gap-16 items-center';
+                return 'md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center';
             case 'image-right':
-                return 'lg:grid-cols-2 lg:gap-16 items-center';
+                return 'md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center';
             case 'image-center':
-                return 'grid-cols-1 gap-8 text-center';
+                return 'grid-cols-1 gap-6 md:gap-8 text-center';
             case 'text-above-center':
-                return 'grid-cols-1 gap-8';
+                return 'grid-cols-1 gap-6 md:gap-8';
             case 'text-below-center':
-                return 'grid-cols-1 gap-8';
+                return 'grid-cols-1 gap-6 md:gap-8';
             default:
-                return 'lg:grid-cols-2 lg:gap-16 items-center';
+                return 'md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center';
         }
     };
 
     const getImageSizeClasses = () => {
+        // For side-by-side layouts (image-left, image-right), don't constrain width
+        // as the grid handles the sizing. Only constrain for centered layouts.
+        const isSideBySide = data.layout === 'image-left' || data.layout === 'image-right';
+
+        if (isSideBySide) {
+            // Let the grid column determine width, just ensure proper sizing
+            return 'w-full';
+        }
+
+        // For centered layouts, use size constraints
         switch (data.imageSize) {
             case 'small':
-                return 'max-w-sm mx-auto';
+                return 'max-w-md mx-auto';
             case 'medium':
-                return 'max-w-md mx-auto';
+                return 'max-w-lg mx-auto';
             case 'large':
-                return 'max-w-2xl mx-auto';
+                return 'max-w-3xl mx-auto';
             default:
-                return 'max-w-md mx-auto';
+                return 'max-w-lg mx-auto';
         }
     };
 
@@ -99,7 +109,7 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
 
                 {/* Image */}
                 <div
-                    className={`${isImageRight ? 'lg:order-2' : ''} ${isCenterLayout ? 'mx-auto' : ''} ${getImageSizeClasses()}`}
+                    className={`${isImageRight ? 'md:order-2' : ''} ${isCenterLayout ? 'mx-auto' : ''} ${getImageSizeClasses()}`}
                     data-tina-field={tinaField(data, 'image')}
                 >
                     <Image
@@ -115,9 +125,9 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
                 {(!isTextAboveCenter) && (
                     <div
                         className={`prose prose-lg max-w-none ${
-                            isImageCenter ? 'mt-8 text-center' :
+                            isImageCenter ? 'mt-6 md:mt-8 text-center' :
                             isTextBelowCenter ? 'mt-4 text-center' :
-                            isImageRight ? 'lg:order-1' : ''
+                            isImageRight ? 'md:order-1' : ''
                         }`}
                         data-tina-field={tinaField(data, 'content')}
                     >

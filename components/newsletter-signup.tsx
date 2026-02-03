@@ -7,16 +7,13 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, CheckCircle, AlertCircle, Shield, Eye, Trash2 } from 'lucide-react';
+import { Loader2, CheckCircle, AlertCircle, Mail } from 'lucide-react';
 
 const newsletterSchema = z.object({
     email: z.string().email('Invalid email address'),
-    consent: z.boolean().refine(val => val === true, 'You must consent to receive newsletters'),
-    dataProcessing: z.boolean().refine(val => val === true, 'You must agree to data processing'),
 });
 
 type NewsletterFormData = z.infer<typeof newsletterSchema>;
@@ -43,8 +40,6 @@ export function NewsletterSignup({
         resolver: zodResolver(newsletterSchema),
         defaultValues: {
             email: '',
-            consent: false,
-            dataProcessing: false,
         },
     });
 
@@ -61,7 +56,6 @@ export function NewsletterSignup({
                 body: JSON.stringify({
                     email: data.email,
                     language: locale,
-                    consent: data.consent && data.dataProcessing,
                     source,
                 }),
             });
@@ -81,30 +75,19 @@ export function NewsletterSignup({
         }
     };
 
-    const renderGdprLinks = () => (
-        <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-            <Link
-                href="/privacy-policy"
-                className="flex items-center gap-2 hover:text-primary"
-            >
-                <Shield className="h-3 w-3" />
-                {t('privacy_policy')}
-            </Link>
-            <Link
-                href="/newsletter/export-data"
-                className="flex items-center gap-2 hover:text-primary"
-            >
-                <Eye className="h-3 w-3" />
-                {t('export_data')}
-            </Link>
-            <Link
-                href="/newsletter/delete-data"
-                className="flex items-center gap-2 hover:text-primary"
-            >
-                <Trash2 className="h-3 w-3" />
-                {t('delete_data')}
-            </Link>
-        </div>
+    const renderConsentStatement = () => (
+        <p className="text-xs text-muted-foreground">
+            {t.rich('consent_statement', {
+                privacyPolicy: (chunks) => (
+                    <Link
+                        href="/privacy-policy"
+                        className="underline hover:text-primary"
+                    >
+                        {chunks}
+                    </Link>
+                ),
+            })}
+        </p>
     );
 
     const renderForm = () => (
@@ -131,56 +114,7 @@ export function NewsletterSignup({
                     )}
                 />
 
-                <FormField
-                    control={form.control}
-                    name="consent"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                            <FormControl>
-                                <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    disabled={submissionState === 'loading'}
-                                />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                                <FormLabel className="text-sm font-normal cursor-pointer">
-                                    {t('consent_newsletter')}
-                                </FormLabel>
-                                <FormMessage />
-                            </div>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="dataProcessing"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                            <FormControl>
-                                <Checkbox
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                    disabled={submissionState === 'loading'}
-                                />
-                            </FormControl>
-                            <div className="space-y-1 leading-none">
-                                <FormLabel className="text-sm font-normal cursor-pointer">
-                                    {t('consent_processing')}
-                                </FormLabel>
-                                <FormMessage />
-                            </div>
-                        </FormItem>
-                    )}
-                />
-
-                {variant !== 'compact' && (
-                    <div className="text-xs text-muted-foreground space-y-2">
-                        <p>{t('gdpr_notice')}</p>
-                        {renderGdprLinks()}
-                    </div>
-                )}
+                {renderConsentStatement()}
 
                 <Button
                     type="submit"
@@ -192,8 +126,6 @@ export function NewsletterSignup({
                     )}
                     {t('submit_button')}
                 </Button>
-
-                {variant === 'compact' && renderGdprLinks()}
             </form>
         </Form>
     );
@@ -214,7 +146,7 @@ export function NewsletterSignup({
             <>
                 {renderForm()}
                 {submissionState === 'error' && (
-                    <Alert className="border-red-200 bg-red-50">
+                    <Alert className="border-red-200 bg-red-50 mt-4">
                         <AlertCircle className="h-4 w-4 text-red-600" />
                         <AlertDescription className="text-red-800">
                             {errorMessage}
@@ -249,7 +181,7 @@ export function NewsletterSignup({
         <Card className={className}>
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5 text-primary" />
+                    <Mail className="h-5 w-5 text-primary" />
                     {t('title')}
                 </CardTitle>
                 <CardDescription>
