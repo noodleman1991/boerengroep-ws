@@ -4,6 +4,18 @@ import { routing } from './i18n/routing';
 
 const nextIntlMiddleware = createMiddleware(routing);
 
+/**
+ * Detects if the browser prefers Dutch based on Accept-Language header.
+ * Returns true only if Dutch (nl) is explicitly the primary language.
+ */
+function prefersDutch(request: NextRequest): boolean {
+    const acceptLanguage = request.headers.get('accept-language') || '';
+    // Check if the first language in the header starts with 'nl'
+    // Accept-Language format: "nl,en;q=0.9,de;q=0.8" or "nl-NL,nl;q=0.9"
+    const primaryLanguage = acceptLanguage.split(',')[0]?.trim().toLowerCase() || '';
+    return primaryLanguage.startsWith('nl');
+}
+
 export function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
@@ -22,6 +34,13 @@ export function middleware(request: NextRequest) {
     // For TinaCMS admin routes
     if (pathname.startsWith('/admin')) {
         return NextResponse.next();
+    }
+
+    // Explicit root path redirect based on browser language (no cookies)
+    // Redirects / to /nl if browser is Dutch, otherwise to /en
+    if (pathname === '/') {
+        const targetLocale = prefersDutch(request) ? 'nl' : 'en';
+        return NextResponse.redirect(new URL(`/${targetLocale}`, request.url));
     }
 
     // Apply next-intl middleware for all other routes

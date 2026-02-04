@@ -278,31 +278,50 @@ const Global: Collection = {
                     type: "object",
                     label: "Navigation Menu",
                     name: "nav",
-                    description: "Main website navigation structure",
+                    description: "Main website navigation structure. You can link to internal pages or external URLs.",
                     list: true,
                     ui: {
                         itemProps: (item: any) => {
-                            return { label: item?.label || "Navigation Item" };
+                            return { label: item?.labelEn || item?.label || "Navigation Item" };
                         },
                         defaultItem: {
                             href: "/",
-                            label: "Home",
+                            label: "home",
+                            labelEn: "Home",
+                            labelNl: "Home",
                         },
                     },
                     fields: [
                         {
-                            type: "string",
-                            label: "Link URL",
-                            name: "href",
-                            description: "Relative path (e.g., /about) or external URL",
-                            required: true,
+                            type: "reference",
+                            label: "Link to Page",
+                            name: "pageRef",
+                            collections: ["page"],
+                            description: "Select an internal page to link to. This takes precedence over manual URL.",
                         },
                         {
                             type: "string",
-                            label: "Display Label",
+                            label: "Manual URL (or External Link)",
+                            name: "href",
+                            description: "Use this for external URLs or if not selecting a page above. Examples: /about-us, https://example.com",
+                        },
+                        {
+                            type: "string",
+                            label: "Translation Key (legacy)",
                             name: "label",
-                            description: "Text shown in navigation menu",
-                            required: true,
+                            description: "Translation key for i18n lookup. Used if English/Dutch labels are not set.",
+                        },
+                        {
+                            type: "string",
+                            label: "English Label",
+                            name: "labelEn",
+                            description: "Display text in English navigation",
+                        },
+                        {
+                            type: "string",
+                            label: "Dutch Label",
+                            name: "labelNl",
+                            description: "Display text in Dutch navigation",
                         },
                         {
                             type: "object",
@@ -312,25 +331,43 @@ const Global: Collection = {
                             list: true,
                             ui: {
                                 itemProps: (item: any) => {
-                                    return { label: item?.label || "Submenu Item" };
+                                    return { label: item?.labelEn || item?.label || "Submenu Item" };
                                 },
                                 defaultItem: {
                                     href: "/",
-                                    label: "Submenu Item",
+                                    label: "submenu-item",
+                                    labelEn: "Submenu Item",
+                                    labelNl: "Submenu Item",
                                 },
                             },
                             fields: [
                                 {
-                                    type: "string",
-                                    label: "Link URL",
-                                    name: "href",
-                                    required: true,
+                                    type: "reference",
+                                    label: "Link to Page",
+                                    name: "pageRef",
+                                    collections: ["page"],
+                                    description: "Select an internal page to link to.",
                                 },
                                 {
                                     type: "string",
-                                    label: "Display Label",
+                                    label: "Manual URL (or External Link)",
+                                    name: "href",
+                                    description: "Use for external URLs or if not selecting a page above.",
+                                },
+                                {
+                                    type: "string",
+                                    label: "Translation Key (legacy)",
                                     name: "label",
-                                    required: true,
+                                },
+                                {
+                                    type: "string",
+                                    label: "English Label",
+                                    name: "labelEn",
+                                },
+                                {
+                                    type: "string",
+                                    label: "Dutch Label",
+                                    name: "labelNl",
                                 },
                             ],
                         },

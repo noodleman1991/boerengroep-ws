@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "tinacms dev -c \"next dev --turbopack\"",
-    "build": "tinacms build && next build",
-    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && next build",
+    "build": "tinacms build && tsx scripts/generate-pathnames.ts && next build",
+    "build-local": "tinacms build --local --skip-indexing --skip-cloud-checks && tsx scripts/generate-pathnames.ts && next build",
     "start": "tinacms build && next start",
     "export": "npm run build && next export",
     "lint": "biome lint",
-    "dev:build": "next build"
+    "dev:build": "next build",
+    "generate:pathnames": "tsx scripts/generate-pathnames.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",

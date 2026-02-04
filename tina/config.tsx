@@ -10,6 +10,7 @@ import Event from "./collection/event";
 import Speaker from "./collection/speaker";
 import Vacancy from "./collection/vacancy";
 import Newsletter from "./collection/newsletter";
+import Redirect from "./collection/redirect";
 
 const config = defineConfig({
     clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
@@ -36,7 +37,7 @@ const config = defineConfig({
         //basePath: baseConfig.basePath?.replace(/^\//, '') || '',
     },
     schema: {
-        collections: [Event, Page, Tag, Speaker, Vacancy, Newsletter, Global, PastEvent, Author],
+        collections: [Event, Page, Tag, Speaker, Vacancy, Newsletter, Global, PastEvent, Author, Redirect],
     },
 });
 
