@@ -25,7 +25,7 @@
       "volunteers": "Vrijwilligers",
       "news": "Nieuws",
       "newsletter": "Nieuwsbrief",
-      "friends-news": "Vrienden Nieuws",
+      "friends-news": "Nieuws van Vrienden",
       "inspringtheater": "Inspringtheater",
       "library": "Bibliotheek",
       "library-media": "Bibliotheek & Media",
@@ -257,7 +257,7 @@
       "organization": "Stichting Boerengroep",
       "address": {
         "street": "Generaal Foulkesweg 37",
-        "city": "6703 PL Wageningen",
+        "city": "6703 BL Wageningen",
         "country": "Nederland"
       },
       "email": "st.boerengroep@wur.nl",
@@ -279,7 +279,11 @@
         "title": "Activiteiten",
         "links": {
           "calendar": "Agenda",
-              "soup-kitchen": "Soepkeuken"
+          "soup-kitchen": "Soepkeuken",
+          "breaks": "Pauzes",
+          "open-meetings": "Open Vergaderingen",
+          "reclaim-the-seeds": "Reclaim the Seeds",
+          "fei": "Farm Experience Internship"
         }
       },
       "get-involved": {

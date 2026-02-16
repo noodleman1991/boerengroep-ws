@@ -117,7 +117,8 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
                         alt={data.image?.alt || ''}
                         width={800}
                         height={600}
-                        className="rounded-lg shadow-lg w-full h-auto"
+                        sizes={isCenterLayout ? '(max-width: 768px) 100vw, 66vw' : '(max-width: 768px) 100vw, 50vw'}
+                        className="rounded-lg shadow-lg w-full h-auto object-contain"
                     />
                 </div>
 
@@ -202,6 +203,7 @@ export const imageTextBlockSchema: TinaTemplate = {
                     type: 'image',
                     label: 'Image Source',
                     name: 'src',
+                    description: 'Recommended: at least 800x600px for best quality',
                 },
                 {
                     type: 'string',

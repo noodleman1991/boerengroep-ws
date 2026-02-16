@@ -257,7 +257,7 @@
       "organization": "Stichting Boerengroep",
       "address": {
         "street": "Generaal Foulkesweg 37",
-        "city": "6703 PL Wageningen",
+        "city": "6703 BL Wageningen",
         "country": "Nederland"
       },
       "email": "st.boerengroep@wur.nl",
@@ -279,7 +279,11 @@
         "title": "Activities",
         "links": {
           "calendar": "Calendar",
-              "soup-kitchen": "Soup Kitchen"
+          "soup-kitchen": "Soup Kitchen",
+          "breaks": "Breaks",
+          "open-meetings": "Open Meetings",
+          "reclaim-the-seeds": "Reclaim the Seeds",
+          "fei": "Farm Experience Internship"
         }
       },
       "get-involved": {

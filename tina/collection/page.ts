@@ -71,7 +71,7 @@ const Page: Collection = {
             required: false,
             ui: {
                 validate: (value: string) => {
-                    if (!value) return 'URL slug is required';
+                    if (!value) return undefined;
                     if (!/^[a-z0-9-]+$/.test(value)) {
                         return 'URL slug can only contain lowercase letters, numbers, and hyphens';
                     }

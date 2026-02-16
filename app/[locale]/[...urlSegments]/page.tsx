@@ -61,6 +61,7 @@ export default async function Page({
                     case 'friends-news': return 'vrienden-nieuws';
                     // Library subroutes
                     case '50-years-bg': return '50-jaar-bg';
+                    case 'archive': return 'archief';
                     case 'media': return 'media';
                     case 'podcast': return 'podcast';
                     case '50-years-boerengroep': return '50-years-boerengroep';

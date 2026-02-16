@@ -48,7 +48,7 @@
             "label": "reclaim-the-seeds"
           },
           {
-            "href": "/activities/calendar#soup-kitchen",
+            "href": "/activities/soup-kitchen",
             "label": "soup-kitchen"
           },
           {
@@ -166,8 +166,24 @@
             "label": "calendar"
           },
           {
-            "href": "/activities/calendar#soup-kitchen",
+            "href": "/activities/soup-kitchen",
             "label": "soup-kitchen"
+          },
+          {
+            "href": "/activities/calendar#breaks",
+            "label": "breaks"
+          },
+          {
+            "href": "/activities/calendar#open-meetings",
+            "label": "open-meetings"
+          },
+          {
+            "href": "/activities/reclaim-the-seeds",
+            "label": "reclaim-the-seeds"
+          },
+          {
+            "href": "/activities/fei",
+            "label": "fei"
           }
         ]
       },
