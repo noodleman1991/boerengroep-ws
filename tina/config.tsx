@@ -1,4 +1,5 @@
 import { defineConfig } from "tinacms";
+
 import baseConfig from "../next.config.base";
 
 import PastEvent from "./collection/past-event";
