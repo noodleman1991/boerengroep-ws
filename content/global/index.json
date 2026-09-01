@@ -28,6 +28,7 @@
         ]
       },
       {
+        "pageRef": "",
         "href": "/activities",
         "label": "activities",
         "submenu": [
@@ -48,8 +49,9 @@
             "label": "reclaim-the-seeds"
           },
           {
-            "href": "/activities/soup-kitchen",
-            "label": "soup-kitchen"
+            "pageRef": "content/pages/en/activities/soup-kitchen.mdx",
+            "href": "/activities/open-pot-student-kitchen",
+            "label": "open-pot-student-kitchen"
           },
           {
             "href": "/activities/calendar#open-meetings",
