@@ -6,12 +6,10 @@
     "color": "primary",
     "nav": [
       {
-        "pageRef": "",
         "href": "/about-us",
         "label": "about-us",
         "submenu": [
           {
-            "pageRef": "",
             "href": "/about-us/what-is-boerengroep",
             "label": "what-is-boerengroep"
           },
@@ -35,12 +33,10 @@
         "label": "activities",
         "submenu": [
           {
-            "pageRef": "",
             "href": "/activities/calendar",
             "label": "calendar"
           },
           {
-            "pageRef": "",
             "href": "/activities/past-events",
             "label": "past-events"
           },
@@ -53,7 +49,7 @@
             "label": "reclaim-the-seeds"
           },
           {
-            "pageRef": "",
+            "pageRef": "content/pages/en/activities/calendar-sections/open-pot-student-kitchen.mdx",
             "href": "/activities/open-pot-student-kitchen",
             "label": "open-pot-student-kitchen",
             "labelEn": "",
