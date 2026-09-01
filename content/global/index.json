@@ -33,6 +33,7 @@
         "label": "activities",
         "submenu": [
           {
+            "pageRef": "",
             "href": "/activities/calendar",
             "label": "calendar"
           },
@@ -49,7 +50,7 @@
             "label": "reclaim-the-seeds"
           },
           {
-            "pageRef": "content/pages/en/activities/calendar-sections/open-pot-student-kitchen.mdx",
+            "pageRef": "content/pages/en/activities/open-pot-student-kitchen.mdx",
             "href": "/activities/open-pot-student-kitchen",
             "label": "open-pot-student-kitchen",
             "labelEn": "",
