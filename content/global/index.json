@@ -28,7 +28,6 @@
         ]
       },
       {
-        "pageRef": "",
         "href": "/activities",
         "label": "activities",
         "submenu": [
@@ -171,7 +170,7 @@
           },
           {
             "href": "/activities/open-pot-student-kitchen",
-            "label": "Open Pot Student Kitchen"
+            "label": "Open-Pot-Student-Kitchen"
           },
           {
             "href": "/activities/calendar#breaks",
