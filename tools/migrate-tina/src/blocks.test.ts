@@ -11,6 +11,7 @@ function ctx(): Ctx {
     media: new Map([['/uploads/hero.jpg', 5]]),
     ids: new Map(),
     pageByEnPath: new Map(),
+    reservedPaths: new Set(),
     toLexical: async (md) => (typeof md === 'string' && md.trim() ? { lexicalOf: md.trim() } : undefined),
   }
 }

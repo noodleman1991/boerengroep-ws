@@ -12,8 +12,10 @@ export type Ctx = {
   media: Map<string, Id>
   /** Tina file path (relative to content/) to Payload id. */
   ids: Map<string, Id>
-  /** English page path such as `/about-us/history` to page id. */
+  /** English page path such as `/about-us/history` to page id. Only pages a menu may link to. */
   pageByEnPath: Map<string, Id>
+  /** Addresses served by a built-in route of the app. Menu items keep their plain href for these. */
+  reservedPaths: Set<string>
   toLexical: (markdown: unknown, legacyId: string) => Promise<Lexical | undefined>
 }
 

@@ -8,15 +8,48 @@
         "href": "/about-us",
         "label": "about-us",
         "submenu": [
-          { "href": "/about-us/history", "label": "history" },
-          { "href": "/activities/calendar", "label": "calendar" }
+          {
+            "href": "/about-us/history",
+            "label": "history"
+          },
+          {
+            "href": "/activities/calendar",
+            "label": "calendar"
+          }
         ]
+      },
+      {
+        "href": "/vacancies",
+        "label": "vacancies"
+      },
+      {
+        "href": "/activities",
+        "label": "activities"
       }
     ]
   },
   "footer": {
-    "social": [{ "platform": "Instagram", "url": "https://instagram.com/x" }],
-    "quickLinks": [{ "title": "about-us", "links": [{ "href": "/about-us/history", "label": "history" }] }]
+    "social": [
+      {
+        "platform": "Instagram",
+        "url": "https://instagram.com/x"
+      }
+    ],
+    "quickLinks": [
+      {
+        "title": "about-us",
+        "links": [
+          {
+            "href": "/about-us/history",
+            "label": "history"
+          }
+        ]
+      }
+    ]
   },
-  "theme": { "color": "green", "font": "lato", "darkMode": "light" }
+  "theme": {
+    "color": "green",
+    "font": "lato",
+    "darkMode": "light"
+  }
 }

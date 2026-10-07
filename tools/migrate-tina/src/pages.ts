@@ -50,7 +50,8 @@ async function importOne(ctx: Ctx, contentDir: string, plan: PagePlan): Promise<
 
   const id = ctx.ids.get(legacyId)!
   const target = enPath(plan)
-  if (target) ctx.pageByEnPath.set(target, id)
+  // A menu item links to a page only when the page is real and no built-in route owns the address.
+  if (target && !plan.placeholder && !ctx.reservedPaths.has(target)) ctx.pageByEnPath.set(target, id)
 
   for (const from of oldUrls) {
     if (!target || !from.startsWith('/')) continue

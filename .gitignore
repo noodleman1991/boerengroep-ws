@@ -17,3 +17,4 @@ next-env.d.ts
 .superpowers/
 # Payload local uploads used when no Blob token is set
 media/
+.media/

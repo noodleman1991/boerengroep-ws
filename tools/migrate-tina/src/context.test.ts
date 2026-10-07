@@ -10,6 +10,7 @@ function ctx(): Ctx {
     media: new Map(),
     ids: new Map([['speakers/marcha.md', 42]]),
     pageByEnPath: new Map(),
+    reservedPaths: new Set(),
     toLexical: async () => undefined,
   }
 }

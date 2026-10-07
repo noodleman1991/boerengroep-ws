@@ -12,6 +12,8 @@ const input = (payload: Payload) => ({
   tenantSlug: 'boerengroep',
   contentDir: path.join(site, 'content'),
   uploadsDir: path.join(site, 'uploads'),
+  // Addresses served by a built-in route of the app, not by a CMS page.
+  reservedPaths: ['/vacancies', '/activities/calendar'],
 })
 
 const COLLECTIONS = [
@@ -70,7 +72,7 @@ describe('migrate', () => {
 
   it('imports every collection', async () => {
     expect(await counts(payload)).toEqual({
-      pages: 7,
+      pages: 8,
       events: 2,
       'past-events': 1,
       newsletters: 1,
@@ -154,6 +156,20 @@ describe('migrate', () => {
     expect(about.submenu[1].href).toBe('/activities/calendar')
     expect(settings.header.logo.legacyPath).toBe('/uploads/branding/logo.png')
     expect(settings.theme.font).toBe('lato')
+  })
+
+  it('keeps the plain href for an address that belongs to a built-in route', async () => {
+    const settings = (await payload.find({ collection: 'site-settings', depth: 1 })).docs[0] as any
+    const vacancies = settings.header.nav[1]
+    expect(vacancies.href).toBe('/vacancies')
+    expect(vacancies.page).toBeFalsy()
+  })
+
+  it('keeps the plain href when the page is only a draft placeholder', async () => {
+    const settings = (await payload.find({ collection: 'site-settings', depth: 1 })).docs[0] as any
+    const activities = settings.header.nav[2]
+    expect(activities.href).toBe('/activities')
+    expect(activities.page).toBeFalsy()
   })
 
   it('creates redirects from the redirects folder and from previous page URLs', async () => {

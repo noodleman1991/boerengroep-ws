@@ -1,6 +1,7 @@
 import { writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { getPayload } from 'payload'
+import { listAppRoutes } from './app-routes'
 import { migrate } from './migrate'
 import config from './payload.config'
 
@@ -16,6 +17,8 @@ const report = await migrate({
   tenantSlug: env('TENANT_SLUG'),
   contentDir: path.resolve(env('CONTENT_DIR')),
   uploadsDir: path.resolve(env('UPLOADS_DIR')),
+  // APP_DIR is optional. With it, menu items that point at built-in routes keep their plain href.
+  reservedPaths: process.env.APP_DIR ? listAppRoutes(path.resolve(process.env.APP_DIR)) : [],
 })
 
 const reportPath = path.resolve(process.env.REPORT_PATH ?? 'migration-report.md')

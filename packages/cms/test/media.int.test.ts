@@ -1,3 +1,5 @@
+import { existsSync } from 'node:fs'
+import path from 'node:path'
 import type { Payload } from 'payload'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createTenant, resetDb, testPayload } from './helpers'
@@ -29,6 +31,11 @@ describe('media', () => {
     expect(doc.legacyPath).toBe('/uploads/dot.png')
     expect(doc.url).toBeTruthy()
     expect(doc.mimeType).toBe('image/png')
+  })
+
+  it('writes local files to MEDIA_DIR when no Blob token is set', async () => {
+    const res = await payload.find({ collection: 'media', limit: 1 })
+    expect(existsSync(path.join(process.env.MEDIA_DIR!, res.docs[0]!.filename!))).toBe(true)
   })
 
   it('is readable without logging in', async () => {

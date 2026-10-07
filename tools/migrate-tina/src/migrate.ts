@@ -18,6 +18,8 @@ export type MigrateInput = {
   tenantSlug: string
   contentDir: string
   uploadsDir: string
+  /** Addresses served by built-in routes of the app, for example `/vacancies`. */
+  reservedPaths?: string[]
 }
 
 export async function migrate(input: MigrateInput): Promise<Report> {
@@ -39,6 +41,7 @@ export async function migrate(input: MigrateInput): Promise<Report> {
     media: await uploadAll({ payload, tenantId: tenant.id, report }, uploadsDir),
     ids: new Map(),
     pageByEnPath: new Map(),
+    reservedPaths: new Set(input.reservedPaths ?? []),
     toLexical: await makeToLexical(payload, report),
   }
 

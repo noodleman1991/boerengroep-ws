@@ -17,6 +17,7 @@ function ctx(): Ctx {
     ]),
     ids: new Map(),
     pageByEnPath: new Map(),
+    reservedPaths: new Set(),
     toLexical: async () => undefined,
   }
 }
