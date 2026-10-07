@@ -22,6 +22,7 @@ import { Tenants } from './collections/tenants'
 import { Users } from './collections/users'
 import { Vacancies } from './collections/vacancies'
 import { requireEnv } from './env'
+import { withRevalidation } from './hooks/revalidate'
 
 export type CreateConfigOptions = {
   /** The tenant this app serves. */
@@ -61,7 +62,7 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
     secret: requireEnv('PAYLOAD_SECRET'),
     custom: opts satisfies CmsCustom,
     admin: { user: Users.slug },
-    collections: [...tenantScoped, Users, Tenants],
+    collections: [...tenantScoped.map(withRevalidation), Users, Tenants],
     editor: lexicalEditor(),
     db: postgresAdapter({
       pool: { connectionString: requireEnv('PAYLOAD_DATABASE_URL') },

@@ -4,9 +4,23 @@ import { pageBlocks } from '../blocks'
 import { legacyIdField } from '../fields/shared'
 import { computePath, resaveChildren } from '../hooks/page-path'
 
+/** Address of the draft preview for a page. Relative, because each site serves its own admin. */
+export function pagePreviewUrl(path: unknown, localeCode: string | undefined): string {
+  const pagePath = typeof path === 'string' && path.startsWith('/') ? path : '/'
+  const target = `/${localeCode ?? 'en'}${pagePath === '/' ? '' : pagePath}`
+  return `/api/preview?path=${encodeURIComponent(target)}`
+}
+
 export const Pages: CollectionConfig = {
   slug: 'pages',
-  admin: { useAsTitle: 'title', defaultColumns: ['title', 'path', '_status'], group: 'Content' },
+  admin: {
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'path', '_status'],
+    group: 'Content',
+    livePreview: {
+      url: ({ data, locale }) => pagePreviewUrl(data?.path, locale?.code),
+    },
+  },
   access: {
     read: publishedOrAuthenticated,
     create: authenticated,
