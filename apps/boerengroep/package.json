@@ -3,21 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "tinacms dev -c \"next dev --turbopack\"",
-    "build": "node scripts/migrate-if-production.mjs && tinacms build && next build",
-    "build-local": "NODE_OPTIONS=--max-old-space-size=8192 tinacms dev -c \"env NODE_ENV=production next build\"",
-    "start": "tinacms build && next start",
-    "export": "npm run build && next export",
+    "dev": "next dev --turbopack",
+    "build": "node scripts/migrate-if-production.mjs && next build",
+    "start": "next start",
     "lint": "biome lint",
-    "dev:build": "next build",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "payload": "PAYLOAD_CONFIG_PATH=../../packages/cms/src/dev.config.ts payload",
-    "generate:importmap": "pnpm payload generate:importmap",
-    "test": "vitest run"
+    "generate:importmap": "pnpm payload generate:importmap"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
-    "@tinacms/cli": "^1.10.2",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.16.0",
     "@types/react": "^19.1.0",
@@ -95,7 +91,6 @@
     "sonner": "^2.0.7",
     "styled-jsx": "^5.1.7",
     "tailwind-merge": "^2.6.0",
-    "tinacms": "^2.8.2",
     "tw-animate-css": "^1.3.5",
     "usehooks-ts": "^3.1.1",
     "zod": "^4.0.17"

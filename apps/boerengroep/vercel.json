@@ -1,18 +1,7 @@
 {
   "functions": {
-    "app/api/**/*.js": {
+    "app/api/**/*.ts": {
       "maxDuration": 30
     }
-  },
-  "headers": [
-    {
-      "source": "/uploads/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, s-maxage=31536000"
-        }
-      ]
-    }
-  ]
+  }
 }

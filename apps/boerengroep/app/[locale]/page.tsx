@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout'
 import { cms, type Locale } from '@/lib/cms'
 import { toCalendarEvent, toGlobalSettings } from '@/lib/cms-adapters'
@@ -8,6 +9,7 @@ export const revalidate = 3600
 
 export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params
+  setRequestLocale(locale);
   const [resolved, events, settings] = await Promise.all([
     cms.resolvePage(locale, '/'),
     cms.listEvents(),

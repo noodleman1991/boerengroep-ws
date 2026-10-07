@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout';
 import { cms, type Locale } from '@/lib/cms';
 import { toPastEventNode } from '@/lib/cms-adapters';
@@ -11,7 +12,8 @@ export default async function PastEventPage({
 }: {
     params: Promise<{ locale: Locale; urlSegments: string[] }>;
 }) {
-    const { urlSegments } = await params;
+    const { locale, urlSegments } = await params;
+    setRequestLocale(locale);
     const pastEvent = await cms.getPastEvent(decodeURIComponent(urlSegments[urlSegments.length - 1]!));
     if (!pastEvent) notFound();
 

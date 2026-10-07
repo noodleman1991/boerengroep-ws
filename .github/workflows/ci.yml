@@ -34,8 +34,7 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
-      # The app needs Tina's generated client to typecheck. It joins this step when Tina is removed.
-      - run: pnpm turbo run typecheck --filter=!boerengroep
+      - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm --filter @sites/cms exec vitest run --project int
       - run: pnpm --filter @sites/migrate-tina exec vitest run --project int

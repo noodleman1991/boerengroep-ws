@@ -3,17 +3,13 @@ const baseConfig = {
   basePath: '',
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'assets.tina.io', port: '' },
       { protocol: 'https', hostname: 'res.cloudinary.com', port: '' },
       { protocol: 'https', hostname: '*.public.blob.vercel-storage.com', port: '' },
     ],
-    // Allow optimization of images in public folder and uploads
     unoptimized: false,
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // Ensure local images are properly optimized
-    domains: [],
   },
   async headers() {
     return [
@@ -34,43 +30,7 @@ const baseConfig = {
           },
         ],
       },
-      {
-        // Apply headers to uploads folder (TinaCMS media)
-        source: '/uploads/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, s-maxage=31536000',
-          },
-        ],
-      },
-      {
-        // Ensure branding assets are properly cached
-        source: '/uploads/branding/:path*',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=31536000, s-maxage=31536000',
-          },
-        ],
-      },
     ];
-  },
-  async rewrites() {
-    return {
-      beforeFiles: [
-        // Prevent TinaCMS from handling font files
-        {
-          source: '/_next/static/:path*',
-          destination: '/_next/static/:path*',
-        },
-        // Prevent TinaCMS from handling manifest
-        {
-          source: '/manifest.json',
-          destination: '/manifest.json',
-        },
-      ],
-    };
   },
   // React strict mode
   reactStrictMode: true,

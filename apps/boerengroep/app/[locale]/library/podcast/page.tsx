@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout';
 import { Section } from '@/components/layout/section';
 import { PodcastClientPage } from './client-page';
@@ -10,6 +10,7 @@ interface PodcastPageProps {
 
 export async function generateMetadata({ params }: PodcastPageProps): Promise<Metadata> {
     const { locale } = await params;
+    setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'podcast' });
 
     return {
@@ -52,6 +53,7 @@ async function fetchPodcastData(limit = 6, offset = 0) {
 
 export default async function PodcastPage({ params }: PodcastPageProps) {
     const { locale } = await params;
+    setRequestLocale(locale);
     const podcast = await fetchPodcastData(6);
 
     // Mock layout data for the Layout component

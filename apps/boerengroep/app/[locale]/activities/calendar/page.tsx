@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cms } from '@/lib/cms';
 import { toCalendarEvent } from '@/lib/cms-adapters';
 import { Calendar } from '@/components/calendar/calendar';
@@ -13,6 +13,7 @@ interface CalendarPageProps {
 
 export async function generateMetadata({ params }: CalendarPageProps): Promise<Metadata> {
     const { locale } = await params;
+    setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'calendar' });
 
     return {
@@ -32,6 +33,7 @@ async function getCalendarData() {
 
 export default async function CalendarPage({ params }: CalendarPageProps) {
     const { locale } = await params;
+    setRequestLocale(locale);
     const { events } = await getCalendarData();
     const t = await getTranslations({ locale, namespace: 'calendar' });
 

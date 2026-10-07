@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cms } from '@/lib/cms';
 import { asConnection, toVacancyNode } from '@/lib/cms-adapters';
 import { VacanciesPage } from '@/components/vacancies-page';
@@ -11,6 +11,7 @@ interface VacanciesPageProps {
 
 export async function generateMetadata({ params }: VacanciesPageProps): Promise<Metadata> {
     const { locale } = await params;
+    setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'vacancies' });
 
     return {
@@ -30,6 +31,7 @@ async function getVacanciesData() {
 
 export default async function VacanciesRoute({ params }: VacanciesPageProps) {
     const { locale } = await params;
+    setRequestLocale(locale);
     const { vacancies } = await getVacanciesData();
 
 

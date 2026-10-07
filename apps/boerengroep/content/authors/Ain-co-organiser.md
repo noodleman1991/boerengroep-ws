@@ -1,4 +1,0 @@
----
-name: Ain (co-organiser)
----
-

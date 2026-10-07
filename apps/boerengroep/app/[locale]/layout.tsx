@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import "./globals.css";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { LivePreviewListener } from '@/components/live-preview-listener';
@@ -97,6 +97,9 @@ export default async function LocaleLayout({
     const { locale } = await params;
 
     if (!locales.includes(locale as any)) notFound();
+
+    // Lets next-intl resolve the locale without reading request headers, so pages can be static.
+    setRequestLocale(locale);
 
     const messages = await getMessages();
     const { isEnabled: isPreview } = await draftMode();

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { VerifyEmailPage } from '@/components/newsletter/verify-email-page';
 import Layout from '@/components/layout/layout';
 
@@ -10,6 +10,7 @@ interface VerifyPageProps {
 
 export async function generateMetadata({ params }: VerifyPageProps): Promise<Metadata> {
     const { locale } = await params;
+    setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: VerifyPageProps): Promise<Met
 
 export default async function VerifyPage({ params, searchParams }: VerifyPageProps) {
     const { locale } = await params;
+    setRequestLocale(locale);
     const { token } = await searchParams;
 
     const mockLayoutData = {

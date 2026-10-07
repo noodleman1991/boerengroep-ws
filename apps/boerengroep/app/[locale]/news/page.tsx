@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import Layout from '@/components/layout/layout';
 import { Section } from '@/components/layout/section';
@@ -13,6 +13,7 @@ interface NewsPageProps {
 
 export async function generateMetadata({ params }: NewsPageProps): Promise<Metadata> {
     const { locale } = await params;
+    setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'navigation.items' });
 
     return {
@@ -23,6 +24,7 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
 
 export default async function NewsPage({ params }: NewsPageProps) {
     const { locale } = await params;
+    setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'navigation.items' });
     const tNewsletter = await getTranslations({ locale, namespace: 'newsletter' });
 

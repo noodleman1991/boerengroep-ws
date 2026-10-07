@@ -2,7 +2,9 @@
   "name": "sites-platform",
   "private": true,
   "packageManager": "pnpm@10.18.2",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -15,10 +17,5 @@
     "@biomejs/biome": "^1.9.4",
     "turbo": "^2.5.0",
     "typescript": "^5.8.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "@udecode/plate-core": "^48.0.5"
-    }
   }
 }

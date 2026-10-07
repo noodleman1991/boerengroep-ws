@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout';
 import { cms, type Locale } from '@/lib/cms';
 import { toNewsletterNode } from '@/lib/cms-adapters';
@@ -16,6 +17,7 @@ export default async function FriendsNewsletterDetailPage({
     params: Promise<{ locale: Locale; slug: string[] }>;
 }) {
     const { locale, slug } = await params;
+    setRequestLocale(locale);
     const newsletter = await cms.getNewsletter(decodeURIComponent(slug[slug.length - 1]!), locale);
     if (!newsletter || isMainOrganization(newsletter.organization)) notFound();
 

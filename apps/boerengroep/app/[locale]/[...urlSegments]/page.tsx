@@ -1,4 +1,5 @@
 import { notFound, permanentRedirect, redirect } from 'next/navigation'
+import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout'
 import { Section } from '@/components/layout/section'
 import { cms, type Locale } from '@/lib/cms'
@@ -12,6 +13,7 @@ const withLocale = (locale: Locale, path: string) => `/${locale}${path === '/' ?
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const { locale, urlSegments } = await params
+  setRequestLocale(locale);
 
   // Static assets and internal paths never match a CMS page.
   if (urlSegments.some((s) => s.includes('.') || s.startsWith('_'))) notFound()

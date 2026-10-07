@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ExportDataPage } from '@/components/newsletter/export-data-page';
 import Layout from '@/components/layout/layout';
 
@@ -9,6 +9,7 @@ interface ExportDataPageProps {
 
 export async function generateMetadata({ params }: ExportDataPageProps): Promise<Metadata> {
     const { locale } = await params;
+    setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: ExportDataPageProps): Promise
 
 export default async function ExportDataRoute({ params }: ExportDataPageProps) {
     const { locale } = await params;
+    setRequestLocale(locale);
 
     const mockLayoutData = {
         data: {

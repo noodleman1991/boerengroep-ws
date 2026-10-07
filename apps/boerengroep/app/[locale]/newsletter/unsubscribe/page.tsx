@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { UnsubscribePage } from '@/components/newsletter/unsubscribe-page';
 import Layout from '@/components/layout/layout';
 
@@ -10,6 +10,7 @@ interface UnsubscribePageProps {
 
 export async function generateMetadata({ params }: UnsubscribePageProps): Promise<Metadata> {
     const { locale } = await params;
+    setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: UnsubscribePageProps): Promis
 
 export default async function UnsubscribeRoute({ params, searchParams }: UnsubscribePageProps) {
     const { locale } = await params;
+    setRequestLocale(locale);
     const { token } = await searchParams;
 
     const mockLayoutData = {
