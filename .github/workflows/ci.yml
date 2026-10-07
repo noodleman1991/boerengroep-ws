@@ -38,6 +38,7 @@ jobs:
       - run: pnpm turbo run typecheck --filter=!boerengroep
       - run: pnpm test
       - run: pnpm --filter @sites/cms exec vitest run --project int
+      - run: pnpm --filter @sites/migrate-tina exec vitest run --project int
       - run: node tools/check-migrations/run.mjs
         env:
           BASE_REF: origin/main

@@ -1,0 +1,22 @@
+{
+  "header": {
+    "logo": "/uploads/branding/logo.png",
+    "logoAlt": "Boerengroep",
+    "name": "Stichting Boerengroep",
+    "nav": [
+      {
+        "href": "/about-us",
+        "label": "about-us",
+        "submenu": [
+          { "href": "/about-us/history", "label": "history" },
+          { "href": "/activities/calendar", "label": "calendar" }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "social": [{ "platform": "Instagram", "url": "https://instagram.com/x" }],
+    "quickLinks": [{ "title": "about-us", "links": [{ "href": "/about-us/history", "label": "history" }] }]
+  },
+  "theme": { "color": "green", "font": "lato", "darkMode": "light" }
+}
