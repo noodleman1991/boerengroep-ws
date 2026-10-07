@@ -68,6 +68,13 @@ export interface Config {
   blocks: {};
   collections: {
     pages: Page;
+    events: Event;
+    'past-events': PastEvent;
+    newsletters: Newsletter;
+    vacancies: Vacancy;
+    speakers: Speaker;
+    authors: Author;
+    tags: Tag;
     media: Media;
     users: User;
     tenants: Tenant;
@@ -79,6 +86,13 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    'past-events': PastEventsSelect<false> | PastEventsSelect<true>;
+    newsletters: NewslettersSelect<false> | NewslettersSelect<true>;
+    vacancies: VacanciesSelect<false> | VacanciesSelect<true>;
+    speakers: SpeakersSelect<false> | SpeakersSelect<true>;
+    authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    tags: TagsSelect<false> | TagsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
@@ -486,6 +500,349 @@ export interface ImageTextBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  slug: string;
+  /**
+   * Leave empty to show in both languages.
+   */
+  language?: ('en' | 'nl') | null;
+  description?: string | null;
+  location?: {
+    address?: string | null;
+    mapsLink?: string | null;
+    callLink?: string | null;
+  };
+  startDate: string;
+  endDate?: string | null;
+  eventType: 'talk' | 'workshop' | 'lecture' | 'meeting' | 'board-meeting' | 'soup-kitchen' | 'csa' | 'excursion';
+  speakers?:
+    | {
+        speaker?: (number | null) | Speaker;
+        role?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  image?: (number | null) | Media;
+  coverImage?: (number | null) | Media;
+  featured?: boolean | null;
+  /**
+   * Type the link text, select it, and add the registration URL as a link.
+   */
+  registrationLink?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "speakers".
+ */
+export interface Speaker {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  name: string;
+  avatar?: (number | null) | Media;
+  affiliation?: string | null;
+  bio?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "past-events".
+ */
+export interface PastEvent {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  slug: string;
+  /**
+   * Leave empty to show in both languages.
+   */
+  language?: ('en' | 'nl') | null;
+  heroImg?: (number | null) | Media;
+  excerpt?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  author?: (number | null) | Author;
+  date: string;
+  relatedEvent?: (number | null) | Event;
+  tags?: (number | Tag)[] | null;
+  blocks?:
+    | (
+        | HeroBlock
+        | CalloutBlock
+        | FeaturesBlock
+        | StatsBlock
+        | CtaBlock
+        | ContentBlock
+        | TestimonialBlock
+        | VideoBlock
+        | ImageTextBlock
+      )[]
+    | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors".
+ */
+export interface Author {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  name: string;
+  avatar?: (number | null) | Media;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  name: string;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletters".
+ */
+export interface Newsletter {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  slug: string;
+  /**
+   * Leave empty to show in both languages.
+   */
+  language?: ('en' | 'nl') | null;
+  type: 'article' | 'link' | 'event' | 'update';
+  organization: 'Boerengroep' | 'Inspringtheater' | 'friends';
+  publishDate: string;
+  tags?: string[] | null;
+  externalLink?: string | null;
+  linkDescription?: string | null;
+  author?: (number | null) | Speaker;
+  featuredImage?: (number | null) | Media;
+  excerpt?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  body?:
+    | (
+        | HeroBlock
+        | CalloutBlock
+        | FeaturesBlock
+        | StatsBlock
+        | CtaBlock
+        | ContentBlock
+        | TestimonialBlock
+        | VideoBlock
+        | ImageTextBlock
+      )[]
+    | null;
+  featured?: boolean | null;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vacancies".
+ */
+export interface Vacancy {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  slug: string;
+  /**
+   * Leave empty to show in both languages.
+   */
+  language?: ('en' | 'nl') | null;
+  opportunityType: 'volunteer' | 'internship' | 'coordinator' | 'board' | 'other';
+  location?: {
+    type?: ('remote' | 'in-person' | 'hybrid') | null;
+    cityRegion?: string | null;
+  };
+  startDate?: string | null;
+  duration?: string | null;
+  openApplication?: boolean | null;
+  applicationDeadline?: string | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  responsibilities?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  requiredSkills?: string[] | null;
+  preferredQualities?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  languagesRequired?: string[] | null;
+  compensation?: {
+    details?: string | null;
+  };
+  accessibilityNotes?: string | null;
+  howToApply?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  contactInfo?: {
+    name?: string | null;
+    email?: string | null;
+    phone?: string | null;
+  };
+  supportingDocument?: (number | null) | Media;
+  valuesStatement?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  openToNontraditional?: boolean | null;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -546,6 +903,34 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pages';
         value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: number | Event;
+      } | null)
+    | ({
+        relationTo: 'past-events';
+        value: number | PastEvent;
+      } | null)
+    | ({
+        relationTo: 'newsletters';
+        value: number | Newsletter;
+      } | null)
+    | ({
+        relationTo: 'vacancies';
+        value: number | Vacancy;
+      } | null)
+    | ({
+        relationTo: 'speakers';
+        value: number | Speaker;
+      } | null)
+    | ({
+        relationTo: 'authors';
+        value: number | Author;
+      } | null)
+    | ({
+        relationTo: 'tags';
+        value: number | Tag;
       } | null)
     | ({
         relationTo: 'media';
@@ -815,6 +1200,195 @@ export interface ImageTextBlockSelect<T extends boolean = true> {
   verticalAlignment?: T;
   id?: T;
   blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  language?: T;
+  description?: T;
+  location?:
+    | T
+    | {
+        address?: T;
+        mapsLink?: T;
+        callLink?: T;
+      };
+  startDate?: T;
+  endDate?: T;
+  eventType?: T;
+  speakers?:
+    | T
+    | {
+        speaker?: T;
+        role?: T;
+        id?: T;
+      };
+  image?: T;
+  coverImage?: T;
+  featured?: T;
+  registrationLink?: T;
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "past-events_select".
+ */
+export interface PastEventsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  language?: T;
+  heroImg?: T;
+  excerpt?: T;
+  author?: T;
+  date?: T;
+  relatedEvent?: T;
+  tags?: T;
+  blocks?:
+    | T
+    | {
+        hero?: T | HeroBlockSelect<T>;
+        callout?: T | CalloutBlockSelect<T>;
+        features?: T | FeaturesBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
+        cta?: T | CtaBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        testimonial?: T | TestimonialBlockSelect<T>;
+        video?: T | VideoBlockSelect<T>;
+        imageText?: T | ImageTextBlockSelect<T>;
+      };
+  body?: T;
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "newsletters_select".
+ */
+export interface NewslettersSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  language?: T;
+  type?: T;
+  organization?: T;
+  publishDate?: T;
+  tags?: T;
+  externalLink?: T;
+  linkDescription?: T;
+  author?: T;
+  featuredImage?: T;
+  excerpt?: T;
+  body?:
+    | T
+    | {
+        hero?: T | HeroBlockSelect<T>;
+        callout?: T | CalloutBlockSelect<T>;
+        features?: T | FeaturesBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
+        cta?: T | CtaBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        testimonial?: T | TestimonialBlockSelect<T>;
+        video?: T | VideoBlockSelect<T>;
+        imageText?: T | ImageTextBlockSelect<T>;
+      };
+  featured?: T;
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vacancies_select".
+ */
+export interface VacanciesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  language?: T;
+  opportunityType?: T;
+  location?:
+    | T
+    | {
+        type?: T;
+        cityRegion?: T;
+      };
+  startDate?: T;
+  duration?: T;
+  openApplication?: T;
+  applicationDeadline?: T;
+  description?: T;
+  responsibilities?: T;
+  requiredSkills?: T;
+  preferredQualities?: T;
+  languagesRequired?: T;
+  compensation?:
+    | T
+    | {
+        details?: T;
+      };
+  accessibilityNotes?: T;
+  howToApply?: T;
+  contactInfo?:
+    | T
+    | {
+        name?: T;
+        email?: T;
+        phone?: T;
+      };
+  supportingDocument?: T;
+  valuesStatement?: T;
+  openToNontraditional?: T;
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "speakers_select".
+ */
+export interface SpeakersSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  avatar?: T;
+  affiliation?: T;
+  bio?: T;
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  avatar?: T;
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
