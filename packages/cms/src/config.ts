@@ -3,9 +3,11 @@ import { fileURLToPath } from 'node:url'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { buildConfig, type CollectionConfig } from 'payload'
 import sharp from 'sharp'
 import { canAssignTenants } from './access'
+import { Media } from './collections/media'
 import { Tenants } from './collections/tenants'
 import { Users } from './collections/users'
 import { requireEnv } from './env'
@@ -22,7 +24,7 @@ export type CmsCustom = CreateConfigOptions
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** Collections that carry a `tenant` field. Extended in later tasks. */
-export const tenantScoped: CollectionConfig[] = []
+export const tenantScoped: CollectionConfig[] = [Media]
 
 /** Slugs of tenant-scoped collections that hold exactly one document per tenant. */
 export const onePerTenant: string[] = []
@@ -74,6 +76,14 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
         userHasAccessToAllTenants: (user) =>
           Array.isArray((user as { roles?: string[] } | null)?.roles) &&
           (user as { roles: string[] }).roles.includes('super-admin'),
+      }),
+      vercelBlobStorage({
+        enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+        token: process.env.BLOB_READ_WRITE_TOKEN,
+        clientUploads: true,
+        collections: {
+          media: { disablePayloadAccessControl: true },
+        },
       }),
     ],
     typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
