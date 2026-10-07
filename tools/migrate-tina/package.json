@@ -1,0 +1,25 @@
+{
+  "name": "@sites/migrate-tina",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --project unit",
+    "test:int": "vitest run --project int",
+    "migrate": "PAYLOAD_CONFIG_PATH=src/payload.config.ts payload run src/run.ts"
+  },
+  "dependencies": {
+    "@payloadcms/richtext-lexical": "catalog:",
+    "@sites/cms": "workspace:*",
+    "gray-matter": "^4.0.3",
+    "mime-types": "^3.0.1",
+    "payload": "catalog:"
+  },
+  "devDependencies": {
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^22.16.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
