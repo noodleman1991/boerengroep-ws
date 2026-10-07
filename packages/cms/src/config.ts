@@ -8,6 +8,7 @@ import { buildConfig, type CollectionConfig } from 'payload'
 import sharp from 'sharp'
 import { canAssignTenants } from './access'
 import { Media } from './collections/media'
+import { Pages } from './collections/pages'
 import { Tenants } from './collections/tenants'
 import { Users } from './collections/users'
 import { requireEnv } from './env'
@@ -24,7 +25,7 @@ export type CmsCustom = CreateConfigOptions
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 /** Collections that carry a `tenant` field. Extended in later tasks. */
-export const tenantScoped: CollectionConfig[] = [Media]
+export const tenantScoped: CollectionConfig[] = [Pages, Media]
 
 /** Slugs of tenant-scoped collections that hold exactly one document per tenant. */
 export const onePerTenant: string[] = []

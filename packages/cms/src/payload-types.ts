@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    pages: Page;
     media: Media;
     users: User;
     tenants: Tenant;
@@ -77,6 +78,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    pages: PagesSelect<false> | PagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
@@ -121,6 +123,115 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  /**
+   * Last part of the URL in this language. The home page uses "home".
+   */
+  slug: string;
+  parent?: (number | null) | Page;
+  /**
+   * Full URL path. Set automatically.
+   */
+  path?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  blocks?:
+    | (
+        | HeroBlock
+        | EventsCalendarPreviewBlock
+        | CalloutBlock
+        | FeaturesBlock
+        | StatsBlock
+        | CtaBlock
+        | ContentBlock
+        | TestimonialBlock
+        | VideoBlock
+        | ImageTextBlock
+      )[]
+    | null;
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants".
+ */
+export interface Tenant {
+  id: number;
+  name: string;
+  slug: string;
+  /**
+   * Public origin of this site, for example https://www.example.org
+   */
+  siteUrl: string;
+  /**
+   * Shared secret the other site sends when it asks this site to refresh its cache.
+   */
+  revalidateSecret: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock".
+ */
+export interface HeroBlock {
+  /**
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   */
+  background?: string | null;
+  headline?: string | null;
+  tagline?: string | null;
+  actions?:
+    | {
+        label?: string | null;
+        type?: ('button' | 'link') | null;
+        icon?: {
+          /**
+           * Lucide icon name, for example ArrowRight.
+           */
+          name?: string | null;
+          color?: string | null;
+          style?: string | null;
+        };
+        link?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  image?: {
+    src?: (number | null) | Media;
+    alt?: string | null;
+    /**
+     * For YouTube, use the embed version of the URL.
+     */
+    videoUrl?: string | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'hero';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
@@ -145,22 +256,233 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants".
+ * via the `definition` "EventsCalendarPreviewBlock".
  */
-export interface Tenant {
-  id: number;
-  name: string;
-  slug: string;
+export interface EventsCalendarPreviewBlock {
   /**
-   * Public origin of this site, for example https://www.example.org
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
    */
-  siteUrl: string;
+  background?: string | null;
   /**
-   * Shared secret the other site sends when it asks this site to refresh its cache.
+   * Optional. Defaults to the translated title.
    */
-  revalidateSecret: string;
-  updatedAt: string;
-  createdAt: string;
+  title?: string | null;
+  description?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'eventsCalendarPreview';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CalloutBlock".
+ */
+export interface CalloutBlock {
+  /**
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   */
+  background?: string | null;
+  text?: string | null;
+  url?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'callout';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturesBlock".
+ */
+export interface FeaturesBlock {
+  /**
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   */
+  background?: string | null;
+  title?: string | null;
+  description?: string | null;
+  items?:
+    | {
+        icon?: {
+          /**
+           * Lucide icon name, for example ArrowRight.
+           */
+          name?: string | null;
+          color?: string | null;
+          style?: string | null;
+        };
+        title?: string | null;
+        text?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'features';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  /**
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   */
+  background?: string | null;
+  title?: string | null;
+  description?: string | null;
+  stats?:
+    | {
+        stat?: string | null;
+        type?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stats';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock".
+ */
+export interface CtaBlock {
+  title?: string | null;
+  description?: string | null;
+  actions?:
+    | {
+        label?: string | null;
+        type?: ('button' | 'link') | null;
+        icon?: {
+          /**
+           * Lucide icon name, for example ArrowRight.
+           */
+          name?: string | null;
+          color?: string | null;
+          style?: string | null;
+        };
+        link?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentBlock".
+ */
+export interface ContentBlock {
+  /**
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   */
+  background?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'content';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialBlock".
+ */
+export interface TestimonialBlock {
+  /**
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   */
+  background?: string | null;
+  title?: string | null;
+  description?: string | null;
+  testimonials?:
+    | {
+        quote?: string | null;
+        author?: string | null;
+        role?: string | null;
+        avatar?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonial';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  /**
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   */
+  background?: string | null;
+  color?: ('default' | 'tint' | 'primary') | null;
+  url?: string | null;
+  autoPlay?: boolean | null;
+  loop?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'video';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageTextBlock".
+ */
+export interface ImageTextBlock {
+  /**
+   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   */
+  background?: string | null;
+  image?: {
+    src?: (number | null) | Media;
+    alt?: string | null;
+  };
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  layout?: ('image-left' | 'image-right' | 'image-center' | 'text-above-center' | 'text-below-center') | null;
+  imageSize?: ('small' | 'medium' | 'large') | null;
+  verticalAlignment?: ('top' | 'center' | 'bottom') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'imageText';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -222,6 +544,10 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
       } | null)
@@ -274,6 +600,221 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  slug?: T;
+  parent?: T;
+  path?: T;
+  body?: T;
+  blocks?:
+    | T
+    | {
+        hero?: T | HeroBlockSelect<T>;
+        eventsCalendarPreview?: T | EventsCalendarPreviewBlockSelect<T>;
+        callout?: T | CalloutBlockSelect<T>;
+        features?: T | FeaturesBlockSelect<T>;
+        stats?: T | StatsBlockSelect<T>;
+        cta?: T | CtaBlockSelect<T>;
+        content?: T | ContentBlockSelect<T>;
+        testimonial?: T | TestimonialBlockSelect<T>;
+        video?: T | VideoBlockSelect<T>;
+        imageText?: T | ImageTextBlockSelect<T>;
+      };
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HeroBlock_select".
+ */
+export interface HeroBlockSelect<T extends boolean = true> {
+  background?: T;
+  headline?: T;
+  tagline?: T;
+  actions?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        icon?:
+          | T
+          | {
+              name?: T;
+              color?: T;
+              style?: T;
+            };
+        link?: T;
+        id?: T;
+      };
+  image?:
+    | T
+    | {
+        src?: T;
+        alt?: T;
+        videoUrl?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "EventsCalendarPreviewBlock_select".
+ */
+export interface EventsCalendarPreviewBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  description?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CalloutBlock_select".
+ */
+export interface CalloutBlockSelect<T extends boolean = true> {
+  background?: T;
+  text?: T;
+  url?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturesBlock_select".
+ */
+export interface FeaturesBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  description?: T;
+  items?:
+    | T
+    | {
+        icon?:
+          | T
+          | {
+              name?: T;
+              color?: T;
+              style?: T;
+            };
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock_select".
+ */
+export interface StatsBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  description?: T;
+  stats?:
+    | T
+    | {
+        stat?: T;
+        type?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock_select".
+ */
+export interface CtaBlockSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  actions?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        icon?:
+          | T
+          | {
+              name?: T;
+              color?: T;
+              style?: T;
+            };
+        link?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentBlock_select".
+ */
+export interface ContentBlockSelect<T extends boolean = true> {
+  background?: T;
+  body?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialBlock_select".
+ */
+export interface TestimonialBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  description?: T;
+  testimonials?:
+    | T
+    | {
+        quote?: T;
+        author?: T;
+        role?: T;
+        avatar?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock_select".
+ */
+export interface VideoBlockSelect<T extends boolean = true> {
+  background?: T;
+  color?: T;
+  url?: T;
+  autoPlay?: T;
+  loop?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageTextBlock_select".
+ */
+export interface ImageTextBlockSelect<T extends boolean = true> {
+  background?: T;
+  image?:
+    | T
+    | {
+        src?: T;
+        alt?: T;
+      };
+  content?: T;
+  layout?: T;
+  imageSize?: T;
+  verticalAlignment?: T;
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
