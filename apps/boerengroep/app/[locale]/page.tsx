@@ -1,73 +1,27 @@
-import React from "react";
-import client from "@/tina/__generated__/client";
-import Layout from "@/components/layout/layout";
-import ClientPage from "../[locale]/[...urlSegments]/client-page";
+import { notFound } from 'next/navigation'
+import Layout from '@/components/layout/layout'
+import { cms, type Locale } from '@/lib/cms'
+import { toCalendarEvent, toGlobalSettings } from '@/lib/cms-adapters'
+import ClientPage from './[...urlSegments]/client-page'
 
-export const revalidate = 300;
+export const revalidate = 3600
 
-async function getHomeData(locale: string) {
-    try {
-        // Fetch page data
-        let pageData;
-        try {
-            // Try locale-specific home page firstclaude
-            pageData = await client.queries.page({
-                relativePath: `${locale}/home.mdx`,
-            });
-        } catch (error) {
-            // Fallback to default home page
-            pageData = await client.queries.page({
-                relativePath: `home.mdx`,
-            });
-        }
+export default async function Home({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params
+  const [resolved, events, settings] = await Promise.all([
+    cms.resolvePage(locale, '/'),
+    cms.listEvents(),
+    cms.getSiteSettings(locale),
+  ])
+  if (!resolved?.page) notFound()
 
-        // Fetch events data for the calendar preview component
-        let eventsData;
-        try {
-            eventsData = await client.queries.calendarQuery();
-        } catch (error) {
-            console.error('Error fetching events:', error);
-            eventsData = { data: { eventConnection: { edges: [] } } };
-        }
-
-        const events = eventsData.data?.eventConnection?.edges?.map(edge => edge?.node).filter(Boolean) || [];
-
-        // Fetch global data for homepage settings
-        let globalData;
-        try {
-            globalData = await client.queries.global({ relativePath: 'index.json' });
-        } catch (error) {
-            console.error('Error fetching global data:', error);
-            globalData = { data: { global: null } };
-        }
-
-        return {
-            pageData,
-            events,
-            globalData: globalData.data?.global,
-        };
-    } catch (error) {
-        console.error('Error fetching home data:', error);
-        throw error;
-    }
-}
-
-export default async function Home({
-                                       params,
-                                   }: {
-    params: Promise<{ locale: string }>;
-}) {
-    const { locale } = await params;
-    const { pageData, events, globalData } = await getHomeData(locale);
-
-    return (
-        <Layout rawPageData={pageData}>
-            <ClientPageWithEvents pageData={pageData} events={events} globalData={globalData} />
-        </Layout>
-    );
-}
-
-// Client component wrapper to handle events data
-function ClientPageWithEvents({ pageData, events, globalData }: { pageData: any; events: any[]; globalData: any }) {
-    return <ClientPage {...pageData} events={events} globalData={globalData} />;
+  return (
+    <Layout rawPageData={resolved.page}>
+      <ClientPage
+        page={resolved.page}
+        events={events.map(toCalendarEvent)}
+        globalData={toGlobalSettings(settings)}
+      />
+    </Layout>
+  )
 }
