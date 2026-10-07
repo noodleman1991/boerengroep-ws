@@ -114,6 +114,39 @@ export function createQueries(deps: QueryDeps) {
     return docs[0] ?? null
   }
 
+  /**
+   * Finds a page by walking the address one segment at a time, where each segment may be
+   * the page's slug in any locale. Handles addresses that mix languages, such as
+   * `/over-ons/history`. Parents may be drafts. The caller checks the final page's status.
+   */
+  async function pageIdBySlugChain(path: string): Promise<number | string | null> {
+    const segments = path.split('/').filter(Boolean)
+    if (segments.length === 0 || segments.length > 8) return null
+    let parentId: number | string | undefined
+    for (const segment of segments) {
+      let found: number | string | undefined
+      for (const locale of LOCALES) {
+        const docs = await find<Page>('pages', false, {
+          hasDrafts: false,
+          locale,
+          depth: 0,
+          limit: 1,
+          where: [
+            { slug: { equals: segment } },
+            parentId === undefined ? { parent: { exists: false } } : { parent: { equals: parentId } },
+          ],
+        })
+        if (docs[0]) {
+          found = docs[0].id
+          break
+        }
+      }
+      if (found === undefined) return null
+      parentId = found
+    }
+    return parentId ?? null
+  }
+
   return {
     /**
      * Resolves a URL path to a page.
@@ -121,6 +154,8 @@ export function createQueries(deps: QueryDeps) {
      * 2. Otherwise a page whose path in the other locale matches is looked up. If it has a
      *    different path in this locale, the caller should redirect there. If it has no version
      *    in this locale, it is returned as is, served from the fallback locale.
+     * 3. Otherwise the address is matched segment by segment against slugs in any locale,
+     *    and the caller redirects to the page's path in this locale.
      */
     resolvePage(locale: Locale, path: string): Promise<{ page?: Page; redirectTo?: string } | null> {
       return run('resolvePage', [locale, path], ['pages'], async (draft) => {
@@ -133,6 +168,12 @@ export function createQueries(deps: QueryDeps) {
           if (!localized) continue
           if (localized.path && localized.path !== path) return { redirectTo: localized.path }
           return { page: localized }
+        }
+        // 3. An address that mixes languages, for example a Dutch parent with an English child.
+        const mixedId = await pageIdBySlugChain(path)
+        if (mixedId !== null) {
+          const localized = await pageById(draft, locale, mixedId)
+          if (localized?.path && localized.path !== path) return { redirectTo: localized.path }
         }
         return null
       })

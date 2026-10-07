@@ -18,3 +18,5 @@ next-env.d.ts
 # Payload local uploads used when no Blob token is set
 media/
 .media/
+test-results/
+playwright-report/

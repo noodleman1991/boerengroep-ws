@@ -42,6 +42,13 @@ describe('queries', () => {
       { parent: about.id },
     )
     await page(bg, { title: 'Accessibility', slug: 'accessibility' })
+    const sections = await page(
+      bg,
+      { title: 'Sections', slug: 'sections' },
+      { title: 'Secties', slug: 'secties' },
+      { _status: 'draft' },
+    )
+    await page(bg, { title: 'Breaks', slug: 'breaks' }, { title: 'Pauzes', slug: 'pauzes' }, { parent: sections.id })
     await page(bg, { title: 'Secret', slug: 'secret' }, undefined, { _status: 'draft' })
     await page(other, { title: 'Other contact', slug: 'contact' })
     await page(other, { title: 'Other about', slug: 'about-us' })
@@ -127,6 +134,25 @@ describe('queries', () => {
       const res = await queries('boerengroep').resolvePage('nl', '/accessibility')
       expect(res?.redirectTo).toBeUndefined()
       expect(res?.page?.title).toBe('Accessibility')
+    })
+
+    it('redirects a path that mixes Dutch and English segments', async () => {
+      const q = queries('boerengroep')
+      expect(await q.resolvePage('nl', '/over-ons/history')).toEqual({ redirectTo: '/over-ons/geschiedenis' })
+      expect(await q.resolvePage('en', '/about-us/geschiedenis')).toEqual({ redirectTo: '/about-us/history' })
+    })
+
+    it('follows a mixed path through a draft parent to a published page', async () => {
+      const q = queries('boerengroep')
+      expect(await q.resolvePage('nl', '/secties/breaks')).toEqual({ redirectTo: '/secties/pauzes' })
+      expect(await q.resolvePage('nl', '/secties')).toBeNull()
+    })
+
+    it('does not resolve a mixed path through the wrong parent or into another tenant', async () => {
+      const q = queries('boerengroep')
+      expect(await q.resolvePage('nl', '/accessibility/history')).toBeNull()
+      expect(await q.resolvePage('nl', '/over-ons/contact')).toBeNull()
+      expect(await queries('inspringtheater').resolvePage('nl', '/over-ons/history')).toBeNull()
     })
 
     it('returns null for an unknown path', async () => {

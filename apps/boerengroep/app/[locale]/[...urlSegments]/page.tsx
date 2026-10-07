@@ -3,6 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout'
 import { Section } from '@/components/layout/section'
 import { cms, type Locale } from '@/lib/cms'
+import { contentStaticParams } from '@/lib/reserved-paths'
 import ClientPage from './client-page'
 
 export const revalidate = 3600
@@ -43,8 +44,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 }
 
 export async function generateStaticParams(): Promise<Params[]> {
-  const paths = await cms.listPagePaths()
-  return paths
-    .filter((p) => p.path !== '/')
-    .map((p) => ({ locale: p.locale, urlSegments: p.path.slice(1).split('/') }))
+  // Addresses owned by built-in routes are left out. Prebuilding them here would
+  // replace the built-in page with the CMS page of the same address.
+  return contentStaticParams(await cms.listPagePaths())
 }
