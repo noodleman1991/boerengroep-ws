@@ -10,7 +10,7 @@ export async function testPayload(): Promise<Payload> {
 
 /** Deletes every document. Content collections go first, tenants and users last. */
 export async function resetDb(payload: Payload): Promise<void> {
-  const slugs = payload.config.collections.map((c) => c.slug)
+  const slugs: string[] = payload.config.collections.map((c) => c.slug)
   const last = ['users', 'tenants']
   const ordered = [...slugs.filter((s) => !last.includes(s)), ...last.filter((s) => slugs.includes(s))]
   for (const slug of ordered) {
