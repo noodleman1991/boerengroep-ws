@@ -13,6 +13,8 @@ import { Media } from './collections/media'
 import { Newsletters } from './collections/newsletters'
 import { Pages } from './collections/pages'
 import { PastEvents } from './collections/past-events'
+import { Redirects } from './collections/redirects'
+import { SiteSettings } from './collections/site-settings'
 import { Speakers } from './collections/speakers'
 import { Tags } from './collections/tags'
 import { Tenants } from './collections/tenants'
@@ -42,10 +44,12 @@ export const tenantScoped: CollectionConfig[] = [
   Authors,
   Tags,
   Media,
+  Redirects,
+  SiteSettings,
 ]
 
 /** Slugs of tenant-scoped collections that hold exactly one document per tenant. */
-export const onePerTenant: string[] = []
+export const onePerTenant: string[] = ['site-settings']
 
 export function createPayloadConfig(opts: CreateConfigOptions) {
   const scoped = Object.fromEntries(

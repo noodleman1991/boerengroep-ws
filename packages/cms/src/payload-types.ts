@@ -76,6 +76,8 @@ export interface Config {
     authors: Author;
     tags: Tag;
     media: Media;
+    redirects: Redirect;
+    'site-settings': SiteSetting;
     users: User;
     tenants: Tenant;
     'payload-kv': PayloadKv;
@@ -94,6 +96,8 @@ export interface Config {
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -843,6 +847,94 @@ export interface Vacancy {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  from: string;
+  to: string;
+  permanent?: boolean | null;
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  header: {
+    logo?: (number | null) | Media;
+    logoAlt: string;
+    name: string;
+    color?: ('default' | 'primary') | null;
+    nav?:
+      | {
+          /**
+           * Preferred. The link follows the page when its URL changes.
+           */
+          page?: (number | null) | Page;
+          href?: string | null;
+          label?: string | null;
+          labelText?: string | null;
+          submenu?:
+            | {
+                /**
+                 * Preferred. The link follows the page when its URL changes.
+                 */
+                page?: (number | null) | Page;
+                href?: string | null;
+                label?: string | null;
+                labelText?: string | null;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  homepage?: {
+    showCalendarWidget?: boolean | null;
+  };
+  footer?: {
+    social?:
+      | {
+          platform: string;
+          url: string;
+          id?: string | null;
+        }[]
+      | null;
+    quickLinks?:
+      | {
+          title: string;
+          links?:
+            | {
+                /**
+                 * Preferred. The link follows the page when its URL changes.
+                 */
+                page?: (number | null) | Page;
+                href?: string | null;
+                label?: string | null;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  theme?: {
+    color?: string | null;
+    font?: ('sans' | 'nunito' | 'lato') | null;
+    darkMode?: ('system' | 'light' | 'dark') | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -935,6 +1027,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
+      } | null)
+    | ({
+        relationTo: 'site-settings';
+        value: number | SiteSetting;
       } | null)
     | ({
         relationTo: 'users';
@@ -1409,6 +1509,91 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  tenant?: T;
+  from?: T;
+  to?: T;
+  permanent?: T;
+  note?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  tenant?: T;
+  header?:
+    | T
+    | {
+        logo?: T;
+        logoAlt?: T;
+        name?: T;
+        color?: T;
+        nav?:
+          | T
+          | {
+              page?: T;
+              href?: T;
+              label?: T;
+              labelText?: T;
+              submenu?:
+                | T
+                | {
+                    page?: T;
+                    href?: T;
+                    label?: T;
+                    labelText?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  homepage?:
+    | T
+    | {
+        showCalendarWidget?: T;
+      };
+  footer?:
+    | T
+    | {
+        social?:
+          | T
+          | {
+              platform?: T;
+              url?: T;
+              id?: T;
+            };
+        quickLinks?:
+          | T
+          | {
+              title?: T;
+              links?:
+                | T
+                | {
+                    page?: T;
+                    href?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  theme?:
+    | T
+    | {
+        color?: T;
+        font?: T;
+        darkMode?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
