@@ -1,88 +1,70 @@
 'use client'
 
-import { tinaField } from "tinacms/dist/react";
-import { Page, PageBlocks } from "../../tina/__generated__/types";
-import { Hero } from "./hero";
-import { Content } from "./content";
-import { Features } from "./features";
-import { Testimonial } from "./testimonial";
-import { Video } from "./video";
-import { Callout } from "./callout";
-import { Stats } from "./stats";
-import { CallToAction } from "./call-to-action";
-import { ImageText } from "./image-text";
-import { EventsCalendarPreview } from "./events-calendar-preview";
+import type { Page } from '@sites/cms/types'
+import type { CalendarEvent, GlobalSettings } from '@/lib/cms-adapters'
+import { CallToAction } from './call-to-action'
+import { Callout } from './callout'
+import { Content } from './content'
+import { EventsCalendarPreview } from './events-calendar-preview'
+import { Features } from './features'
+import { Hero } from './hero'
+import { ImageText } from './image-text'
+import { Stats } from './stats'
+import { Testimonial } from './testimonial'
+import { Video } from './video'
 
-// Union type for both page blocks and newsletter body blocks
-type BlockType = PageBlocks | any;
+type AnyBlock = NonNullable<Page['blocks']>[number]
 
 interface BlocksProps {
-    blocks?: BlockType[];
-    events?: any[];
-    globalData?: any;
+  blocks?: AnyBlock[] | null
+  events?: CalendarEvent[]
+  globalData?: GlobalSettings
 }
 
-export const Blocks = (props: (Omit<Page, "id" | "_sys" | "_values"> & { events?: any[]; globalData?: any }) | BlocksProps) => {
-    const blocks = 'blocks' in props ? props.blocks : props.blocks;
-    const events = props.events || [];
-    const globalData = props.globalData;
+export const Blocks = ({ blocks, events = [], globalData }: BlocksProps) => {
+  if (!blocks) return null
+  return (
+    <>
+      {blocks.map((block, i) => (
+        <div key={block.id ?? i}>
+          <Block block={block} events={events} globalData={globalData} />
+        </div>
+      ))}
+    </>
+  )
+}
 
-    if (!blocks) return null;
-
-    return (
-        <>
-            {blocks.map(function (block: BlockType, i: number) {
-                return (
-                    <div key={i} data-tina-field={tinaField(block)}>
-                        <Block {...block} events={events} globalData={globalData} />
-                    </div>
-                );
-            })}
-        </>
-    );
-};
-
-const Block = (block: BlockType & { events?: any[]; globalData?: any }) => {
-    switch (block.__typename) {
-        case "PageBlocksVideo":
-        case "NewsletterBodyVideo":
-        case "PastEventBlocksVideo":
-            return <Video data={block} />;
-        case "PageBlocksHero":
-        case "NewsletterBodyHero":
-        case "PastEventBlocksHero":
-            return <Hero data={block} />;
-        case "PageBlocksCallout":
-        case "NewsletterBodyCallout":
-        case "PastEventBlocksCallout":
-            return <Callout data={block} />;
-        case "PageBlocksStats":
-        case "NewsletterBodyStats":
-        case "PastEventBlocksStats":
-            return <Stats data={block} />;
-        case "PageBlocksContent":
-        case "NewsletterBodyContent":
-        case "PastEventBlocksContent":
-            return <Content data={block} />;
-        case "PageBlocksFeatures":
-        case "NewsletterBodyFeatures":
-        case "PastEventBlocksFeatures":
-            return <Features data={block} />;
-        case "PageBlocksTestimonial":
-        case "NewsletterBodyTestimonial":
-        case "PastEventBlocksTestimonial":
-            return <Testimonial data={block} />;
-        case "PageBlocksCta":
-        case "NewsletterBodyCta":
-        case "PastEventBlocksCta":
-            return <CallToAction data={block} />;
-        case "PageBlocksImageText":
-        case "NewsletterBodyImageText":
-        case "PastEventBlocksImageText":
-            return <ImageText data={block} />;
-        case "PageBlocksEventsCalendarPreview":
-            return <EventsCalendarPreview data={block} events={block.events} globalData={block.globalData} />;
-        default:
-            return null;
-    }
-};
+const Block = ({
+  block,
+  events,
+  globalData,
+}: {
+  block: AnyBlock
+  events: CalendarEvent[]
+  globalData?: GlobalSettings
+}) => {
+  switch (block.blockType) {
+    case 'video':
+      return <Video data={block} />
+    case 'hero':
+      return <Hero data={block} />
+    case 'callout':
+      return <Callout data={block} />
+    case 'stats':
+      return <Stats data={block} />
+    case 'content':
+      return <Content data={block} />
+    case 'features':
+      return <Features data={block} />
+    case 'testimonial':
+      return <Testimonial data={block} />
+    case 'cta':
+      return <CallToAction data={block} />
+    case 'imageText':
+      return <ImageText data={block} />
+    case 'eventsCalendarPreview':
+      return <EventsCalendarPreview data={block} events={events} globalData={globalData} />
+    default:
+      return null
+  }
+}

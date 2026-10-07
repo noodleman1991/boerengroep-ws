@@ -1,14 +1,12 @@
 'use client';
 import * as React from 'react';
 import dynamic from 'next/dynamic';
-import type { TinaTemplate } from '@tinacms/cli';
-import { PageBlocksVideo } from '@/tina/__generated__/types';
 import { Section } from '../layout/section';
-import { sectionBlockSchemaField } from '../layout/section';
+import type { VideoBlock } from '@sites/cms/types';
 
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
-export const Video = ({ data }: { data: PageBlocksVideo }) => {
+export const Video = ({ data }: { data: VideoBlock }) => {
   if (!data.url) {
     return null;
   }
@@ -17,43 +15,4 @@ export const Video = ({ data }: { data: PageBlocksVideo }) => {
       <ReactPlayer width='100%' height='100%' style={{ margin: 'auto' }} playing={!!data.autoPlay} loop={!!data.loop} controls={true} url={data.url} />
     </Section>
   );
-};
-
-export const videoBlockSchema: TinaTemplate = {
-  name: 'video',
-  label: 'Video',
-  ui: {
-    previewSrc: '/blocks/video.png',
-    defaultItem: {
-      url: 'https://www.youtube.com/watch?v=j8egYW7Jpgk',
-    },
-  },
-  fields: [
-    sectionBlockSchemaField as any,
-    {
-      type: 'string',
-      label: 'Color',
-      name: 'color',
-      options: [
-        { label: 'Default', value: 'default' },
-        { label: 'Tint', value: 'tint' },
-        { label: 'Primary', value: 'primary' },
-      ],
-    },
-    {
-      type: 'string',
-      label: 'Url',
-      name: 'url',
-    },
-    {
-      type: 'boolean',
-      label: 'Auto Play',
-      name: 'autoPlay',
-    },
-    {
-      type: 'boolean',
-      label: 'Loop',
-      name: 'loop',
-    },
-  ],
 };

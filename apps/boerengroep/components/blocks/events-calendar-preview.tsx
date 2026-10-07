@@ -6,11 +6,7 @@ import Link from 'next/link';
 import { format, parseISO, isAfter } from 'date-fns';
 import { nl, enUS } from 'date-fns/locale';
 import { useTranslations, useLocale } from 'next-intl';
-import type { TinaTemplate } from '@tinacms/cli';
-import { tinaField } from 'tinacms/dist/react';
-// import { PageBlocksEventsCalendarPreview } from '../../tina/__generated__/types';
 import { Section } from '../layout/section';
-import { sectionBlockSchemaField } from '../layout/section';
 import { Calendar, CalendarIcon, MapPin, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -21,14 +17,16 @@ import { EVENT_COLORS } from '../calendar/types';
 import type { IEvent } from '../calendar/interfaces';
 import type { TEventType } from '../calendar/types';
 import { motion } from 'motion/react';
+import type { EventsCalendarPreviewBlock } from '@sites/cms/types';
+import type { CalendarEvent, GlobalSettings } from '@/lib/cms-adapters';
 
 interface EventsCalendarPreviewProps {
-    data: any; // Will be PageBlocksEventsCalendarPreview once types are regenerated
-    events?: any[];
-    globalData?: any;
+    data: EventsCalendarPreviewBlock;
+    events?: CalendarEvent[];
+    globalData?: GlobalSettings;
 }
 
-// Transform TinaCMS events to calendar format for dialogs
+// Transform CMS events to calendar format for dialogs
 function transformEventForDialog(event: any): IEvent {
     return {
         id: event.id || 0,
@@ -124,7 +122,7 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
                                 transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
                                 viewport={{ once: true, margin: "-100px" }}
                             >
-                                <h2 className="text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4" data-tina-field={tinaField(data, 'title')}>
+                                <h2 className="text-xl sm:text-2xl font-heading font-bold mb-3 sm:mb-4">
                                     {data.title || t('upcomingEvents')}
                                 </h2>
                             </motion.div>
@@ -275,35 +273,4 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
         </Section>
         </CalendarProvider>
     );
-};
-
-export const eventsCalendarPreviewBlockSchema: TinaTemplate = {
-    name: 'eventsCalendarPreview',
-    label: 'Events & Calendar Preview',
-    ui: {
-        previewSrc: '/blocks/calendar.png',
-        defaultItem: {
-            background: 'bg-background',
-            title: '',
-            description: '',
-        },
-    },
-    fields: [
-        sectionBlockSchemaField as any,
-        {
-            type: 'string',
-            label: 'Section Title',
-            name: 'title',
-            description: 'Optional custom title (defaults to translation key)',
-        },
-        {
-            type: 'string',
-            label: 'Section Description',
-            name: 'description',
-            ui: {
-                component: 'textarea',
-            },
-            description: 'Optional custom description (defaults to translation key)',
-        },
-    ],
 };

@@ -1,16 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import type { TinaTemplate } from '@tinacms/cli'
-import { tinaField } from 'tinacms/dist/react';
-import { iconSchema } from '@/tina/fields/icon';
 import { Button } from '@/components/ui/button'
-import { PageBlocksCta } from '@/tina/__generated__/types';
 import { Icon } from '../icon';
 import { Section } from '../layout/section';
 import { motion } from 'motion/react';
+import type { CtaBlock } from '@sites/cms/types';
 
-export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
+export const CallToAction = ({ data }: { data: CtaBlock }) => {
     return (
         <Section>
             <motion.div
@@ -20,8 +17,8 @@ export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 viewport={{ once: true, margin: "-100px" }}
             >
-                <h2 className="text-balance text-4xl font-semibold lg:text-5xl" data-tina-field={tinaField(data, 'title')}>{data.title}</h2>
-                <p className="mt-4" data-tina-field={tinaField(data, 'description')}>{data.description}</p>
+                <h2 className="text-balance text-4xl font-semibold lg:text-5xl">{data.title}</h2>
+                <p className="mt-4">{data.description}</p>
 
                 <motion.div
                     className="mt-12 flex flex-wrap justify-center gap-4"
@@ -33,7 +30,6 @@ export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
                     {data.actions && data.actions.map(action => (
                         <div
                             key={action!.label}
-                            data-tina-field={tinaField(action)}
                             className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5">
                             <Button
                                 asChild
@@ -52,84 +48,3 @@ export const CallToAction = ({ data }: { data: PageBlocksCta }) => {
         </Section>
     )
 }
-
-
-export const ctaBlockSchema: TinaTemplate = {
-    name: "cta",
-    label: "CTA",
-    ui: {
-        previewSrc: "/blocks/cta.png",
-        defaultItem: {
-            title: "Title",
-            description: "Description",
-            actions: [
-                {
-                    label: 'Get Started',
-                    type: 'button',
-                    link: '/',
-                },
-                {
-                    label: 'Book Demo',
-                    type: 'link',
-                    link: '/',
-                },
-            ],
-        },
-    },
-    fields: [
-        {
-            type: "string",
-            label: "Title",
-            name: "title",
-        },
-        {
-            type: "string",
-            label: "Description",
-            name: "description",
-            ui: {
-                component: "textarea",
-            },
-        },
-        {
-            label: 'Actions',
-            name: 'actions',
-            type: 'object',
-            list: true,
-            ui: {
-                defaultItem: {
-                    label: 'Action Label',
-                    type: 'button',
-                    icon: {
-                        name: 'ArrowRight',
-                        color: 'primary',
-                        style: 'outline'
-                    },
-                    link: '/',
-                },
-                itemProps: (item: any)  => ({ label: item.label }),
-            },
-            fields: [
-                {
-                    label: 'Label',
-                    name: 'label',
-                    type: 'string',
-                },
-                {
-                    label: 'Type',
-                    name: 'type',
-                    type: 'string',
-                    options: [
-                        { label: 'Button', value: 'button' },
-                        { label: 'Link', value: 'link' },
-                    ],
-                },
-                iconSchema as any,
-                {
-                    label: 'Link',
-                    name: 'link',
-                    type: 'string',
-                },
-            ],
-        },
-    ],
-};

@@ -2,16 +2,12 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import type { TinaTemplate } from '@tinacms/cli';
-import { tinaField } from 'tinacms/dist/react';
-import { PageBlocksImageText } from '../../tina/__generated__/types';
 import { Section } from '../layout/section';
-import { sectionBlockSchemaField } from '../layout/section';
-import { scriptCopyBlockSchema, ScriptCopyBtn } from '../magicui/script-copy-btn';
-import { Mermaid } from './mermaid';
+import type { ImageTextBlock } from '@sites/cms/types';
+import { RichText } from '@/components/rich-text';
+import { mediaUrl } from '@/lib/cms-adapters';
 
-export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
+export const ImageText = ({ data }: { data: ImageTextBlock }) => {
     const getLayoutClasses = () => {
         switch (data.layout) {
             case 'image-left':
@@ -72,17 +68,12 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
     const isCenterLayout = isImageCenter || isTextAboveCenter || isTextBelowCenter;
 
     // Early return if no image is provided
-    if (!data.image?.src) {
+    const imageSrc = mediaUrl(data.image?.src);
+    if (!imageSrc) {
         return (
             <Section background={data.background!}>
-                <div className="prose prose-lg max-w-none" data-tina-field={tinaField(data, 'content')}>
-                    <TinaMarkdown
-                        content={data.content}
-                        components={{
-                            mermaid: (props: any) => <Mermaid {...props} />,
-                            scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
-                        }}
-                    />
+                <div className="prose prose-lg max-w-none">
+                    <RichText data={data.content} />
                 </div>
             </Section>
         );
@@ -95,25 +86,17 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
                 {isTextAboveCenter && (
                     <div
                         className="prose prose-lg max-w-none mb-4 text-center"
-                        data-tina-field={tinaField(data, 'content')}
                     >
-                        <TinaMarkdown
-                            content={data.content}
-                            components={{
-                                mermaid: (props: any) => <Mermaid {...props} />,
-                                scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
-                            }}
-                        />
+                        <RichText data={data.content} />
                     </div>
                 )}
 
                 {/* Image */}
                 <div
                     className={`${isImageRight ? 'md:order-2' : ''} ${isCenterLayout ? 'mx-auto' : ''} ${getImageSizeClasses()}`}
-                    data-tina-field={tinaField(data, 'image')}
                 >
                     <Image
-                        src={data.image.src}
+                        src={imageSrc}
                         alt={data.image?.alt || ''}
                         width={800}
                         height={600}
@@ -130,127 +113,11 @@ export const ImageText = ({ data }: { data: PageBlocksImageText }) => {
                             isTextBelowCenter ? 'mt-4 text-center' :
                             isImageRight ? 'md:order-1' : ''
                         }`}
-                        data-tina-field={tinaField(data, 'content')}
                     >
-                        <TinaMarkdown
-                            content={data.content}
-                            components={{
-                                mermaid: (props: any) => <Mermaid {...props} />,
-                                scriptCopyBlock: (props: any) => <ScriptCopyBtn {...props} />,
-                            }}
-                        />
+                        <RichText data={data.content} />
                     </div>
                 )}
             </div>
         </Section>
     );
-};
-
-export const imageTextBlockSchema: TinaTemplate = {
-    name: 'imageText',
-    label: 'Image & Text',
-    ui: {
-        previewSrc: '/blocks/image-text.png',
-        // defaultItem: {
-        //     layout: 'image-left',
-        //     imageSize: 'medium',
-        //     verticalAlignment: 'center',
-        //     content: 'Add your content here. This rich text editor supports **bold**, *italic*, and [links](https://example.com).',
-        //     image: {
-        //         src: '',
-        //         alt: 'Descriptive alt text',
-        //     },
-        // },
-        defaultItem: {
-            layout: 'image-left',
-            imageSize: 'medium',
-            verticalAlignment: 'center',
-            content: {
-                type: 'root',
-                children: [
-                    {
-                        type: 'p',
-                        children: [
-                            { type: 'text', text: 'Add your content here. This rich text editor supports ' },
-                            { type: 'text', text: 'bold', bold: true },
-                            { type: 'text', text: ', ' },
-                            { type: 'text', text: 'italic', italic: true },
-                            { type: 'text', text: ', and ' },
-                            {
-                                type: 'a',
-                                url: 'https://example.com',
-                                children: [{ type: 'text', text: 'links' }],
-                            },
-                            { type: 'text', text: '.' },
-                        ],
-                    },
-                ],
-            },
-            image: {
-                src: '',
-                alt: 'Descriptive alt text',
-            },
-        },
-    },
-    fields: [
-        sectionBlockSchemaField as any,
-        {
-            type: 'object',
-            label: 'Image',
-            name: 'image',
-            fields: [
-                {
-                    type: 'image',
-                    label: 'Image Source',
-                    name: 'src',
-                    description: 'Recommended: at least 800x600px for best quality',
-                },
-                {
-                    type: 'string',
-                    label: 'Alt Text',
-                    name: 'alt',
-                    description: 'Describe the image for accessibility',
-                },
-            ],
-        },
-        {
-            type: 'rich-text',
-            label: 'Content',
-            name: 'content',
-            templates: [scriptCopyBlockSchema],
-        },
-        {
-            type: 'string',
-            label: 'Layout',
-            name: 'layout',
-            options: [
-                { label: 'Image Left', value: 'image-left' },
-                { label: 'Image Right', value: 'image-right' },
-                { label: 'Image Center', value: 'image-center' },
-                { label: 'Text Above Image (Center)', value: 'text-above-center' },
-                { label: 'Text Below Image (Center)', value: 'text-below-center' },
-            ],
-        },
-        {
-            type: 'string',
-            label: 'Image Size',
-            name: 'imageSize',
-            options: [
-                { label: 'Small', value: 'small' },
-                { label: 'Medium', value: 'medium' },
-                { label: 'Large', value: 'large' },
-            ],
-        },
-        {
-            type: 'string',
-            label: 'Vertical Alignment',
-            name: 'verticalAlignment',
-            description: 'How content aligns vertically with the image (not applicable for center layout)',
-            options: [
-                { label: 'Top', value: 'top' },
-                { label: 'Center', value: 'center' },
-                { label: 'Bottom', value: 'bottom' },
-            ],
-        },
-    ],
 };

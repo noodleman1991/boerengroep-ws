@@ -1,19 +1,12 @@
 "use client";
-import {
-    PageBlocksFeatures,
-    PageBlocksFeaturesItems,
-} from "../../tina/__generated__/types";
-import type { TinaTemplate } from '@tinacms/cli';
-import { tinaField } from "tinacms/dist/react";
-import { TinaMarkdown } from "tinacms/dist/rich-text";
 import { Icon } from "../icon";
-import { iconSchema } from "../../tina/fields/icon";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Section } from "../layout/section";
-import { sectionBlockSchemaField } from '../layout/section';
 import { motion } from 'motion/react';
+import type { FeaturesBlock } from '@sites/cms/types';
+import { RichText } from '@/components/rich-text';
 
-export const Features = ({ data }: { data: PageBlocksFeatures }) => {
+export const Features = ({ data }: { data: FeaturesBlock }) => {
     return (
         <Section background={data.background!}>
             <motion.div 
@@ -24,8 +17,8 @@ export const Features = ({ data }: { data: PageBlocksFeatures }) => {
                 viewport={{ once: true, margin: "-100px" }}
             >
                 <div className="text-center">
-                    <h2 data-tina-field={tinaField(data, 'title')} className="text-balance text-4xl font-semibold lg:text-5xl">{data.title}</h2>
-                    <p data-tina-field={tinaField(data, 'description')} className="mt-4">{data.description}</p>
+                    <h2 className="text-balance text-4xl font-semibold lg:text-5xl">{data.title}</h2>
+                    <p className="mt-4">{data.description}</p>
                 </div>
                 <Card className="mx-auto mt-8 grid max-w-sm md:max-w-full md:grid-cols-3 md:divide-x md:divide-y-0 divide-y overflow-hidden shadow-zinc-950/5 *:text-center md:mt-16">
                     {data.items &&
@@ -60,21 +53,14 @@ const CardDecorator = ({ children }: { children: React.ReactNode }) => (
     </div>
 )
 
-export const Feature: React.FC<PageBlocksFeaturesItems> = (data) => {
+type FeatureItem = NonNullable<FeaturesBlock['items']>[number];
+
+export const Feature: React.FC<FeatureItem> = (data) => {
     return (
         <div className="group shadow-zinc-950/5">
             <CardHeader className="pb-3">
-                {/*<CardDecorator>*/}
-                {/*    {data.icon && (*/}
-                {/*        <Icon*/}
-                {/*            tinaField={tinaField(data, "icon")}*/}
-                {/*            data={{ size: "large", ...data.icon }}*/}
-                {/*        />*/}
-                {/*    )}*/}
-                {/*</CardDecorator>*/}
 
                 <h3
-                    data-tina-field={tinaField(data, "title")}
                     className="mt-6 font-medium"
                 >
                     {data.title}
@@ -82,90 +68,8 @@ export const Feature: React.FC<PageBlocksFeaturesItems> = (data) => {
             </CardHeader>
 
             <CardContent className="text-sm pb-8">
-                <TinaMarkdown
-                    data-tina-field={tinaField(data, "text")}
-                    content={data.text}
-                />
+                <RichText data={data.text} />
             </CardContent>
         </div>
     );
-};
-
-// ✅ FIXED: Changed defaultFeature.text from string to proper rich-text object structure
-const defaultFeature = {
-    title: "Here's Another Feature",
-    text: {
-        type: 'root',
-        children: [
-            {
-                type: 'p',
-                children: [
-                    {
-                        type: 'text',
-                        text: "This is where you might talk about the feature, if this wasn't just filler text."
-                    }
-                ]
-            }
-        ]
-    },
-    icon: {
-        color: "",
-        style: "float",
-        name: "",
-    },
-};
-
-export const featureBlockSchema: TinaTemplate = {
-    name: "features",
-    label: "Features",
-    ui: {
-        previewSrc: "/blocks/features.png",
-        defaultItem: {
-            title: 'Built to cover your needs',
-            description: 'We have a lot of features to cover your needs',
-            items: [defaultFeature, defaultFeature, defaultFeature],
-        },
-    },
-    fields: [
-        sectionBlockSchemaField as any,
-        {
-            type: "string",
-            label: "Title",
-            name: "title",
-        },
-        {
-            type: "string",
-            label: "Description",
-            name: "description",
-        },
-        {
-            type: "object",
-            label: "Feature Items",
-            name: "items",
-            list: true,
-            ui: {
-                itemProps: (item: any) => {
-                    return {
-                        label: item?.title,
-                    };
-                },
-                defaultItem: {
-                    ...defaultFeature,
-                },
-            },
-            fields: [
-                iconSchema as any,
-                {
-                    type: "string",
-                    label: "Title",
-                    name: "title",
-                },
-                {
-                    type: "rich-text",
-                    label: "Text",
-                    name: "text",
-                },
-            ],
-        },
-    ],
 };

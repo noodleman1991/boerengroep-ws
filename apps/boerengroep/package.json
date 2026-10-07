@@ -13,7 +13,8 @@
     "generate:pathnames": "tsx scripts/generate-pathnames.ts",
     "typecheck": "tsc --noEmit",
     "payload": "PAYLOAD_CONFIG_PATH=../../packages/cms/src/dev.config.ts payload",
-    "generate:importmap": "pnpm payload generate:importmap"
+    "generate:importmap": "pnpm payload generate:importmap",
+    "test": "vitest run"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",
@@ -32,7 +33,8 @@
     "sass": "^1.105.1",
     "tailwindcss": "^4.1.12",
     "tsx": "^4.20.4",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vitest": "catalog:"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",
