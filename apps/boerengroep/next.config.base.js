@@ -4,7 +4,8 @@ const baseConfig = {
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: 'assets.tina.io', port: '' },
-      { protocol: 'https', hostname: 'res.cloudinary.com', port: '' }
+      { protocol: 'https', hostname: 'res.cloudinary.com', port: '' },
+      { protocol: 'https', hostname: '*.public.blob.vercel-storage.com', port: '' },
     ],
     // Allow optimization of images in public folder and uploads
     unoptimized: false,
@@ -69,9 +70,6 @@ const baseConfig = {
           destination: '/manifest.json',
         },
       ],
-      afterFiles: [
-        { source: '/admin', destination: '/admin/index.html' },
-      ],
     };
   },
   // React strict mode
@@ -80,7 +78,7 @@ const baseConfig = {
   poweredByHeader: false,
   
   // Transpile motion package properly for Next.js
-  transpilePackages: ['motion'],
+  transpilePackages: ['motion', '@sites/cms'],
   
 };
 

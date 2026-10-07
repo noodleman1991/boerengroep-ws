@@ -7,6 +7,7 @@ import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { buildConfig, type CollectionConfig } from 'payload'
 import sharp from 'sharp'
 import { canAssignTenants } from './access'
+import { type AccessUser, isSuperAdmin } from './access/roles'
 import { Authors } from './collections/authors'
 import { Events } from './collections/events'
 import { Media } from './collections/media'
@@ -95,9 +96,7 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
             },
           ],
         },
-        userHasAccessToAllTenants: (user) =>
-          Array.isArray((user as { roles?: string[] } | null)?.roles) &&
-          (user as { roles: string[] }).roles.includes('super-admin'),
+        userHasAccessToAllTenants: (user) => isSuperAdmin(user as unknown as AccessUser),
       }),
       vercelBlobStorage({
         enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
