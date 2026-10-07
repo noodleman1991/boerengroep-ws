@@ -5,6 +5,7 @@ import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { buildConfig, type CollectionConfig } from 'payload'
 import sharp from 'sharp'
+import { canAssignTenants } from './access'
 import { Tenants } from './collections/tenants'
 import { Users } from './collections/users'
 import { requireEnv } from './env'
@@ -54,6 +55,8 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
         tenantsSlug: Tenants.slug,
         collections: scoped,
         tenantsArrayField: {
+          // The plugin's default lets only super admins write memberships.
+          arrayFieldAccess: { create: canAssignTenants, update: canAssignTenants },
           rowFields: [
             {
               name: 'roles',
