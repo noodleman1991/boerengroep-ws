@@ -52,7 +52,7 @@ export const Header = () => {
                                                     onClick={() => handleMenuClick(item.label!)}
                                                     onMouseEnter={() => activeMenu && setActiveMenu(item.label!)}
                                                 >
-                                                    {t(`items.${item.label}`)}
+                                                    {item.labelText || t(`items.${item.label}`)}
                                                 </button>
                                                 {/* Dropdown submenu */}
                                                 <AnimatePresence>
@@ -75,7 +75,7 @@ export const Header = () => {
                                                                             className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium px-3 py-2.5 rounded-[var(--radius-md)] whitespace-nowrap transition-colors duration-150"
                                                                             onClick={() => setActiveMenu(null)}
                                                                         >
-                                                                            {t(`items.${subItem.label}`)}
+                                                                            {subItem.labelText || t(`items.${subItem.label}`)}
                                                                         </Link>
                                                                     );
                                                                 })}
@@ -89,7 +89,7 @@ export const Header = () => {
                                                 href={item.href as any}
                                                 className="px-3 py-2 text-sm font-medium rounded-[var(--radius-md)] text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150"
                                             >
-                                                {t(`items.${item.label}`)}
+                                                {item.labelText || t(`items.${item.label}`)}
                                             </Link>
                                         )}
                                     </div>
@@ -140,7 +140,7 @@ export const Header = () => {
                                                     onClick={() => handleMenuClick(item.label!)}
                                                     aria-expanded={activeMenu === item.label}
                                                 >
-                                                    {t(`items.${item.label}`)}
+                                                    {item.labelText || t(`items.${item.label}`)}
                                                 </button>
                                                 <AnimatePresence>
                                                     {activeMenu === item.label && (
@@ -164,7 +164,7 @@ export const Header = () => {
                                                                             setActiveMenu(null);
                                                                         }}
                                                                     >
-                                                                        {t(`items.${subItem.label}`)}
+                                                                        {subItem.labelText || t(`items.${subItem.label}`)}
                                                                     </Link>
                                                                 );
                                                             })}
@@ -178,7 +178,7 @@ export const Header = () => {
                                                 className="flex items-center min-h-[44px] px-3 py-2.5 text-base font-medium text-gray-900 rounded-[var(--radius-md)] hover:bg-gray-50 transition-colors"
                                                 onClick={() => setMobileMenuOpen(false)}
                                             >
-                                                {t(`items.${item.label}`)}
+                                                {item.labelText || t(`items.${item.label}`)}
                                             </Link>
                                         )}
                                     </div>

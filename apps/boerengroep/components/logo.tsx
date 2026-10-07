@@ -3,6 +3,12 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 
+/**
+ * Shown until a logo is chosen under Site settings. The address is a legacy upload path,
+ * which the app redirects to the stored media file.
+ */
+const FALLBACK_LOGO = '/uploads/branding/boerengroep-logo-zwart.png';
+
 interface LogoProps {
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     className?: string;
@@ -68,7 +74,7 @@ export const Logo: React.FC<LogoProps> = ({
                 currentSize.container
             )}>
                 <Image
-                    src="/uploads/branding/boerengroep-logo-zwart.png"
+                    src={logoSrc || FALLBACK_LOGO}
                     alt="Boerengroep Logo"
                     width={currentSize.logo.width}
                     height={currentSize.logo.height}
@@ -105,7 +111,7 @@ export const Logo: React.FC<LogoProps> = ({
     return <LogoContent />;
 };
 
-// hook for TinaCMS integration with better error handling
+// Reads logo data from the site settings
 export const useGlobalLogo = (globalData: any) => {
     const header = globalData?.header;
 
@@ -119,10 +125,11 @@ export const useGlobalLogo = (globalData: any) => {
     }
 
     return {
-        logoSrc: header?.logo,
+        logoSrc: header?.logo || FALLBACK_LOGO,
         alt: header?.logoAlt || header?.name || 'Organization Logo',
         orgName: header?.name,
-        hasLogo: Boolean(header?.logo),
+        // A fallback image always exists, so the logo is never replaced by plain text.
+        hasLogo: true,
         hasName: Boolean(header?.name),
     };
 };
@@ -175,14 +182,14 @@ export const AppLogo: React.FC<{
 export const HeaderLogo: React.FC<{
     globalData?: any;
     className?: string;
-}> = ({ className }) => (
+}> = ({ globalData, className }) => (
     <Link href="/" className="inline-flex">
         <div className={cn(
             'flex items-center h-14 transition-opacity hover:opacity-80',
             className
         )}>
             <Image
-                src="/uploads/branding/boerengroep-logo-zwart.png"
+                src={globalData?.header?.logo || FALLBACK_LOGO}
                 alt="Boerengroep Logo"
                 width={168}
                 height={56}

@@ -1,33 +1,24 @@
-import React, { PropsWithChildren } from "react";
-import { LayoutProvider } from "./layout-context";
-import client from "../../tina/__generated__/client";
-import { Header } from "./nav/header";
-import { Footer } from "./nav/footer";
+import { getLocale } from 'next-intl/server'
+import React, { type PropsWithChildren } from 'react'
+import { cms, type Locale } from '@/lib/cms'
+import { toGlobalSettings } from '@/lib/cms-adapters'
+import { LayoutProvider } from './layout-context'
+import { Footer } from './nav/footer'
+import { Header } from './nav/header'
 
 type LayoutProps = PropsWithChildren & {
-  rawPageData?: any;
-};
+  rawPageData?: unknown
+}
 
 export default async function Layout({ children, rawPageData }: LayoutProps) {
-  const { data: globalData } = await client.queries.global({
-    relativePath: "index.json",
-  },
-    {
-      fetchOptions: {
-        next: {
-          revalidate: 60,
-        },
-      }
-    }
-  );
+  const locale = (await getLocale()) as Locale
+  const settings = toGlobalSettings(await cms.getSiteSettings(locale))
 
   return (
-    <LayoutProvider globalSettings={globalData.global} pageData={rawPageData}>
+    <LayoutProvider globalSettings={settings} pageData={rawPageData ?? {}}>
       <Header />
-      <main className="overflow-x-hidden pt-20">
-        {children}
-      </main>
+      <main className="overflow-x-hidden pt-20">{children}</main>
       <Footer />
     </LayoutProvider>
-  );
+  )
 }
