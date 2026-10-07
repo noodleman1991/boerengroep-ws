@@ -1,0 +1,31 @@
+{
+  "name": "@sites/cms",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/payload-types.ts",
+    "./queries": "./src/queries/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --project unit",
+    "test:int": "docker compose up -d --wait && vitest run --project int",
+    "generate:types": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload generate:types",
+    "migrate:create": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload migrate:create"
+  },
+  "dependencies": {
+    "@payloadcms/db-postgres": "catalog:",
+    "@payloadcms/plugin-multi-tenant": "catalog:",
+    "@payloadcms/richtext-lexical": "catalog:",
+    "@payloadcms/storage-vercel-blob": "catalog:",
+    "payload": "catalog:",
+    "sharp": "^0.34.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.16.0",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
