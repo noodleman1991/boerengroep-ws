@@ -3,9 +3,9 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import { PastEventConnectionQuery, PastEventConnectionQueryVariables } from '@/tina/__generated__/types';
 import ErrorBoundary from '@/components/error-boundary';
+import { RichText } from '@/components/rich-text';
+import type { toPastEventNode } from '@/lib/cms-adapters';
 import { ArrowRight, UserRound } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Section } from '@/components/layout/section';
@@ -13,15 +13,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useTranslations } from 'next-intl';
 
 interface ClientPastEventProps {
-  data: PastEventConnectionQuery;
-  variables: PastEventConnectionQueryVariables;
-  query: string;
+  pastEvents: ReturnType<typeof toPastEventNode>[];
 }
 
 export default function PastEventsClientPage(props: ClientPastEventProps) {
   const t = useTranslations('pastEvents');
-  const pastEvents = props.data?.pastEventConnection.edges!.map((pastEventData) => {
-    const pastEvent = pastEventData!.node!;
+  const pastEvents = props.pastEvents.map((pastEvent) => {
     const date = new Date(pastEvent.date!);
     let formattedDate = '';
     if (!isNaN(date.getTime())) {
@@ -78,7 +75,7 @@ export default function PastEventsClientPage(props: ClientPastEventProps) {
                       </Link>
                     </h3>
                     <div className="mt-4 text-muted-foreground md:mt-5">
-                      <TinaMarkdown content={pastEvent.excerpt} />
+                      <RichText data={pastEvent.excerpt} />
                     </div>
                     <div className="mt-6 flex items-center space-x-4 text-sm md:mt-8">
                       <Avatar>

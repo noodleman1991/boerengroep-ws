@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { client } from '@/tina/__generated__/client';
+import { cms } from '@/lib/cms';
+import { asConnection, toNewsletterNode } from '@/lib/cms-adapters';
 import { NewsletterList } from '@/components/newsletter-list';
 import Layout from '@/components/layout/layout';
 
@@ -20,15 +21,10 @@ export async function generateMetadata({ params }: FriendsNewsPageProps): Promis
 
 async function getFriendNewsData() {
     try {
-        const data = await client.queries.newsletterConnection();
-        return {
-            newsletters: data.data?.newsletterConnection || { edges: [] },
-        };
+        return { newsletters: asConnection((await cms.listNewsletters()).map(toNewsletterNode)) };
     } catch (error) {
-        console.error('Error fetching friend news data:', error);
-        return {
-            newsletters: { edges: [] },
-        };
+        console.error('Error fetching newsletter data:', error);
+        return { newsletters: { edges: [] } };
     }
 }
 
@@ -37,14 +33,9 @@ export default async function FriendsNewsPage({ params }: FriendsNewsPageProps) 
     const { newsletters } = await getFriendNewsData();
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
-    const mockLayoutData = {
-        data: {
-            global: null
-        }
-    };
 
     return (
-        <Layout rawPageData={mockLayoutData}>
+        <Layout>
             <NewsletterList
                 newsletters={newsletters}
                 locale={locale}

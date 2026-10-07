@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { client } from '@/tina/__generated__/client';
+import { cms } from '@/lib/cms';
+import { toCalendarEvent } from '@/lib/cms-adapters';
 import { Calendar } from '@/components/calendar/calendar';
 import { CalendarSections } from '@/components/calendar/calendar-sections';
 import Layout from '@/components/layout/layout';
@@ -22,15 +23,10 @@ export async function generateMetadata({ params }: CalendarPageProps): Promise<M
 
 async function getCalendarData() {
     try {
-        const data = await client.queries.calendarQuery();
-        return {
-            events: data.data?.eventConnection?.edges?.map(edge => edge?.node).filter(Boolean) || [],
-        };
+        return { events: (await cms.listEvents()).map(toCalendarEvent) };
     } catch (error) {
         console.error('Error fetching calendar data:', error);
-        return {
-            events: [],
-        };
+        return { events: [] };
     }
 }
 
@@ -39,15 +35,8 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
     const { events } = await getCalendarData();
     const t = await getTranslations({ locale, namespace: 'calendar' });
 
-    // Mock/Default layout data for the Layout component
-    const mockLayoutData = {
-        data: {
-            global: null // This will be fetched by the Layout component itself
-        }
-    };
-
     return (
-        <Layout rawPageData={mockLayoutData}>
+        <Layout>
             <Section>
                 <div className="container mx-auto px-4 py-8">
                     <div className="mb-8">
@@ -60,7 +49,7 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
                                 <p className="text-muted-foreground">
                                     {t('errors.noEventsAdmin')}{' '}
                                     <a href="/admin" className="text-primary hover:underline">
-                                        TinaCMS admin panel
+                                        admin panel
                                     </a>
                                     .
                                 </p>

@@ -7,7 +7,8 @@ import type { ReactNode } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import { RichText } from '@/components/rich-text';
+import { hasRichText } from '@/lib/rich-text-utils';
 import {
     Dialog,
     DialogClose,
@@ -98,13 +99,13 @@ export function EventDetailsDialog({ event, children }: IProps) {
                             </div>
                         )}
 
-                        {event.registrationLink && event.registrationLink.children && event.registrationLink.children.length > 0 && (
+                        {hasRichText(event.registrationLink) && (
                             <div className="text-sm">
                                 <div className="flex items-start gap-2.5 sm:gap-3 p-2.5 sm:p-3 rounded-lg bg-gray-50">
                                     <ExternalLink className="mt-0.5 sm:mt-1 size-4 shrink-0 text-muted-foreground" />
                                     <div className="flex-1 min-w-0">
                                         <div className="prose prose-sm max-w-none [&_a]:text-primary [&_a]:hover:underline [&_a]:font-medium [&_a]:break-words">
-                                            <TinaMarkdown content={event.registrationLink} />
+                                            <RichText data={event.registrationLink} />
                                         </div>
                                     </div>
                                 </div>

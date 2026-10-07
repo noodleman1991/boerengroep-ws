@@ -81,7 +81,7 @@ const iconSizeClass = {
 };
 
 //@ts-ignore
-export const Icon = ({ data, parentColor = '', className = '', tinaField = '' }) => {
+export const Icon = ({ data, parentColor = '', className = '' }) => {
   const { theme } = useLayout();
 
   //@ts-ignore
@@ -102,7 +102,6 @@ export const Icon = ({ data, parentColor = '', className = '', tinaField = '' })
   if (style == 'circle') {
     return (
       <div
-        {...(tinaField ? { 'data-tina-field': tinaField } : {})} // only render data-tina-field if it exists
         className={`relative z-10 inline-flex items-center justify-center shrink-0 ${iconSizeClasses} rounded-full ${iconColorClass[iconColor].circle} ${className}`}
       >
         <IconSVG className='w-2/3 h-2/3' />
@@ -113,7 +112,6 @@ export const Icon = ({ data, parentColor = '', className = '', tinaField = '' })
       iconColorClass[parentColor === 'primary' && (iconColor === theme!.color || iconColor === 'primary') ? 'white' : iconColor!].regular;
     return (
       <IconSVG
-        {...(tinaField ? { 'data-tina-field': tinaField } : {})} // only render data-tina-field if it exists
         className={`${iconSizeClasses} ${iconColorClasses} ${className}`}
       />
     );

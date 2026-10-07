@@ -2,12 +2,11 @@
 import React from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { tinaField, useTina } from 'tinacms/dist/react';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import { NewsletterQuery } from '@/tina/__generated__/types';
 import { useLayout } from '@/components/layout/layout-context';
 import { Section } from '@/components/layout/section';
 import { Blocks } from '@/components/blocks';
+import { RichText } from '@/components/rich-text';
+import type { toNewsletterNode } from '@/lib/cms-adapters';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -28,19 +27,12 @@ const titleColorClasses = {
 };
 
 interface ClientNewsletterProps {
-  data: NewsletterQuery;
-  variables: {
-    relativePath: string;
-  };
-  query: string;
+  newsletter: ReturnType<typeof toNewsletterNode>;
   backPath: string;
 }
 
-export default function NewsletterClientPage(props: ClientNewsletterProps) {
+export default function NewsletterClientPage({ newsletter, backPath }: ClientNewsletterProps) {
   const { theme } = useLayout();
-  const { data, backPath } = props;
-  const { data: tinaData } = useTina({ data: props.data, variables: props.variables, query: props.query });
-  const newsletter = tinaData.newsletter;
   const t = useTranslations('newsletter');
 
   const date = new Date(newsletter.publishDate!);
@@ -73,19 +65,19 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
                   {newsletter.organization}
                 </Badge>
 
-                <h1 data-tina-field={tinaField(newsletter, 'title')} className="text-3xl font-bold">
+                <h1 className="text-3xl font-bold">
                   {newsletter.title}
                 </h1>
 
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <span data-tina-field={tinaField(newsletter, 'publishDate')}>
+                  <span>
                     {formattedDate}
                   </span>
                 </div>
 
                 {newsletter.linkDescription && (
-                  <p data-tina-field={tinaField(newsletter, 'linkDescription')} className="text-lg text-muted-foreground">
+                  <p className="text-lg text-muted-foreground">
                     {newsletter.linkDescription}
                   </p>
                 )}
@@ -101,7 +93,6 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
                     href={newsletter.externalLink}
                     target="_blank"
                     rel="noopener noreferrer"
-                    data-tina-field={tinaField(newsletter, 'externalLink')}
                   >
                     {t('visit_link')}
                     <ExternalLink className="ml-2 h-4 w-4" />
@@ -140,20 +131,19 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
               </Badge>
             </div>
 
-            <h1 data-tina-field={tinaField(newsletter, 'title')} className={`mb-8 text-4xl md:text-5xl font-extrabold tracking-normal text-center title-font`}>
+            <h1 className={`mb-8 text-4xl md:text-5xl font-extrabold tracking-normal text-center title-font`}>
               <span className={`bg-clip-text text-transparent bg-linear-to-r ${titleColour}`}>
                 {newsletter.title}
               </span>
             </h1>
 
             {/* Author and Date */}
-            <div data-tina-field={tinaField(newsletter, 'author')} className='flex items-center justify-center mb-8'>
+            <div className='flex items-center justify-center mb-8'>
               {newsletter.author && (
                 <>
                   <Avatar className="mr-4">
                     {newsletter.author.avatar && (
                       <AvatarImage
-                        data-tina-field={tinaField(newsletter.author, 'avatar')}
                         src={newsletter.author.avatar}
                         alt={newsletter.author.name}
                       />
@@ -164,14 +154,12 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
                   </Avatar>
                   <div className="text-left">
                     <p
-                      data-tina-field={tinaField(newsletter.author, 'name')}
                       className='text-base font-medium text-gray-600 group-hover:text-gray-800 dark:text-gray-200 dark:group-hover:text-white'
                     >
                       {newsletter.author.name}
                     </p>
                     {newsletter.author.affiliation && (
                       <p
-                        data-tina-field={tinaField(newsletter.author, 'affiliation')}
                         className='text-sm text-muted-foreground'
                       >
                         {newsletter.author.affiliation}
@@ -183,7 +171,7 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
               )}
               <div className="flex items-center gap-2 text-base text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-150">
                 <Calendar className="h-4 w-4" />
-                <p data-tina-field={tinaField(newsletter, 'publishDate')}>
+                <p>
                   {formattedDate}
                 </p>
               </div>
@@ -192,7 +180,7 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
             {/* Featured Image */}
             {newsletter.featuredImage && (
               <div className='w-full mb-12'>
-                <div data-tina-field={tinaField(newsletter, 'featuredImage')} className='relative max-w-4xl lg:max-w-5xl mx-auto'>
+                <div className='relative max-w-4xl lg:max-w-5xl mx-auto'>
                   <Image
                     priority={true}
                     src={newsletter.featuredImage}
@@ -208,15 +196,15 @@ export default function NewsletterClientPage(props: ClientNewsletterProps) {
 
             {/* Excerpt */}
             {newsletter.excerpt && (
-              <div data-tina-field={tinaField(newsletter, 'excerpt')} className='prose dark:prose-dark mx-auto mb-8 text-lg'>
-                <TinaMarkdown content={newsletter.excerpt} />
+              <div className='prose dark:prose-dark mx-auto mb-8 text-lg'>
+                <RichText data={newsletter.excerpt} />
               </div>
             )}
           </div>
 
           {/* Content Blocks */}
           {newsletter.body && newsletter.body.length > 0 && (
-            <div data-tina-field={tinaField(newsletter, 'body')}>
+            <div>
               <Blocks blocks={newsletter.body as any} />
             </div>
           )}

@@ -17,7 +17,7 @@ export interface IEvent {
 	user: IUser;
 	image?: string;
 	coverImage?: string;
-	registrationLink?: any; // Can be string (legacy) or TinaMarkdownContent (rich-text)
+	registrationLink?: any; // Lexical editor state
 }
 
 export interface ICalendarCell {

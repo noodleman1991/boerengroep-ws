@@ -83,6 +83,15 @@ describe('toNewsletterNode', () => {
     expect(out.published).toBe(true)
     expect(out.author).toEqual({ name: 'Maria', avatar: undefined })
   })
+  it('passes the author affiliation through for the byline', () => {
+    const out = toNewsletterNode({
+      id: 3,
+      slug: 'X',
+      author: { id: 1, name: 'Maria', affiliation: 'WUR', avatar: null },
+    } as never)
+    expect(out.author?.affiliation).toBe('WUR')
+  })
+
   it('uses an empty first breadcrumb when the issue has no language', () => {
     expect(toNewsletterNode({ id: 1, slug: 'X' } as never)._sys.breadcrumbs).toEqual(['', 'X'])
   })
@@ -158,6 +167,7 @@ describe('toGlobalSettings', () => {
     const out = toGlobalSettings(null)
     expect(out.header.nav).toEqual([])
     expect(out.footer.social).toEqual([])
-    expect(out.theme).toEqual({ color: undefined, font: undefined, darkMode: 'system' })
+    // Components index colour maps by theme.color, so it must never be undefined.
+    expect(out.theme).toEqual({ color: 'blue', font: undefined, darkMode: 'system' })
   })
 })

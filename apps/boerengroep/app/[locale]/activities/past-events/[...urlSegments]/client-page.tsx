@@ -2,14 +2,12 @@
 import React from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { tinaField, useTina } from 'tinacms/dist/react';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
-import { PastEventQuery } from '@/tina/__generated__/types';
 import { useLayout } from '@/components/layout/layout-context';
 import { Section } from '@/components/layout/section';
-import { components } from '@/components/mdx-components';
 import ErrorBoundary from '@/components/error-boundary';
 import { Blocks } from '@/components/blocks';
+import { RichText } from '@/components/rich-text';
+import type { toPastEventNode } from '@/lib/cms-adapters';
 
 const titleColorClasses = {
   blue: 'from-blue-400 to-blue-600 dark:from-blue-300 dark:to-blue-500',
@@ -23,17 +21,11 @@ const titleColorClasses = {
 };
 
 interface ClientPastEventProps {
-  data: PastEventQuery;
-  variables: {
-    relativePath: string;
-  };
-  query: string;
+  pastEvent: ReturnType<typeof toPastEventNode>;
 }
 
-export default function PastEventClientPage(props: ClientPastEventProps) {
+export default function PastEventClientPage({ pastEvent }: ClientPastEventProps) {
   const { theme } = useLayout();
-  const { data } = useTina({ ...props });
-  const pastEvent = data.pastEvent;
 
   const date = new Date(pastEvent.date!);
   let formattedDate = '';
@@ -46,16 +38,15 @@ export default function PastEventClientPage(props: ClientPastEventProps) {
   return (
     <ErrorBoundary>
       <Section>
-        <h2 data-tina-field={tinaField(pastEvent, 'title')} className={`w-full relative\tmb-8 text-6xl font-extrabold tracking-normal text-center title-font`}>
+        <h2 className={`w-full relative\tmb-8 text-6xl font-extrabold tracking-normal text-center title-font`}>
           <span className={`bg-clip-text text-transparent bg-linear-to-r ${titleColour}`}>{pastEvent.title}</span>
         </h2>
-        <div data-tina-field={tinaField(pastEvent, 'author')} className='flex items-center justify-center mb-16'>
+        <div className='flex items-center justify-center mb-16'>
           {pastEvent.author && (
             <>
               {pastEvent.author.avatar && (
                 <div className='shrink-0 mr-4'>
                   <Image
-                    data-tina-field={tinaField(pastEvent.author, 'avatar')}
                     priority={true}
                     className='h-14 w-14 object-cover rounded-full shadow-xs'
                     src={pastEvent.author.avatar}
@@ -66,7 +57,6 @@ export default function PastEventClientPage(props: ClientPastEventProps) {
                 </div>
               )}
               <p
-                data-tina-field={tinaField(pastEvent.author, 'name')}
                 className='text-base font-medium text-gray-600 group-hover:text-gray-800 dark:text-gray-200 dark:group-hover:text-white'
               >
                 {pastEvent.author.name}
@@ -75,7 +65,6 @@ export default function PastEventClientPage(props: ClientPastEventProps) {
             </>
           )}
           <p
-            data-tina-field={tinaField(pastEvent, 'date')}
             className='text-base text-gray-400 group-hover:text-gray-500 dark:text-gray-300 dark:group-hover:text-gray-150'
           >
             {formattedDate}
@@ -83,7 +72,7 @@ export default function PastEventClientPage(props: ClientPastEventProps) {
         </div>
         {pastEvent.heroImg && (
           <div className='px-4 w-full'>
-            <div data-tina-field={tinaField(pastEvent, 'heroImg')} className='relative max-w-4xl lg:max-w-5xl mx-auto'>
+            <div className='relative max-w-4xl lg:max-w-5xl mx-auto'>
               <Image
                 priority={true}
                 src={pastEvent.heroImg}
@@ -107,17 +96,12 @@ export default function PastEventClientPage(props: ClientPastEventProps) {
           </div>
         )}
         {pastEvent.blocks && pastEvent.blocks.length > 0 && (
-          <div data-tina-field={tinaField(pastEvent, 'blocks')}>
+          <div>
             <Blocks blocks={pastEvent.blocks} />
           </div>
         )}
-        <div data-tina-field={tinaField(pastEvent, '_body')} className='prose dark:prose-dark w-full max-w-none'>
-          <TinaMarkdown
-            content={pastEvent._body}
-            components={{
-              ...components,
-            }}
-          />
+        <div className='prose dark:prose-dark w-full max-w-none'>
+          <RichText data={pastEvent.body} />
         </div>
       </Section>
     </ErrorBoundary>

@@ -26,9 +26,13 @@ export function asConnection<T>(nodes: T[]): { edges: { node: T }[] } {
   return { edges: nodes.map((node) => ({ node })) }
 }
 
-function person(value: Rel<Author | Speaker>): { name: string; avatar: string | undefined } | undefined {
+function person(
+  value: Rel<Author | Speaker>,
+): { name: string; avatar: string | undefined; affiliation: string | undefined } | undefined {
   const doc = populated(value)
-  return doc ? { name: doc.name, avatar: mediaUrl(doc.avatar) } : undefined
+  if (!doc) return undefined
+  const affiliation = 'affiliation' in doc ? (doc.affiliation ?? undefined) : undefined
+  return { name: doc.name, avatar: mediaUrl(doc.avatar), affiliation }
 }
 
 /** Shape consumed by the calendar and by the events preview block. */
@@ -142,7 +146,7 @@ export function toGlobalSettings(s: SiteSetting | null) {
       })),
     },
     theme: {
-      color: s?.theme?.color ?? undefined,
+      color: s?.theme?.color ?? 'blue',
       font: s?.theme?.font ?? undefined,
       darkMode: s?.theme?.darkMode ?? 'system',
     },

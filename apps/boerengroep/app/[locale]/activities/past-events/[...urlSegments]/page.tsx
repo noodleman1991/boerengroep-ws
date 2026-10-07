@@ -1,82 +1,31 @@
-import React from 'react';
-import client from '@/tina/__generated__/client';
+import { notFound } from 'next/navigation';
 import Layout from '@/components/layout/layout';
+import { cms, type Locale } from '@/lib/cms';
+import { toPastEventNode } from '@/lib/cms-adapters';
 import PastEventClientPage from './client-page';
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
 export default async function PastEventPage({
-                                           params,
-                                       }: {
-    params: Promise<{ locale: string; urlSegments: string[] }>;
+    params,
+}: {
+    params: Promise<{ locale: Locale; urlSegments: string[] }>;
 }) {
-    const { locale, urlSegments } = await params;
-    const filepath = urlSegments.join('/');
-
-    let data;
-    try {
-        // Try locale-specific past event first
-        data = await client.queries.pastEvent({
-            relativePath: `${locale}/${filepath}.mdx`,
-        });
-    } catch (error) {
-        // Fallback to non-localized past event
-        data = await client.queries.pastEvent({
-            relativePath: `${filepath}.mdx`,
-        });
-    }
+    const { urlSegments } = await params;
+    const pastEvent = await cms.getPastEvent(decodeURIComponent(urlSegments[urlSegments.length - 1]!));
+    if (!pastEvent) notFound();
 
     return (
-        <Layout rawPageData={data}>
-            <PastEventClientPage {...data} />
+        <Layout rawPageData={pastEvent}>
+            <PastEventClientPage pastEvent={toPastEventNode(pastEvent)} />
         </Layout>
     );
 }
 
 export async function generateStaticParams() {
-    const locales = ['nl', 'en']; // Your configured locales
-    let pastEvents = await client.queries.pastEventConnection();
-    const allPastEvents = pastEvents;
-
-    if (!allPastEvents.data.pastEventConnection.edges) {
-        return [];
+    const params: { locale: Locale; urlSegments: string[] }[] = [];
+    for (const locale of ['en', 'nl'] as const) {
+        for (const p of await cms.listPastEvents(locale)) params.push({ locale, urlSegments: [p.slug] });
     }
-
-    while (pastEvents.data?.pastEventConnection.pageInfo.hasNextPage) {
-        pastEvents = await client.queries.pastEventConnection({
-            after: pastEvents.data.pastEventConnection.pageInfo.endCursor,
-        });
-
-        if (!pastEvents.data.pastEventConnection.edges) {
-            break;
-        }
-
-        allPastEvents.data.pastEventConnection.edges.push(...pastEvents.data.pastEventConnection.edges);
-    }
-
-    const params: { locale: string; urlSegments: string[] }[] = [];
-
-    allPastEvents.data?.pastEventConnection.edges.forEach((edge) => {
-        const breadcrumbs = edge?.node?._sys.breadcrumbs || [];
-
-        // Check if this is a localized past event (starts with locale)
-        if (breadcrumbs.length >= 1 && locales.includes(breadcrumbs[0])) {
-            // Localized content: locale/path/to/past-event
-            const locale = breadcrumbs[0];
-            const urlSegments = breadcrumbs.slice(1);
-
-            if (urlSegments.length >= 1) {
-                params.push({ locale, urlSegments });
-            }
-        } else {
-            // Non-localized content: generate for all locales
-            if (breadcrumbs.length >= 1) {
-                locales.forEach(locale => {
-                    params.push({ locale, urlSegments: breadcrumbs });
-                });
-            }
-        }
-    });
-
     return params;
 }

@@ -1,7 +1,8 @@
 'use client';
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { TinaMarkdown } from 'tinacms/dist/rich-text';
+import { RichText } from '@/components/rich-text';
+import { hasRichText } from '@/lib/rich-text-utils';
 import { Section } from '@/components/layout/section';
 import {
     Accordion,
@@ -103,25 +104,8 @@ export const VacanciesPage = ({
         );
     };
 
-    // Helper function to check if TinaMarkdown content is empty
-    const hasContent = (content: any): boolean => {
-        if (!content) return false;
-        if (typeof content === 'string') return content.trim().length > 0;
-        if (typeof content === 'object') {
-            // Check if it's a rich text object with actual content
-            if (content.children && Array.isArray(content.children)) {
-                return content.children.some((child: any) => {
-                    if (child.type === 'p' && child.children) {
-                        return child.children.some((textNode: any) => 
-                            textNode.type === 'text' && textNode.text && textNode.text.trim().length > 0
-                        );
-                    }
-                    return false;
-                });
-            }
-        }
-        return false;
-    };
+    // Rich text sections are shown only when they hold visible content
+    const hasContent = (content: unknown): boolean => hasRichText(content);
 
     const filterVacanciesByType = (type: string): VacancyEdge[] => {
         if (!vacancies.edges) return [];
@@ -331,9 +315,7 @@ export const VacanciesPage = ({
                                                 {t('fields.description')}
                                             </h4>
                                             <div className="prose prose-sm max-w-none">
-                                                <TinaMarkdown
-                                                    content={vacancy.description}
-                                                />
+                                                <RichText data={vacancy.description} />
                                             </div>
                                         </div>
                                     )}
@@ -345,9 +327,7 @@ export const VacanciesPage = ({
                                                 {t('fields.responsibilities')}
                                             </h4>
                                             <div className="prose prose-sm max-w-none">
-                                                <TinaMarkdown
-                                                    content={vacancy.responsibilities}
-                                                />
+                                                <RichText data={vacancy.responsibilities} />
                                             </div>
                                         </div>
                                     )}
@@ -383,9 +363,7 @@ export const VacanciesPage = ({
                                                     {t('fields.preferredQualities')}
                                                 </h4>
                                                 <div className="prose prose-sm max-w-none">
-                                                    <TinaMarkdown
-                                                        content={vacancy.preferredQualities}
-                                                    />
+                                                    <RichText data={vacancy.preferredQualities} />
                                                 </div>
                                             </div>
                                         )}
@@ -452,9 +430,7 @@ export const VacanciesPage = ({
                                                 {t('fields.valuesStatement')}
                                             </h4>
                                             <div className="prose prose-sm max-w-none">
-                                                <TinaMarkdown
-                                                    content={vacancy.valuesStatement}
-                                                />
+                                                <RichText data={vacancy.valuesStatement} />
                                             </div>
                                         </div>
                                     )}
@@ -466,9 +442,7 @@ export const VacanciesPage = ({
                                                 {t('fields.howToApply')}
                                             </h4>
                                             <div className="prose prose-sm max-w-none">
-                                                <TinaMarkdown
-                                                    content={vacancy.howToApply}
-                                                />
+                                                <RichText data={vacancy.howToApply} />
                                             </div>
 
                                             {vacancy.contactInfo && (

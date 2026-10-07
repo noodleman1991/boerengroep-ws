@@ -1,58 +1,18 @@
 import Layout from '@/components/layout/layout';
-import client from '@/tina/__generated__/client';
+import { cms, type Locale } from '@/lib/cms';
+import { toPastEventNode } from '@/lib/cms-adapters';
 import PastEventsClientPage from './client-page';
 
-export const revalidate = 300;
+export const revalidate = 3600;
 
-export default async function PastEventsPage({
-                                            params,
-                                        }: {
-    params: Promise<{ locale: string }>;
-}) {
+export default async function PastEventsPage({ params }: { params: Promise<{ locale: Locale }> }) {
     const { locale } = await params;
-
-    let pastEvents = await client.queries.pastEventConnection({
-        sort: 'date',
-        last: 1
-    });
-    const allPastEvents = pastEvents;
-
-    if (!allPastEvents.data.pastEventConnection.edges) {
-        return [];
-    }
-
-    while (pastEvents.data?.pastEventConnection.pageInfo.hasPreviousPage) {
-        pastEvents = await client.queries.pastEventConnection({
-            sort: 'date',
-            before: pastEvents.data.pastEventConnection.pageInfo.endCursor,
-        });
-
-        if (!pastEvents.data.pastEventConnection.edges) {
-            break;
-        }
-
-        allPastEvents.data.pastEventConnection.edges.push(...pastEvents.data.pastEventConnection.edges.reverse());
-    }
-
-    // Filter past events by locale or show all if no locale-specific past events
-    const localeFilteredPastEvents = {
-        ...allPastEvents,
-        data: {
-            ...allPastEvents.data,
-            pastEventConnection: {
-                ...allPastEvents.data.pastEventConnection,
-                edges: allPastEvents.data.pastEventConnection.edges?.filter(edge => {
-                    const breadcrumbs = edge?.node?._sys.breadcrumbs || [];
-                    return breadcrumbs[0] === locale || !['nl', 'en'].includes(breadcrumbs[0]);
-                }) || []
-            }
-        }
-    };
+    // The query already returns this locale's recaps plus those without a language, newest first.
+    const pastEvents = (await cms.listPastEvents(locale)).map(toPastEventNode);
 
     return (
-        <Layout rawPageData={localeFilteredPastEvents.data}>
-            <PastEventsClientPage {...localeFilteredPastEvents} />
+        <Layout rawPageData={pastEvents}>
+            <PastEventsClientPage pastEvents={pastEvents} />
         </Layout>
     );
 }
-

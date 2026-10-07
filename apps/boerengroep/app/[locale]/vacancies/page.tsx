@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { client } from '@/tina/__generated__/client';
+import { cms } from '@/lib/cms';
+import { asConnection, toVacancyNode } from '@/lib/cms-adapters';
 import { VacanciesPage } from '@/components/vacancies-page';
 import Layout from '@/components/layout/layout';
 
@@ -20,15 +21,10 @@ export async function generateMetadata({ params }: VacanciesPageProps): Promise<
 
 async function getVacanciesData() {
     try {
-        const data = await client.queries.vacancyQuery();
-        return {
-            vacancies: data.data?.vacancyConnection || { edges: [] },
-        };
+        return { vacancies: asConnection((await cms.listVacancies()).map(toVacancyNode)) };
     } catch (error) {
         console.error('Error fetching vacancies data:', error);
-        return {
-            vacancies: { edges: [] },
-        };
+        return { vacancies: { edges: [] } };
     }
 }
 
@@ -36,15 +32,9 @@ export default async function VacanciesRoute({ params }: VacanciesPageProps) {
     const { locale } = await params;
     const { vacancies } = await getVacanciesData();
 
-    // Mock layout data for the Layout component
-    const mockLayoutData = {
-        data: {
-            global: null // This will be fetched by the Layout component itself
-        }
-    };
 
     return (
-        <Layout rawPageData={mockLayoutData}>
+        <Layout>
             <VacanciesPage vacancies={vacancies} locale={locale} />
         </Layout>
     );
