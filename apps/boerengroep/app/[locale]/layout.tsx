@@ -5,7 +5,9 @@ import "./globals.css";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
+import { LivePreviewListener } from '@/components/live-preview-listener';
 import Layout from '@/components/layout/layout';
 import { VideoDialogProvider } from '@/components/ui/VideoDialogContext';
 import VideoDialog from '@/components/ui/VideoDialog';
@@ -97,6 +99,7 @@ export default async function LocaleLayout({
     if (!locales.includes(locale as any)) notFound();
 
     const messages = await getMessages();
+    const { isEnabled: isPreview } = await draftMode();
 
     return (
         <html
@@ -138,6 +141,7 @@ export default async function LocaleLayout({
             "min-h-screen bg-background font-body text-foreground",
             "supports-[font-variation-settings:normal]:font-sans"
         )}>
+        {isPreview && <LivePreviewListener />}
         <NextIntlClientProvider messages={messages}>
             <VideoDialogProvider>
                 {children}

@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    // For TinaCMS admin routes
+    // For CMS admin routes
     if (pathname.startsWith('/admin')) {
         return NextResponse.next();
     }
@@ -53,7 +53,7 @@ export const config = {
     // - _next/static (static files)
     // - _next/image (image optimization files)
     // - favicon.ico, robots.txt, etc. (static files in public)
-    // - admin (TinaCMS admin)
+    // - admin (CMS admin)
     matcher: [
         '/((?!api|_next/static|_next/image|favicon.ico|robots.txt|admin|uploads|blocks).*)',
     ]
