@@ -396,3 +396,13 @@ Asked for: "examine the truncated text in the calendar and calendar widget", and
 - It is a set of variables (`--blob-a`, `--blob-b`, `--blob-c`, `--k`, `--ball`, `--ground`) and one closing section in `site.css`, shared by both sites.
 - Tests on this look: browser, Boerengroep 127 and Inspringtheater 58 with 2 skipped, with accessibility and twelve screen widths. App 287 unit.
 - Lesson for the next change of look: show a direction and let the owner choose before building it. One question with four options took a minute. The rejected attempt took an hour.
+
+### Round 7, adjustments after the owner saw the organic look
+
+Said: "I don't like the visual in the hero and the line space is not enough there, and you can make the uneven outlines not too much but more interesting than this, and also the brush stroke can be more interesting and varied (with specific pattern)". Asked which visual: only the orange ball behind a hero photo. The swirl beside the headline stays as it is.
+
+- The ball behind the picture of an opening is gone.
+- The opening: the headline had its lines at 1.02 times the letter size, which let the tails and stems of the slab letters touch. Now 1.16, and the text under it 1.65, with more room above the buttons.
+- Outlines: a plot and a large picture now have one corner that sweeps round, like a stroke of the logo, and three cut close. The sweep moves from plot to plot (top right, then bottom left) and from picture to picture. Small panels keep the gentle unevenness.
+- Brush strokes: three, with more body, set slightly off level, in a fixed order down the page: a long stroke with a flick at its end, a ball with a stroke leaving it in the two colours of the logo, and two strokes one over the other in the two colours.
+- Tests on this: browser, Boerengroep 127 and Inspringtheater 58 with 2 skipped.
