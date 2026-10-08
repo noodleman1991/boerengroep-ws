@@ -185,3 +185,9 @@ Final: minor (deferred): icon and colour pickers are plain text fields (spec ame
 Final: minor (deferred): the Playwright suite is not in CI; it needs a built app and a content database. The runbook runs it against the preview.
 Final: minor (deferred): `tsx` and `@svgr/webpack` remain in the app's devDependencies and may be unused now.
 Final: evidence on the last commit: lint clean; typecheck 3/3; unit tests app 47, cms 25, migrate-tina 54, url-parity 15, check-migrations 6; integration cms 96 (incl. unit), migrate-tina 70 (incl. unit); build exit 0 with 83 prerendered routes; parity 159 checked 0 failed; Playwright 18/18; 0 server errors.
+
+---
+
+## Round 2: site improvements (plan `docs/superpowers/plans/2026-10-08-site-improvements.md`)
+
+Started 2026-10-08. Decisions from the owner: admin inside the Boerengroep site; Brevo code fixed now, key and list added later; defaults accepted for the remaining questions; extra page-building blocks and a clearly explained admin added to scope.
