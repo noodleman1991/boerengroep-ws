@@ -11,6 +11,7 @@ import type {
   Vacancy,
 } from '@sites/cms/types'
 import { type LinkValue, resolveLink } from '@sites/cms/links'
+import type { EventStatus, SiteEvent } from './events/types'
 
 type Rel<T> = number | string | T | null | undefined
 
@@ -45,39 +46,54 @@ function person(
   return { name: doc.name, avatar: mediaUrl(doc.avatar), affiliation }
 }
 
-/** Shape consumed by the calendar and by the events preview block. */
-export function toCalendarEvent(e: Event) {
+const text = (value: string | null | undefined) => value?.trim() || undefined
+
+/** An event in the one shape every part of the site reads. */
+export function toSiteEvent(e: Event): SiteEvent {
+  const picture = populated<Media>(e.image)
+  const title = e.title.trim()
+  const end = e.endDate && new Date(e.endDate).getTime() > new Date(e.startDate).getTime() ? e.endDate : null
   return {
     id: e.id,
-    title: e.title,
-    description: e.description ?? '',
-    startDate: e.startDate,
-    endDate: e.endDate ?? undefined,
-    eventType: e.eventType,
-    location: e.location ?? undefined,
-    speakers: (e.speakers ?? []).flatMap((row) => {
+    slug: e.slug || String(e.id),
+    title,
+    description: e.description?.trim() ?? '',
+    start: e.startDate,
+    end,
+    type: e.eventType,
+    status: (e.status ?? 'scheduled') as EventStatus,
+    statusNote: text(e.statusNote),
+    language: e.language ?? undefined,
+    place: e.location
+      ? { address: text(e.location.address), mapsLink: text(e.location.mapsLink), callLink: text(e.location.callLink) }
+      : {},
+    image: picture?.url
+      ? {
+          thumbnail: mediaUrl(picture, 'thumbnail'),
+          card: mediaUrl(picture, 'card'),
+          wide: mediaUrl(picture, 'wide'),
+          share: mediaUrl(picture, 'og'),
+          original: picture.url,
+          width: picture.width ?? undefined,
+          height: picture.height ?? undefined,
+          alt: text(picture.alt) ?? title,
+        }
+      : undefined,
+    people: (e.speakers ?? []).flatMap((row) => {
       const speaker = populated<Speaker>(row.speaker)
       if (!speaker) return []
       return [
         {
-          role: row.role ?? undefined,
-          speaker: {
-            id: speaker.id,
-            name: speaker.name,
-            affiliation: speaker.affiliation ?? undefined,
-            avatar: mediaUrl(speaker.avatar),
-          },
+          name: speaker.name,
+          role: text(row.role),
+          affiliation: text(speaker.affiliation),
+          avatar: mediaUrl(speaker.avatar),
         },
       ]
     }),
-    image: mediaUrl(e.image, 'card'),
-    // Kept under the old name too, for components that still read it.
-    coverImage: mediaUrl(e.image, 'card'),
-    slug: e.slug,
-    status: e.status ?? 'scheduled',
-    statusNote: e.statusNote ?? undefined,
+    registration: e.registrationLink ?? undefined,
     featured: Boolean(e.featured),
-    registrationLink: e.registrationLink ?? undefined,
+    updatedAt: e.updatedAt ?? undefined,
   }
 }
 
@@ -192,4 +208,3 @@ export function toGlobalSettings(s: SiteSetting | null) {
 }
 
 export type GlobalSettings = ReturnType<typeof toGlobalSettings>
-export type CalendarEvent = ReturnType<typeof toCalendarEvent>

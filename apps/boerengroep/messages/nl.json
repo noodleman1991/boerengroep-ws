@@ -38,12 +38,6 @@
       "open-pot-student-kitchen": "Open Pot"
     }
   },
-  "events": {
-    "upcomingEvents": "Aankomende Evenementen",
-    "upcomingEventsDescription": "Ontdek onze nieuwste activiteiten en evenementen",
-    "noUpcomingEvents": "Geen aankomende evenementen gevonden",
-    "viewFullCalendar": "Bekijk Volledige Agenda"
-  },
   "newsletter": {
     "title": "Nieuwsbrief",
     "description": "Blijf op de hoogte van het laatste nieuws van Stichting Boerengroep en vrienden nieuws.",
@@ -154,81 +148,90 @@
     }
   },
   "calendar": {
-    "title": "Evenementenagenda",
-    "description": "Bekijk alle komende evenementen, workshops, vergaderingen en activiteiten.",
+    "title": "Agenda",
+    "description": "Lezingen, workshops, excursies en samen eten. Iedereen is welkom.",
     "views": {
+      "label": "Wat je ziet",
+      "upcoming": "Binnenkort",
       "month": "Maand",
-      "agenda": "Agenda"
+      "past": "Geweest"
     },
-    "navigation": {
-      "today": "Vandaag",
-      "previous": "Vorige",
-      "next": "Volgende",
-      "events": "evenementen",
-      "event": "evenement"
+    "filter": {
+      "label": "Soort activiteit",
+      "all": "Alles"
     },
-    "weekdays": {
-      "short": [
-        "Zo",
-        "Ma",
-        "Di",
-        "Wo",
-        "Do",
-        "Vr",
-        "Za"
-      ],
-      "long": [
-        "Zondag",
-        "Maandag",
-        "Dinsdag",
-        "Woensdag",
-        "Donderdag",
-        "Vrijdag",
-        "Zaterdag"
-      ]
+    "empty": {
+      "upcoming_title": "Er staat nu niets gepland",
+      "upcoming_text": "Er komen vaak nieuwe activiteiten bij. Abonneer je op de agenda of de nieuwsbrief, dan hoor je het als eerste.",
+      "filtered": "Hier staat niets van deze soort. Kies een andere soort, of toon alles.",
+      "past": "Nog geen activiteiten geweest.",
+      "day": "Niets op deze dag."
     },
-    "months": {
-      "short": [
-        "Jan",
-        "Feb",
-        "Mrt",
-        "Apr",
-        "Mei",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Okt",
-        "Nov",
-        "Dec"
-      ],
-      "long": [
-        "Januari",
-        "Februari",
-        "Maart",
-        "April",
-        "Mei",
-        "Juni",
-        "Juli",
-        "Augustus",
-        "September",
-        "Oktober",
-        "November",
-        "December"
-      ]
+    "month": {
+      "previous": "Vorige maand",
+      "next": "Volgende maand",
+      "today": "Deze maand",
+      "more": "nog {count}",
+      "count": "{count, plural, one {# activiteit} other {# activiteiten}}",
+      "on_day": "Op {date}",
+      "pick_day": "Kies een dag om te zien wat er is."
     },
-    "events": {
-      "noEvents": "Geen evenementen gevonden voor deze maand.",
-      "noEventsForDate": "Geen evenementen voor deze datum.",
-      "moreEvents": "meer...",
-      "eventsOn": "Evenementen op",
-      "responsible": "Verantwoordelijke",
-      "startDate": "Startdatum",
-      "endDate": "Einddatum",
-      "description": "Beschrijving",
-      "at": "om",
-      "register": "Aanmelden voor dit evenement"
+    "status": {
+      "full": "Vol",
+      "cancelled": "Afgelast",
+      "postponed": "Uitgesteld"
     },
+    "status_text": {
+      "full": "Deze activiteit is vol.",
+      "cancelled": "Deze activiteit is afgelast.",
+      "postponed": "Deze activiteit is uitgesteld. De datum hieronder is de oude."
+    },
+    "online": "Online",
+    "whole_day": "Hele dag",
+    "event": {
+      "back": "Alle activiteiten",
+      "when": "Wanneer",
+      "where": "Waar",
+      "map": "Toon op een kaart",
+      "join_online": "Doe online mee",
+      "sign_up": "Aanmelden",
+      "people": "Met",
+      "language": "Taal",
+      "language_en": "Engels",
+      "language_nl": "Nederlands",
+      "passed": "Deze activiteit is geweest.",
+      "recap": "Lees hoe het was",
+      "add": "Zet in mijn agenda",
+      "add_file": "Agendabestand (Apple, Outlook)",
+      "add_google": "Google Agenda",
+      "add_outlook": "Outlook.com",
+      "share": "Delen",
+      "copy": "Kopieer link",
+      "copied": "Link gekopieerd",
+      "whatsapp": "WhatsApp",
+      "email": "E-mail",
+      "not_found_title": "Deze activiteit staat niet in de agenda",
+      "not_found_text": "Misschien is ze verwijderd, of is de link niet compleet."
+    },
+    "subscribe": {
+      "button": "Abonneer je op onze agenda",
+      "title": "Onze activiteiten in je eigen agenda",
+      "text": "Abonneer je één keer en elke nieuwe activiteit komt vanzelf in je agenda. Wijzigingen en afgelastingen ook.",
+      "app": "Open in mijn agenda-app",
+      "app_hint": "Voor Apple Agenda en Outlook op je telefoon of computer.",
+      "google": "Voeg toe aan Google Agenda",
+      "outlook": "Voeg toe aan Outlook.com",
+      "copy": "Kopieer het adres",
+      "copied": "Adres gekopieerd",
+      "address_hint": "Voor elke andere agenda: plak het adres waar om een agendalink wordt gevraagd."
+    },
+    "band": {
+      "title": "Agenda",
+      "recent_title": "Onlangs",
+      "all": "Bekijk de hele agenda",
+      "empty": "Er staat nu niets gepland. Er komen vaak nieuwe activiteiten bij."
+    },
+    "sections_title": "Elke week en elke maand",
     "eventTypes": {
       "talk": "Lezing",
       "workshop": "Workshop",
@@ -236,32 +239,8 @@
       "meeting": "Vergadering",
       "board-meeting": "Bestuursvergadering",
       "soup-kitchen": "Open Pot",
-      "csa": "Community Supported Agriculture",
+      "csa": "CSA",
       "excursion": "Excursie"
-    },
-    "settings": {
-      "title": "Agenda-instellingen",
-      "timeFormat": "Gebruik 24-uurs formaat",
-      "badgeVariant": "Gebruik punt badge",
-      "defaultView": "Standaardweergave"
-    },
-    "filter": {
-      "title": "Filter evenementen",
-      "clearFilter": "Filter wissen",
-      "allEvents": "Alle evenementen"
-    },
-    "search": {
-      "placeholder": "Typ een commando of zoek...",
-      "noResults": "Geen resultaten gevonden."
-    },
-    "fullscreen": {
-      "enter": "Volledig scherm",
-      "exit": "Volledig scherm verlaten"
-    },
-    "loading": "Evenementen laden...",
-    "errors": {
-      "loadingFailed": "Laden van evenementen mislukt",
-      "noEventsAdmin": "Geen evenementen gevonden. Voeg evenementen toe via het TinaCMS beheerpaneel."
     }
   },
   "footer": {

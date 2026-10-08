@@ -14,10 +14,8 @@ export const Section: React.FC<SectionProps> = ({ className, children, backgroun
     return (
         <div className={`section-${preset}`}>
             <section
-                className={cn(
-                    "py-[var(--spacing-section)] mx-auto max-w-7xl px-4 sm:px-6 lg:px-8",
-                    className
-                )}
+                // The same width and side margins as the header and footer, so everything lines up.
+                className={cn("page-width py-[var(--spacing-section)]", className)}
                 {...props}
             >
                 {children}

@@ -1,72 +1,58 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { cms } from '@/lib/cms';
-import { toCalendarEvent } from '@/lib/cms-adapters';
-import { Calendar } from '@/components/calendar/calendar';
-import { CalendarSections } from '@/components/calendar/calendar-sections';
+import { CalendarSections } from '@/components/events/calendar-sections';
+import { CalendarView } from '@/components/events/calendar-view';
+import { SubscribeCalendar } from '@/components/events/subscribe-calendar';
 import Layout from '@/components/layout/layout';
-import { Section } from '@/components/layout/section';
+import { cms, type Locale } from '@/lib/cms';
+import { toSiteEvent } from '@/lib/cms-adapters';
+import { siteUrl } from '@/lib/site-url';
+
+export const revalidate = 3600;
 
 interface CalendarPageProps {
-    params: Promise<{ locale: string }>;
+    params: Promise<{ locale: Locale }>;
 }
 
 export async function generateMetadata({ params }: CalendarPageProps): Promise<Metadata> {
     const { locale } = await params;
     setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'calendar' });
-
+    const settings = await cms.getSiteSettings(locale);
     return {
-        title: `${t('title')} - Stichting Boerengroep`,
-        description: t('description'),
+        title: `${t('title')} - ${settings?.general?.name ?? 'Stichting Boerengroep'}`,
+        description: settings?.calendar?.intro || t('description'),
     };
-}
-
-async function getCalendarData() {
-    try {
-        return { events: (await cms.listEvents()).map(toCalendarEvent) };
-    } catch (error) {
-        console.error('Error fetching calendar data:', error);
-        return { events: [] };
-    }
 }
 
 export default async function CalendarPage({ params }: CalendarPageProps) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const { events } = await getCalendarData();
-    const t = await getTranslations({ locale, namespace: 'calendar' });
+    const [events, settings, t] = await Promise.all([
+        cms.listEvents(),
+        cms.getSiteSettings(locale),
+        getTranslations({ locale, namespace: 'calendar' }),
+    ]);
+    const calendar = settings?.calendar;
 
     return (
         <Layout>
-            <Section>
-                <div className="container mx-auto px-4 py-8">
-                    <div className="mb-8">
-                        <h1 className="text-3xl font-bold mb-4">{t('title')}</h1>
-                        <p className="text-muted-foreground">
-                            {t('description')}
-                        </p>
-                        {events.length === 0 && (
-                            <div className="mt-4 p-4 border border-dashed rounded-lg text-center">
-                                <p className="text-muted-foreground">
-                                    {t('errors.noEventsAdmin')}{' '}
-                                    <a href="/admin" className="text-primary hover:underline">
-                                        admin panel
-                                    </a>
-                                    .
-                                </p>
-                            </div>
-                        )}
+            <div className="page-width calendar-page">
+                <header className="calendar-page__head">
+                    <div>
+                        <h1>{t('title')}</h1>
+                        <p>{calendar?.intro || t('description')}</p>
                     </div>
-
-                    <Calendar
-                        events={events}
-                        className="w-full"
-                        defaultHeight="600px"
-                    />
-                </div>
-            </Section>
-            
+                    {calendar?.showSubscribe !== false && (
+                        <SubscribeCalendar feedUrl={`${siteUrl()}/calendar.ics${locale === 'nl' ? '?lang=nl' : ''}`} />
+                    )}
+                </header>
+                <CalendarView
+                    events={events.map(toSiteEvent)}
+                    renderedAt={new Date().toISOString()}
+                    defaultView={calendar?.defaultView === 'month' ? 'month' : 'list'}
+                />
+            </div>
             <CalendarSections locale={locale} />
         </Layout>
     );

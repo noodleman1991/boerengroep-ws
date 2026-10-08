@@ -212,6 +212,33 @@ describe('queries', () => {
     expect((await q.listPastEvents('nl')).map((d) => d.title)).toEqual(['Dutch recap', 'BG event recap'])
   })
 
+  it('finds one event by its address, and only on its own site', async () => {
+    const mine = (await queries('boerengroep').listEvents())[0]!
+    const theirs = (await queries('inspringtheater').listEvents())[0]!
+    // Both sites have an event with the same name on the same day, so the same address.
+    expect(mine.slug).toBe(theirs.slug)
+    expect((await queries('boerengroep').getEvent(mine.slug!))?.id).toBe(mine.id)
+    expect((await queries('inspringtheater').getEvent(mine.slug!))?.id).toBe(theirs.id)
+    expect(await queries('boerengroep').getEvent('no-such-event')).toBeNull()
+  })
+
+  it('finds the story written about an event once it is published', async () => {
+    const q = queries('boerengroep')
+    const event = (await q.listEvents())[0]!
+    expect(await q.getRecapOfEvent(event.id, 'en')).toBeNull()
+    const draft = await payload.create({
+      collection: 'past-events',
+      data: { title: 'How it went', slug: 'How-it-went', date: '2026-01-07T10:00:00.000Z', relatedEvent: event.id, tenant: bg, _status: 'draft' } as never,
+    })
+    expect(await q.getRecapOfEvent(event.id, 'en')).toBeNull()
+    await payload.update({ collection: 'past-events', id: draft.id, data: { _status: 'published' } as never })
+    expect((await q.getRecapOfEvent(event.id, 'en'))?.slug).toBe('How-it-went')
+    // The other site's event with the same address has no story.
+    const theirs = (await queries('inspringtheater').listEvents())[0]!
+    expect(await queries('inspringtheater').getRecapOfEvent(theirs.id, 'en')).toBeNull()
+    await payload.delete({ collection: 'past-events', id: draft.id })
+  })
+
   it('fails clearly for a tenant that does not exist', async () => {
     await expect(queries('ghost').listEvents()).rejects.toThrow(/Tenant "ghost" not found/)
   })

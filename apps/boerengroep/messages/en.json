@@ -38,12 +38,6 @@
       "open-pot-student-kitchen": "Open Pot"
     }
   },
-  "events": {
-    "upcomingEvents": "Upcoming Events",
-    "upcomingEventsDescription": "Discover our latest activities and events",
-    "noUpcomingEvents": "No upcoming events found",
-    "viewFullCalendar": "View Full Calendar"
-  },
   "newsletter": {
     "title": "Newsletter",
     "description": "Stay updated with the latest news from Stichting Boerengroep and friends news.",
@@ -154,81 +148,90 @@
     }
   },
   "calendar": {
-    "title": "Event Calendar",
-    "description": "View all upcoming events, workshops, meetings, and activities.",
+    "title": "What's on",
+    "description": "Talks, workshops, excursions and shared meals. Everyone is welcome.",
     "views": {
+      "label": "What to show",
+      "upcoming": "Upcoming",
       "month": "Month",
-      "agenda": "Agenda"
+      "past": "Past"
     },
-    "navigation": {
-      "today": "Today",
-      "previous": "Previous",
-      "next": "Next",
-      "events": "events",
-      "event": "event"
+    "filter": {
+      "label": "Kind of event",
+      "all": "Everything"
     },
-    "weekdays": {
-      "short": [
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat"
-      ],
-      "long": [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday"
-      ]
+    "empty": {
+      "upcoming_title": "Nothing planned right now",
+      "upcoming_text": "New events are added often. Subscribe to the calendar or the newsletter and you hear it first.",
+      "filtered": "Nothing of this kind here. Choose another kind, or show everything.",
+      "past": "No past events yet.",
+      "day": "Nothing on this day."
     },
-    "months": {
-      "short": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ],
-      "long": [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
-      ]
+    "month": {
+      "previous": "Previous month",
+      "next": "Next month",
+      "today": "This month",
+      "more": "{count} more",
+      "count": "{count, plural, one {# event} other {# events}}",
+      "on_day": "On {date}",
+      "pick_day": "Choose a day to see what is on."
     },
-    "events": {
-      "noEvents": "No events found for this month.",
-      "noEventsForDate": "No events for this date.",
-      "moreEvents": "more...",
-      "eventsOn": "Events on",
-      "responsible": "Responsible",
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "description": "Description",
-      "at": "at",
-      "register": "Register for this event"
+    "status": {
+      "full": "Full",
+      "cancelled": "Cancelled",
+      "postponed": "Postponed"
     },
+    "status_text": {
+      "full": "This event is fully booked.",
+      "cancelled": "This event is cancelled.",
+      "postponed": "This event is postponed. The date below is the old one."
+    },
+    "online": "Online",
+    "whole_day": "All day",
+    "event": {
+      "back": "All events",
+      "when": "When",
+      "where": "Where",
+      "map": "Show on a map",
+      "join_online": "Join online",
+      "sign_up": "Sign up",
+      "people": "With",
+      "language": "Language",
+      "language_en": "English",
+      "language_nl": "Dutch",
+      "passed": "This event has taken place.",
+      "recap": "Read how it went",
+      "add": "Add to my calendar",
+      "add_file": "Calendar file (Apple, Outlook)",
+      "add_google": "Google Calendar",
+      "add_outlook": "Outlook.com",
+      "share": "Share",
+      "copy": "Copy link",
+      "copied": "Link copied",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "not_found_title": "This event is not on the calendar",
+      "not_found_text": "It may have been removed, or the link is incomplete."
+    },
+    "subscribe": {
+      "button": "Subscribe to our calendar",
+      "title": "Our events in your own calendar",
+      "text": "Subscribe once and every new event shows up in your calendar by itself. Changes and cancellations too.",
+      "app": "Open in my calendar app",
+      "app_hint": "For Apple Calendar and Outlook on a phone or computer.",
+      "google": "Add to Google Calendar",
+      "outlook": "Add to Outlook.com",
+      "copy": "Copy the address",
+      "copied": "Address copied",
+      "address_hint": "For any other calendar: paste the address where it asks for a calendar link."
+    },
+    "band": {
+      "title": "What's on",
+      "recent_title": "Recently",
+      "all": "See the full calendar",
+      "empty": "Nothing planned right now. New events are added often."
+    },
+    "sections_title": "Every week and every month",
     "eventTypes": {
       "talk": "Talk",
       "workshop": "Workshop",
@@ -236,32 +239,8 @@
       "meeting": "Meeting",
       "board-meeting": "Board Meeting",
       "soup-kitchen": "Open Pot",
-      "csa": "Community Supported Agriculture",
+      "csa": "CSA",
       "excursion": "Excursion"
-    },
-    "settings": {
-      "title": "Calendar settings",
-      "timeFormat": "Use 24 hour format",
-      "badgeVariant": "Use dot badge",
-      "defaultView": "Default view"
-    },
-    "filter": {
-      "title": "Filter events",
-      "clearFilter": "Clear Filter",
-      "allEvents": "All Events"
-    },
-    "search": {
-      "placeholder": "Type a command or search...",
-      "noResults": "No results found."
-    },
-    "fullscreen": {
-      "enter": "Enter fullscreen",
-      "exit": "Exit fullscreen"
-    },
-    "loading": "Loading events...",
-    "errors": {
-      "loadingFailed": "Failed to load events",
-      "noEventsAdmin": "No events found. Add events through the TinaCMS admin panel."
     }
   },
   "footer": {

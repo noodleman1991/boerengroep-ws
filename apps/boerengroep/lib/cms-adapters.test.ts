@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   asConnection,
   mediaUrl,
-  toCalendarEvent,
+  toSiteEvent,
   toGlobalSettings,
   toNewsletterNode,
   toPastEventNode,
@@ -28,44 +28,86 @@ describe('asConnection', () => {
   })
 })
 
-describe('toCalendarEvent', () => {
-  it('flattens images and speakers to the calendar shape', () => {
-    const out = toCalendarEvent({
+describe('toSiteEvent', () => {
+  const picture = {
+    id: 1,
+    url: 'https://blob/poster.jpg',
+    alt: 'Poster with a tractor',
+    width: 1200,
+    height: 1600,
+    sizes: {
+      thumbnail: { url: 'https://blob/poster-400x300.jpg' },
+      card: { url: 'https://blob/poster-800x600.jpg' },
+      wide: { url: 'https://blob/poster-1600x900.jpg' },
+      og: { url: 'https://blob/poster-1200x630.jpg' },
+    },
+  }
+  const base = {
+    id: 7,
+    title: ' Boerengroep Break  ',
+    slug: 'boerengroep-break-2026-10-08',
+    description: 'Come',
+    startDate: '2026-10-08T17:30:00.000Z',
+    endDate: '2026-10-08T19:00:00.000Z',
+    eventType: 'workshop',
+    language: 'en',
+    location: { address: 'Veerweg 121', mapsLink: null, callLink: '' },
+    speakers: [
+      { speaker: { id: 3, name: 'Maria', affiliation: 'WUR', avatar: media('https://blob/m.jpg') }, role: 'Host' },
+      { speaker: 4, role: 'Unknown' },
+    ],
+    image: picture,
+    status: 'full',
+    statusNote: 'Waiting list',
+    featured: true,
+    registrationLink: { root: { children: [] } },
+    updatedAt: '2026-09-30T10:00:00.000Z',
+  }
+
+  it('gives the site one tidy shape for an event', () => {
+    expect(toSiteEvent(base as never)).toEqual({
       id: 7,
-      title: 'Break',
-      slug: 'Break',
+      slug: 'boerengroep-break-2026-10-08',
+      title: 'Boerengroep Break',
       description: 'Come',
-      startDate: '2026-01-01T10:00:00.000Z',
-      endDate: null,
-      eventType: 'workshop',
-      location: { address: 'Veerweg 121' },
-      speakers: [{ speaker: { id: 3, name: 'Maria', affiliation: 'WUR', avatar: media('https://blob/m.jpg') }, role: 'Host' }],
-      image: media('https://blob/i.jpg'),
+      start: '2026-10-08T17:30:00.000Z',
+      end: '2026-10-08T19:00:00.000Z',
+      type: 'workshop',
       status: 'full',
       statusNote: 'Waiting list',
+      language: 'en',
+      place: { address: 'Veerweg 121', mapsLink: undefined, callLink: undefined },
+      image: {
+        thumbnail: 'https://blob/poster-400x300.jpg',
+        card: 'https://blob/poster-800x600.jpg',
+        wide: 'https://blob/poster-1600x900.jpg',
+        share: 'https://blob/poster-1200x630.jpg',
+        original: 'https://blob/poster.jpg',
+        width: 1200,
+        height: 1600,
+        alt: 'Poster with a tractor',
+      },
+      people: [{ name: 'Maria', role: 'Host', affiliation: 'WUR', avatar: 'https://blob/m.jpg' }],
+      registration: { root: { children: [] } },
       featured: true,
-      registrationLink: { root: {} },
-    } as never)
-    expect(out).toMatchObject({
-      id: 7,
-      title: 'Break',
-      startDate: '2026-01-01T10:00:00.000Z',
-      endDate: undefined,
-      eventType: 'workshop',
-      location: { address: 'Veerweg 121' },
-      speakers: [{ role: 'Host', speaker: { id: 3, name: 'Maria', affiliation: 'WUR', avatar: 'https://blob/m.jpg' } }],
-      image: 'https://blob/i.jpg',
-      coverImage: 'https://blob/i.jpg',
-      slug: 'Break',
-      status: 'full',
-      statusNote: 'Waiting list',
-      featured: true,
-      registrationLink: { root: {} },
+      updatedAt: '2026-09-30T10:00:00.000Z',
     })
   })
-  it('drops a speaker row whose speaker is not populated', () => {
-    const out = toCalendarEvent({ id: 1, title: 't', speakers: [{ speaker: 4, role: 'x' }] } as never)
-    expect(out.speakers).toEqual([])
+
+  it('drops an end that lies before the start, which old content has', () => {
+    expect(toSiteEvent({ ...base, endDate: '2026-09-30T19:00:00.000Z' } as never).end).toBeNull()
+    expect(toSiteEvent({ ...base, endDate: null } as never).end).toBeNull()
+  })
+
+  it('copes with an event that has only the required fields', () => {
+    const out = toSiteEvent({ id: 1, title: 'x', startDate: '2026-10-08T17:30:00.000Z', eventType: 'talk' } as never)
+    expect(out).toMatchObject({ slug: '1', status: 'scheduled', description: '', place: {}, people: [], featured: false })
+    expect(out.image).toBeUndefined()
+  })
+
+  it('falls back to the whole picture when a cut does not exist, and to the title for the description', () => {
+    const out = toSiteEvent({ ...base, image: { id: 2, url: 'https://blob/small.png' } } as never)
+    expect(out.image).toMatchObject({ card: 'https://blob/small.png', share: 'https://blob/small.png', alt: 'Boerengroep Break' })
   })
 })
 

@@ -3,18 +3,17 @@
 import type { Page } from '@sites/cms/types'
 import { Blocks } from '@/components/blocks'
 import ErrorBoundary from '@/components/error-boundary'
-import type { CalendarEvent, GlobalSettings } from '@/lib/cms-adapters'
+import type { BlockData } from '@/lib/block-data'
 
 export interface ClientPageProps {
   page: Page
-  events?: CalendarEvent[]
-  globalData?: GlobalSettings
+  data?: BlockData
 }
 
-export default function ClientPage({ page, events = [], globalData }: ClientPageProps) {
+export default function ClientPage({ page, data }: ClientPageProps) {
   return (
     <ErrorBoundary>
-      <Blocks blocks={page.blocks} events={events} globalData={globalData} />
+      <Blocks blocks={page.blocks} data={data} />
     </ErrorBoundary>
   )
 }

@@ -1,7 +1,8 @@
 'use client'
 
 import type { Page } from '@sites/cms/types'
-import type { CalendarEvent, GlobalSettings } from '@/lib/cms-adapters'
+import type { BlockData } from '@/lib/block-data'
+import { BlockDataProvider } from './block-data-context'
 import { CallToAction } from './call-to-action'
 import { Callout } from './callout'
 import { Content } from './content'
@@ -18,32 +19,22 @@ type AnyBlock = NonNullable<Page['blocks']>[number]
 
 interface BlocksProps {
   blocks?: AnyBlock[] | null
-  events?: CalendarEvent[]
-  globalData?: GlobalSettings
+  /** Events and other shared content the page loaded for its blocks. */
+  data?: BlockData
 }
 
-export const Blocks = ({ blocks, events = [], globalData }: BlocksProps) => {
+export const Blocks = ({ blocks, data }: BlocksProps) => {
   if (!blocks) return null
-  return (
-    <>
-      {blocks.map((block, i) => (
-        <div key={block.id ?? i}>
-          <Block block={block} events={events} globalData={globalData} />
-        </div>
-      ))}
-    </>
-  )
+  const list = blocks.map((block, i) => (
+    <div key={block.id ?? i}>
+      <Block block={block} />
+    </div>
+  ))
+  // Blocks nested inside another page's blocks keep the data of the page around them.
+  return data ? <BlockDataProvider value={data}>{list}</BlockDataProvider> : <>{list}</>
 }
 
-const Block = ({
-  block,
-  events,
-  globalData,
-}: {
-  block: AnyBlock
-  events: CalendarEvent[]
-  globalData?: GlobalSettings
-}) => {
+const Block = ({ block }: { block: AnyBlock }) => {
   switch (block.blockType) {
     case 'video':
       return <Video data={block} />
@@ -66,7 +57,7 @@ const Block = ({
     case 'newsletterSignup':
       return <NewsletterSignupBlock data={block} />
     case 'eventsCalendarPreview':
-      return <EventsCalendarPreview data={block} events={events} globalData={globalData} />
+      return <EventsCalendarPreview data={block} />
     default:
       return null
   }

@@ -221,6 +221,26 @@ export function createQueries(deps: QueryDeps) {
       )
     },
 
+    /** One event by the last part of its address. */
+    getEvent(slug: string): Promise<Event | null> {
+      return run('getEvent', [slug], ['events'], async (draft) => {
+        const docs = await find<Event>('events', draft, { hasDrafts: false, limit: 1, where: [{ slug: { equals: slug } }] })
+        return docs[0] ?? null
+      })
+    },
+
+    /** The story written afterwards about an event, in the reader's language when there is one. */
+    getRecapOfEvent(eventId: number | string, locale: Locale): Promise<PastEvent | null> {
+      return run('getRecapOfEvent', [String(eventId), locale], ['past-events'], async (draft) => {
+        const docs = await find<PastEvent>('past-events', draft, {
+          hasDrafts: true,
+          depth: 1,
+          where: [{ relatedEvent: { equals: eventId } }],
+        })
+        return docs.find((d) => d.language === locale) ?? docs[0] ?? null
+      })
+    },
+
     listNewsletters(): Promise<Newsletter[]> {
       return run('listNewsletters', [], ['newsletters'], (draft) =>
         find<Newsletter>('newsletters', draft, { hasDrafts: true, sort: '-publishDate' }),

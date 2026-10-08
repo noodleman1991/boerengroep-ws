@@ -1,7 +1,7 @@
 import { notFound, permanentRedirect, redirect } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout'
-import { Section } from '@/components/layout/section'
+import { loadBlockData } from '@/lib/block-data'
 import { cms, type Locale } from '@/lib/cms'
 import { contentStaticParams } from '@/lib/reserved-paths'
 import ClientPage from './client-page'
@@ -36,9 +36,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
   return (
     <Layout rawPageData={resolved.page}>
-      <Section>
-        <ClientPage page={resolved.page} />
-      </Section>
+      <ClientPage page={resolved.page} data={await loadBlockData(resolved.page.blocks)} />
     </Layout>
   )
 }

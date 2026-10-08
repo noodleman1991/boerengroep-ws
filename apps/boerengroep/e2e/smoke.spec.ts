@@ -50,10 +50,67 @@ test('built-in routes are not replaced by a content page with the same address',
   await expect(page.locator('main')).toContainText('Friend Organizations')
 })
 
-test('the calendar lists events and opens one', async ({ page }) => {
+test('the calendar lists events and opens one on its own page', async ({ page }) => {
   await page.goto('/en/activities/calendar')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await expect(page.locator('main')).not.toContainText('admin panel')
+  // The content may have nothing coming up, so look at what has been.
+  await page.getByRole('button', { name: 'Past', exact: true }).click()
+  const first = page.locator('.event-row__title a').first()
+  const title = (await first.textContent())?.trim()
+  await first.click()
+  await expect(page).toHaveURL(/\/en\/activities\/calendar\/[^/]+$/)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(title!)
+  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1)
+})
+
+test('the month view shows a grid and the events of a chosen day', async ({ page }) => {
+  await page.goto('/nl/activities/calendar?view=month')
+  await expect(page.getByRole('grid')).toBeVisible()
+  await expect(page.getByRole('columnheader')).toHaveCount(7)
+  await page.getByRole('button', { name: 'Vorige maand' }).click()
+  await page.getByRole('button', { name: 'Deze maand' }).click()
+  await expect(page.getByRole('button', { name: 'Deze maand' })).toHaveCount(0)
+})
+
+test('an event can be saved as a calendar file', async ({ page, request }) => {
+  await page.goto('/en/activities/calendar')
+  await page.getByRole('button', { name: 'Past', exact: true }).click()
+  const href = await page.locator('.event-row__title a').first().getAttribute('href')
+  const slug = href!.split('/').pop()!
+  const res = await request.get(`/calendar/${slug}.ics`)
+  expect(res.status()).toBe(200)
+  expect(res.headers()['content-type']).toContain('text/calendar')
+  expect(res.headers()['content-disposition']).toContain('attachment')
+  const body = await res.text()
+  expect(body).toContain('BEGIN:VEVENT')
+  expect(body).toContain(`/en/activities/calendar/${slug}`)
+  expect((await request.get('/calendar/no-such-event.ics')).status()).toBe(404)
+})
+
+test('the calendar feed is a calendar that apps can subscribe to', async ({ request }) => {
+  const res = await request.get('/calendar.ics?lang=nl')
+  expect(res.status()).toBe(200)
+  expect(res.headers()['content-type']).toContain('text/calendar')
+  const body = await res.text()
+  expect(body.startsWith('BEGIN:VCALENDAR\r\n')).toBe(true)
+  expect(body).toContain('REFRESH-INTERVAL')
+  expect(body).toContain('/nl/activities/calendar/')
+})
+
+test('an event page offers a calendar file and sharing', async ({ page }) => {
+  await page.goto('/en/activities/calendar')
+  const upcoming = page.locator('.event-row__title a')
+  test.skip((await upcoming.count()) === 0, 'the content has no upcoming event right now')
+  await upcoming.first().click()
+  await page.getByRole('button', { name: 'Add to my calendar' }).click()
+  await expect(page.getByRole('link', { name: /Calendar file/ })).toHaveAttribute('href', /\/calendar\/.+\.ics$/)
+  await expect(page.getByRole('link', { name: 'Google Calendar' })).toHaveAttribute('href', /calendar\.google\.com/)
+})
+
+test('an unknown event gives a 404', async ({ page }) => {
+  const res = await page.goto('/en/activities/calendar/this-event-does-not-exist')
+  expect(res?.status()).toBe(404)
 })
 
 test('the friends news list links to an item that opens', async ({ page }) => {

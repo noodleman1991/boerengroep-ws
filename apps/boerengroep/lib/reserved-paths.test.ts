@@ -42,12 +42,15 @@ describe('reserved paths', () => {
     expect(isReservedPath('/news/friends-news')).toBe(true)
     expect(isReservedPath('/news/newsletter/Newsletter-1')).toBe(true)
     expect(isReservedPath('/activities/past-events/Boerengroep-Weekend')).toBe(true)
+    expect(isReservedPath('/activities/calendar/boerengroep-break-2026-10-08')).toBe(true)
   })
 
   it('does not reserve content pages, including ones that share a prefix', () => {
     expect(isReservedPath('/about-us/history')).toBe(false)
     expect(isReservedPath('/activities')).toBe(false)
     expect(isReservedPath('/activities/fei')).toBe(false)
+    // The pages shown under the calendar are content pages with a similar address.
+    expect(isReservedPath('/activities/calendar-sections/breaks')).toBe(false)
     expect(isReservedPath('/library')).toBe(false)
     expect(isReservedPath('/vacancies-archive')).toBe(false)
     expect(isReservedPath('/vacatures')).toBe(false)

@@ -21,7 +21,12 @@ export const RESERVED_PATHS = [
 ] as const
 
 /** Built-in routes with a dynamic child own every address below them. */
-export const RESERVED_PREFIXES = ['/activities/past-events/', '/news/friends-news/', '/news/newsletter/'] as const
+export const RESERVED_PREFIXES = [
+  '/activities/calendar/',
+  '/activities/past-events/',
+  '/news/friends-news/',
+  '/news/newsletter/',
+] as const
 
 export function isReservedPath(path: string): boolean {
   return (

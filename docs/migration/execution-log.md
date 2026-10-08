@@ -233,3 +233,24 @@ What was wrong, by evidence: production reported `BREVO_LIST_ID: not set`, so co
 - Confirm page and delete page redesigned as short message pages. The confirm page shows the editable "after confirming" title and message.
 - Dutch newsletter wording moved from formal to informal, matching the rest of the site.
 - Tests: app 86 unit, CMS 45 unit and 86 with a database, 24 browser tests (6 new for the newsletter, all answering the site's endpoints themselves so no test writes to the subscriber list or sends mail). Parity: 238 checked, 0 failed.
+
+### Phase 5 (calendar)
+
+- Every event has its own page at `/activities/calendar/<address>`, with the date large, time and place, sign-up, description, people, the picture, a share preview and event data for search engines (`eventJsonLd`, escaped for safe embedding).
+- The old calendar (about 3,600 lines: drag and drop, week, day and year views, a settings panel) is replaced by about 900 lines: an upcoming list grouped by month, a month grid, a past list, and filter chips per kind of event. On a phone the month shows dots per day and lists the chosen day underneath. Two packages only the old code used are removed (`re-resizable`, `react-day-picker`).
+- All dates and times are shown on the Dutch clock for every visitor (`lib/events/time.ts`, tests across the change to winter time on 25 October 2026).
+- Calendar files (`lib/events/ics.ts`, 12 unit tests against the format rules: escaping, 75-byte folding without cutting a character, UTC times, whole days, stable identity, sequence that grows with edits). `/calendar/<address>.ics` gives one event, `/calendar.ics` is the feed to subscribe to, with `?lang=nl` for Dutch wording. The feed can be switched off in Site settings, Calendar.
+- Add to calendar: the file, Google Calendar and Outlook.com. Share: the phone's own share sheet when there is one, otherwise copy link, WhatsApp and email. Subscribe: one button with a short explanation and four ways in.
+- Status: Full shows an orange badge on lists, the month grid and the event page, plus a notice, and the sign-up box is hidden. Cancelled and postponed events stay visible, crossed out.
+- Ruling: midnight to midnight, or midnight without an end, means whole days with the last day included. Editors who picked dates without times produced exactly this (for example the introduction weekend and the Farm Experience Internship).
+- Ruling: an end that lies before the start is ignored everywhere. Four events in the current content have one (for example "Lecture series" on 7 October ends on 30 September). They show with their start only. Worth correcting in the admin after cutover.
+- Ruling: an event without an end counts as two hours in calendar files, as the admin says. On the site it stays under "Upcoming" until the end of its day.
+- Ruling: in calendar files a postponed event is marked as cancelled on its old date with "Postponed:" in the title. A calendar has no better way to say "not on this day".
+- Ruling: the feed carries everything that is coming and the past twelve months. The identity of an event in the feed does not contain the web address, so a change of domain never doubles events in subscribed calendars.
+- Ruling, less than planned: the share image is the event's own picture cut to 1200 by 630. An event without a picture has no generated image and falls back to the site's default preview.
+- "What's on" band (the Events block): the first event large with its picture and the date on the corner, the next ones as short rows, and a small month. It can show the next events, one kind, or hand-picked events, and now works on any page, not only the home page (`loadBlockData`). With nothing coming it shows the most recent events under "Recently".
+- Ruling, design: the large day number uses the tall, narrow, heavy lettering of the logo (Roboto Flex, condensed). The headline face only has old-style figures, where a 7 hangs below the line and a 30 looks small.
+- Alignment: sections now use the same width and side margins as the header and footer. Content pages are no longer wrapped in a second section, so their blocks are full-width bands like on the home page.
+- The regular activities under the calendar (Breaks, Open Pot, Open Meetings) are three short columns. Their anchors are unchanged.
+- Not covered by a browser test: the Full badge, because the content has no full event. Checked by hand by setting one local event to Full and one to Cancelled, looking at the list, the event page and the feed, and putting them back.
+- Tests: app 152 unit (68 new for events), CMS 45 unit and 88 with a database (2 new), 30 browser tests (6 new). Parity: 238 checked, 0 failed.
