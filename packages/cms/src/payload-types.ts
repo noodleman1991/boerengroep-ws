@@ -209,6 +209,9 @@ export interface Page {
         | NewsletterSignupBlock
         | FormBlock
         | ItemBlock
+        | NewsPreviewBlock
+        | VacanciesPreviewBlock
+        | SpotlightBlock
       )[]
     | null;
   legacyId?: string | null;
@@ -807,6 +810,10 @@ export interface GalleryBlock {
    * Optional.
    */
   intro?: string | null;
+  /**
+   * In every size a click opens the photo large.
+   */
+  size?: ('mosaic' | 'small' | 'medium' | 'large') | null;
   source?: ('pictures' | 'pastEvent') | null;
   /**
    * Drop several photos at once. Drag to change the order. Add a caption by opening a photo.
@@ -1281,6 +1288,112 @@ export interface NewsletterSignupBlock {
   blockType: 'newsletterSignup';
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsPreviewBlock".
+ */
+export interface NewsPreviewBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  /**
+   * Optional. Without it the heading is "News".
+   */
+  title?: string | null;
+  description?: string | null;
+  which?: ('all' | 'own' | 'friends') | null;
+  count?: number | null;
+  /**
+   * You put a news item in the spotlight with the tick box at the bottom of the item itself.
+   */
+  spotlightFirst?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newsPreview';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VacanciesPreviewBlock".
+ */
+export interface VacanciesPreviewBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  /**
+   * Optional. Without it the heading is "Join us".
+   */
+  title?: string | null;
+  description?: string | null;
+  count?: number | null;
+  whenNone?: ('hide' | 'say') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'vacanciesPreview';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SpotlightBlock".
+ */
+export interface SpotlightBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  /**
+   * Optional, for example "Don't miss".
+   */
+  title?: string | null;
+  items?:
+    | {
+        /**
+         * First choose the kind (page, event, news, story, vacancy), then the one you mean.
+         */
+        what:
+          | {
+              relationTo: 'pages';
+              value: number | Page;
+            }
+          | {
+              relationTo: 'events';
+              value: number | Event;
+            }
+          | {
+              relationTo: 'newsletters';
+              value: number | Newsletter;
+            }
+          | {
+              relationTo: 'past-events';
+              value: number | PastEvent;
+            }
+          | {
+              relationTo: 'vacancies';
+              value: number | Vacancy;
+            };
+        /**
+         * Optional. Empty: the title of the thing itself.
+         */
+        title?: string | null;
+        /**
+         * Optional. Empty: the first lines of the thing itself.
+         */
+        text?: string | null;
+        /**
+         * Optional. Empty: the picture of the thing itself, when it has one.
+         */
+        picture?: (number | null) | Media;
+        /**
+         * Optional. Empty: "Read more".
+         */
+        buttonLabel?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'spotlight';
+}
+/**
  * News items and newsletter issues. An item can be an article written here, or a link to something elsewhere. News from friends gets its own page on the site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1504,6 +1617,10 @@ export interface Vacancy {
    * Adds a line that says so to the vacancy.
    */
   openToNontraditional?: boolean | null;
+  /**
+   * It then comes first wherever a page shows the open positions.
+   */
+  featured?: boolean | null;
   legacyId?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -2029,6 +2146,9 @@ export interface PagesSelect<T extends boolean = true> {
         newsletterSignup?: T | NewsletterSignupBlockSelect<T>;
         form?: T | FormBlockSelect<T>;
         item?: T | ItemBlockSelect<T>;
+        newsPreview?: T | NewsPreviewBlockSelect<T>;
+        vacanciesPreview?: T | VacanciesPreviewBlockSelect<T>;
+        spotlight?: T | SpotlightBlockSelect<T>;
       };
   legacyId?: T;
   updatedAt?: T;
@@ -2238,6 +2358,7 @@ export interface GalleryBlockSelect<T extends boolean = true> {
   background?: T;
   title?: T;
   intro?: T;
+  size?: T;
   source?: T;
   images?: T;
   videos?:
@@ -2324,6 +2445,53 @@ export interface ItemBlockSelect<T extends boolean = true> {
   linkUrl?: T;
   form?: T;
   note?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsPreviewBlock_select".
+ */
+export interface NewsPreviewBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  description?: T;
+  which?: T;
+  count?: T;
+  spotlightFirst?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VacanciesPreviewBlock_select".
+ */
+export interface VacanciesPreviewBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  description?: T;
+  count?: T;
+  whenNone?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SpotlightBlock_select".
+ */
+export interface SpotlightBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  items?:
+    | T
+    | {
+        what?: T;
+        title?: T;
+        text?: T;
+        picture?: T;
+        buttonLabel?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -2505,6 +2673,7 @@ export interface VacanciesSelect<T extends boolean = true> {
   supportingDocument?: T;
   valuesStatement?: T;
   openToNontraditional?: T;
+  featured?: T;
   legacyId?: T;
   updatedAt?: T;
   createdAt?: T;

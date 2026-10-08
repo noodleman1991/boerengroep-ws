@@ -1,23 +1,36 @@
 /*
- * Site design layer.
+ * Site design layer, shared by both sites.
  *
- * Direction: the logo's two overlapping circles, printed in green and orange like a
- * two-colour poster, on a white field. Section edges follow a shallow field-horizon arc.
- * Everything a second site would change (colours, shapes, sizes) is a variable here.
+ * Logic: the header and the footer are the frame and run the full width, the footer as a hill
+ * on the horizon. Between them lies open white ground with plots on it: a part of a page with
+ * a colour is a rounded panel set in from the window's edges.
+ *
+ * Everything a site may change (colours, shapes, sizes) is a variable here. The Inspringtheater
+ * app lays its own colours over these in its theme.css.
  */
 :root {
     --ink: #111111;
     --ink-soft: #40453c;
     --field: #ffffff;
     --mist: #eef5e6;
+    /* The leading colour: buttons, marks, the first thing the eye lands on. */
     --leaf: #44ad39;
+    /* A shade brighter, for a button under the pointer. */
+    --leaf-bright: #52c046;
+    /* Dark enough to read as text on white. */
     --leaf-deep: #1e6b1a;
+    /* A pale wash of it, for a plot. */
+    --leaf-tint: #cfe9c9;
+    /* The second colour: the sun behind the footer, badges that ask for attention. */
     --harvest: #f28f07;
     --harvest-soft: #fdebcf;
     --sky-soft: #dfeef0;
+    /* The dark ground of the footer and of dark plots, with what stands on it. */
     --furrow: #173a12;
     --furrow-raised: #1f4d18;
     --furrow-text: #e7f1de;
+    --furrow-soft: #a9cf9e;
+    --furrow-link: #b9e6b2;
     --line: rgb(17 17 17 / 0.12);
 
     /* A part of a page with a colour is a plot: a rounded panel set in from the window's edges. */
@@ -27,8 +40,9 @@
 
     --header-h: 88px;
     --header-h-compact: 68px;
-    --logo-h: 56px;
-    --logo-h-compact: 42px;
+    /* The logo in the header: 15% larger than first drawn (56, 42 and 46px). */
+    --logo-h: 64px;
+    --logo-h-compact: 48px;
     --plot-radius: 28px;
     --measure: 68ch;
     --page-max: 78rem;
@@ -39,7 +53,7 @@
 @media (max-width: 1179px) {
     :root {
         --header-h: 72px;
-        --logo-h: 46px;
+        --logo-h: 53px;
     }
 }
 
@@ -141,7 +155,7 @@ a {
     color: var(--ink);
 }
 .btn-leaf:hover {
-    background: #52c046;
+    background: var(--leaf-bright);
 }
 .btn-ink {
     background: var(--ink);
@@ -192,7 +206,7 @@ a {
     background: var(--mist);
 }
 .section-leaf {
-    background: #cfe9c9;
+    background: var(--leaf-tint);
 }
 .section-harvest {
     background: var(--harvest-soft);
@@ -208,7 +222,7 @@ a {
     color: inherit;
 }
 .section-dark a {
-    color: #b9e6b2;
+    color: var(--furrow-link);
 }
 
 /* ---------- Header ---------- */
@@ -239,6 +253,10 @@ a {
     display: block;
     height: var(--logo-h);
     width: auto;
+    /* A wide logo leaves room for the language switch and the menu button on a small phone. */
+    max-width: 44vw;
+    object-fit: contain;
+    object-position: left center;
     transition: height 0.2s ease;
 }
 .site-header--compact .site-header__logo img {
@@ -518,14 +536,24 @@ a {
     font-size: 0.9rem;
     font-weight: 600;
     letter-spacing: 0;
-    color: #a9cf9e;
+    color: var(--furrow-soft);
 }
 .site-footer__links {
     display: grid;
     gap: 0.5rem;
+    min-width: 0;
     margin: 0;
     padding: 0;
     list-style: none;
+}
+/* A long word, such as a Dutch compound, breaks inside its column, not out of the screen. */
+.site-footer__links a,
+.site-footer__heading {
+    overflow-wrap: anywhere;
+    hyphens: auto;
+}
+.site-footer__columns > * {
+    min-width: 0;
 }
 /* Address, email and phone sit with the logo: who we are and how to reach us. */
 .site-footer__contact {
@@ -563,7 +591,7 @@ a {
 }
 .site-footer__base p {
     margin: 0;
-    color: #a9cf9e;
+    color: var(--furrow-soft);
 }
 .site-footer__legal {
     display: flex;
@@ -1688,7 +1716,7 @@ button.month__tile[aria-pressed='true'] {
     text-decoration: none;
 }
 .event-page__signup a:hover {
-    background: #52c046;
+    background: var(--leaf-bright);
 }
 .event-actions {
     display: flex;
@@ -1810,6 +1838,21 @@ button.month__tile[aria-pressed='true'] {
     object-fit: contain;
 }
 /* The date sits on the corner of the picture like a ticket stub. */
+/* No picture and no symbol: the date stands by itself above the event, on a tile of its own. */
+.whats-on__lead--plain .whats-on__lead-date {
+    position: static;
+    display: inline-block;
+    margin-bottom: 1rem;
+    background: var(--mist);
+    box-shadow: none;
+}
+.section-mist .whats-on__lead--plain .whats-on__lead-date,
+.section-leaf .whats-on__lead--plain .whats-on__lead-date {
+    background: var(--field);
+}
+.whats-on__lead--plain .whats-on__lead-body {
+    padding-top: 0;
+}
 .whats-on__lead-date {
     position: absolute;
     left: 1.1rem;
@@ -1927,7 +1970,7 @@ a.mini-month__day {
     font-weight: 700;
 }
 a.mini-month__day:hover {
-    background: #52c046;
+    background: var(--leaf-bright);
 }
 
 /* The regular activities under the calendar: three short columns. */
@@ -2729,7 +2772,7 @@ video.video__frame {
 .rich p {
     margin: 0 0 1em;
 }
-.rich :is(h2, h3, h4) {
+.rich :is(h2, h3, h4, h5, h6) {
     margin: 1.6em 0 0.5em;
     line-height: 1.2;
 }
@@ -2738,6 +2781,31 @@ video.video__frame {
 }
 .rich h3 {
     font-size: 1.4rem;
+}
+.rich h4 {
+    font-size: 1.2rem;
+}
+.rich :is(h5, h6) {
+    font-size: 1.05rem;
+}
+/*
+ * A heading looks the size the editor picked, whatever level the page needed it to be.
+ * (An editor's "heading 6" under the page title is a level-two heading that looks small.)
+ */
+.rich [data-look='h1'] {
+    font-size: clamp(1.9rem, 4.2vw, 2.6rem);
+}
+.rich [data-look='h2'] {
+    font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+}
+.rich [data-look='h3'] {
+    font-size: 1.4rem;
+}
+.rich [data-look='h4'] {
+    font-size: 1.2rem;
+}
+.rich :is([data-look='h5'], [data-look='h6']) {
+    font-size: 1.05rem;
 }
 .rich :is(ul, ol) {
     margin: 0 0 1em;
@@ -2778,7 +2846,7 @@ video.video__frame {
     max-width: 54rem;
 }
 .section-dark .rich a {
-    color: #b9e6b2;
+    color: var(--furrow-link);
 }
 
 /* ---------- Buttons of a block ---------- */
@@ -3547,3 +3615,330 @@ a.callout:focus-visible {
     margin: 0;
 }
 
+
+/* ---------- Pictures in a text: the size and the place an editor chose ---------- */
+
+/* A picture with text beside it stays inside its own text. */
+.rich-flow {
+    display: flow-root;
+}
+/* A heading starts under a picture, never beside it. */
+.rich-flow :is(h2, h3, h4, h5, h6) {
+    clear: both;
+}
+.rich-figure--small,
+.rich-figure--medium,
+.rich-figure--large {
+    margin-inline: auto;
+}
+.rich-figure--small img,
+.rich-figure--medium img,
+.rich-figure--large img {
+    width: 100%;
+}
+.rich-figure--small {
+    width: min(100%, 16rem);
+}
+.rich-figure--medium {
+    width: min(100%, 24rem);
+}
+.rich-figure--large {
+    width: min(100%, 36rem);
+}
+/* On a wide screen the sizes are parts of the text, and text can run beside a picture. */
+@media (min-width: 641px) {
+    .rich-figure--small {
+        width: 33%;
+        min-width: 12rem;
+    }
+    .rich-figure--medium {
+        width: 50%;
+    }
+    .rich-figure--large {
+        width: 75%;
+    }
+    /* A picture with text beside it starts under the one before it, so the text keeps its room. */
+    .rich-figure--left {
+        float: left;
+        clear: both;
+        margin: 0.4rem 1.75rem 1rem 0;
+    }
+    .rich-figure--right {
+        float: right;
+        clear: both;
+        margin: 0.4rem 0 1rem 1.75rem;
+    }
+}
+
+/* ---------- Photos in even rows, on a page or inside a text ---------- */
+
+.rich-gallery {
+    clear: both;
+    margin: 1.75rem 0;
+}
+/* The photos are a list, but not one with dots and an indent like a list in the text. */
+.rich-gallery ul.mosaic {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.rich-gallery li.mosaic__tile {
+    margin: 0;
+}
+.rich-gallery figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+}
+.mosaic.mosaic--even .mosaic__tile {
+    grid-column: auto;
+    grid-row: auto;
+}
+.mosaic--small {
+    --columns: 3;
+}
+.mosaic--medium {
+    --columns: 2;
+}
+.mosaic--large {
+    --columns: 1;
+    /* A large photo is wider than it is high. */
+    grid-auto-rows: calc((100cqw - (var(--columns) - 1) * var(--gap)) / var(--columns) * 0.72);
+}
+/* The room the gallery has decides, not the window: inside a text it has less. */
+@container (min-width: 34rem) {
+    .mosaic--small {
+        --columns: 6;
+    }
+    .mosaic--medium {
+        --columns: 4;
+    }
+    .mosaic--large {
+        --columns: 2;
+    }
+}
+@container (min-width: 34rem) and (max-width: 52rem) {
+    .mosaic--small {
+        --columns: 5;
+    }
+    .mosaic--medium {
+        --columns: 3;
+    }
+}
+/* A caption does not fit on a small photo. It shows when the photo is opened. */
+.mosaic--small .mosaic__caption {
+    display: none;
+}
+.mosaic--small .mosaic__tile button {
+    border-radius: 12px;
+}
+
+/* ---------- Short lists on a page: news and open positions ---------- */
+
+/*
+ * The same rows as the calendar: a rule above each, the words leading. The item an editor put
+ * in the spotlight stands large beside the rows, as the first event does in "What's on".
+ */
+.briefs--led {
+    display: grid;
+    gap: 2rem clamp(1.5rem, 4vw, 3.5rem);
+}
+@media (min-width: 900px) {
+    .briefs--led {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        align-items: start;
+    }
+}
+.brief-list {
+    border-bottom: 1.5px solid currentColor;
+}
+.brief {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem 1.25rem;
+    align-items: start;
+    padding: 1.15rem 0;
+    border-top: 1.5px solid currentColor;
+}
+.brief--pictured {
+    grid-template-columns: minmax(0, 1fr) clamp(5rem, 22%, 7.5rem);
+}
+.brief--pictured .brief__picture {
+    order: 2;
+}
+.brief__picture {
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    border-radius: 14px;
+    background: var(--mist);
+}
+.brief__picture img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.brief__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.9rem;
+    margin: 0 0 0.3rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+.brief__title {
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.25;
+}
+.brief__title a {
+    color: inherit;
+    text-decoration: none;
+}
+/* The whole row leads where its title leads. */
+.brief__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+}
+.brief:hover .brief__title a {
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+.brief__text {
+    margin: 0.4rem 0 0;
+    color: var(--ink-soft);
+    /* A summary can hold a long web address. */
+    overflow-wrap: anywhere;
+}
+.brief__out {
+    display: inline-block;
+    width: 0.85em;
+    height: 0.85em;
+    margin-left: 0.35em;
+    vertical-align: -0.05em;
+}
+.brief--lead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0;
+    border-top: 0;
+}
+.brief--lead .brief__picture {
+    order: 0;
+    border-radius: var(--plot-radius);
+}
+.brief--lead .brief__title {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.15;
+}
+.brief--lead .brief__text {
+    max-width: 38rem;
+    font-size: 1.0625rem;
+}
+/* Positions have few words each, so they stand side by side where there is room. */
+.brief-list--columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    gap: 0 clamp(1.5rem, 4vw, 3rem);
+    border-bottom: 0;
+}
+.briefs__empty {
+    max-width: 40rem;
+    margin: 0;
+}
+.section-dark :is(.brief__meta, .brief__text, .rich-gallery figcaption) {
+    color: var(--furrow-text);
+}
+
+/* ---------- In the spotlight ---------- */
+
+.spots {
+    display: grid;
+    gap: 2rem clamp(1.25rem, 3vw, 2.5rem);
+}
+@media (min-width: 760px) {
+    .spots--2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .spots--3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+.spot {
+    display: grid;
+    gap: 1.1rem;
+    align-content: start;
+}
+.spot__picture {
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--plot-radius);
+    background: var(--mist);
+}
+.spot__picture img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.spot__body {
+    display: grid;
+    gap: 0.6rem;
+    justify-items: start;
+    align-content: start;
+}
+.spot__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.9rem;
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+.spot__title {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    line-height: 1.15;
+}
+.spot__text {
+    margin: 0;
+    color: var(--ink-soft);
+}
+.spot__body > :is(.btn-leaf, .btn-ink, .btn-quiet) {
+    margin-top: 0.5rem;
+}
+/* Among pictures, a thing without one starts at a rule, like a row in a list. */
+:is(.spots--2, .spots--3) .spot--plain {
+    padding-top: 1.1rem;
+    border-top: 1.5px solid currentColor;
+}
+.spot__title,
+.spot__text {
+    overflow-wrap: anywhere;
+}
+/* One thing alone gets the room: its picture beside the words. */
+.spot--large .spot__title {
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    line-height: 1.05;
+}
+.spot--large .spot__text {
+    max-width: 36rem;
+    font-size: 1.125rem;
+}
+@media (min-width: 900px) {
+    .spot--large {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        gap: clamp(2rem, 5vw, 4rem);
+        align-items: center;
+    }
+    .spot--large.spot--plain {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+.section-dark :is(.spot__meta, .spot__text) {
+    color: var(--furrow-text);
+}

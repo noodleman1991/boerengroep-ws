@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Gallery } from '@/components/media/gallery';
 import { Link } from '@/i18n/navigation';
 import { toVideoItems } from '@/lib/gallery';
+import { gallerySize } from '@/lib/picture-look';
 import { toPhotos } from '@/lib/photos';
 import { Section } from '../layout/section';
 
@@ -35,7 +36,7 @@ export const GalleryBlock = ({ data }: { data: GalleryData }) => {
                     )}
                 </div>
             )}
-            <Gallery photos={photos} videos={videos} />
+            <Gallery photos={photos} videos={videos} size={gallerySize(data.size)} />
         </Section>
     );
 };

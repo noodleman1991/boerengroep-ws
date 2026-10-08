@@ -6,6 +6,7 @@ import { Section } from '@/components/layout/section';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Users, Mail } from 'lucide-react';
+import { SITE } from '@/site.config';
 
 interface NewsPageProps {
     params: Promise<{ locale: string }>;
@@ -17,8 +18,8 @@ export async function generateMetadata({ params }: NewsPageProps): Promise<Metad
     const t = await getTranslations({ locale, namespace: 'navigation.items' });
 
     return {
-        title: `${t('news')} - Stichting Boerengroep`,
-        description: 'Stay updated with the latest news from Stichting Boerengroep and friends news.',
+        title: `${t('news')} - ${SITE.name}`,
+        description: `Stay updated with the latest news from ${SITE.name} and friends news.`,
     };
 }
 
@@ -44,7 +45,7 @@ export default async function NewsPage({ params }: NewsPageProps) {
                             {t('news')}
                         </h1>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                            Stay updated with the latest news from Stichting Boerengroep and friends news.
+                            Stay updated with the latest news from {SITE.name} and friends news.
                         </p>
                     </div>
 

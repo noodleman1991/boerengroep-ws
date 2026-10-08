@@ -1,7 +1,8 @@
+import { withAddedBlocks } from './add-blocks'
 import { transformBlocks } from './blocks'
 import { readAsGalleries } from './gallery-pages'
 import { type Ctx, upsert } from './context'
-import { planPages, type PagePlan } from './pages-plan'
+import { emptyKeysToSkip, planPages, type PagePlan } from './pages-plan'
 import { listContent, readTinaFile } from './read'
 import { Report } from './report'
 
@@ -10,12 +11,13 @@ async function localeData(ctx: Ctx, contentDir: string, file: string, slug: stri
   // The old site never showed this text. A fix-up can leave it out, for placeholder text.
   const leaveOutBody = ctx.fixups.clearPageBodies.includes(key)
   if (leaveOutBody && f.body?.trim()) ctx.report.add('skipped', f.legacyId, 'hidden text left out by a fix-up')
-  const blocks = await transformBlocks(ctx, f.data.blocks, f.legacyId)
+  const own = await transformBlocks(ctx, f.data.blocks, f.legacyId)
+  const blocks = ctx.fixups.galleryPages.includes(key) ? await asGalleries(ctx, own, f.legacyId) : own
   return {
     data: {
       title: f.data.title,
       slug,
-      blocks: ctx.fixups.galleryPages.includes(key) ? await asGalleries(ctx, blocks, f.legacyId) : blocks,
+      blocks: withAddedBlocks(blocks, ctx.fixups.addBlocks[key] ?? []),
       body: leaveOutBody ? null : await ctx.toLexical(f.body, f.legacyId),
     },
     previousUrls: (f.data.previousUrls ?? []) as string[],
@@ -144,13 +146,24 @@ async function removeImported(ctx: Ctx, key: string): Promise<void> {
 export async function importPages(ctx: Ctx, contentDir: string): Promise<void> {
   // Plan into a scratch report first, so entries about removed pages can be replaced.
   const scratch = new Report()
-  const all = planPages(listContent(contentDir, 'pages'), scratch)
-  const removed = all.filter((plan) => ctx.fixups.removePages.includes(plan.key))
+  const all = planPages(listContent(contentDir, 'pages'), scratch, ctx.fixups.segments)
+  // A page with no blocks and no text has nothing on it.
+  const hasNothing = (plan: PagePlan) =>
+    [plan.enFile, plan.nlFile].every((file) => {
+      if (!file) return true
+      const f = readTinaFile(contentDir, file)
+      return !(Array.isArray(f.data.blocks) && f.data.blocks.length > 0) && !f.body?.trim()
+    })
+  // Pages a fix-up removes anyway do not keep an empty page above them alive.
+  const staying = all.filter((plan) => !ctx.fixups.removePages.includes(plan.key))
+  const emptyKeys = ctx.fixups.skipEmptyPages ? new Set(emptyKeysToSkip(staying, hasNothing)) : new Set<string>()
+  const removed = all.filter((plan) => ctx.fixups.removePages.includes(plan.key) || emptyKeys.has(plan.key))
   const removedFiles = new Set(removed.flatMap((plan) => [plan.enFile, plan.nlFile].filter((f): f is string => Boolean(f))))
   for (const entry of scratch.entries) {
     if (!removedFiles.has(entry.legacyId)) ctx.report.add(entry.kind, entry.legacyId, entry.message)
   }
-  for (const file of removedFiles) ctx.report.add('skipped', file, 'removed by a fix-up')
+  const emptyFiles = new Set(all.filter((plan) => emptyKeys.has(plan.key)).flatMap((plan) => [plan.enFile, plan.nlFile]))
+  for (const file of removedFiles) ctx.report.add('skipped', file, emptyFiles.has(file) ? 'nothing on this page' : 'removed by a fix-up')
   for (const plan of removed) {
     try {
       await removeImported(ctx, plan.key)
@@ -159,7 +172,7 @@ export async function importPages(ctx: Ctx, contentDir: string): Promise<void> {
     }
   }
 
-  const plans = all.filter((plan) => !ctx.fixups.removePages.includes(plan.key))
+  const plans = all.filter((plan) => !ctx.fixups.removePages.includes(plan.key) && !emptyKeys.has(plan.key))
   for (const plan of plans) {
     try {
       await importOne(ctx, contentDir, plan)

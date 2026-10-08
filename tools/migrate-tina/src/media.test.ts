@@ -3,8 +3,9 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { Ctx } from './context'
-import { listUploads, resolveMedia } from './media'
+import { listUploads, locateUploads, resolveMedia } from './media'
 import { Report } from './report'
+import { emptyFixups } from './fixups'
 
 function ctx(): Ctx {
   return {
@@ -18,7 +19,7 @@ function ctx(): Ctx {
     ids: new Map(),
     pageByEnPath: new Map(),
     reservedPaths: new Set(),
-    fixups: { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [], galleryPages: [] },
+    fixups: emptyFixups,
     messages: {},
     toLexical: async () => undefined,
   }
@@ -32,6 +33,25 @@ describe('listUploads', () => {
     writeFileSync(path.join(dir, 'branding/logo.png'), 'x')
     writeFileSync(path.join(dir, '.DS_Store'), 'x')
     expect(listUploads(dir)).toEqual(['/uploads/b.png', '/uploads/branding/logo.png'])
+  })
+})
+
+describe('locateUploads', () => {
+  it('adds files from an extra folder, and the uploads folder wins when both have a file', () => {
+    const uploads = mkdtempSync(path.join(tmpdir(), 'up-'))
+    const rescued = mkdtempSync(path.join(tmpdir(), 'extra-'))
+    writeFileSync(path.join(uploads, 'a.png'), 'x')
+    writeFileSync(path.join(rescued, 'a.png'), 'y')
+    writeFileSync(path.join(rescued, '1207.png'), 'y')
+    const files = locateUploads(uploads, [rescued])
+    expect([...files.keys()].sort()).toEqual(['/uploads/1207.png', '/uploads/a.png'])
+    expect(files.get('/uploads/a.png')).toBe(path.join(uploads, 'a.png'))
+    expect(files.get('/uploads/1207.png')).toBe(path.join(rescued, '1207.png'))
+  })
+  it('is the uploads folder alone without extra folders', () => {
+    const uploads = mkdtempSync(path.join(tmpdir(), 'up-'))
+    writeFileSync(path.join(uploads, 'a.png'), 'x')
+    expect([...locateUploads(uploads).keys()]).toEqual(['/uploads/a.png'])
   })
 })
 

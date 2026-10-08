@@ -11,7 +11,9 @@ export function scanMarkdown(markdown: string): { components: string[]; images: 
 
 export type InlineImage = { token: string; alt: string; src: string }
 
-const IMAGE = /!\[([^\]]*)\]\(\s*(<[^>]+>|[^)\s]+)(?:\s+"[^"]*")?\s*\)/g
+// The address may sit in angle brackets, or escape its own brackets: `/uploads/photo \(1\).png`.
+const IMAGE = /!\[([^\]]*)\]\(\s*(<[^>]+>|(?:\\.|[^)\s\\])+)(?:\s+"[^"]*")?\s*\)/g
+const ESCAPED = /\\([!-/:-@[-`{-~])/g
 const TOKEN = /TINAIMAGE\d+TOKEN/g
 
 /**
@@ -23,7 +25,7 @@ export function extractInlineImages(markdown: string): { markdown: string; image
   const images: InlineImage[] = []
   const out = markdown.replace(IMAGE, (_match, alt: string, rawSrc: string) => {
     const token = `TINAIMAGE${images.length}TOKEN`
-    let src = rawSrc.startsWith('<') ? rawSrc.slice(1, -1) : rawSrc
+    let src = rawSrc.startsWith('<') ? rawSrc.slice(1, -1) : rawSrc.replace(ESCAPED, '$1')
     try {
       src = decodeURI(src)
     } catch {
@@ -73,6 +75,48 @@ export function placeUploads(state: unknown, mediaByToken: Record<string, number
   return state
 }
 
+/** Files that Tina kept on its own file server. The path after the project number is the path in the uploads folder. */
+const TINA_FILE = /^https?:\/\/assets\.tina\.io\/[^/]+(\/.+)$/i
+
+/** The uploads path of a file of the old site that an address leads to, or nothing for any other address. */
+export function uploadedFileKey(url: string): string | undefined {
+  const hosted = url.match(TINA_FILE)
+  const raw = hosted ? `/uploads${hosted[1]}` : url.startsWith('/uploads/') ? url : undefined
+  if (!raw) return undefined
+  const file = raw.split(/[?#]/)[0]!
+  try {
+    return decodeURI(file)
+  } catch {
+    return file
+  }
+}
+
+/**
+ * Points links to files of the old site at the imported file. A link to Tina's file server
+ * works only as long as the old site's account exists, and a link to the imported file follows
+ * the file wherever it is stored. `onMissing` hears about links to that server with no file here.
+ */
+export function linkUploads(state: unknown, media: Map<string, number | string>, onMissing: (url: string) => void = () => {}): unknown {
+  const visit = (node: Node) => {
+    const fields = node.fields as { url?: string } | null | undefined
+    if ((node.type === 'link' || node.type === 'autolink') && typeof fields?.url === 'string') {
+      const key = uploadedFileKey(fields.url)
+      const id = key === undefined ? undefined : media.get(key)
+      if (id !== undefined) {
+        const { url: _url, ...rest } = fields
+        node.type = 'link'
+        node.fields = { ...rest, linkType: 'internal', doc: { relationTo: 'media', value: id } }
+      } else if (TINA_FILE.test(fields.url)) {
+        onMissing(fields.url)
+      }
+    }
+    for (const child of node.children ?? []) visit(child)
+  }
+  const root = (state as { root?: Node }).root
+  if (root) visit(root)
+  return state
+}
+
 export async function makeToLexical(
   payload: Payload,
   report: Report,
@@ -105,6 +149,9 @@ export async function makeToLexical(
     }
 
     const state = convertMarkdownToLexical({ editorConfig, markdown: extracted.markdown })
+    linkUploads(state, media, (url) =>
+      report.add('missing-media', legacyId, `the link to ${url} leads to the old site's file server, and the file is not in the uploads folder. It stops working when that account is closed`),
+    )
     return placeUploads(state, mediaByToken) as Lexical
   }
 }

@@ -110,6 +110,12 @@ export const Vacancies: CollectionConfig = {
       label: 'Also open to people without the usual background',
       admin: { description: 'Adds a line that says so to the vacancy.' },
     },
+    {
+      name: 'featured',
+      type: 'checkbox',
+      label: 'Put this vacancy in the spotlight',
+      admin: { description: 'It then comes first wherever a page shows the open positions.' },
+    },
     legacyIdField,
   ],
 }

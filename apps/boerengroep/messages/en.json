@@ -43,7 +43,8 @@
   },
   "newsletter": {
     "title": "Newsletter",
-    "description": "Stay updated with the latest news from Stichting Boerengroep and friends news.",
+    "description": "Our own news, and news from the organisations close to us.",
+    "friends_description": "News and updates from the organisations close to us.",
     "read_more": "Read more",
     "visit_link": "Visit link",
     "no_newsletters": "No newsletters found.",
@@ -480,5 +481,27 @@
     "text": "This page could not be shown. Try again, or start from the home page.",
     "retry": "Try again",
     "home": "To the home page"
+  },
+  "widgets": {
+    "elsewhere": "opens another website",
+    "news": {
+      "title": "News",
+      "all": "All news",
+      "from_friends": "From friends"
+    },
+    "positions": {
+      "title": "Join us",
+      "all": "All positions"
+    },
+    "spotlight": {
+      "more": "Read more",
+      "kinds": {
+        "pages": "On this site",
+        "events": "Event",
+        "newsletters": "News",
+        "past-events": "Looking back",
+        "vacancies": "Vacancy"
+      }
+    }
   }
 }

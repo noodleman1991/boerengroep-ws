@@ -14,10 +14,13 @@ import { GalleryBlock } from './gallery'
 import { Hero } from './hero'
 import { ImageText } from './image-text'
 import { ItemBlock } from './item'
+import { NewsPreview } from './news-preview'
 import { NewsletterSignupBlock } from './newsletter-signup-block'
 import { PodcastBlock } from './podcast'
+import { Spotlight } from './spotlight'
 import { Stats } from './stats'
 import { Testimonial } from './testimonial'
+import { VacanciesPreview } from './vacancies-preview'
 import { Video } from './video'
 
 type AnyBlock = NonNullable<Page['blocks']>[number]
@@ -69,6 +72,12 @@ const Block = ({ block }: { block: AnyBlock }) => {
       return <NewsletterSignupBlock data={block} />
     case 'eventsCalendarPreview':
       return <EventsCalendarPreview data={block} />
+    case 'newsPreview':
+      return <NewsPreview data={block} />
+    case 'vacanciesPreview':
+      return <VacanciesPreview data={block} />
+    case 'spotlight':
+      return <Spotlight data={block} />
     default:
       return null
   }

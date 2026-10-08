@@ -5,6 +5,7 @@ import { Section } from '@/components/layout/section';
 import { loadPodcast } from '@/lib/podcast';
 import { podcastPage } from '@/lib/podcast-page';
 import { PodcastClientPage } from './client-page';
+import { SITE } from '@/site.config';
 
 interface PodcastPageProps {
     params: Promise<{ locale: string }>;
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }: PodcastPageProps): Promise<Me
     const t = await getTranslations({ locale, namespace: 'podcast' });
 
     return {
-        title: `${t('title')} - Stichting Boerengroep`,
+        title: `${t('title')} - ${SITE.name}`,
         description: t('description'),
     };
 }

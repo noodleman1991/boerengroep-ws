@@ -1,6 +1,7 @@
 import { type Ctx, refId, upsert } from './context'
 import { transformBlocks } from './blocks'
 import { kindMaker } from './event-kinds'
+import { isRemoved } from './fixups'
 import { resolveMedia } from './media'
 import { listContent, readTinaFile, type TinaFile } from './read'
 import { eventSlug } from '@sites/cms/event-slug'
@@ -23,7 +24,7 @@ async function each(
   const files = listContent(contentDir, folder)
   for (const rel of order ? [...files].sort(order) : files) {
     try {
-      if (ctx.fixups.removeFiles.includes(rel)) {
+      if (isRemoved(rel, ctx.fixups.removeFiles)) {
         await removeImported(ctx, folder, rel)
         ctx.report.add('skipped', rel, 'removed by a fix-up')
         continue
@@ -68,6 +69,18 @@ export async function importPeople(ctx: Ctx, contentDir: string): Promise<void> 
   })
 }
 
+/**
+ * The text of an event. One site kept a second, longer text beside the description. Where it
+ * says something the description does not, it is added after it.
+ */
+export function eventText(d: { description?: unknown; fullDescription?: unknown }): string | undefined {
+  const text = (value: unknown) => (typeof value === 'string' ? value.trim() : '')
+  const short = text(d.description)
+  const long = text(d.fullDescription)
+  if (!long || short.includes(long)) return short || undefined
+  return short ? `${short}\n\n${long}` : long
+}
+
 export async function importEvents(ctx: Ctx, contentDir: string): Promise<void> {
   // Events had no address of their own on the old site, so they get a readable one: title and date.
   const used = new Set<string>()
@@ -78,7 +91,7 @@ export async function importEvents(ctx: Ctx, contentDir: string): Promise<void> 
       title: d.title,
       slug: uniqueSlug(eventSlug(d.title, d.startDate), languageOf(f.legacyId), used),
       language: languageOf(f.legacyId),
-      description: d.description,
+      description: eventText(d),
       location: {
         address: d.location?.address,
         mapsLink: d.location?.mapsLink,

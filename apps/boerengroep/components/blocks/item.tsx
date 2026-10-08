@@ -85,7 +85,7 @@ export const ItemBlock = ({ data }: { data: ItemData }) => {
                             <span className="item__donation-amount">{data.priceText}</span>
                         </p>
                     )}
-                    <RichText data={data.details} className="rich item__details" />
+                    <RichText data={data.details} className="rich item__details" headingsFrom={3} />
                     {link && (
                         <a className="btn-leaf" href={link} target="_blank" rel="noopener noreferrer">
                             {label}

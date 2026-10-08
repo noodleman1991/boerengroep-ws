@@ -1,11 +1,8 @@
 # Migration report
 
-## missing-media (6)
+## missing-media (3)
 
-- `events/en/Excursion-Tuinen-van-de-Egel.mdx`: /uploads/1207.png is not in the uploads folder
 - `vacancies/en/Nice-position.mdx`: /uploads/vacancies/documents/2025-2026_aangepasteopeningstijden_EN.pdf is not in the uploads folder
-- `pages/en/news/friends-news.mdx`: /uploads/WhatsApp Image 2025-07-31 at 18.31.55.jpeg is not in the uploads folder
-- `pages/nl/nieuws/friends-news.mdx`: /uploads/WhatsApp Image 2025-07-31 at 18.31.55.jpeg is not in the uploads folder
 - `global/index.json`: /uploads/logo.png is not in the uploads folder
 - `global/index.json`: /uploads/logo.png is not in the uploads folder
 

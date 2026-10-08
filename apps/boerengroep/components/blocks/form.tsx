@@ -12,7 +12,7 @@ export const FormBlock = ({ data }: { data: FormData }) => {
         <Section background={data.background}>
             <div className="block-narrow form-block">
                 {data.title && <h2>{data.title}</h2>}
-                <RichText data={data.intro} className="form-block__intro" />
+                <RichText data={data.intro} className="form-block__intro" headingsFrom={3} />
                 <SiteForm form={form} />
             </div>
         </Section>

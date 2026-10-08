@@ -23,6 +23,9 @@ describe('blocks', () => {
       'newsletterSignup',
       'form',
       'item',
+      'newsPreview',
+      'vacanciesPreview',
+      'spotlight',
     ])
   })
 
@@ -30,6 +33,10 @@ describe('blocks', () => {
     const slugs = articleBlocks.map((b) => b.slug)
     expect(slugs).not.toContain('eventsCalendarPreview')
     expect(slugs).not.toContain('newsletterSignup')
+    // Blocks that pull in other content: the news, the open positions, things in the spotlight.
+    expect(slugs).not.toContain('newsPreview')
+    expect(slugs).not.toContain('vacanciesPreview')
+    expect(slugs).not.toContain('spotlight')
     expect(slugs).toContain('gallery')
     expect(slugs).toContain('documents')
   })

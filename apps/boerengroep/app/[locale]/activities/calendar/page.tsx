@@ -7,6 +7,7 @@ import Layout from '@/components/layout/layout';
 import { cms, type Locale } from '@/lib/cms';
 import { toSiteEvent } from '@/lib/cms-adapters';
 import { siteUrl } from '@/lib/site-url';
+import { SITE } from '@/site.config';
 
 export const revalidate = 3600;
 
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: CalendarPageProps): Promise<M
     const t = await getTranslations({ locale, namespace: 'calendar' });
     const settings = await cms.getSiteSettings(locale);
     return {
-        title: `${t('title')} - ${settings?.general?.name ?? 'Stichting Boerengroep'}`,
+        title: `${t('title')} - ${settings?.general?.name ?? SITE.name}`,
         description: settings?.calendar?.intro || t('description'),
     };
 }

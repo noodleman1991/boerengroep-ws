@@ -1,3 +1,5 @@
+import type { AddedBlock } from './add-blocks'
+
 /**
  * Hand-written corrections applied while importing one site. They record editorial
  * decisions that the old content cannot express, such as a renamed page.
@@ -14,6 +16,7 @@ export type Fixups = {
   /**
    * Content files that are not imported, and whose item is removed if an earlier run imported it.
    * For placeholder content the old site still carries, for example `events/nl/what.mdx`.
+   * `speakers/*` names every file in a folder.
    * Pages go in `removePages`, because a page is made of two files.
    */
   removeFiles: string[]
@@ -24,9 +27,31 @@ export type Fixups = {
    * sentence under each. They become gallery blocks, and the sentences become captions.
    */
   galleryPages: string[]
+  /**
+   * This site's own English to Dutch address words, added to the shared list. They pair an
+   * English page with its Dutch one, for example `get-involved` with `doe-mee`.
+   */
+  segments: Record<string, string>
+  /** Leaves out pages that have nothing on them, unless a page with content sits under them. */
+  skipEmptyPages: boolean
+  /** The colour of each kind of event the old site knew, by its old value. Names come from the old translation files. */
+  kindColours: Record<string, string>
+  /** Leaves menu and footer links out that lead to a page that is not on the new site. */
+  dropDeadMenuLinks: boolean
+  /**
+   * Blocks the new site adds to an imported page, per page key, in both languages. For blocks
+   * that fill themselves, such as the latest news. Texts are left empty, so the site's own
+   * wording shows in each language.
+   */
+  addBlocks: Record<string, AddedBlock[]>
 }
 
-export const emptyFixups: Fixups = { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [], galleryPages: [] }
+/** True when a content file is named in `removeFiles`, by itself or by its folder (`speakers/*`). */
+export function isRemoved(file: string, removeFiles: string[]): boolean {
+  return removeFiles.some((entry) => (entry.endsWith('/*') ? file.startsWith(entry.slice(0, -1)) : entry === file))
+}
+
+export const emptyFixups: Fixups = { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [], galleryPages: [], segments: {}, skipEmptyPages: false, kindColours: {}, dropDeadMenuLinks: false, addBlocks: {} }
 
 /** Reads a fix-ups file, filling in the parts it leaves out. */
 export function parseFixups(json: string): Fixups {
@@ -39,5 +64,10 @@ export function parseFixups(json: string): Fixups {
     removeFiles: raw.removeFiles ?? [],
     clearPageBodies: raw.clearPageBodies ?? [],
     galleryPages: raw.galleryPages ?? [],
+    segments: raw.segments ?? {},
+    skipEmptyPages: raw.skipEmptyPages ?? false,
+    kindColours: raw.kindColours ?? {},
+    dropDeadMenuLinks: raw.dropDeadMenuLinks ?? false,
+    addBlocks: raw.addBlocks ?? {},
   }
 }

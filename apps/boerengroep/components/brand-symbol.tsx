@@ -1,15 +1,21 @@
 'use client';
 import { useLayout } from '@/components/layout/layout-context';
+import { SITE } from '@/site.config';
 
-/** The swirl of the logo without its lettering, used until a symbol is chosen under Site settings. */
-export const FALLBACK_SYMBOL = '/brand/boerengroep-symbol.svg';
+/** The address of the organisation's symbol, or nothing for an organisation that has none. */
+export function useBrandSymbol(): string | null {
+    const { globalSettings } = useLayout();
+    return globalSettings?.symbol || SITE.symbol;
+}
 
 /**
  * The symbol of the organisation as decoration. It carries no name for screen readers:
  * the logo with the name is in the header.
  */
 export function BrandSymbol({ className }: { className?: string }) {
-    const { globalSettings } = useLayout();
+    const symbol = useBrandSymbol();
+    // A site without a symbol simply shows none.
+    if (!symbol) return null;
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={globalSettings?.symbol || FALLBACK_SYMBOL} alt="" aria-hidden="true" className={className} />;
+    return <img src={symbol} alt="" aria-hidden="true" className={className} />;
 }

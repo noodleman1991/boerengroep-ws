@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { planPages } from './pages-plan'
+import { emptyKeysToSkip, planPages } from './pages-plan'
 import { Report } from './report'
 
 const byKey = (plans: ReturnType<typeof planPages>) => Object.fromEntries(plans.map((p) => [p.key, p]))
@@ -230,5 +230,36 @@ describe('planPages', () => {
     const plans = byKey(planPages(['pages/en/Our_Team.mdx'], report))
     expect(plans['our-team']?.enSegments).toEqual(['our-team'])
     expect(report.count('slug-changed')).toBe(1)
+  })
+})
+
+describe('a second site with address words of its own', () => {
+  it('pairs pages through the words that site adds to the shared list', () => {
+    const report = new Report()
+    const files = ['pages/en/about-inspringtheater/history.mdx', 'pages/nl/over-inspringtheater/geschiedenis.mdx', 'pages/en/get-involved/as-actor.mdx', 'pages/nl/doe-mee/als-acteur.mdx']
+    const plans = planPages(files, report, { 'about-inspringtheater': 'over-inspringtheater', 'get-involved': 'doe-mee', 'as-actor': 'als-acteur' })
+    const history = plans.find((plan) => plan.key === 'about-inspringtheater/history')!
+    expect(history.nlFile).toBe('pages/nl/over-inspringtheater/geschiedenis.mdx')
+    expect(plans.find((plan) => plan.key === 'get-involved/as-actor')!.nlSegments).toEqual(['doe-mee', 'als-acteur'])
+    expect(report.entries.filter((entry) => entry.kind === 'unpaired-locale')).toEqual([])
+  })
+
+  it('still reports them as unpaired without those words', () => {
+    const report = new Report()
+    planPages(['pages/en/get-involved/as-actor.mdx', 'pages/nl/doe-mee/als-acteur.mdx'], report)
+    expect(report.entries.filter((entry) => entry.kind === 'unpaired-locale')).toHaveLength(2)
+  })
+})
+
+describe('pages with nothing on them', () => {
+  const plan = (key: string) => ({ key, placeholder: false })
+  it('are left out, unless a page with something on it sits under them', () => {
+    const plans = [plan('cookies'), plan('library'), plan('library/media'), plan('activities'), plan('activities/courses'), plan('contact')]
+    const empty = new Set(['cookies', 'library', 'library/media', 'activities'])
+    expect(emptyKeysToSkip(plans as never, (candidate) => empty.has(candidate.key))).toEqual(['cookies', 'library', 'library/media'])
+  })
+
+  it('keep the home page whatever is on it', () => {
+    expect(emptyKeysToSkip([plan('home')] as never, () => true)).toEqual([])
   })
 })

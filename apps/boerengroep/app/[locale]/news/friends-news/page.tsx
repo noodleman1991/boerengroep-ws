@@ -4,6 +4,7 @@ import { cms } from '@/lib/cms';
 import { asConnection, toNewsletterNode } from '@/lib/cms-adapters';
 import { NewsletterList } from '@/components/newsletter-list';
 import Layout from '@/components/layout/layout';
+import { SITE } from '@/site.config';
 
 interface FriendsNewsPageProps {
     params: Promise<{ locale: string }>;
@@ -15,8 +16,8 @@ export async function generateMetadata({ params }: FriendsNewsPageProps): Promis
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
-        title: `${t('filters.friends')} - Stichting Boerengroep`,
-        description: 'News and updates from our friends.',
+        title: `${t('filters.friends')} - ${SITE.name}`,
+        description: t('friends_description'),
     };
 }
 
@@ -43,7 +44,7 @@ export default async function FriendsNewsPage({ params }: FriendsNewsPageProps) 
                 locale={locale}
                 filter="friends"
                 title={t('filters.friends')}
-                description="News and updates from our friends in the sustainable agriculture community."
+                description={t('friends_description')}
             />
         </Layout>
     );

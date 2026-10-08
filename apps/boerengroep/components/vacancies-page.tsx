@@ -7,7 +7,7 @@ import { RichText } from '@/components/rich-text';
 import { formatDay, type SiteLocale } from '@/lib/events/time';
 import type { FileInfo } from '@/lib/files';
 import { hasRichText } from '@/lib/rich-text-utils';
-import { groupVacancies, type VacancyGroup } from '@/lib/vacancies';
+import { groupVacancies, vacancyAnchor, type VacancyGroup } from '@/lib/vacancies';
 
 /** A vacancy as the page reads it. Every part is optional except the title. */
 export type VacancyItem = {
@@ -35,7 +35,7 @@ export type VacancyItem = {
 };
 
 const words = (list: (string | null)[] | null | undefined) => (list ?? []).map((item) => item?.trim()).filter((item): item is string => Boolean(item));
-const anchor = (vacancy: VacancyItem) => `vacancy-${(vacancy.slug || vacancy.id).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+const anchor = vacancyAnchor;
 
 /**
  * Every position people can apply for, grouped by kind. Whether a vacancy is open follows from
@@ -163,7 +163,7 @@ function Vacancy({ vacancy, state, deadline, locale }: {
         hasRichText(value) ? (
             <section>
                 <h4>{label}</h4>
-                <RichText data={value as never} className="rich" />
+                <RichText data={value as never} className="rich" headingsFrom={5} />
             </section>
         ) : null;
     const plain = (label: string, value: string | null | undefined) =>
@@ -227,7 +227,7 @@ function Vacancy({ vacancy, state, deadline, locale }: {
                 {!closed && (hasRichText(vacancy.howToApply) || hasContact) && (
                     <section className="vacancy__apply">
                         <h4>{t('fields.howToApply')}</h4>
-                        {hasRichText(vacancy.howToApply) && <RichText data={vacancy.howToApply as never} className="rich" />}
+                        {hasRichText(vacancy.howToApply) && <RichText data={vacancy.howToApply as never} className="rich" headingsFrom={5} />}
                         {hasContact && (
                             <address>
                                 <span className="vacancy__contact-label">{t('fields.contactInfo')}</span>

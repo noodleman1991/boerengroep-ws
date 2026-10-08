@@ -1,5 +1,5 @@
 {
-  "id": "0c018836-5249-4f28-9ece-8578aed372f3",
+  "id": "8cde07aa-bf8e-41a1-ba1d-a645417a43a0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2500,6 +2500,14 @@
           "primaryKey": false,
           "notNull": false
         },
+        "size": {
+          "name": "size",
+          "type": "enum_pages_blocks_gallery_size",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'mosaic'"
+        },
         "source": {
           "name": "source",
           "type": "enum_pages_blocks_gallery_source",
@@ -3702,6 +3710,622 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.pages_blocks_news_preview": {
+      "name": "pages_blocks_news_preview",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_path": {
+          "name": "_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "background": {
+          "name": "background",
+          "type": "enum_pages_blocks_news_preview_background",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'white'"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "which": {
+          "name": "which",
+          "type": "enum_pages_blocks_news_preview_which",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'all'"
+        },
+        "count": {
+          "name": "count",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 3
+        },
+        "spotlight_first": {
+          "name": "spotlight_first",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "block_name": {
+          "name": "block_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "pages_blocks_news_preview_order_idx": {
+          "name": "pages_blocks_news_preview_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_news_preview_parent_id_idx": {
+          "name": "pages_blocks_news_preview_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_news_preview_path_idx": {
+          "name": "pages_blocks_news_preview_path_idx",
+          "columns": [
+            {
+              "expression": "_path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_news_preview_locale_idx": {
+          "name": "pages_blocks_news_preview_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_news_preview_parent_id_fk": {
+          "name": "pages_blocks_news_preview_parent_id_fk",
+          "tableFrom": "pages_blocks_news_preview",
+          "tableTo": "pages",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pages_blocks_vacancies_preview": {
+      "name": "pages_blocks_vacancies_preview",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_path": {
+          "name": "_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "background": {
+          "name": "background",
+          "type": "enum_pages_blocks_vacancies_preview_background",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'white'"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "count": {
+          "name": "count",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 3
+        },
+        "when_none": {
+          "name": "when_none",
+          "type": "enum_pages_blocks_vacancies_preview_when_none",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'hide'"
+        },
+        "block_name": {
+          "name": "block_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "pages_blocks_vacancies_preview_order_idx": {
+          "name": "pages_blocks_vacancies_preview_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_vacancies_preview_parent_id_idx": {
+          "name": "pages_blocks_vacancies_preview_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_vacancies_preview_path_idx": {
+          "name": "pages_blocks_vacancies_preview_path_idx",
+          "columns": [
+            {
+              "expression": "_path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_vacancies_preview_locale_idx": {
+          "name": "pages_blocks_vacancies_preview_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_vacancies_preview_parent_id_fk": {
+          "name": "pages_blocks_vacancies_preview_parent_id_fk",
+          "tableFrom": "pages_blocks_vacancies_preview",
+          "tableTo": "pages",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pages_blocks_spotlight_items": {
+      "name": "pages_blocks_spotlight_items",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "text": {
+          "name": "text",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "picture_id": {
+          "name": "picture_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "button_label": {
+          "name": "button_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "pages_blocks_spotlight_items_order_idx": {
+          "name": "pages_blocks_spotlight_items_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_spotlight_items_parent_id_idx": {
+          "name": "pages_blocks_spotlight_items_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_spotlight_items_locale_idx": {
+          "name": "pages_blocks_spotlight_items_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_spotlight_items_picture_idx": {
+          "name": "pages_blocks_spotlight_items_picture_idx",
+          "columns": [
+            {
+              "expression": "picture_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_spotlight_items_picture_id_media_id_fk": {
+          "name": "pages_blocks_spotlight_items_picture_id_media_id_fk",
+          "tableFrom": "pages_blocks_spotlight_items",
+          "tableTo": "media",
+          "columnsFrom": [
+            "picture_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "pages_blocks_spotlight_items_parent_id_fk": {
+          "name": "pages_blocks_spotlight_items_parent_id_fk",
+          "tableFrom": "pages_blocks_spotlight_items",
+          "tableTo": "pages_blocks_spotlight",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.pages_blocks_spotlight": {
+      "name": "pages_blocks_spotlight",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_path": {
+          "name": "_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "background": {
+          "name": "background",
+          "type": "enum_pages_blocks_spotlight_background",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'white'"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "block_name": {
+          "name": "block_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "pages_blocks_spotlight_order_idx": {
+          "name": "pages_blocks_spotlight_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_spotlight_parent_id_idx": {
+          "name": "pages_blocks_spotlight_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_spotlight_path_idx": {
+          "name": "pages_blocks_spotlight_path_idx",
+          "columns": [
+            {
+              "expression": "_path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_spotlight_locale_idx": {
+          "name": "pages_blocks_spotlight_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_spotlight_parent_id_fk": {
+          "name": "pages_blocks_spotlight_parent_id_fk",
+          "tableFrom": "pages_blocks_spotlight",
+          "tableTo": "pages",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.pages": {
       "name": "pages",
       "schema": "",
@@ -4038,6 +4662,30 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "pages_id": {
+          "name": "pages_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "newsletters_id": {
+          "name": "newsletters_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "past_events_id": {
+          "name": "past_events_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vacancies_id": {
+          "name": "vacancies_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -4142,6 +4790,90 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "pages_rels_pages_id_idx": {
+          "name": "pages_rels_pages_id_idx",
+          "columns": [
+            {
+              "expression": "pages_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_rels_newsletters_id_idx": {
+          "name": "pages_rels_newsletters_id_idx",
+          "columns": [
+            {
+              "expression": "newsletters_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_rels_past_events_id_idx": {
+          "name": "pages_rels_past_events_id_idx",
+          "columns": [
+            {
+              "expression": "past_events_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_rels_vacancies_id_idx": {
+          "name": "pages_rels_vacancies_id_idx",
+          "columns": [
+            {
+              "expression": "vacancies_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -4177,6 +4909,58 @@
           "tableTo": "media",
           "columnsFrom": [
             "media_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pages_rels_pages_fk": {
+          "name": "pages_rels_pages_fk",
+          "tableFrom": "pages_rels",
+          "tableTo": "pages",
+          "columnsFrom": [
+            "pages_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pages_rels_newsletters_fk": {
+          "name": "pages_rels_newsletters_fk",
+          "tableFrom": "pages_rels",
+          "tableTo": "newsletters",
+          "columnsFrom": [
+            "newsletters_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pages_rels_past_events_fk": {
+          "name": "pages_rels_past_events_fk",
+          "tableFrom": "pages_rels",
+          "tableTo": "past_events",
+          "columnsFrom": [
+            "past_events_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pages_rels_vacancies_fk": {
+          "name": "pages_rels_vacancies_fk",
+          "tableFrom": "pages_rels",
+          "tableTo": "vacancies",
+          "columnsFrom": [
+            "vacancies_id"
           ],
           "columnsTo": [
             "id"
@@ -6783,6 +7567,14 @@
           "primaryKey": false,
           "notNull": false
         },
+        "size": {
+          "name": "size",
+          "type": "enum__pages_v_blocks_gallery_size",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'mosaic'"
+        },
         "source": {
           "name": "source",
           "type": "enum__pages_v_blocks_gallery_source",
@@ -8033,6 +8825,646 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public._pages_v_blocks_news_preview": {
+      "name": "_pages_v_blocks_news_preview",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_path": {
+          "name": "_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "background": {
+          "name": "background",
+          "type": "enum__pages_v_blocks_news_preview_background",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'white'"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "which": {
+          "name": "which",
+          "type": "enum__pages_v_blocks_news_preview_which",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'all'"
+        },
+        "count": {
+          "name": "count",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 3
+        },
+        "spotlight_first": {
+          "name": "spotlight_first",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "block_name": {
+          "name": "block_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_news_preview_order_idx": {
+          "name": "_pages_v_blocks_news_preview_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_news_preview_parent_id_idx": {
+          "name": "_pages_v_blocks_news_preview_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_news_preview_path_idx": {
+          "name": "_pages_v_blocks_news_preview_path_idx",
+          "columns": [
+            {
+              "expression": "_path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_news_preview_locale_idx": {
+          "name": "_pages_v_blocks_news_preview_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_news_preview_parent_id_fk": {
+          "name": "_pages_v_blocks_news_preview_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_news_preview",
+          "tableTo": "_pages_v",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public._pages_v_blocks_vacancies_preview": {
+      "name": "_pages_v_blocks_vacancies_preview",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_path": {
+          "name": "_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "background": {
+          "name": "background",
+          "type": "enum__pages_v_blocks_vacancies_preview_background",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'white'"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "count": {
+          "name": "count",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 3
+        },
+        "when_none": {
+          "name": "when_none",
+          "type": "enum__pages_v_blocks_vacancies_preview_when_none",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'hide'"
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "block_name": {
+          "name": "block_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_vacancies_preview_order_idx": {
+          "name": "_pages_v_blocks_vacancies_preview_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_vacancies_preview_parent_id_idx": {
+          "name": "_pages_v_blocks_vacancies_preview_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_vacancies_preview_path_idx": {
+          "name": "_pages_v_blocks_vacancies_preview_path_idx",
+          "columns": [
+            {
+              "expression": "_path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_vacancies_preview_locale_idx": {
+          "name": "_pages_v_blocks_vacancies_preview_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_vacancies_preview_parent_id_fk": {
+          "name": "_pages_v_blocks_vacancies_preview_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_vacancies_preview",
+          "tableTo": "_pages_v",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public._pages_v_blocks_spotlight_items": {
+      "name": "_pages_v_blocks_spotlight_items",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "text": {
+          "name": "text",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "picture_id": {
+          "name": "picture_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "button_label": {
+          "name": "button_label",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_spotlight_items_order_idx": {
+          "name": "_pages_v_blocks_spotlight_items_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_spotlight_items_parent_id_idx": {
+          "name": "_pages_v_blocks_spotlight_items_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_spotlight_items_locale_idx": {
+          "name": "_pages_v_blocks_spotlight_items_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_spotlight_items_picture_idx": {
+          "name": "_pages_v_blocks_spotlight_items_picture_idx",
+          "columns": [
+            {
+              "expression": "picture_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_spotlight_items_picture_id_media_id_fk": {
+          "name": "_pages_v_blocks_spotlight_items_picture_id_media_id_fk",
+          "tableFrom": "_pages_v_blocks_spotlight_items",
+          "tableTo": "media",
+          "columnsFrom": [
+            "picture_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "_pages_v_blocks_spotlight_items_parent_id_fk": {
+          "name": "_pages_v_blocks_spotlight_items_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_spotlight_items",
+          "tableTo": "_pages_v_blocks_spotlight",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public._pages_v_blocks_spotlight": {
+      "name": "_pages_v_blocks_spotlight",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_path": {
+          "name": "_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "background": {
+          "name": "background",
+          "type": "enum__pages_v_blocks_spotlight_background",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'white'"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "block_name": {
+          "name": "block_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_spotlight_order_idx": {
+          "name": "_pages_v_blocks_spotlight_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_spotlight_parent_id_idx": {
+          "name": "_pages_v_blocks_spotlight_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_spotlight_path_idx": {
+          "name": "_pages_v_blocks_spotlight_path_idx",
+          "columns": [
+            {
+              "expression": "_path",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_spotlight_locale_idx": {
+          "name": "_pages_v_blocks_spotlight_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_spotlight_parent_id_fk": {
+          "name": "_pages_v_blocks_spotlight_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_spotlight",
+          "tableTo": "_pages_v",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public._pages_v": {
       "name": "_pages_v",
       "schema": "",
@@ -8509,6 +9941,30 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
+        },
+        "pages_id": {
+          "name": "pages_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "newsletters_id": {
+          "name": "newsletters_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "past_events_id": {
+          "name": "past_events_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vacancies_id": {
+          "name": "vacancies_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -8613,6 +10069,90 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "_pages_v_rels_pages_id_idx": {
+          "name": "_pages_v_rels_pages_id_idx",
+          "columns": [
+            {
+              "expression": "pages_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_rels_newsletters_id_idx": {
+          "name": "_pages_v_rels_newsletters_id_idx",
+          "columns": [
+            {
+              "expression": "newsletters_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_rels_past_events_id_idx": {
+          "name": "_pages_v_rels_past_events_id_idx",
+          "columns": [
+            {
+              "expression": "past_events_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_rels_vacancies_id_idx": {
+          "name": "_pages_v_rels_vacancies_id_idx",
+          "columns": [
+            {
+              "expression": "vacancies_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
@@ -8648,6 +10188,58 @@
           "tableTo": "media",
           "columnsFrom": [
             "media_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_pages_v_rels_pages_fk": {
+          "name": "_pages_v_rels_pages_fk",
+          "tableFrom": "_pages_v_rels",
+          "tableTo": "pages",
+          "columnsFrom": [
+            "pages_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_pages_v_rels_newsletters_fk": {
+          "name": "_pages_v_rels_newsletters_fk",
+          "tableFrom": "_pages_v_rels",
+          "tableTo": "newsletters",
+          "columnsFrom": [
+            "newsletters_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_pages_v_rels_past_events_fk": {
+          "name": "_pages_v_rels_past_events_fk",
+          "tableFrom": "_pages_v_rels",
+          "tableTo": "past_events",
+          "columnsFrom": [
+            "past_events_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "_pages_v_rels_vacancies_fk": {
+          "name": "_pages_v_rels_vacancies_fk",
+          "tableFrom": "_pages_v_rels",
+          "tableTo": "vacancies",
+          "columnsFrom": [
+            "vacancies_id"
           ],
           "columnsTo": [
             "id"
@@ -11107,6 +12699,14 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
+        },
+        "size": {
+          "name": "size",
+          "type": "enum_past_events_blocks_gallery_size",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'mosaic'"
         },
         "source": {
           "name": "source",
@@ -14689,6 +16289,14 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
+        },
+        "size": {
+          "name": "size",
+          "type": "enum__past_events_v_blocks_gallery_size",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'mosaic'"
         },
         "source": {
           "name": "source",
@@ -18472,6 +20080,14 @@
           "primaryKey": false,
           "notNull": false
         },
+        "size": {
+          "name": "size",
+          "type": "enum_newsletters_blocks_gallery_size",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'mosaic'"
+        },
         "source": {
           "name": "source",
           "type": "enum_newsletters_blocks_gallery_source",
@@ -21997,6 +23613,14 @@
           "primaryKey": false,
           "notNull": false
         },
+        "size": {
+          "name": "size",
+          "type": "enum__newsletters_v_blocks_gallery_size",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'mosaic'"
+        },
         "source": {
           "name": "source",
           "type": "enum__newsletters_v_blocks_gallery_source",
@@ -23742,6 +25366,12 @@
         },
         "open_to_nontraditional": {
           "name": "open_to_nontraditional",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "featured": {
+          "name": "featured",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false
@@ -30764,6 +32394,16 @@
         "dark"
       ]
     },
+    "public.enum_pages_blocks_gallery_size": {
+      "name": "enum_pages_blocks_gallery_size",
+      "schema": "public",
+      "values": [
+        "mosaic",
+        "small",
+        "medium",
+        "large"
+      ]
+    },
     "public.enum_pages_blocks_gallery_source": {
       "name": "enum_pages_blocks_gallery_source",
       "schema": "public",
@@ -30846,6 +32486,59 @@
       "values": [
         "link",
         "form"
+      ]
+    },
+    "public.enum_pages_blocks_news_preview_background": {
+      "name": "enum_pages_blocks_news_preview_background",
+      "schema": "public",
+      "values": [
+        "white",
+        "mist",
+        "leaf",
+        "harvest",
+        "sky",
+        "dark"
+      ]
+    },
+    "public.enum_pages_blocks_news_preview_which": {
+      "name": "enum_pages_blocks_news_preview_which",
+      "schema": "public",
+      "values": [
+        "all",
+        "own",
+        "friends"
+      ]
+    },
+    "public.enum_pages_blocks_vacancies_preview_background": {
+      "name": "enum_pages_blocks_vacancies_preview_background",
+      "schema": "public",
+      "values": [
+        "white",
+        "mist",
+        "leaf",
+        "harvest",
+        "sky",
+        "dark"
+      ]
+    },
+    "public.enum_pages_blocks_vacancies_preview_when_none": {
+      "name": "enum_pages_blocks_vacancies_preview_when_none",
+      "schema": "public",
+      "values": [
+        "hide",
+        "say"
+      ]
+    },
+    "public.enum_pages_blocks_spotlight_background": {
+      "name": "enum_pages_blocks_spotlight_background",
+      "schema": "public",
+      "values": [
+        "white",
+        "mist",
+        "leaf",
+        "harvest",
+        "sky",
+        "dark"
       ]
     },
     "public.enum_pages_status": {
@@ -31068,6 +32761,16 @@
         "dark"
       ]
     },
+    "public.enum__pages_v_blocks_gallery_size": {
+      "name": "enum__pages_v_blocks_gallery_size",
+      "schema": "public",
+      "values": [
+        "mosaic",
+        "small",
+        "medium",
+        "large"
+      ]
+    },
     "public.enum__pages_v_blocks_gallery_source": {
       "name": "enum__pages_v_blocks_gallery_source",
       "schema": "public",
@@ -31150,6 +32853,59 @@
       "values": [
         "link",
         "form"
+      ]
+    },
+    "public.enum__pages_v_blocks_news_preview_background": {
+      "name": "enum__pages_v_blocks_news_preview_background",
+      "schema": "public",
+      "values": [
+        "white",
+        "mist",
+        "leaf",
+        "harvest",
+        "sky",
+        "dark"
+      ]
+    },
+    "public.enum__pages_v_blocks_news_preview_which": {
+      "name": "enum__pages_v_blocks_news_preview_which",
+      "schema": "public",
+      "values": [
+        "all",
+        "own",
+        "friends"
+      ]
+    },
+    "public.enum__pages_v_blocks_vacancies_preview_background": {
+      "name": "enum__pages_v_blocks_vacancies_preview_background",
+      "schema": "public",
+      "values": [
+        "white",
+        "mist",
+        "leaf",
+        "harvest",
+        "sky",
+        "dark"
+      ]
+    },
+    "public.enum__pages_v_blocks_vacancies_preview_when_none": {
+      "name": "enum__pages_v_blocks_vacancies_preview_when_none",
+      "schema": "public",
+      "values": [
+        "hide",
+        "say"
+      ]
+    },
+    "public.enum__pages_v_blocks_spotlight_background": {
+      "name": "enum__pages_v_blocks_spotlight_background",
+      "schema": "public",
+      "values": [
+        "white",
+        "mist",
+        "leaf",
+        "harvest",
+        "sky",
+        "dark"
       ]
     },
     "public.enum__pages_v_version_status": {
@@ -31375,6 +33131,16 @@
         "harvest",
         "sky",
         "dark"
+      ]
+    },
+    "public.enum_past_events_blocks_gallery_size": {
+      "name": "enum_past_events_blocks_gallery_size",
+      "schema": "public",
+      "values": [
+        "mosaic",
+        "small",
+        "medium",
+        "large"
       ]
     },
     "public.enum_past_events_blocks_gallery_source": {
@@ -31654,6 +33420,16 @@
         "harvest",
         "sky",
         "dark"
+      ]
+    },
+    "public.enum__past_events_v_blocks_gallery_size": {
+      "name": "enum__past_events_v_blocks_gallery_size",
+      "schema": "public",
+      "values": [
+        "mosaic",
+        "small",
+        "medium",
+        "large"
       ]
     },
     "public.enum__past_events_v_blocks_gallery_source": {
@@ -31957,6 +33733,16 @@
         "dark"
       ]
     },
+    "public.enum_newsletters_blocks_gallery_size": {
+      "name": "enum_newsletters_blocks_gallery_size",
+      "schema": "public",
+      "values": [
+        "mosaic",
+        "small",
+        "medium",
+        "large"
+      ]
+    },
     "public.enum_newsletters_blocks_gallery_source": {
       "name": "enum_newsletters_blocks_gallery_source",
       "schema": "public",
@@ -32253,6 +34039,16 @@
         "harvest",
         "sky",
         "dark"
+      ]
+    },
+    "public.enum__newsletters_v_blocks_gallery_size": {
+      "name": "enum__newsletters_v_blocks_gallery_size",
+      "schema": "public",
+      "values": [
+        "mosaic",
+        "small",
+        "medium",
+        "large"
       ]
     },
     "public.enum__newsletters_v_blocks_gallery_source": {

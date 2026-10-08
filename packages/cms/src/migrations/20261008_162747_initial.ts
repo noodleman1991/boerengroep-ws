@@ -23,6 +23,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_pages_blocks_image_text_image_size" AS ENUM('small', 'medium', 'large');
   CREATE TYPE "public"."enum_pages_blocks_image_text_vertical_alignment" AS ENUM('top', 'center', 'bottom');
   CREATE TYPE "public"."enum_pages_blocks_gallery_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum_pages_blocks_gallery_size" AS ENUM('mosaic', 'small', 'medium', 'large');
   CREATE TYPE "public"."enum_pages_blocks_gallery_source" AS ENUM('pictures', 'pastEvent');
   CREATE TYPE "public"."enum_pages_blocks_documents_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_pages_blocks_podcast_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -31,6 +32,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_pages_blocks_form_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_pages_blocks_item_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_pages_blocks_item_action_type" AS ENUM('link', 'form');
+  CREATE TYPE "public"."enum_pages_blocks_news_preview_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum_pages_blocks_news_preview_which" AS ENUM('all', 'own', 'friends');
+  CREATE TYPE "public"."enum_pages_blocks_vacancies_preview_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum_pages_blocks_vacancies_preview_when_none" AS ENUM('hide', 'say');
+  CREATE TYPE "public"."enum_pages_blocks_spotlight_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_pages_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum__pages_v_blocks_hero_actions_type" AS ENUM('button', 'link');
   CREATE TYPE "public"."enum__pages_v_blocks_hero_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -52,6 +58,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__pages_v_blocks_image_text_image_size" AS ENUM('small', 'medium', 'large');
   CREATE TYPE "public"."enum__pages_v_blocks_image_text_vertical_alignment" AS ENUM('top', 'center', 'bottom');
   CREATE TYPE "public"."enum__pages_v_blocks_gallery_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum__pages_v_blocks_gallery_size" AS ENUM('mosaic', 'small', 'medium', 'large');
   CREATE TYPE "public"."enum__pages_v_blocks_gallery_source" AS ENUM('pictures', 'pastEvent');
   CREATE TYPE "public"."enum__pages_v_blocks_documents_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__pages_v_blocks_podcast_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -60,6 +67,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__pages_v_blocks_form_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__pages_v_blocks_item_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__pages_v_blocks_item_action_type" AS ENUM('link', 'form');
+  CREATE TYPE "public"."enum__pages_v_blocks_news_preview_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum__pages_v_blocks_news_preview_which" AS ENUM('all', 'own', 'friends');
+  CREATE TYPE "public"."enum__pages_v_blocks_vacancies_preview_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum__pages_v_blocks_vacancies_preview_when_none" AS ENUM('hide', 'say');
+  CREATE TYPE "public"."enum__pages_v_blocks_spotlight_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__pages_v_version_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum__pages_v_published_locale" AS ENUM('en', 'nl');
   CREATE TYPE "public"."enum_events_language" AS ENUM('en', 'nl');
@@ -82,6 +94,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_past_events_blocks_image_text_image_size" AS ENUM('small', 'medium', 'large');
   CREATE TYPE "public"."enum_past_events_blocks_image_text_vertical_alignment" AS ENUM('top', 'center', 'bottom');
   CREATE TYPE "public"."enum_past_events_blocks_gallery_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum_past_events_blocks_gallery_size" AS ENUM('mosaic', 'small', 'medium', 'large');
   CREATE TYPE "public"."enum_past_events_blocks_gallery_source" AS ENUM('pictures', 'pastEvent');
   CREATE TYPE "public"."enum_past_events_blocks_documents_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_past_events_blocks_podcast_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -109,6 +122,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__past_events_v_blocks_image_text_image_size" AS ENUM('small', 'medium', 'large');
   CREATE TYPE "public"."enum__past_events_v_blocks_image_text_vertical_alignment" AS ENUM('top', 'center', 'bottom');
   CREATE TYPE "public"."enum__past_events_v_blocks_gallery_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum__past_events_v_blocks_gallery_size" AS ENUM('mosaic', 'small', 'medium', 'large');
   CREATE TYPE "public"."enum__past_events_v_blocks_gallery_source" AS ENUM('pictures', 'pastEvent');
   CREATE TYPE "public"."enum__past_events_v_blocks_documents_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__past_events_v_blocks_podcast_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -138,6 +152,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_newsletters_blocks_image_text_image_size" AS ENUM('small', 'medium', 'large');
   CREATE TYPE "public"."enum_newsletters_blocks_image_text_vertical_alignment" AS ENUM('top', 'center', 'bottom');
   CREATE TYPE "public"."enum_newsletters_blocks_gallery_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum_newsletters_blocks_gallery_size" AS ENUM('mosaic', 'small', 'medium', 'large');
   CREATE TYPE "public"."enum_newsletters_blocks_gallery_source" AS ENUM('pictures', 'pastEvent');
   CREATE TYPE "public"."enum_newsletters_blocks_documents_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_newsletters_blocks_podcast_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -167,6 +182,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__newsletters_v_blocks_image_text_image_size" AS ENUM('small', 'medium', 'large');
   CREATE TYPE "public"."enum__newsletters_v_blocks_image_text_vertical_alignment" AS ENUM('top', 'center', 'bottom');
   CREATE TYPE "public"."enum__newsletters_v_blocks_gallery_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
+  CREATE TYPE "public"."enum__newsletters_v_blocks_gallery_size" AS ENUM('mosaic', 'small', 'medium', 'large');
   CREATE TYPE "public"."enum__newsletters_v_blocks_gallery_source" AS ENUM('pictures', 'pastEvent');
   CREATE TYPE "public"."enum__newsletters_v_blocks_documents_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__newsletters_v_blocks_podcast_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -406,6 +422,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"background" "enum_pages_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
   	"intro" varchar,
+  	"size" "enum_pages_blocks_gallery_size" DEFAULT 'mosaic',
   	"source" "enum_pages_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"block_name" varchar
@@ -495,6 +512,57 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
+  CREATE TABLE "pages_blocks_news_preview" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"background" "enum_pages_blocks_news_preview_background" DEFAULT 'white',
+  	"title" varchar,
+  	"description" varchar,
+  	"which" "enum_pages_blocks_news_preview_which" DEFAULT 'all',
+  	"count" numeric DEFAULT 3,
+  	"spotlight_first" boolean DEFAULT true,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_vacancies_preview" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"background" "enum_pages_blocks_vacancies_preview_background" DEFAULT 'white',
+  	"title" varchar,
+  	"description" varchar,
+  	"count" numeric DEFAULT 3,
+  	"when_none" "enum_pages_blocks_vacancies_preview_when_none" DEFAULT 'hide',
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_spotlight_items" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"title" varchar,
+  	"text" varchar,
+  	"picture_id" integer,
+  	"button_label" varchar
+  );
+  
+  CREATE TABLE "pages_blocks_spotlight" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"background" "enum_pages_blocks_spotlight_background" DEFAULT 'white',
+  	"title" varchar,
+  	"block_name" varchar
+  );
+  
   CREATE TABLE "pages" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"tenant_id" integer,
@@ -522,7 +590,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"path" varchar NOT NULL,
   	"locale" "_locales",
   	"events_id" integer,
-  	"media_id" integer
+  	"media_id" integer,
+  	"pages_id" integer,
+  	"newsletters_id" integer,
+  	"past_events_id" integer,
+  	"vacancies_id" integer
   );
   
   CREATE TABLE "_pages_v_blocks_hero_actions" (
@@ -753,6 +825,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"background" "enum__pages_v_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
   	"intro" varchar,
+  	"size" "enum__pages_v_blocks_gallery_size" DEFAULT 'mosaic',
   	"source" "enum__pages_v_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"_uuid" varchar,
@@ -850,6 +923,61 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
+  CREATE TABLE "_pages_v_blocks_news_preview" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"background" "enum__pages_v_blocks_news_preview_background" DEFAULT 'white',
+  	"title" varchar,
+  	"description" varchar,
+  	"which" "enum__pages_v_blocks_news_preview_which" DEFAULT 'all',
+  	"count" numeric DEFAULT 3,
+  	"spotlight_first" boolean DEFAULT true,
+  	"_uuid" varchar,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE "_pages_v_blocks_vacancies_preview" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"background" "enum__pages_v_blocks_vacancies_preview_background" DEFAULT 'white',
+  	"title" varchar,
+  	"description" varchar,
+  	"count" numeric DEFAULT 3,
+  	"when_none" "enum__pages_v_blocks_vacancies_preview_when_none" DEFAULT 'hide',
+  	"_uuid" varchar,
+  	"block_name" varchar
+  );
+  
+  CREATE TABLE "_pages_v_blocks_spotlight_items" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"title" varchar,
+  	"text" varchar,
+  	"picture_id" integer,
+  	"button_label" varchar,
+  	"_uuid" varchar
+  );
+  
+  CREATE TABLE "_pages_v_blocks_spotlight" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_path" text NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"background" "enum__pages_v_blocks_spotlight_background" DEFAULT 'white',
+  	"title" varchar,
+  	"_uuid" varchar,
+  	"block_name" varchar
+  );
+  
   CREATE TABLE "_pages_v" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"parent_id" integer,
@@ -883,7 +1011,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"path" varchar NOT NULL,
   	"locale" "_locales",
   	"events_id" integer,
-  	"media_id" integer
+  	"media_id" integer,
+  	"pages_id" integer,
+  	"newsletters_id" integer,
+  	"past_events_id" integer,
+  	"vacancies_id" integer
   );
   
   CREATE TABLE "events_speakers" (
@@ -1105,6 +1237,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"background" "enum_past_events_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
   	"intro" varchar,
+  	"size" "enum_past_events_blocks_gallery_size" DEFAULT 'mosaic',
   	"source" "enum_past_events_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"block_name" varchar
@@ -1413,6 +1546,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"background" "enum__past_events_v_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
   	"intro" varchar,
+  	"size" "enum__past_events_v_blocks_gallery_size" DEFAULT 'mosaic',
   	"source" "enum__past_events_v_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"_uuid" varchar,
@@ -1726,6 +1860,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"background" "enum_newsletters_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
   	"intro" varchar,
+  	"size" "enum_newsletters_blocks_gallery_size" DEFAULT 'mosaic',
   	"source" "enum_newsletters_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"block_name" varchar
@@ -2035,6 +2170,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"background" "enum__newsletters_v_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
   	"intro" varchar,
+  	"size" "enum__newsletters_v_blocks_gallery_size" DEFAULT 'mosaic',
   	"source" "enum__newsletters_v_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"_uuid" varchar,
@@ -2177,6 +2313,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"contact_info_phone" varchar,
   	"supporting_document_id" integer,
   	"open_to_nontraditional" boolean,
+  	"featured" boolean,
   	"legacy_id" varchar,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
@@ -2776,12 +2913,21 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "pages_blocks_form" ADD CONSTRAINT "pages_blocks_form_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_item" ADD CONSTRAINT "pages_blocks_item_form_id_forms_id_fk" FOREIGN KEY ("form_id") REFERENCES "public"."forms"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages_blocks_item" ADD CONSTRAINT "pages_blocks_item_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_news_preview" ADD CONSTRAINT "pages_blocks_news_preview_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_vacancies_preview" ADD CONSTRAINT "pages_blocks_vacancies_preview_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_spotlight_items" ADD CONSTRAINT "pages_blocks_spotlight_items_picture_id_media_id_fk" FOREIGN KEY ("picture_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "pages_blocks_spotlight_items" ADD CONSTRAINT "pages_blocks_spotlight_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages_blocks_spotlight"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_spotlight" ADD CONSTRAINT "pages_blocks_spotlight_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages" ADD CONSTRAINT "pages_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages" ADD CONSTRAINT "pages_parent_id_pages_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."pages"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages_locales" ADD CONSTRAINT "pages_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_rels" ADD CONSTRAINT "pages_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_rels" ADD CONSTRAINT "pages_rels_events_fk" FOREIGN KEY ("events_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_rels" ADD CONSTRAINT "pages_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_rels" ADD CONSTRAINT "pages_rels_pages_fk" FOREIGN KEY ("pages_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_rels" ADD CONSTRAINT "pages_rels_newsletters_fk" FOREIGN KEY ("newsletters_id") REFERENCES "public"."newsletters"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_rels" ADD CONSTRAINT "pages_rels_past_events_fk" FOREIGN KEY ("past_events_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_rels" ADD CONSTRAINT "pages_rels_vacancies_fk" FOREIGN KEY ("vacancies_id") REFERENCES "public"."vacancies"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_hero_actions" ADD CONSTRAINT "_pages_v_blocks_hero_actions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v_blocks_hero"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_hero" ADD CONSTRAINT "_pages_v_blocks_hero_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_hero" ADD CONSTRAINT "_pages_v_blocks_hero_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
@@ -2815,6 +2961,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_pages_v_blocks_form" ADD CONSTRAINT "_pages_v_blocks_form_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_item" ADD CONSTRAINT "_pages_v_blocks_item_form_id_forms_id_fk" FOREIGN KEY ("form_id") REFERENCES "public"."forms"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_item" ADD CONSTRAINT "_pages_v_blocks_item_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_blocks_news_preview" ADD CONSTRAINT "_pages_v_blocks_news_preview_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_blocks_vacancies_preview" ADD CONSTRAINT "_pages_v_blocks_vacancies_preview_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_blocks_spotlight_items" ADD CONSTRAINT "_pages_v_blocks_spotlight_items_picture_id_media_id_fk" FOREIGN KEY ("picture_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "_pages_v_blocks_spotlight_items" ADD CONSTRAINT "_pages_v_blocks_spotlight_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v_blocks_spotlight"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_blocks_spotlight" ADD CONSTRAINT "_pages_v_blocks_spotlight_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v" ADD CONSTRAINT "_pages_v_parent_id_pages_id_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."pages"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_pages_v" ADD CONSTRAINT "_pages_v_version_tenant_id_tenants_id_fk" FOREIGN KEY ("version_tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_pages_v" ADD CONSTRAINT "_pages_v_version_parent_id_pages_id_fk" FOREIGN KEY ("version_parent_id") REFERENCES "public"."pages"("id") ON DELETE set null ON UPDATE no action;
@@ -2822,6 +2973,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_pages_v_rels" ADD CONSTRAINT "_pages_v_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_rels" ADD CONSTRAINT "_pages_v_rels_events_fk" FOREIGN KEY ("events_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_rels" ADD CONSTRAINT "_pages_v_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_rels" ADD CONSTRAINT "_pages_v_rels_pages_fk" FOREIGN KEY ("pages_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_rels" ADD CONSTRAINT "_pages_v_rels_newsletters_fk" FOREIGN KEY ("newsletters_id") REFERENCES "public"."newsletters"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_rels" ADD CONSTRAINT "_pages_v_rels_past_events_fk" FOREIGN KEY ("past_events_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_rels" ADD CONSTRAINT "_pages_v_rels_vacancies_fk" FOREIGN KEY ("vacancies_id") REFERENCES "public"."vacancies"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "events_speakers" ADD CONSTRAINT "events_speakers_speaker_id_speakers_id_fk" FOREIGN KEY ("speaker_id") REFERENCES "public"."speakers"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "events_speakers" ADD CONSTRAINT "events_speakers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "events" ADD CONSTRAINT "events_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
@@ -3159,6 +3314,22 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "pages_blocks_item_path_idx" ON "pages_blocks_item" USING btree ("_path");
   CREATE INDEX "pages_blocks_item_locale_idx" ON "pages_blocks_item" USING btree ("_locale");
   CREATE INDEX "pages_blocks_item_form_idx" ON "pages_blocks_item" USING btree ("form_id");
+  CREATE INDEX "pages_blocks_news_preview_order_idx" ON "pages_blocks_news_preview" USING btree ("_order");
+  CREATE INDEX "pages_blocks_news_preview_parent_id_idx" ON "pages_blocks_news_preview" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_news_preview_path_idx" ON "pages_blocks_news_preview" USING btree ("_path");
+  CREATE INDEX "pages_blocks_news_preview_locale_idx" ON "pages_blocks_news_preview" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_vacancies_preview_order_idx" ON "pages_blocks_vacancies_preview" USING btree ("_order");
+  CREATE INDEX "pages_blocks_vacancies_preview_parent_id_idx" ON "pages_blocks_vacancies_preview" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_vacancies_preview_path_idx" ON "pages_blocks_vacancies_preview" USING btree ("_path");
+  CREATE INDEX "pages_blocks_vacancies_preview_locale_idx" ON "pages_blocks_vacancies_preview" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_spotlight_items_order_idx" ON "pages_blocks_spotlight_items" USING btree ("_order");
+  CREATE INDEX "pages_blocks_spotlight_items_parent_id_idx" ON "pages_blocks_spotlight_items" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_spotlight_items_locale_idx" ON "pages_blocks_spotlight_items" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_spotlight_items_picture_idx" ON "pages_blocks_spotlight_items" USING btree ("picture_id");
+  CREATE INDEX "pages_blocks_spotlight_order_idx" ON "pages_blocks_spotlight" USING btree ("_order");
+  CREATE INDEX "pages_blocks_spotlight_parent_id_idx" ON "pages_blocks_spotlight" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_spotlight_path_idx" ON "pages_blocks_spotlight" USING btree ("_path");
+  CREATE INDEX "pages_blocks_spotlight_locale_idx" ON "pages_blocks_spotlight" USING btree ("_locale");
   CREATE INDEX "pages_tenant_idx" ON "pages" USING btree ("tenant_id");
   CREATE INDEX "pages_parent_idx" ON "pages" USING btree ("parent_id");
   CREATE INDEX "pages_legacy_id_idx" ON "pages" USING btree ("legacy_id");
@@ -3173,6 +3344,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "pages_rels_locale_idx" ON "pages_rels" USING btree ("locale");
   CREATE INDEX "pages_rels_events_id_idx" ON "pages_rels" USING btree ("events_id","locale");
   CREATE INDEX "pages_rels_media_id_idx" ON "pages_rels" USING btree ("media_id","locale");
+  CREATE INDEX "pages_rels_pages_id_idx" ON "pages_rels" USING btree ("pages_id","locale");
+  CREATE INDEX "pages_rels_newsletters_id_idx" ON "pages_rels" USING btree ("newsletters_id","locale");
+  CREATE INDEX "pages_rels_past_events_id_idx" ON "pages_rels" USING btree ("past_events_id","locale");
+  CREATE INDEX "pages_rels_vacancies_id_idx" ON "pages_rels" USING btree ("vacancies_id","locale");
   CREATE INDEX "_pages_v_blocks_hero_actions_order_idx" ON "_pages_v_blocks_hero_actions" USING btree ("_order");
   CREATE INDEX "_pages_v_blocks_hero_actions_parent_id_idx" ON "_pages_v_blocks_hero_actions" USING btree ("_parent_id");
   CREATE INDEX "_pages_v_blocks_hero_actions_locale_idx" ON "_pages_v_blocks_hero_actions" USING btree ("_locale");
@@ -3270,6 +3445,22 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_pages_v_blocks_item_path_idx" ON "_pages_v_blocks_item" USING btree ("_path");
   CREATE INDEX "_pages_v_blocks_item_locale_idx" ON "_pages_v_blocks_item" USING btree ("_locale");
   CREATE INDEX "_pages_v_blocks_item_form_idx" ON "_pages_v_blocks_item" USING btree ("form_id");
+  CREATE INDEX "_pages_v_blocks_news_preview_order_idx" ON "_pages_v_blocks_news_preview" USING btree ("_order");
+  CREATE INDEX "_pages_v_blocks_news_preview_parent_id_idx" ON "_pages_v_blocks_news_preview" USING btree ("_parent_id");
+  CREATE INDEX "_pages_v_blocks_news_preview_path_idx" ON "_pages_v_blocks_news_preview" USING btree ("_path");
+  CREATE INDEX "_pages_v_blocks_news_preview_locale_idx" ON "_pages_v_blocks_news_preview" USING btree ("_locale");
+  CREATE INDEX "_pages_v_blocks_vacancies_preview_order_idx" ON "_pages_v_blocks_vacancies_preview" USING btree ("_order");
+  CREATE INDEX "_pages_v_blocks_vacancies_preview_parent_id_idx" ON "_pages_v_blocks_vacancies_preview" USING btree ("_parent_id");
+  CREATE INDEX "_pages_v_blocks_vacancies_preview_path_idx" ON "_pages_v_blocks_vacancies_preview" USING btree ("_path");
+  CREATE INDEX "_pages_v_blocks_vacancies_preview_locale_idx" ON "_pages_v_blocks_vacancies_preview" USING btree ("_locale");
+  CREATE INDEX "_pages_v_blocks_spotlight_items_order_idx" ON "_pages_v_blocks_spotlight_items" USING btree ("_order");
+  CREATE INDEX "_pages_v_blocks_spotlight_items_parent_id_idx" ON "_pages_v_blocks_spotlight_items" USING btree ("_parent_id");
+  CREATE INDEX "_pages_v_blocks_spotlight_items_locale_idx" ON "_pages_v_blocks_spotlight_items" USING btree ("_locale");
+  CREATE INDEX "_pages_v_blocks_spotlight_items_picture_idx" ON "_pages_v_blocks_spotlight_items" USING btree ("picture_id");
+  CREATE INDEX "_pages_v_blocks_spotlight_order_idx" ON "_pages_v_blocks_spotlight" USING btree ("_order");
+  CREATE INDEX "_pages_v_blocks_spotlight_parent_id_idx" ON "_pages_v_blocks_spotlight" USING btree ("_parent_id");
+  CREATE INDEX "_pages_v_blocks_spotlight_path_idx" ON "_pages_v_blocks_spotlight" USING btree ("_path");
+  CREATE INDEX "_pages_v_blocks_spotlight_locale_idx" ON "_pages_v_blocks_spotlight" USING btree ("_locale");
   CREATE INDEX "_pages_v_parent_idx" ON "_pages_v" USING btree ("parent_id");
   CREATE INDEX "_pages_v_version_version_tenant_idx" ON "_pages_v" USING btree ("version_tenant_id");
   CREATE INDEX "_pages_v_version_version_parent_idx" ON "_pages_v" USING btree ("version_parent_id");
@@ -3290,6 +3481,10 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_pages_v_rels_locale_idx" ON "_pages_v_rels" USING btree ("locale");
   CREATE INDEX "_pages_v_rels_events_id_idx" ON "_pages_v_rels" USING btree ("events_id","locale");
   CREATE INDEX "_pages_v_rels_media_id_idx" ON "_pages_v_rels" USING btree ("media_id","locale");
+  CREATE INDEX "_pages_v_rels_pages_id_idx" ON "_pages_v_rels" USING btree ("pages_id","locale");
+  CREATE INDEX "_pages_v_rels_newsletters_id_idx" ON "_pages_v_rels" USING btree ("newsletters_id","locale");
+  CREATE INDEX "_pages_v_rels_past_events_id_idx" ON "_pages_v_rels" USING btree ("past_events_id","locale");
+  CREATE INDEX "_pages_v_rels_vacancies_id_idx" ON "_pages_v_rels" USING btree ("vacancies_id","locale");
   CREATE INDEX "events_speakers_order_idx" ON "events_speakers" USING btree ("_order");
   CREATE INDEX "events_speakers_parent_id_idx" ON "events_speakers" USING btree ("_parent_id");
   CREATE INDEX "events_speakers_speaker_idx" ON "events_speakers" USING btree ("speaker_id");
@@ -3828,6 +4023,10 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "pages_blocks_newsletter_signup" CASCADE;
   DROP TABLE "pages_blocks_form" CASCADE;
   DROP TABLE "pages_blocks_item" CASCADE;
+  DROP TABLE "pages_blocks_news_preview" CASCADE;
+  DROP TABLE "pages_blocks_vacancies_preview" CASCADE;
+  DROP TABLE "pages_blocks_spotlight_items" CASCADE;
+  DROP TABLE "pages_blocks_spotlight" CASCADE;
   DROP TABLE "pages" CASCADE;
   DROP TABLE "pages_locales" CASCADE;
   DROP TABLE "pages_rels" CASCADE;
@@ -3855,6 +4054,10 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "_pages_v_blocks_newsletter_signup" CASCADE;
   DROP TABLE "_pages_v_blocks_form" CASCADE;
   DROP TABLE "_pages_v_blocks_item" CASCADE;
+  DROP TABLE "_pages_v_blocks_news_preview" CASCADE;
+  DROP TABLE "_pages_v_blocks_vacancies_preview" CASCADE;
+  DROP TABLE "_pages_v_blocks_spotlight_items" CASCADE;
+  DROP TABLE "_pages_v_blocks_spotlight" CASCADE;
   DROP TABLE "_pages_v" CASCADE;
   DROP TABLE "_pages_v_locales" CASCADE;
   DROP TABLE "_pages_v_rels" CASCADE;
@@ -4043,6 +4246,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_pages_blocks_image_text_image_size";
   DROP TYPE "public"."enum_pages_blocks_image_text_vertical_alignment";
   DROP TYPE "public"."enum_pages_blocks_gallery_background";
+  DROP TYPE "public"."enum_pages_blocks_gallery_size";
   DROP TYPE "public"."enum_pages_blocks_gallery_source";
   DROP TYPE "public"."enum_pages_blocks_documents_background";
   DROP TYPE "public"."enum_pages_blocks_podcast_background";
@@ -4051,6 +4255,11 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_pages_blocks_form_background";
   DROP TYPE "public"."enum_pages_blocks_item_background";
   DROP TYPE "public"."enum_pages_blocks_item_action_type";
+  DROP TYPE "public"."enum_pages_blocks_news_preview_background";
+  DROP TYPE "public"."enum_pages_blocks_news_preview_which";
+  DROP TYPE "public"."enum_pages_blocks_vacancies_preview_background";
+  DROP TYPE "public"."enum_pages_blocks_vacancies_preview_when_none";
+  DROP TYPE "public"."enum_pages_blocks_spotlight_background";
   DROP TYPE "public"."enum_pages_status";
   DROP TYPE "public"."enum__pages_v_blocks_hero_actions_type";
   DROP TYPE "public"."enum__pages_v_blocks_hero_background";
@@ -4072,6 +4281,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__pages_v_blocks_image_text_image_size";
   DROP TYPE "public"."enum__pages_v_blocks_image_text_vertical_alignment";
   DROP TYPE "public"."enum__pages_v_blocks_gallery_background";
+  DROP TYPE "public"."enum__pages_v_blocks_gallery_size";
   DROP TYPE "public"."enum__pages_v_blocks_gallery_source";
   DROP TYPE "public"."enum__pages_v_blocks_documents_background";
   DROP TYPE "public"."enum__pages_v_blocks_podcast_background";
@@ -4080,6 +4290,11 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__pages_v_blocks_form_background";
   DROP TYPE "public"."enum__pages_v_blocks_item_background";
   DROP TYPE "public"."enum__pages_v_blocks_item_action_type";
+  DROP TYPE "public"."enum__pages_v_blocks_news_preview_background";
+  DROP TYPE "public"."enum__pages_v_blocks_news_preview_which";
+  DROP TYPE "public"."enum__pages_v_blocks_vacancies_preview_background";
+  DROP TYPE "public"."enum__pages_v_blocks_vacancies_preview_when_none";
+  DROP TYPE "public"."enum__pages_v_blocks_spotlight_background";
   DROP TYPE "public"."enum__pages_v_version_status";
   DROP TYPE "public"."enum__pages_v_published_locale";
   DROP TYPE "public"."enum_events_language";
@@ -4102,6 +4317,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_past_events_blocks_image_text_image_size";
   DROP TYPE "public"."enum_past_events_blocks_image_text_vertical_alignment";
   DROP TYPE "public"."enum_past_events_blocks_gallery_background";
+  DROP TYPE "public"."enum_past_events_blocks_gallery_size";
   DROP TYPE "public"."enum_past_events_blocks_gallery_source";
   DROP TYPE "public"."enum_past_events_blocks_documents_background";
   DROP TYPE "public"."enum_past_events_blocks_podcast_background";
@@ -4129,6 +4345,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__past_events_v_blocks_image_text_image_size";
   DROP TYPE "public"."enum__past_events_v_blocks_image_text_vertical_alignment";
   DROP TYPE "public"."enum__past_events_v_blocks_gallery_background";
+  DROP TYPE "public"."enum__past_events_v_blocks_gallery_size";
   DROP TYPE "public"."enum__past_events_v_blocks_gallery_source";
   DROP TYPE "public"."enum__past_events_v_blocks_documents_background";
   DROP TYPE "public"."enum__past_events_v_blocks_podcast_background";
@@ -4158,6 +4375,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_newsletters_blocks_image_text_image_size";
   DROP TYPE "public"."enum_newsletters_blocks_image_text_vertical_alignment";
   DROP TYPE "public"."enum_newsletters_blocks_gallery_background";
+  DROP TYPE "public"."enum_newsletters_blocks_gallery_size";
   DROP TYPE "public"."enum_newsletters_blocks_gallery_source";
   DROP TYPE "public"."enum_newsletters_blocks_documents_background";
   DROP TYPE "public"."enum_newsletters_blocks_podcast_background";
@@ -4187,6 +4405,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__newsletters_v_blocks_image_text_image_size";
   DROP TYPE "public"."enum__newsletters_v_blocks_image_text_vertical_alignment";
   DROP TYPE "public"."enum__newsletters_v_blocks_gallery_background";
+  DROP TYPE "public"."enum__newsletters_v_blocks_gallery_size";
   DROP TYPE "public"."enum__newsletters_v_blocks_gallery_source";
   DROP TYPE "public"."enum__newsletters_v_blocks_documents_background";
   DROP TYPE "public"."enum__newsletters_v_blocks_podcast_background";

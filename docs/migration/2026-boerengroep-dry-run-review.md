@@ -1,48 +1,58 @@
 # Review of the Boerengroep dry-run report
 
-Date: 2026-10-08
+Date: 2026-10-08, last brought up to date after the fifth round of work on the same day
 Report: `2026-boerengroep-dry-run-report.md` (regenerated on every run)
 Status: decisions below are proposed by the migration author and need the site owner's confirmation before cutover.
 
 ## Result
 
 The run imported everything and exited cleanly, with no `error` entries. A second run changed nothing.
+Counts are of the import of 8 October 2026 from `origin/main`, after the fix-ups.
 
-| Collection | Source files | Imported |
-|---|---|---|
-| Pages | 71 files in two languages | 33 documents (30 pairs, 1 English only, 2 draft placeholders) |
-| Events | 26 | 26 |
-| Newsletters | 4 | 4 |
-| Vacancies | 3 | 3 |
-| Past events | 2 | 2 |
-| Speakers | 6 | 6 |
-| Authors | 4 | 4 |
-| Tags | 3 | 3 |
-| Media | 68 | 68 |
-| Site settings | 1 | 1 |
-| Redirects | 0 | 0 |
+| What | On the new site |
+|---|---|
+| Pages | 31 (29 published, 2 draft placeholders that keep child addresses stable) |
+| Events | 34, in 7 kinds |
+| News items | 6, all news from friends |
+| Vacancies | 8 |
+| Stories of past events | 3 |
+| Speakers and authors | 1 and 5 |
+| Pictures and files | 144: the 142 of the old uploads folder, and 2 that were only on Tina's file server |
+| Forwarding addresses | 5 |
+
+## Files
+
+Every file of the old site was checked, because files were stored in two places.
+
+- **The uploads folder of the old repository**: 142 files, all imported. Each old address
+  (`/uploads/...`) still delivers its file.
+- **Tina's own file server** (`assets.tina.io`). It goes away when the Tina account is closed.
+  The old content used it in two ways:
+  - Four links on "What is Boerengroep" (English and Dutch) led there: the **Year Plan 2026**
+    and the **Year Report 2025**. Both files are in the uploads folder too. The import now
+    turns such links into links to the imported file. Checked: no text in the database
+    mentions that server any more, and both links deliver a PDF from the new site.
+  - Three files were only there and not in the repository. Two are pictures the content
+    shows, and they were downloaded and are kept in `boerengroep-rescued/uploads`, so the
+    import brings them along: `1207.png` (the event "Excursion: Tuinen van de Egel", which had
+    no picture on the live site because of this) and
+    `WhatsApp Image 2025-07-31 at 18.31.55.jpeg` (the old page "News from friends").
+  - **Left on that server on purpose, needs the owner's decision:**
+    `vacancies/documents/2025-2026_aangepasteopeningstijden_EN.pdf`, 12.6 MB, attached to the
+    vacancy "Food.Film.Fest Volunteer", which closed on 29 September 2025 and no longer shows.
+    Its name says it is about adjusted opening hours, so it looks attached by mistake. If it is
+    wanted: download
+    `https://assets.tina.io/fbbafd20-e72e-48a2-bb11-70ea9ed9a361/vacancies/documents/2025-2026_aangepasteopeningstijden_EN.pdf`
+    before the Tina account is closed and attach it to the vacancy in the admin.
 
 ## Decisions per report entry
 
-### missing-media (10): fix in admin after cutover
+### missing-media (3): accepted
 
-These files are referenced in content but are not in `public/uploads` on `main`, so the images are
-already broken on the current site. The documents were imported with the image field empty.
-
-- Five speaker avatars under `/uploads/speakers/`. These speakers look like sample data.
-- `/uploads/1207.png` on the event "Excursion Tuinen van de Egel".
-- `/uploads/vacancies/documents/2025-2026_aangepasteopeningstijden_EN.pdf` on the vacancy "Nice position".
-- `/uploads/WhatsApp Image 2025-07-31 at 18.31.55.jpeg` on the English and Dutch Friends News pages.
-- `/uploads/logo.png` in the site settings. The header does not use this field today. It shows a
-  fixed image, `/uploads/branding/boerengroep-logo-zwart.png`, which was imported. After cutover,
-  set that image as the logo under Site settings.
-
-### inline-image (3): fix in admin after cutover
-
-Rich text was imported, and the image inside it is left as literal markdown text.
-
-- Vacancy "Nice position": `/uploads/1.png` and `/uploads/2.png`.
-- Vacancy "Volunteer with us": `/uploads/bg_chair.jpg`.
+- The PDF of the vacancy "Food.Film.Fest Volunteer": see "Files" above.
+- `/uploads/logo.png` in the site settings, twice (once per language). That file exists
+  nowhere, not on Tina's server either. The fix-ups file sets the logo the header really uses,
+  `/uploads/branding/boerengroep-logo-zwart.png`.
 
 ### unpaired-locale (1): accepted
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { groupVacancies, vacancyState } from './vacancies'
+import { groupVacancies, openPositions, vacancyAnchor, vacancyState } from './vacancies'
 
 // Thursday 8 October 2026, three in the afternoon in the Netherlands.
 const now = new Date('2026-10-08T13:00:00.000Z')
@@ -69,5 +69,48 @@ describe('the vacancies page', () => {
     const groups = groupVacancies(all, now, { includeEmpty: true })
     expect(groups.map((group) => group.kind)).toEqual(['volunteer', 'internship', 'coordinator', 'board', 'other'])
     expect(groups.find((group) => group.kind === 'internship')).toMatchObject({ items: [], open: 0 })
+  })
+})
+
+describe('the open positions a page shows', () => {
+  const day = new Date('2026-10-08T10:00:00+02:00')
+  type Listed = { title: string; openApplication?: boolean; applicationDeadline?: string; featured?: boolean }
+  const list: Listed[] = [
+    { title: 'always', openApplication: true },
+    { title: 'later', applicationDeadline: '2026-11-20T12:00:00.000Z' },
+    { title: 'soon', applicationDeadline: '2026-10-17T12:00:00.000Z' },
+    { title: 'today', applicationDeadline: '2026-10-08T12:00:00.000Z' },
+    { title: 'yesterday', applicationDeadline: '2026-10-07T12:00:00.000Z' },
+    { title: 'long ago', applicationDeadline: '2025-09-29T12:00:00.000Z' },
+    { title: 'no date' },
+  ]
+  const titles = (count?: number, from = list) => openPositions(from, day, count).map((entry) => entry.vacancy.title)
+
+  it('shows what people can apply for: the nearest last day first, then the ones that are always open', () => {
+    expect(titles(9)).toEqual(['today', 'soon', 'later', 'always', 'no date'])
+  })
+  it('counts the last day itself as open and drops a vacancy the day after', () => {
+    expect(titles(9)).toContain('today')
+    expect(titles(9)).not.toContain('yesterday')
+  })
+  it('shows three unless told otherwise', () => {
+    expect(titles()).toEqual(['today', 'soon', 'later'])
+    expect(titles(1)).toEqual(['today'])
+  })
+  it('puts a vacancy in the spotlight first, also one without a last day', () => {
+    expect(titles(3, [...list, { title: 'spot', openApplication: true, featured: true }])).toEqual(['spot', 'today', 'soon'])
+  })
+  it('never shows a closed vacancy, not even one in the spotlight', () => {
+    expect(titles(9, [{ title: 'closed spot', applicationDeadline: '2026-10-01T12:00:00.000Z', featured: true }])).toEqual([])
+  })
+  it('tells the page the last day, so it can say "apply until"', () => {
+    expect(openPositions(list, day, 9).map((entry) => entry.deadline)).toEqual(['2026-10-08', '2026-10-17', '2026-11-20', undefined, undefined])
+  })
+})
+
+describe('the name of a vacancy on the positions page', () => {
+  it('is made from the last part of its address, or its number', () => {
+    expect(vacancyAnchor({ id: 4, slug: 'General_Board Member' })).toBe('vacancy-general-board-member')
+    expect(vacancyAnchor({ id: 4, slug: '' })).toBe('vacancy-4')
   })
 })

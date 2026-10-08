@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { DeleteDataPage } from '@/components/newsletter/delete-data-page';
 import Layout from '@/components/layout/layout';
+import { SITE } from '@/site.config';
 
 interface DeleteDataPageProps {
     params: Promise<{ locale: string }>;
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: DeleteDataPageProps): Promise
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
-        title: `${t('deleteData.title')} - Stichting Boerengroep`,
+        title: `${t('deleteData.title')} - ${SITE.name}`,
         description: t('deleteData.description'),
     };
 }

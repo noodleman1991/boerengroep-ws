@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { mapBackground } from './blocks'
-import { labelFrom, parseHref } from './links'
+import { labelFrom, menuTarget, parseHref } from './links'
 
 const pages = new Map<string, number>([
   ['/about-us', 1],
@@ -61,5 +61,33 @@ describe('mapBackground', () => {
   })
   it('uses white for a colour it does not know', () => {
     expect(mapBackground('bg-[#123456]')).toBe('white')
+  })
+})
+
+describe('where a menu item goes on the new site', () => {
+  const site = { pages, reserved: new Set(['/vacancies']), redirects: [{ from: '/agenda', to: '/activities/calendar' }, { from: '/cookies', to: '/about-us' }] }
+
+  it('follows a page that moved, so the menu does not point at a forwarding address', () => {
+    expect(menuTarget('/agenda', site)).toEqual({ linkType: 'section', section: 'calendar' })
+    expect(menuTarget('/cookies', site)).toEqual({ linkType: 'page', page: 1 })
+  })
+
+  it('tells a link to nowhere apart from a link to another website or a built-in page', () => {
+    expect(menuTarget('/get-involved/volunteers', site)).toBe('dead')
+    expect(menuTarget('https://example.org/x', site)).toEqual({ linkType: 'custom', url: 'https://example.org/x' })
+    expect(menuTarget('/vacancies', site)).toEqual({ linkType: 'section', section: 'vacancies' })
+    expect(menuTarget('/about-us', site)).toEqual({ linkType: 'page', page: 1 })
+  })
+})
+
+describe('content files a site leaves out', () => {
+  it('can be named one by one or by their folder', async () => {
+    const { isRemoved } = await import('./fixups')
+    const list = ['events/nl/what.mdx', 'speakers/*', 'newsletters/*']
+    expect(isRemoved('events/nl/what.mdx', list)).toBe(true)
+    expect(isRemoved('events/nl/other.mdx', list)).toBe(false)
+    expect(isRemoved('speakers/anna.md', list)).toBe(true)
+    expect(isRemoved('newsletters/en/welcome.mdx', list)).toBe(true)
+    expect(isRemoved('speakers-old/anna.md', list)).toBe(false)
   })
 })

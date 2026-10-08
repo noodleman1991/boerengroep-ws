@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { transformBlocks } from './blocks'
 import type { Ctx } from './context'
+import { emptyFixups } from './fixups'
 import { Report } from './report'
 
 function ctx(): Ctx {
@@ -12,7 +13,7 @@ function ctx(): Ctx {
     ids: new Map(),
     pageByEnPath: new Map(),
     reservedPaths: new Set(),
-    fixups: { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [], galleryPages: [] },
+    fixups: emptyFixups,
     messages: {},
     toLexical: async (md) => (typeof md === 'string' && md.trim() ? { lexicalOf: md.trim() } : undefined),
   }
@@ -76,6 +77,11 @@ describe('transformBlocks', () => {
       layout: 'image-right',
       image: { src: undefined, alt: 'x' },
     })
+  })
+
+  it('treats an empty choice as no choice, so the default applies', async () => {
+    const out = await transformBlocks(ctx(), [{ _template: 'imageText', content: 'x', layout: '', imageSize: '', verticalAlignment: '', image: { src: '' } }], 'p')
+    expect(out[0]).toMatchObject({ blockType: 'imageText', layout: undefined, imageSize: undefined, verticalAlignment: undefined })
   })
 
   it('maps the simple blocks field by field', async () => {

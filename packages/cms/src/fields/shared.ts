@@ -19,6 +19,23 @@ export const backgroundField: Field = {
   admin: { description: 'The colour behind this section. Alternate white with a colour to give the page rhythm.' },
 }
 
+/** How the photos of a gallery are laid out. The same choice exists for a gallery inside a text. */
+export const GALLERY_SIZES = [
+  { label: 'Mosaic: large and small mixed', value: 'mosaic' },
+  { label: 'Small pictures, many in a row', value: 'small' },
+  { label: 'Medium pictures', value: 'medium' },
+  { label: 'Large pictures, two in a row', value: 'large' },
+]
+
+export const gallerySizeField: Field = {
+  name: 'size',
+  type: 'select',
+  defaultValue: 'mosaic',
+  label: 'Size of the photos',
+  options: GALLERY_SIZES,
+  admin: { description: 'In every size a click opens the photo large.' },
+}
+
 export const iconField: Field = {
   name: 'icon',
   type: 'group',

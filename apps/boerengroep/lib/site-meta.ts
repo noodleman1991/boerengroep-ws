@@ -4,6 +4,7 @@ import { cms, type Locale } from './cms';
 import { mediaUrl } from './cms-adapters';
 import { pageDescription, pageMeta } from './page-meta';
 import { siteUrl } from './site-url';
+import { SITE } from '@/site.config';
 import { TEST_PAGE } from './test-page';
 
 const absolute = (address: string) => (address.startsWith('/') ? `${siteUrl()}${address}` : address);
@@ -28,8 +29,8 @@ export async function siteMeta(
   const settings = await cms.getSiteSettings(locale);
   return pageMeta({
     title: input.title,
-    site: settings?.general?.name ?? 'Stichting Boerengroep',
-    description: input.description ?? settings?.general?.tagline,
+    site: settings?.general?.name ?? SITE.name,
+    description: input.description ?? settings?.general?.tagline ?? SITE.description,
     url: `${siteUrl()}/${locale}${input.path === '/' ? '' : input.path}`,
     image: input.picture ? { url: absolute(input.picture), alt: input.pictureAlt } : undefined,
     type: input.type,

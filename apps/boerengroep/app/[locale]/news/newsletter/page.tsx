@@ -4,6 +4,7 @@ import { cms } from '@/lib/cms';
 import { asConnection, toNewsletterNode } from '@/lib/cms-adapters';
 import { NewsletterList } from '@/components/newsletter-list';
 import Layout from '@/components/layout/layout';
+import { SITE } from '@/site.config';
 
 interface NewsletterPageProps {
     params: Promise<{ locale: string }>;
@@ -15,7 +16,7 @@ export async function generateMetadata({ params }: NewsletterPageProps): Promise
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
-        title: `${t('title')} - Stichting Boerengroep`,
+        title: `${t('title')} - ${SITE.name}`,
         description: t('description'),
     };
 }

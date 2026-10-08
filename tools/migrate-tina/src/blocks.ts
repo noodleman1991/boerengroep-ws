@@ -91,9 +91,9 @@ async function transformBlock(ctx: Ctx, b: Raw, legacyId: string): Promise<Recor
         background: mapBackground(b.background),
         image: { src: resolveMedia(ctx, b.image?.src, legacyId), alt: b.image?.alt },
         content: await ctx.toLexical(b.content, legacyId),
-        layout: b.layout,
-        imageSize: b.imageSize,
-        verticalAlignment: b.verticalAlignment,
+        layout: chosen(b.layout),
+        imageSize: chosen(b.imageSize),
+        verticalAlignment: chosen(b.verticalAlignment),
       }
     case 'eventsCalendarPreview':
       return {
@@ -107,6 +107,9 @@ async function transformBlock(ctx: Ctx, b: Raw, legacyId: string): Promise<Recor
       return null
   }
 }
+
+/** A choice an editor left empty counts as not made, so the default applies. */
+const chosen = (value: unknown) => (typeof value === 'string' && value.trim() ? value : undefined)
 
 export async function transformBlocks(
   ctx: Ctx,

@@ -1,0 +1,10 @@
+{
+  "calendar": {
+    "description": "Cursussen, inspringsessies en forumtheatervoorstellingen."
+  },
+  "newsletter": {
+    "signup": {
+      "description": "Nieuws over forumtheater en wat we organiseren, in je inbox."
+    }
+  }
+}

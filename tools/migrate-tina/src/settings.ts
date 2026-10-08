@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import type { Ctx } from './context'
-import { labelFrom, parseHref } from './links'
+import { labelFrom, menuTarget } from './links'
 import { resolveMedia } from './media'
 import { listContent, readTinaFile } from './read'
 
@@ -23,11 +23,25 @@ const PLATFORMS: Record<string, string> = {
   x: 'x',
 }
 
-/** One link in the new shape: where it goes, and what it says in this language. */
-function link(ctx: Ctx, href: unknown, label: string | undefined): Raw {
-  const target = parseHref(typeof href === 'string' ? href : undefined, ctx.pageByEnPath)
+/**
+ * One link in the new shape: where it goes, and what it says in this language. Nothing for a
+ * link that leads nowhere, when the site's fix-ups say to leave those out.
+ */
+function link(ctx: Ctx, href: unknown, label: string | undefined): Raw | undefined {
+  const address = typeof href === 'string' ? href : undefined
+  const target = menuTarget(address, { pages: ctx.pageByEnPath, reserved: ctx.reservedPaths, redirects: ctx.fixups.redirects })
+  if (target === 'dead') {
+    if (ctx.fixups.dropDeadMenuLinks) {
+      const note = `menu link "${label ?? address}" left out: ${address} is not a page of the new site`
+      if (!ctx.report.entries.some((entry) => entry.message === note)) ctx.report.add('skipped', SETTINGS_FILE, note)
+      return undefined
+    }
+    return { linkType: 'custom', url: address, label }
+  }
   return { ...(target ?? { linkType: 'custom', url: '' }), label }
 }
+
+const present = <T,>(value: T | undefined): value is T => value !== undefined
 
 function navLabel(ctx: Ctx, item: Raw, locale: Locale): string | undefined {
   const own = locale === 'en' ? item.labelEn : item.labelNl
@@ -52,23 +66,27 @@ function buildSettings(ctx: Ctx, d: Raw, locale: Locale): Raw {
         .map((s) => ({ platform: PLATFORMS[String(s.platform ?? '').toLowerCase()] ?? 'other', url: s.url })),
     },
     header: {
-      nav: ((d.header?.nav ?? []) as Raw[]).map((item) => ({
-        ...link(ctx, item.href, navLabel(ctx, item, locale)),
-        children: ((item.submenu ?? []) as Raw[]).map((sub) => link(ctx, sub.href, navLabel(ctx, sub, locale))),
-      })),
+      nav: ((d.header?.nav ?? []) as Raw[])
+        .map((item) => {
+          const top = link(ctx, item.href, navLabel(ctx, item, locale))
+          return top && { ...top, children: ((item.submenu ?? []) as Raw[]).map((sub) => link(ctx, sub.href, navLabel(ctx, sub, locale))).filter(present) }
+        })
+        .filter(present),
     },
     footer: {
       columns: ((d.footer?.quickLinks ?? []) as Raw[]).map((column) => ({
-        title: labelFrom(m, ['footer', 'quick-links', column.title, 'title']) ?? column.title,
-        links: ((column.links ?? []) as Raw[]).map((l) =>
-          link(
-            ctx,
-            l.href,
-            labelFrom(m, ['footer', 'quick-links', column.title, 'links', l.label]) ??
-              labelFrom(m, ['navigation', 'items', l.label]) ??
-              l.label,
-          ),
-        ),
+        title: labelFrom(m, ['footer', 'quick-links', column.title, 'title']) ?? labelFrom(m, ['navigation', 'items', column.title]) ?? column.title,
+        links: ((column.links ?? []) as Raw[])
+          .map((l) =>
+            link(
+              ctx,
+              l.href,
+              labelFrom(m, ['footer', 'quick-links', column.title, 'links', l.label]) ??
+                labelFrom(m, ['navigation', 'items', l.label]) ??
+                l.label,
+            ),
+          )
+          .filter(present),
       })),
       legalLinks: privacy
         ? [{ linkType: 'page', page: privacy, label: labelFrom(m, ['footer', 'legal', 'privacy']) ?? 'Privacy' }]

@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* The pages and components in this folder are also built by the Inspringtheater app, from its own
+   folder. This line makes sure their classes are found from there too. */
+@source "../../";
 
 /* ===== TAILWIND 4 THEME CONFIGURATION ===== */
 @theme {

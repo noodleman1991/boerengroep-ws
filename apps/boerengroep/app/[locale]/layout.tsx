@@ -10,8 +10,10 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { LivePreviewListener } from '@/components/live-preview-listener';
 import Layout from '@/components/layout/layout';
+import { siteUrl } from '@/lib/site-url';
+import { SITE } from '@/site.config';
 
-// Boerengroep Brand Fonts with optimized configurations
+// The fonts of the design, shared by both sites
 const enriqueta = Enriqueta({
     subsets: ["latin"],
     variable: "--font-enriqueta",
@@ -38,13 +40,14 @@ const robotoFlex = Roboto_Flex({
     fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
 });
 
+// What browsers and search engines are told about the site as a whole. A page that says
+// nothing more specific about itself falls back to this.
 export const metadata: Metadata = {
-    title: "Stichting Boerengroep Wageningen",
-    description: "Wageningen's peasant association | Celebrating 50 years!",
-    keywords: ["boerengroep", "wageningen", "sustainable agriculture", "peasant association", "food sovereignty"],
-    authors: [{ name: "Stichting Boerengroep" }],
-    creator: "Stichting Boerengroep",
-    publisher: "Stichting Boerengroep",
+    title: SITE.title,
+    description: SITE.description,
+    authors: [{ name: SITE.name }],
+    creator: SITE.name,
+    publisher: SITE.name,
     robots: {
         index: true,
         follow: true,
@@ -60,18 +63,16 @@ export const metadata: Metadata = {
         type: 'website',
         locale: 'en_US',
         alternateLocale: ['nl_NL'],
-        url: 'https://boerengroep.nl',
-        title: 'Stichting Boerengroep Wageningen',
-        description: "Wageningen's peasant association | Celebrating 50 years!",
-        siteName: 'Stichting Boerengroep',
+        url: siteUrl(),
+        title: SITE.title,
+        description: SITE.description,
+        siteName: SITE.name,
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Stichting Boerengroep Wageningen',
-        description: "Wageningen's peasant association | Celebrating 50 years!",
-        creator: '@boerengroep',
+        title: SITE.title,
+        description: SITE.description,
     },
-    // viewport removed from here - now separate export below
 };
 
 // Separate viewport export (Next.js 14+ requirement)
@@ -136,8 +137,8 @@ export default async function LocaleLayout({
             <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
             <link rel="manifest" href="/manifest.json" />
             {/* Theme color for mobile browsers */}
-            <meta name="theme-color" content="#44AD39" />
-            <meta name="msapplication-TileColor" content="#44AD39" />
+            <meta name="theme-color" content={SITE.themeColor} />
+            <meta name="msapplication-TileColor" content={SITE.themeColor} />
         </head>
         <body className={cn(
             "min-h-screen bg-background font-body text-foreground",

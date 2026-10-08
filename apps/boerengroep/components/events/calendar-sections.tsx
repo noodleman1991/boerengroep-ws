@@ -36,7 +36,7 @@ export async function CalendarSections({ locale }: { locale: Locale }) {
                     {sections.map(({ id, page, data }) => (
                         <section key={id} id={id} className="calendar-regulars__item">
                             {page.title && <h3>{page.title}</h3>}
-                            {page.body && <RichText data={page.body} />}
+                            {page.body && <RichText data={page.body} headingsFrom={4} />}
                             {page.blocks && page.blocks.length > 0 && <Blocks blocks={page.blocks} data={data} />}
                         </section>
                     ))}

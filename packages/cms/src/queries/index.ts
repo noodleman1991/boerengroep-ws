@@ -39,7 +39,8 @@ type FindOptions = {
  * Pictures and files are added for every query in `run`.
  */
 const BLOCKS_SHOW = ['forms', 'past-events']
-const PAGE_SHOWS = ['pages', ...BLOCKS_SHOW]
+// A page can put an event, a news item or a vacancy in the spotlight, and shows its title and text.
+const PAGE_SHOWS = ['pages', 'events', 'newsletters', 'vacancies', ...BLOCKS_SHOW]
 const EVENT_SHOWS = ['events', 'speakers', 'event-kinds']
 const STORY_SHOWS = ['past-events', 'events', 'authors', 'tags', 'forms']
 const NEWSLETTER_SHOWS = ['newsletters', 'authors', 'tags', ...BLOCKS_SHOW]

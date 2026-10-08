@@ -2,7 +2,7 @@
 import { createContext, type ReactNode, useContext } from 'react';
 import type { BlockData } from '@/lib/block-data';
 
-const EMPTY: BlockData = { events: [], episodes: [], renderedAt: new Date(0).toISOString() };
+const EMPTY: BlockData = { events: [], episodes: [], news: [], positions: [], renderedAt: new Date(0).toISOString() };
 const BlockDataContext = createContext<BlockData>(EMPTY);
 
 export function BlockDataProvider({ value, children }: { value?: BlockData; children: ReactNode }) {

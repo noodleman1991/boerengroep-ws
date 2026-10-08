@@ -1,7 +1,22 @@
 import type { Page } from '@playwright/test'
 
+/** One of each kind of page the Inspringtheater site has. Its app runs the same tests on these. */
+const INSPRINGTHEATER: { name: string; path: string }[] = [
+  { name: 'home', path: '/en' },
+  { name: 'home in Dutch', path: '/nl' },
+  { name: 'content page with text and a picture', path: '/en/about-inspringtheater/history' },
+  { name: 'content page with an opening and text', path: '/en/contact' },
+  { name: 'page with sub-pages', path: '/en/activities' },
+  { name: 'calendar', path: '/en/activities/calendar' },
+  { name: 'calendar, month view', path: '/en/activities/calendar?view=month' },
+  { name: 'calendar, past', path: '/en/activities/calendar?view=past' },
+  { name: 'event', path: 'first-event' },
+  { name: 'newsletter: delete my data', path: '/en/newsletter/delete-data' },
+  { name: 'page that does not exist', path: '/en/this-page-does-not-exist' },
+]
+
 /** One of each kind of page the site has. Shared by the screen-size and accessibility tests. */
-export const PAGE_KINDS: { name: string; path: string }[] = [
+const BOERENGROEP: { name: string; path: string }[] = [
   { name: 'home', path: '/en' },
   { name: 'home in Dutch', path: '/nl' },
   { name: 'content page with an opening picture', path: '/en/about-us/what-is-boerengroep' },
@@ -22,6 +37,8 @@ export const PAGE_KINDS: { name: string; path: string }[] = [
   { name: 'page that does not exist', path: '/en/this-page-does-not-exist' },
   { name: 'test page with every block', path: '/en/test-blocks' },
 ]
+
+export const PAGE_KINDS = process.env.E2E_SITE === 'inspringtheater' ? INSPRINGTHEATER : BOERENGROEP
 
 /**
  * Opens a kind of page. Returns false when it does not exist in this database, for example

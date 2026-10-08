@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import { notFound, permanentRedirect, redirect } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout'
 import { loadBlockData } from '@/lib/block-data'
 import { cms, type Locale } from '@/lib/cms'
+import { forwardOrNotFound, withLocale } from '@/lib/forward'
 import { pageParts } from '@/lib/page-parts'
 import { contentStaticParams } from '@/lib/reserved-paths'
 import { contentPageMeta } from '@/lib/site-meta'
@@ -13,7 +14,6 @@ export const revalidate = 3600
 
 type Params = { locale: Locale; urlSegments: string[] }
 
-const withLocale = (locale: Locale, path: string) => `/${locale}${path === '/' ? '' : path}`
 
 // Static assets and internal paths never match a CMS page.
 const notAPage = (urlSegments: string[]) => urlSegments.some((s) => s.includes('.') || s.startsWith('_'))
@@ -38,15 +38,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
 
   if (resolved?.redirectTo) permanentRedirect(withLocale(locale, resolved.redirectTo))
 
-  if (!resolved?.page) {
-    const rule = (await cms.findRedirect(path)) ?? (await cms.findRedirect(withLocale(locale, path)))
-    if (rule) {
-      const target = /^https?:\/\//.test(rule.to) ? rule.to : withLocale(locale, rule.to)
-      if (rule.permanent) permanentRedirect(target)
-      redirect(target)
-    }
-    notFound()
-  }
+  if (!resolved?.page) return forwardOrNotFound(locale, path)
 
   return (
     <Layout rawPageData={resolved.page}>

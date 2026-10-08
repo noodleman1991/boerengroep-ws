@@ -34,7 +34,8 @@ export function kindMaker(ctx: Ctx): (kind: unknown) => Promise<Id | undefined> 
     if (known !== undefined) return known
     const old = OLD_KINDS[kind]
     const legacyId = `event-kinds/${kind}`
-    const id = await upsert(ctx, 'event-kinds', legacyId, { name: oldName(ctx.messages.en, kind) ?? old?.en ?? readable(kind), colour: old?.colour ?? 'grey' }, 'en')
+    const colour = ctx.fixups.kindColours[kind] ?? old?.colour ?? 'grey'
+    const id = await upsert(ctx, 'event-kinds', legacyId, { name: oldName(ctx.messages.en, kind) ?? old?.en ?? readable(kind), colour }, 'en')
     await upsert(ctx, 'event-kinds', legacyId, { name: oldName(ctx.messages.nl, kind) ?? old?.nl ?? readable(kind) }, 'nl')
     made.set(kind, id)
     return id

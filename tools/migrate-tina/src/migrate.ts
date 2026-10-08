@@ -19,6 +19,8 @@ export type MigrateInput = {
   tenantSlug: string
   contentDir: string
   uploadsDir: string
+  /** More folders with files that belong in the uploads folder, in the same layout. */
+  extraUploadsDirs?: string[]
   /** Addresses served by built-in routes of the app, for example `/vacancies`. */
   reservedPaths?: string[]
   /** Hand-written corrections for this site. */
@@ -39,7 +41,7 @@ export async function migrate(input: MigrateInput): Promise<Report> {
   if (!tenant) throw new Error(`Tenant "${tenantSlug}" not found. Run the seed first.`)
 
   const report = new Report()
-  const media = await uploadAll({ payload, tenantId: tenant.id, report }, uploadsDir)
+  const media = await uploadAll({ payload, tenantId: tenant.id, report }, uploadsDir, input.extraUploadsDirs)
   const ctx: Ctx = {
     payload,
     tenantId: tenant.id,

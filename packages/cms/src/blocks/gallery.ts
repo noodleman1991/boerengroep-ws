@@ -1,6 +1,6 @@
 import type { Block } from 'payload'
 import { rowLabel } from '../fields/row-label'
-import { backgroundField, videoFields } from '../fields/shared'
+import { backgroundField, gallerySizeField, videoFields } from '../fields/shared'
 
 type Sibling = { source?: string } | undefined
 
@@ -19,6 +19,7 @@ export const Gallery: Block = {
     backgroundField,
     { name: 'title', type: 'text' },
     { name: 'intro', type: 'textarea', label: 'A few words above the photos', admin: { description: 'Optional.' } },
+    gallerySizeField,
     {
       name: 'source',
       type: 'radio',

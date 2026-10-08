@@ -11,7 +11,8 @@
     "./access": "./src/access/roles.ts",
     "./links": "./src/fields/link.ts",
     "./event-slug": "./src/fields/event-slug.ts",
-    "./newsletter-status": "./src/admin/newsletter-status-text.ts"
+    "./newsletter-status": "./src/admin/newsletter-status-text.ts",
+    "./preview": "./src/preview.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

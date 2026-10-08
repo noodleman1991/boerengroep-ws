@@ -18,6 +18,13 @@ const text = (value: string, format = 0) => ({ type: 'text', text: value, format
 const paragraph = (value: string) => ({ type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', textFormat: 0, children: [text(value)] })
 const rich = (...paragraphs: string[]) => ({ root: { type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: paragraphs.map(paragraph) } })
 
+const node = { format: '', indent: 0, version: 1, direction: 'ltr' }
+/** A picture in a text, with the size and place an editor can choose. */
+const pictureInText = (id: number | string, fields: Record<string, string>) => ({ type: 'upload', version: 3, format: '', id: `test-${fields.size}-${fields.place}`, relationTo: 'media', value: id, fields })
+/** A block in a text, such as a photo gallery. */
+const blockInText = (fields: Record<string, unknown>) => ({ type: 'block', version: 2, format: '', fields: { id: `test-${String(fields.blockType)}`, blockName: '', ...fields } })
+const richOf = (...children: unknown[]) => ({ root: { type: 'root', ...node, children } })
+
 const mine = { tenant: { equals: tenant } }
 const pictures = (
   await payload.find({ collection: 'media', where: { and: [mine, { mimeType: { contains: 'image/' } }] }, limit: 9, sort: '-filesize', overrideAccess: true })
@@ -26,6 +33,17 @@ const files = (
   await payload.find({ collection: 'media', where: { and: [mine, { mimeType: { not_like: 'image/' } }] }, limit: 3, overrideAccess: true })
 ).docs.map((doc) => doc.id)
 const story = (await payload.find({ collection: 'past-events', where: mine, limit: 1, overrideAccess: true })).docs[0]
+// Things for the spotlight block: whatever the site has of each kind.
+const anEvent = (await payload.find({ collection: 'events', where: mine, limit: 1, sort: '-startDate', depth: 0, overrideAccess: true })).docs[0]
+const aVacancy = (await payload.find({ collection: 'vacancies', where: mine, limit: 1, depth: 0, overrideAccess: true })).docs[0]
+const aPage = (
+  await payload.find({ collection: 'pages', where: { and: [mine, { _status: { equals: 'published' } }, { parent: { exists: true } }] }, limit: 1, sort: 'path', depth: 0, overrideAccess: true })
+).docs[0]
+const spotlightRows = [
+  ...(aPage ? [{ what: { relationTo: 'pages', value: aPage.id } }] : []),
+  ...(anEvent ? [{ what: { relationTo: 'events', value: anEvent.id } }] : []),
+  ...(aVacancy ? [{ what: { relationTo: 'vacancies', value: aVacancy.id }, buttonLabel: 'Spotlight block: own words on the button' }] : []),
+]
 
 // A freely licensed test film that is certain to stay online.
 const testVideo = 'https://www.youtube.com/watch?v=aqz-KE-bpKQ'
@@ -146,6 +164,33 @@ const blocks: Record<string, unknown>[] = [
   },
   { blockType: 'form', background: 'mist', title: 'Form block', intro: rich('Text above the form.'), form: form.id },
   { blockType: 'newsletterSignup', background: 'harvest' },
+  { blockType: 'newsPreview', title: 'Latest news block', description: 'Text under the title.', which: 'all', count: 4, spotlightFirst: true },
+  { blockType: 'vacanciesPreview', background: 'mist', title: 'Open positions block', count: 6, whenNone: 'say' },
+  ...(spotlightRows.length
+    ? [
+        { blockType: 'spotlight', background: 'harvest', items: [{ ...spotlightRows[0], title: 'Spotlight block: one thing, shown large', text: 'Own text for the spotlight.', picture: pictures[0] }] },
+        { blockType: 'spotlight', background: 'dark', title: 'Spotlight block: several things', items: spotlightRows },
+      ]
+    : []),
+  ...(pictures.length >= 4
+    ? [
+        {
+          blockType: 'content',
+          width: 'narrow',
+          body: richOf(
+            paragraph('Text block with pictures. A small picture on the left, with this text beside it on a wide screen.'),
+            pictureInText(pictures[0]!, { size: 'small', place: 'left', caption: 'A small picture, on the left' }),
+            paragraph('Second paragraph, next to the small picture. Second paragraph, next to the small picture. Second paragraph, next to the small picture.'),
+            pictureInText(pictures[1]!, { size: 'medium', place: 'right', caption: 'A medium picture, on the right' }),
+            paragraph('Third paragraph, next to the medium picture. Third paragraph, next to the medium picture. Third paragraph, next to the medium picture.'),
+            pictureInText(pictures[2]!, { size: 'large', place: 'centre', caption: 'A large picture, in the middle' }),
+            paragraph('A photo gallery inside the text follows.'),
+            blockInText({ blockType: 'photoGallery', images: pictures.slice(0, 6), size: 'small', caption: 'Photo gallery in a text, small pictures' }),
+          ),
+        },
+        { blockType: 'gallery', title: 'Photo gallery block, medium pictures in even rows', size: 'medium', source: 'pictures', images: pictures.slice(0, 5) },
+      ]
+    : []),
   {
     blockType: 'cta',
     background: 'dark',

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ExternalLink, Calendar } from 'lucide-react';
 import Image from 'next/image';
+import { isOwnNews } from '@/lib/news';
 
 interface NewsletterNode {
     id: string;
@@ -62,9 +63,9 @@ export const NewsletterList = ({ newsletters, locale, filter, title, description
         if (!node?.published || !node.organization) return false;
 
         if (filter === 'main') {
-            return node.organization === 'Boerengroep' || node.organization === 'Inspiratietheater';
+            return isOwnNews(node.organization);
         } else if (filter === 'friends') {
-            return node.organization === 'friends';
+            return !isOwnNews(node.organization);
         }
         return false;
     }) || [];
@@ -92,7 +93,7 @@ export const NewsletterList = ({ newsletters, locale, filter, title, description
                             const isExternal = newsletter.type === 'link';
 
                             // Determine the correct path based on organization
-                            const isMainOrg = newsletter.organization === 'Boerengroep' || newsletter.organization === 'Inspiratietheater';
+                            const isMainOrg = isOwnNews(newsletter.organization);
                             const basePath = isMainOrg ? '/news/newsletter' : '/news/friends-news';
 
                             const href = isExternal

@@ -17,6 +17,7 @@ import { mapsUrl, webAddress } from '@/lib/events/share';
 import { formatWhen } from '@/lib/events/time';
 import { hasRichText } from '@/lib/rich-text-utils';
 import { siteUrl } from '@/lib/site-url';
+import { SITE } from '@/site.config';
 
 export const revalidate = 3600;
 
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const event = await load(slug, locale);
     if (!event) return {};
     const settings = await cms.getSiteSettings(locale);
-    const site = settings?.general?.name ?? 'Stichting Boerengroep';
+    const site = settings?.general?.name ?? SITE.name;
     const when = formatWhen(event.start, event.end, locale);
     const description = [when, event.place.address, event.description.replace(/\s+/g, ' ')].filter(Boolean).join('. ').slice(0, 220);
     const url = `${siteUrl()}/${locale}${eventPath(event.slug)}`;
@@ -194,7 +195,7 @@ export default async function EventPage({ params }: Props) {
                     // Escaped in jsonLdScript, so text typed by an editor cannot close the tag.
                     dangerouslySetInnerHTML={{
                         __html: jsonLdScript(
-                            eventJsonLd(event, { url, organizer: { name: settings?.general?.name ?? 'Stichting Boerengroep', url: siteUrl() } }),
+                            eventJsonLd(event, { url, organizer: { name: settings?.general?.name ?? SITE.name, url: siteUrl() } }),
                         ),
                     }}
                 />

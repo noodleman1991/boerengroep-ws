@@ -38,3 +38,21 @@ export function labelFrom(messages: unknown, keys: string[]): string | undefined
   }
   return typeof node === 'string' ? node : undefined
 }
+
+/**
+ * Where a menu or footer item of the old site goes on the new one. A page that moved is
+ * followed to its new address. An address on this site that is neither a page, nor a built-in
+ * page, nor something that was moved leads nowhere and is reported as `'dead'`.
+ */
+export function menuTarget(
+  href: string | undefined | null,
+  site: { pages: Map<string, Id>; reserved: Set<string>; redirects: { from: string; to: string }[] },
+): MigratedLink | 'dead' | undefined {
+  if (!href || !href.trim()) return undefined
+  const [base, anchor] = href.split('#') as [string, string | undefined]
+  const moved = site.redirects.find((rule) => rule.from === base)
+  const target = moved ? `${moved.to}${anchor ? `#${anchor}` : ''}` : href
+  const link = parseHref(target, site.pages)
+  if (link?.linkType === 'custom' && target.startsWith('/') && !site.reserved.has(target.split('#')[0]!)) return 'dead'
+  return link
+}

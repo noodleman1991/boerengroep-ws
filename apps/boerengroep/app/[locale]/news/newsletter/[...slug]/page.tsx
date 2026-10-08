@@ -1,19 +1,17 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout';
 import { cms, type Locale } from '@/lib/cms';
 import { mediaUrl, toNewsletterNode } from '@/lib/cms-adapters';
 import { firstParagraph } from '@/lib/page-meta';
 import { siteMeta } from '@/lib/site-meta';
-import { newsItemPath } from '@/lib/sitemap';
+import { forwardOrNotFound } from '@/lib/forward';
+import { isOwnNews, newsItemPath } from '@/lib/news';
 import NewsletterClientPage from './client-page';
 
 export const revalidate = 3600;
 
-// Kept from the previous implementation, including the 'Inspiratietheater' spelling.
-const isMainOrganization = (organization: string) =>
-    organization === 'Boerengroep' || organization === 'Inspiratietheater';
+const isMainOrganization = isOwnNews;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale; slug: string[] }> }): Promise<Metadata> {
     const { locale, slug } = await params;
@@ -37,7 +35,8 @@ export default async function NewsletterDetailPage({
     const { locale, slug } = await params;
     setRequestLocale(locale);
     const newsletter = await cms.getNewsletter(decodeURIComponent(slug[slug.length - 1]!), locale);
-    if (!newsletter || !isMainOrganization(newsletter.organization)) notFound();
+    // An item that was removed may have a forwarding address.
+    if (!newsletter || !isMainOrganization(newsletter.organization)) return forwardOrNotFound(locale, `/news/newsletter/${slug.join('/')}`);
 
     return (
         <Layout rawPageData={newsletter}>

@@ -43,7 +43,8 @@
   },
   "newsletter": {
     "title": "Nieuwsbrief",
-    "description": "Blijf op de hoogte van het laatste nieuws van Stichting Boerengroep en vrienden nieuws.",
+    "description": "Ons eigen nieuws, en nieuws van de organisaties die dicht bij ons staan.",
+    "friends_description": "Nieuws en berichten van de organisaties die dicht bij ons staan.",
     "read_more": "Lees meer",
     "visit_link": "Bezoek link",
     "no_newsletters": "Geen nieuwsbrieven gevonden.",
@@ -480,5 +481,27 @@
     "text": "Deze pagina kon niet worden getoond. Probeer het opnieuw, of begin op de startpagina.",
     "retry": "Opnieuw proberen",
     "home": "Naar de startpagina"
+  },
+  "widgets": {
+    "elsewhere": "opent een andere website",
+    "news": {
+      "title": "Nieuws",
+      "all": "Al het nieuws",
+      "from_friends": "Van vrienden"
+    },
+    "positions": {
+      "title": "Doe mee",
+      "all": "Alle vacatures"
+    },
+    "spotlight": {
+      "more": "Lees meer",
+      "kinds": {
+        "pages": "Op deze site",
+        "events": "Activiteit",
+        "newsletters": "Nieuws",
+        "past-events": "Terugblik",
+        "vacancies": "Vacature"
+      }
+    }
   }
 }

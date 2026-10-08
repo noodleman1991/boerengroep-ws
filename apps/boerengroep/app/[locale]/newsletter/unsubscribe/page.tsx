@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { UnsubscribePage } from '@/components/newsletter/unsubscribe-page';
 import Layout from '@/components/layout/layout';
+import { SITE } from '@/site.config';
 
 interface UnsubscribePageProps {
     params: Promise<{ locale: string }>;
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: UnsubscribePageProps): Promis
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
-        title: `${t('unsubscribe.title')} - Stichting Boerengroep`,
+        title: `${t('unsubscribe.title')} - ${SITE.name}`,
         description: t('unsubscribe.description'),
     };
 }

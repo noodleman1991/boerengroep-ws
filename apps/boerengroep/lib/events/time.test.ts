@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dateParts, dayKey, formatDay, formatTime, formatTimes, formatWhen, isAllDay, monthGrid, monthKey, monthLabel, shiftMonth } from './time'
+import { dateParts, dayKey, formatDate, formatDay, formatTime, formatTimes, formatWhen, isAllDay, monthGrid, monthKey, monthLabel, shiftMonth } from './time'
 
 describe('Dutch time for everyone', () => {
   it('puts an evening event on its Dutch day, whatever the visitor’s own clock says', () => {
@@ -77,6 +77,10 @@ describe('the short time beside a date', () => {
   it('names a day for a heading', () => {
     expect(formatDay('2026-10-08', 'en')).toBe('Thursday 8 October')
     expect(formatDay('2026-10-08', 'nl')).toBe('donderdag 8 oktober')
+  })
+  it('gives a date with its year, by the Dutch calendar', () => {
+    expect(formatDate('2026-06-23T22:00:00.000Z', 'en')).toBe('24 June 2026')
+    expect(formatDate('2025-10-13T22:00:00.000Z', 'nl')).toBe('14 oktober 2025')
   })
 })
 

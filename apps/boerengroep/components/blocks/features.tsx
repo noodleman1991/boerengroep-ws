@@ -17,7 +17,7 @@ export const Features = ({ data }: { data: FeaturesBlock }) => (
                 <li key={item.id ?? index} className="columns__item">
                     <BlockIcon name={item.icon?.name} className="columns__icon" />
                     {item.title && <h3>{item.title}</h3>}
-                    <RichText data={item.text} className="rich" />
+                    <RichText data={item.text} className="rich" headingsFrom={4} />
                 </li>
             ))}
         </ul>

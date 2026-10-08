@@ -67,5 +67,28 @@
   ],
   "galleryPages": [
     "library/media"
-  ]
+  ],
+  "addBlocks": {
+    "home": [
+      {
+        "after": "eventsCalendarPreview",
+        "block": {
+          "blockType": "newsPreview",
+          "background": "white",
+          "which": "all",
+          "count": 3,
+          "spotlightFirst": true
+        }
+      },
+      {
+        "after": "callout",
+        "block": {
+          "blockType": "vacanciesPreview",
+          "background": "white",
+          "count": 3,
+          "whenNone": "hide"
+        }
+      }
+    ]
+  }
 }

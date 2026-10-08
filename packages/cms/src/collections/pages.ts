@@ -1,14 +1,43 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, PayloadRequest } from 'payload'
+import { type Ref, relId } from '../access/roles'
+import type { CmsCustom } from '../config'
+import { signPreview } from '../preview'
 import { authenticated, publishedOrAuthenticated } from '../access'
 import { pageBlocks } from '../blocks'
 import { legacyIdField } from '../fields/shared'
 import { computePath, resaveChildren } from '../hooks/page-path'
 
-/** Address of the draft preview for a page. Relative, because each site serves its own admin. */
-export function pagePreviewUrl(path: unknown, localeCode: string | undefined): string {
+/**
+ * Address of the draft preview for a page. For a page of the site that serves this admin panel
+ * it is a plain address on the same site. For a page of the other site it is a signed link to
+ * that site, which cannot see the editor's login.
+ */
+export function pagePreviewUrl(path: unknown, localeCode: string | undefined, other?: { siteUrl: string; secret: string }): string {
   const pagePath = typeof path === 'string' && path.startsWith('/') ? path : '/'
   const target = `/${localeCode ?? 'en'}${pagePath === '/' ? '' : pagePath}`
-  return `/api/preview?path=${encodeURIComponent(target)}`
+  if (!other) return `/api/preview?path=${encodeURIComponent(target)}`
+  const { exp, sig } = signPreview(target, other.secret)
+  return `${other.siteUrl.replace(/\/$/, '')}/api/preview?path=${encodeURIComponent(target)}&exp=${exp}&sig=${sig}`
+}
+
+type PreviewArgs = { data?: { path?: unknown; tenant?: unknown } | null; locale?: { code?: string } | null; req?: PayloadRequest }
+
+/** The preview address of a page, on whichever site the page belongs to. */
+async function previewOf({ data, locale, req }: PreviewArgs): Promise<string> {
+  const tenantId = relId(data?.tenant as Ref)
+  const own = (req?.payload.config.custom as Partial<CmsCustom> | undefined)?.tenantSlug
+  if (!req || tenantId === undefined || !own) return pagePreviewUrl(data?.path, locale?.code)
+  try {
+    // Read loosely: tools that load this file with their own config do not know the generated types.
+    const tenant = (await req.payload.findByID({ collection: 'tenants', id: tenantId, depth: 0, overrideAccess: true })) as unknown as {
+      slug: string
+      siteUrl: string
+      revalidateSecret: string
+    }
+    return pagePreviewUrl(data?.path, locale?.code, tenant.slug === own ? undefined : { siteUrl: tenant.siteUrl, secret: tenant.revalidateSecret })
+  } catch {
+    return pagePreviewUrl(data?.path, locale?.code)
+  }
 }
 
 export const Pages: CollectionConfig = {
@@ -20,9 +49,11 @@ export const Pages: CollectionConfig = {
     group: 'Pages',
     description:
       'The pages of the site. A page is built from blocks: text, pictures, events, a form. Every page exists in English and in Dutch. Switch language at the top right.',
-    livePreview: {
-      url: ({ data, locale }) => pagePreviewUrl(data?.path, locale?.code),
-    },
+    // The page beside the form while editing, and a button that opens it in a tab of its own.
+    // The second matters for the other site: some browsers do not let a framed site remember
+    // that a preview was started.
+    livePreview: { url: (args) => previewOf(args as PreviewArgs) },
+    preview: (data, { locale, req }) => previewOf({ data, locale: { code: locale }, req }),
   },
   access: {
     read: publishedOrAuthenticated,

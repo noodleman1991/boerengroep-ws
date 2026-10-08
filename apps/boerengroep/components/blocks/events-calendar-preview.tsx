@@ -2,7 +2,7 @@
 import type { EventsCalendarPreviewBlock } from '@sites/cms/types';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { BrandSymbol } from '@/components/brand-symbol';
+import { BrandSymbol, useBrandSymbol } from '@/components/brand-symbol';
 import { DateBlock, EventFacts, KindTag, StatusBadge, useEventLang } from '@/components/events/event-bits';
 import { EventRow } from '@/components/events/event-row';
 import { MiniMonth } from '@/components/events/mini-month';
@@ -81,16 +81,21 @@ export const EventsCalendarPreview = ({ data }: { data: EventsCalendarPreviewBlo
 
 function LeadEvent({ event }: { event: SiteEvent }) {
     const lang = useEventLang(event);
+    const symbol = useBrandSymbol();
+    // Without a picture, and on a site without a symbol, there is nothing to frame: the date leads.
+    const framed = Boolean(event.image?.card || symbol);
     return (
-        <article className="whats-on__lead">
+        <article className={`whats-on__lead${framed ? '' : ' whats-on__lead--plain'}`}>
             <div className="whats-on__lead-frame">
-                <div className="whats-on__lead-picture">
-                    {event.image?.card ? (
-                        <Image src={event.image.card} alt="" width={800} height={600} sizes="(max-width: 900px) 100vw, 50vw" />
-                    ) : (
-                        <BrandSymbol className="whats-on__lead-symbol" />
-                    )}
-                </div>
+                {framed && (
+                    <div className="whats-on__lead-picture">
+                        {event.image?.card ? (
+                            <Image src={event.image.card} alt="" width={800} height={600} sizes="(max-width: 900px) 100vw, 50vw" />
+                        ) : (
+                            <BrandSymbol className="whats-on__lead-symbol" />
+                        )}
+                    </div>
+                )}
                 <div className="whats-on__lead-date">
                     <DateBlock date={event.start} />
                 </div>

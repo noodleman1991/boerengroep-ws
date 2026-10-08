@@ -409,6 +409,121 @@ test('a video among the photos plays in the large view only when asked', async (
   await expect(page.getByRole('dialog').locator('iframe')).toHaveAttribute('src', /youtube-nocookie\.com\/embed\//)
 })
 
+test('a picture in a text has the size and the place the editor chose', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await openExamples(page)
+  const small = page.locator('.rich-figure--small.rich-figure--left').first()
+  const medium = page.locator('.rich-figure--medium.rich-figure--right').first()
+  const large = page.locator('.rich-figure--large').first()
+  await expect(small).toBeVisible()
+  const width = async (figure: typeof small) => (await figure.boundingBox())!.width
+  expect(await width(small)).toBeLessThan(await width(medium))
+  expect(await width(medium)).toBeLessThan(await width(large))
+  // On a wide screen the text runs beside a small picture.
+  expect(await small.evaluate((figure) => getComputedStyle(figure).float)).toBe('left')
+  expect(await medium.evaluate((figure) => getComputedStyle(figure).float)).toBe('right')
+  expect(await large.evaluate((figure) => getComputedStyle(figure).float)).toBe('none')
+  await expect(small.locator('figcaption')).toHaveText('A small picture, on the left')
+  // On a phone every picture gets its own line.
+  await page.setViewportSize({ width: 390, height: 800 })
+  expect(await small.evaluate((figure) => getComputedStyle(figure).float)).toBe('none')
+})
+
+test('a photo gallery inside a text opens its photos large', async ({ page }) => {
+  await openExamples(page)
+  const gallery = page.locator('.rich-gallery')
+  await expect(gallery.locator('.mosaic--small .mosaic__tile')).toHaveCount(6)
+  await expect(gallery.locator('figcaption')).toHaveText('Photo gallery in a text, small pictures')
+  await gallery.getByRole('button', { name: /^Open photo 2 of 6/ }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByRole('dialog').locator('.lightbox__count')).toHaveText(/^2 of 6/)
+  await page.keyboard.press('Escape')
+})
+
+test('a gallery in even rows gives every photo the same size', async ({ page }) => {
+  await openExamples(page)
+  const tiles = page.locator('.mosaic--even.mosaic--medium .mosaic__tile')
+  await expect(tiles).toHaveCount(5)
+  const sizes = await tiles.evaluateAll((list) => list.map((tile) => Math.round(tile.getBoundingClientRect().width)))
+  expect(new Set(sizes).size).toBe(1)
+})
+
+test('the spotlight shows what the editor chose, with their own words, and leads there', async ({ page }) => {
+  await openExamples(page)
+  const large = page.locator('.spot--large')
+  test.skip((await large.count()) === 0, 'this content has nothing to put in the spotlight')
+  await expect(large.getByRole('heading', { name: 'Spotlight block: one thing, shown large' })).toBeVisible()
+  await expect(large).toContainText('Own text for the spotlight.')
+  const link = large.getByRole('link')
+  const href = await link.getAttribute('href')
+  expect(href).toMatch(/^\/en\//)
+  // Several things stand side by side, each with a button that names where it leads.
+  const several = page.locator('.spots--2 .spot, .spots--3 .spot')
+  expect(await several.count()).toBeGreaterThanOrEqual(2)
+  const names = await several.getByRole('link').evaluateAll((links) => links.map((a) => a.textContent))
+  expect(new Set(names).size).toBe(names.length)
+  await link.click()
+  await expect(page).toHaveURL(new RegExp(`${href!.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`))
+  await expect(page.locator('main h1, main h2').first()).toBeVisible()
+})
+
+test('the news block lists the newest items by itself and leads to all news', async ({ page }) => {
+  await openExamples(page)
+  const block = page.locator('section', { has: page.getByRole('heading', { name: 'Latest news block' }) })
+  test.skip((await block.count()) === 0, 'this content has no news')
+  const rows = block.locator('.brief')
+  expect(await rows.count()).toBeGreaterThanOrEqual(1)
+  expect(await rows.count()).toBeLessThanOrEqual(4)
+  // Newest first.
+  const days = await block.locator('.brief time').evaluateAll((list) => list.map((time) => time.getAttribute('datetime')!))
+  expect([...days].sort().reverse()).toEqual(days)
+  await block.getByRole('link', { name: 'All news' }).click()
+  await expect(page).toHaveURL(/\/en\/news$/)
+})
+
+test('the open positions block lists what people can apply for, and a position opens on the positions page', async ({ page }) => {
+  await openExamples(page)
+  const block = page.locator('section', { has: page.getByRole('heading', { name: 'Open positions block' }) })
+  await expect(block).toBeVisible()
+  const rows = block.locator('.brief')
+  test.skip((await rows.count()) === 0, 'nothing is open in this content right now')
+  // Every row says until when, or that it is always open.
+  for (const meta of await rows.locator('.brief__meta').allTextContents()) expect(meta).toMatch(/Apply until|Always open/)
+  const first = rows.first().getByRole('link')
+  const title = (await first.textContent())!.trim()
+  await first.click()
+  await expect(page).toHaveURL(/\/en\/vacancies#vacancy-/)
+  const opened = page.locator('details.vacancy[open]', { hasText: title })
+  await expect(opened).toHaveCount(1)
+})
+
+test('the home page shows the latest news and the open positions', async ({ page }) => {
+  await page.goto('/en')
+  const news = page.locator('section', { has: page.getByRole('heading', { name: 'News', exact: true }) })
+  test.skip((await news.count()) === 0, 'the home page of this site has no news block')
+  expect(await news.locator('.brief').count()).toBeGreaterThanOrEqual(1)
+  await expect(page.getByRole('heading', { name: 'Join us', exact: true })).toBeVisible()
+  await page.goto('/nl')
+  await expect(page.getByRole('heading', { name: 'Nieuws', exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Doe mee', exact: true })).toBeVisible()
+})
+
+test('the year plan and the year report come from this site, not from the old file server', async ({ page, request }) => {
+  const res = await page.goto('/en/about-us/what-is-boerengroep')
+  test.skip(res?.status() !== 200, 'this site has no such page')
+  expect(await page.locator('a[href*="tina.io"]').count()).toBe(0)
+  for (const name of [/Year Plan/, /Year Report/]) {
+    const href = await page.getByRole('link', { name }).first().getAttribute('href')
+    expect(href, String(name)).toBeTruthy()
+    const file = await request.get(href!)
+    expect(file.status(), href!).toBe(200)
+    expect(file.headers()['content-type']).toContain('application/pdf')
+  }
+  await page.goto('/nl/over-ons/wat-is-boerengroep')
+  expect(await page.locator('a[href*="tina.io"]').count()).toBe(0)
+  await expect(page.getByRole('link', { name: /Jaarplan/ })).toHaveCount(1)
+})
+
 test('form answers cannot be sent for a form of another site or with made-up fields', async ({ request }) => {
   const missing = await request.post('/api/form-submit', { data: { form: 999999, values: { name: 'x' }, elapsedMs: 5000 } })
   expect(missing.status()).toBe(404)

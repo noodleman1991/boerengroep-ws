@@ -1,0 +1,10 @@
+{
+  "calendar": {
+    "description": "Courses, jump-in sessions and forum theatre plays."
+  },
+  "newsletter": {
+    "signup": {
+      "description": "News about forum theatre and what we organise, in your inbox."
+    }
+  }
+}

@@ -1,0 +1,19 @@
+/*
+ * The Inspringtheater colours. Both sites share one design and one family of colours, taken
+ * from their sister logos: green and orange swirls. Boerengroep leads with green. Here orange
+ * leads and green accompanies, on a warm dark ground instead of a green one.
+ */
+:root {
+    --leaf: #ff7a00;
+    --leaf-bright: #ff9433;
+    --leaf-deep: #a04a00;
+    --leaf-tint: #ffd9b3;
+    --harvest: #33aa22;
+    --harvest-soft: #dff2da;
+    --mist: #fff1e3;
+    --furrow: #33200f;
+    --furrow-raised: #4a3019;
+    --furrow-text: #f1ddc8;
+    --furrow-soft: #e3b98e;
+    --furrow-link: #ffc58f;
+}

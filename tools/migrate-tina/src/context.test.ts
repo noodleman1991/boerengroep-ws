@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { refId, type Ctx } from './context'
 import { Report } from './report'
+import { emptyFixups } from './fixups'
 
 function ctx(): Ctx {
   return {
@@ -11,7 +12,7 @@ function ctx(): Ctx {
     ids: new Map([['speakers/marcha.md', 42]]),
     pageByEnPath: new Map(),
     reservedPaths: new Set(),
-    fixups: { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [], galleryPages: [] },
+    fixups: emptyFixups,
     messages: {},
     toLexical: async () => undefined,
   }

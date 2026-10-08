@@ -133,6 +133,12 @@ export function formatTimes(start: When, end: When | null | undefined, locale: S
 }
 
 /** "Thursday 8 October" for a YYYY-MM-DD key. */
+/** A date with its year and without the weekday, for things that may be from another year: "24 June 2026". */
+export function formatDate(value: When, locale: SiteLocale): string {
+  const p = parts(value, intlLocale(locale), { day: 'numeric', month: 'long', year: 'numeric' });
+  return [p.day, p.month, p.year].filter(Boolean).join(' ');
+}
+
 export function formatDay(key: string, locale: SiteLocale): string {
   const [year, month, day] = key.split('-').map(Number);
   // Noon UTC is the same calendar day on the Dutch clock all year.

@@ -72,3 +72,33 @@ export function groupVacancies<V extends VacancyTiming & { opportunityType?: str
   }
   return [...groups.values()].filter((group) => options.includeEmpty || group.items.length > 0);
 }
+
+/** The name a vacancy has on the positions page, so a link can open it there. */
+export function vacancyAnchor(vacancy: { slug?: string | null; id: number | string }): string {
+  return `vacancy-${String(vacancy.slug || vacancy.id).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+}
+
+/**
+ * The positions people can apply for right now, for a short list on a page. The ones an editor
+ * put in the spotlight come first, then the nearest last day, then the positions that are
+ * always open. A vacancy leaves the list the day after its last day.
+ */
+export function openPositions<V extends VacancyTiming & { featured?: boolean | null }>(
+  vacancies: V[],
+  now: Date,
+  count = 3,
+): { vacancy: V; deadline?: string }[] {
+  const open = vacancies.flatMap((vacancy) => {
+    const timing = vacancyState(vacancy, now);
+    if (timing.state === 'open') return [{ vacancy, deadline: undefined as string | undefined }];
+    return timing.state === 'until' ? [{ vacancy, deadline: timing.deadline as string | undefined }] : [];
+  });
+  // Stable, so vacancies that tie stay in the order they were given.
+  open.sort(
+    (a, b) =>
+      Number(Boolean(b.vacancy.featured)) - Number(Boolean(a.vacancy.featured)) ||
+      Number(a.deadline === undefined) - Number(b.deadline === undefined) ||
+      (a.deadline ?? '').localeCompare(b.deadline ?? ''),
+  );
+  return open.slice(0, Math.max(1, count));
+}

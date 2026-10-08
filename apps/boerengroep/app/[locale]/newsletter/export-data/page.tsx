@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ExportDataPage } from '@/components/newsletter/export-data-page';
 import Layout from '@/components/layout/layout';
+import { SITE } from '@/site.config';
 
 interface ExportDataPageProps {
     params: Promise<{ locale: string }>;
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: ExportDataPageProps): Promise
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
-        title: `${t('exportData.title')} - Stichting Boerengroep`,
+        title: `${t('exportData.title')} - ${SITE.name}`,
         description: t('exportData.description'),
     };
 }

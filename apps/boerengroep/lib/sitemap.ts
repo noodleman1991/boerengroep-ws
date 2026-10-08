@@ -1,3 +1,4 @@
+import { isOwnNews, newsItemPath } from './news';
 import { RESERVED_PATHS } from './reserved-paths';
 import { TEST_PAGE } from './test-page';
 
@@ -8,11 +9,21 @@ type Written = { slug?: string | null; language?: Language | null; updatedAt?: s
 /** Pages about one visitor's own newsletter subscription. They are not for search engines. */
 const PERSONAL = '/newsletter/';
 
-/** The address of a news item written on the site. The organisation's own news and news from friends have separate lists. */
-export function newsItemPath(item: { slug: string; organization: string }): string {
-  // Kept from the previous site, including the 'Inspiratietheater' spelling.
-  const own = item.organization === 'Boerengroep' || item.organization === 'Inspiratietheater';
-  return `${own ? '/news/newsletter' : '/news/friends-news'}/${item.slug}`;
+/**
+ * The built-in lists that have nothing to show right now. An empty list is of no use to a
+ * search engine, so the sitemap leaves these out until something is added.
+ */
+export function emptyLists(has: { news: { organization: string }[]; stories: number; vacancies: number; podcast: boolean }): string[] {
+  const own = has.news.some((item) => isOwnNews(item.organization));
+  const friends = has.news.some((item) => !isOwnNews(item.organization));
+  return [
+    ...(own || friends ? [] : ['/news']),
+    ...(own ? [] : ['/news/newsletter']),
+    ...(friends ? [] : ['/news/friends-news']),
+    ...(has.stories > 0 ? [] : ['/activities/past-events']),
+    ...(has.vacancies > 0 ? [] : ['/vacancies']),
+    ...(has.podcast ? [] : ['/library/podcast']),
+  ];
 }
 
 /**
@@ -25,6 +36,8 @@ export function sitemapEntries(input: {
   events: Written[];
   stories: Written[];
   news: (Written & { organization: string; type: string })[];
+  /** Built-in lists to leave out because they are empty. See `emptyLists`. */
+  empty?: string[];
 }): { url: string; lastModified?: Date }[] {
   const seen = new Map<string, Date | undefined>();
   const add = (locale: Language, path: string, changed?: string | null) => {
@@ -41,7 +54,7 @@ export function sitemapEntries(input: {
     add(page.locale, page.path);
   }
   for (const path of RESERVED_PATHS) {
-    if (path.startsWith(PERSONAL)) continue;
+    if (path.startsWith(PERSONAL) || input.empty?.includes(path)) continue;
     for (const locale of LANGUAGES) add(locale, path);
   }
   for (const event of input.events) if (event.slug) each(event, `/activities/calendar/${event.slug}`);
@@ -52,3 +65,5 @@ export function sitemapEntries(input: {
   }
   return [...seen].map(([url, lastModified]) => (lastModified ? { url, lastModified } : { url }));
 }
+
+export { newsItemPath };

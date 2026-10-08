@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { SITE } from '@/site.config';
 import type { SupportedLanguage } from '../db/schema';
 import { getEmailTemplate } from '../db/queries';
 import {
@@ -7,16 +8,26 @@ import {
     generateDataExportUrl
 } from '../newsletter/utils';
 
-// Initialize Resend with your API key
-const resend = new Resend(process.env.RESEND_BOERENGROEP);
+/**
+ * The mail service, made on first use. A site without a key (a local copy, or a site that
+ * sends no newsletter mail yet) must still build and run: it then sends nothing and says so.
+ */
+let client: Resend | null | undefined;
+function mailer(): Resend | null {
+    if (client === undefined) {
+        const key = (process.env.RESEND_API_KEY || process.env.RESEND_BOERENGROEP)?.trim();
+        client = key ? new Resend(key) : null;
+    }
+    return client;
+}
 
-// Email configuration
+// Who the mail comes from: the server settings, else this site's own name and address.
 const emailConfig = {
     from: {
-        name: process.env.FROM_NAME || 'Stichting Boerengroep',
-        address: process.env.FROM_EMAIL || 'newsletter@boerengroep.nl',
+        name: process.env.FROM_NAME || SITE.name,
+        address: process.env.FROM_EMAIL || SITE.contactEmail,
     },
-    replyTo: process.env.REPLY_TO_EMAIL || 'info@boerengroep.nl',
+    replyTo: process.env.REPLY_TO_EMAIL || SITE.contactEmail,
 };
 
 // Base email sending function
@@ -53,6 +64,11 @@ async function sendEmail(
             ],
         };
 
+        const resend = mailer();
+        if (!resend) {
+            console.error('No mail key is set (RESEND_API_KEY), so this email was not sent:', subject);
+            return false;
+        }
         const result = await resend.emails.send(emailData);
 
         if (result.error) {

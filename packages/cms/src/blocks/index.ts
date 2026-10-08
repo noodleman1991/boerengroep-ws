@@ -10,10 +10,13 @@ import { Gallery } from './gallery'
 import { Hero } from './hero'
 import { ImageText } from './image-text'
 import { Item } from './item'
+import { NewsPreview } from './news-preview'
 import { NewsletterSignup } from './newsletter-signup'
 import { Podcast } from './podcast'
+import { Spotlight } from './spotlight'
 import { Stats } from './stats'
 import { Testimonial } from './testimonial'
+import { VacanciesPreview } from './vacancies-preview'
 import { Video } from './video'
 
 /** Puts the block's own explanation as the first thing an editor sees when opening it. */
@@ -51,9 +54,13 @@ export const pageBlocks: Block[] = [
   NewsletterSignup,
   FormBlock,
   Item,
+  NewsPreview,
+  VacanciesPreview,
+  Spotlight,
 ].map(withHelp)
 
-const PAGE_ONLY = ['eventsCalendarPreview', 'newsletterSignup']
+// Blocks that pull in other content belong on pages, not inside a news item or a story.
+const PAGE_ONLY = ['eventsCalendarPreview', 'newsletterSignup', 'newsPreview', 'vacanciesPreview', 'spotlight']
 
 /** Blocks allowed in newsletters and past events. */
 export const articleBlocks: Block[] = pageBlocks.filter((b) => !PAGE_ONLY.includes(b.slug))

@@ -20,15 +20,30 @@ export function listUploads(uploadsDir: string): string[] {
   return out.sort()
 }
 
+/**
+ * Where each file is on disk, by its uploads path. Extra folders have the layout of the uploads
+ * folder and add files it lacks, for example ones that only existed on the old site's file server.
+ */
+export function locateUploads(uploadsDir: string, extraDirs: string[] = []): Map<string, string> {
+  const files = new Map<string, string>()
+  for (const dir of [uploadsDir, ...extraDirs]) {
+    for (const legacyPath of listUploads(dir)) {
+      if (!files.has(legacyPath)) files.set(legacyPath, path.join(dir, legacyPath.replace(/^\/uploads\//, '')))
+    }
+  }
+  return files
+}
+
 /** Uploads every file once. A file already uploaded for this tenant is reused. */
 export async function uploadAll(
   input: { payload: Payload; tenantId: Id; report: Report },
   uploadsDir: string,
+  extraDirs: string[] = [],
 ): Promise<Map<string, Id>> {
   const { payload, tenantId, report } = input
   const map = new Map<string, Id>()
 
-  for (const legacyPath of listUploads(uploadsDir)) {
+  for (const [legacyPath, abs] of locateUploads(uploadsDir, extraDirs)) {
     try {
       const existing = await payload.find({
         collection: 'media',
@@ -41,7 +56,6 @@ export async function uploadAll(
         map.set(legacyPath, existing.docs[0].id)
         continue
       }
-      const abs = path.join(uploadsDir, legacyPath.replace(/^\/uploads\//, ''))
       const data = readFileSync(abs)
       const created = await payload.create({
         collection: 'media',

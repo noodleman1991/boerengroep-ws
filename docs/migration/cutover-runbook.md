@@ -1,4 +1,7 @@
-# Boerengroep cutover runbook
+# Cutover runbook
+
+Boerengroep first. The second site, Inspringtheater, has its own section further down and goes
+live after Boerengroep, because the admin panel for both lives on the Boerengroep site.
 
 ## One-time setup (owner)
 
@@ -29,6 +32,8 @@
    The existing variables are `DATABASE_URL`, `RESEND_BOERENGROEP`, `FROM_EMAIL`, `FROM_NAME`,
    `REPLY_TO_EMAIL`, `NEWSLETTER_SECRET`, `BASE_URL`, `BASE_PATH`, `PODCAST_RSS_URL`,
    `NEXT_PUBLIC_BASE_URL`, `BREVO_API_KEY`, `BREVO_LIST_ID`. Do not copy the four `TINA` variables.
+   The mail key is read from `RESEND_API_KEY` first. `RESEND_BOERENGROEP` is its old name and
+   still works.
 
 ## Newsletter and Brevo (owner)
 
@@ -75,6 +80,7 @@ The subscriber database needs no change for this.
    CONTENT_DIR=$PWD/../../../bg-main/content UPLOADS_DIR=$PWD/../../../bg-main/public/uploads \
    APP_DIR=$PWD/../../apps/boerengroep \
    FIXUPS_FILE=$PWD/../../docs/migration/boerengroep-fixups.json \
+   EXTRA_UPLOADS_DIR=$PWD/../../docs/migration/boerengroep-rescued/uploads \
    REPORT_PATH=$PWD/../../docs/migration/staging-report.md pnpm migrate
    ```
 
@@ -87,6 +93,14 @@ The subscriber database needs no change for this.
      the placeholder content that is left out (see "Placeholder content left out" in
      `2026-boerengroep-dry-run-review.md` and confirm that list first).
      Without it those are not applied.
+   - `EXTRA_UPLOADS_DIR` adds the files that were only on Tina's own file server and not in the
+     repository, see `docs/migration/boerengroep-rescued/README.md`. Links in texts that pointed
+     at that server (the year plan and the year report) are turned into links to the imported
+     file. A link to that server whose file is nowhere to be found shows in the report under
+     `missing-media`.
+   - The run ends by telling the site to forget what it showed before, and logs "Site
+     refreshed". "Site not refreshed" means the site could not be reached at the address in
+     its settings. See step 5.
    - Use `origin/main`, not a local `main`. Editors publish through Tina Cloud straight to GitHub,
      so a local checkout can be weeks behind the live site.
    - The run is safe to repeat. A second run updates and never duplicates.
@@ -94,7 +108,11 @@ The subscriber database needs no change for this.
 4. Compare `staging-report.md` with `2026-boerengroep-dry-run-review.md`. Entries for content that
    editors added since the dry run are expected. Every new entry needs a decision, and there must be
    no `error` entries.
-5. Redeploy the preview so pages are generated from the migrated data.
+5. Open the preview and check that the home page shows the imported content. The import told
+   the site to refresh (step 3). If it logged "Site not refreshed", or pages still look empty:
+   in Vercel open the project, Settings, Data Cache, "Purge Everything", then redeploy. A
+   redeploy alone is not enough, because Vercel keeps remembered content across deployments.
+   The same holds locally: delete `apps/<app>/.next` before building after an import.
 6. `node tools/url-parity/check.mjs <preview origin> docs/migration/boerengroep-urls.txt` must report 0 failed.
    The list was collected from the live site on 2026-10-08. Refresh it on rehearsal day:
    `node tools/url-parity/collect.mjs https://www.boerengroep.nl docs/migration/boerengroep-url-candidates.txt docs/migration/boerengroep-urls.txt`.
@@ -131,6 +149,86 @@ The subscriber database needs no change for this.
 8. Run the parity check once more against the real domain.
 9. Set the tenant's Site URL in the admin to the real domain if it differs.
 
+10. Before the Tina account is closed, check that nothing on the site still points at Tina's file
+    server: `pg_dump --data-only <production url> | grep -c assets.tina.io` must print 0. The
+    browser test "the year plan and the year report come from this site" checks the two known
+    links.
+
+## The Inspringtheater site
+
+The second site is the app `apps/inspringtheater`. It has no pages of its own: it shows the same
+pages, blocks and calendar as Boerengroep with its own content, colours, logo and wording, and
+reads from the same database. Editors use the admin panel on the Boerengroep site. Typing
+`/admin` on the Inspringtheater site sends them there.
+
+Do this after Boerengroep is live, or on staging at the same time as its rehearsal.
+
+1. **Vercel project.** Create a project `inspringtheater-payload` from this repository with Root
+   Directory `apps/inspringtheater`, Production Branch `main`, Node 22.
+2. **Environment variables** on that project:
+
+   | Name | Value |
+   |---|---|
+   | `PAYLOAD_DATABASE_URL` | the same database as Boerengroep (Neon `main`, or `staging` for Preview) |
+   | `PAYLOAD_SECRET` | the same value as Boerengroep, per environment |
+   | `TENANT_SLUG` | `inspringtheater` |
+   | `NEXT_PUBLIC_SITE_URL` | the origin of this site |
+   | `ADMIN_URL` | the Boerengroep origin followed by `/admin` |
+   | `REVALIDATE_SECRET` | `openssl rand -hex 32`. The same value goes into the seed in step 3 |
+   | `BLOB_READ_WRITE_TOKEN` | the same Blob token |
+   | `DATABASE_URL`, `NEWSLETTER_SECRET`, `RESEND_API_KEY`, `FROM_EMAIL`, `FROM_NAME`, `REPLY_TO_EMAIL`, `BREVO_API_KEY`, `BREVO_LIST_ID` | this site's own newsletter list and mail settings. Never Boerengroep's: the two lists must not mix |
+
+   Do not set `RUN_MIGRATIONS` and do not set `PODCAST_RSS_URL`. Migrations belong to the
+   Boerengroep project. `PAYLOAD_SECRET` must be equal on both projects, because preview links
+   and logins are signed with it.
+3. **Seed the site** against the same database, with the Inspringtheater origin and its secret:
+
+   ```bash
+   cd packages/cms
+   NODE_ENV=production PAYLOAD_SECRET=<secret> PAYLOAD_DATABASE_URL=<url> TENANT_SLUG=inspringtheater \
+   SEED_TENANT_NAME="Inspringtheater" SEED_SITE_URL=<inspringtheater origin> REVALIDATE_SECRET=<its secret> \
+   SEED_ADMIN_EMAIL=<owner email> SEED_ADMIN_PASSWORD=<same password as before> pnpm seed
+   ```
+
+   The address and the secret given here are what the admin uses to tell this site that
+   something changed. If an edit in the admin does not show on the site, these two are wrong:
+   correct them under People and sites, Sites.
+4. **Import its content.** The old site lives in its own repository. Get read access to it,
+   check out its `main`, and run the import with this site's fix-ups:
+
+   ```bash
+   git clone <inspringtheater repository> ../it-main
+   cd tools/migrate-tina
+   NODE_ENV=production PAYLOAD_SECRET=<secret> PAYLOAD_DATABASE_URL=<url> TENANT_SLUG=inspringtheater \
+   BLOB_READ_WRITE_TOKEN=<blob token> \
+   CONTENT_DIR=$PWD/../../../it-main/content UPLOADS_DIR=$PWD/../../../it-main/public/uploads \
+   MESSAGES_DIR=$PWD/../../../it-main/messages APP_DIR=$PWD/../../apps/boerengroep \
+   FIXUPS_FILE=$PWD/../../docs/migration/inspringtheater-fixups.json \
+   REPORT_PATH=$PWD/../../docs/migration/inspringtheater-staging-report.md pnpm migrate
+   ```
+
+   `APP_DIR` stays `apps/boerengroep`: that is where the built-in routes are. `MESSAGES_DIR`
+   gives the old site's own names for the kinds of events. Confirm
+   `2026-inspringtheater-dry-run-review.md` first: it lists what is left out and why.
+5. **Check.**
+   - `node tools/url-parity/check.mjs <origin> docs/migration/inspringtheater-urls.txt` must
+     report 0 failed.
+   - `E2E_BASE_URL=<origin> pnpm --filter inspringtheater e2e` must pass.
+   - Edit an event in the admin and see it change on the site within seconds.
+   - Open a page in the admin and press the eye button: the preview opens on the
+     Inspringtheater address.
+6. **Go live**: move the domain to `inspringtheater-payload` and set the site's address under
+   People and sites, Sites, to the real domain.
+
+Three things only the organisation can supply before this site goes live: a privacy statement
+(the old page held an unrelated text and was left out, so the newsletter box links to none), a
+larger logo file if one exists (the only one is 300 pixels wide), and access to the old
+repository for the last content.
+
+When a route is added to or removed from `apps/boerengroep/app`, run
+`node tools/site-routes/sync.mjs`. It writes the matching thin files in
+`apps/inspringtheater/app`. A test fails when the two are out of step.
+
 ## Rollback
 
 Move the domain back to the old Vercel project. Its last deployment still serves the Tina site from
@@ -165,6 +263,14 @@ started working, list their changes from the admin's version history before deci
 - Submit `<site>/sitemap.xml` in Google Search Console. The old site had no sitemap.
 - Tell people about the calendar address `<site>/calendar.ics`, or simply point them at the
   "Subscribe to our calendar" button on the calendar page.
+- The home page now carries two blocks that fill themselves, added by the import: "Latest news"
+  after the events and "Open positions" after the announcement. Move or remove them on the
+  page "Home" like any block. A third one, "In the spotlight", is there for whatever you want
+  to put first: see the editing guide, "What shows on the home page".
+- One file was left on Tina's file server on purpose: a 12.6 MB PDF attached to the vacancy
+  "Food.Film.Fest Volunteer", which closed in September 2025. Its name says it is about opening
+  hours, not about the vacancy. If it is wanted, download it before the Tina account is closed
+  and attach it to the vacancy: see "Files" in `2026-boerengroep-dry-run-review.md`.
 - Fix the entries marked `fix in admin after cutover` in `2026-boerengroep-dry-run-review.md`:
   three inline images in vacancies, and the images whose files were already missing.
 - Delete the two draft placeholder pages only if their child pages move elsewhere. They keep the
@@ -180,18 +286,26 @@ started working, list their changes from the admin's version history before deci
   do not. The second request is served from cache with a single header.
 - **Pages without a Dutch version** are shown in English under their English address, as before.
 - **One admin for both sites.** The admin panel lives on the Boerengroep site at `/admin`.
-  People who work on both sites choose the site with two tabs. The Inspringtheater site will
-  forward its `/admin` there. That forwarding is built together with that site.
+  People who work on both sites choose the site with two tabs. The Inspringtheater site
+  forwards its `/admin` there. A preview of an Inspringtheater page opens on that site through
+  a signed link that is valid for twelve hours.
 - **Links that leave the site** (calendar files, the subscribe address, share links and previews)
   are built from `NEXT_PUBLIC_SITE_URL`. A wrong value there shows up as links to the wrong domain.
 - **Emails from forms** are only sent when an editor adds one on a form, and they go out through
   the same mail settings as password resets.
-- **The database has one migration**, `20261008_142839_initial`. From the first deployment on,
+- **The database has one migration**, `20261008_162747_initial`. From the first deployment on,
   every later change to the content model is a new, additive migration next to it.
 - **Browser tests are not part of CI.** CI runs lint, typecheck, the unit tests, the database
-  tests and the migration check. The 102 browser tests (behaviour, twelve screen widths,
-  accessibility) need a built site with content, so run them by hand against the preview before
-  every cutover-sized change: `E2E_BASE_URL=<origin> pnpm --filter boerengroep e2e`.
+  tests and the migration check. The browser tests (behaviour, twelve screen widths,
+  accessibility: 120 for Boerengroep, and the shared ones plus its own for Inspringtheater) need
+  a built site with content, and until cutover that content lives on `main`. Run them by hand
+  against the preview before every cutover-sized change:
+  `E2E_BASE_URL=<origin> pnpm --filter boerengroep e2e` and
+  `E2E_BASE_URL=<origin> pnpm --filter inspringtheater e2e`.
+- **Removed things can forward.** A forwarding address (Site settings, Forwarding addresses)
+  works for removed pages and for removed news items.
+- **Empty lists stay out of the sitemap.** The news lists, the stories, the podcast and the
+  vacancies page are only offered to search engines once they have something in them.
 - **Local development.** `pnpm --filter boerengroep dev` needs the database from
   `packages/cms/docker-compose.yml` and the variables in `apps/boerengroep/.env.local`.
   On a machine with 8 GB of memory, prefer `pnpm --filter boerengroep build` and `start`.

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { VerifyEmailPage } from '@/components/newsletter/verify-email-page';
 import Layout from '@/components/layout/layout';
+import { SITE } from '@/site.config';
 
 interface VerifyPageProps {
     params: Promise<{ locale: string }>;
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: VerifyPageProps): Promise<Met
     const t = await getTranslations({ locale, namespace: 'newsletter' });
 
     return {
-        title: `${t('verify.title')} - Stichting Boerengroep`,
+        title: `${t('verify.title')} - ${SITE.name}`,
         description: t('verify.description'),
     };
 }

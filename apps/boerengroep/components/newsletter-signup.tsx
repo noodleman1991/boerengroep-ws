@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+import { SiteLink } from '@/components/layout/site-link';
 import { useLayout } from '@/components/layout/layout-context';
 import { BrandSymbol } from '@/components/brand-symbol';
 import { RichText } from '@/components/rich-text';
@@ -38,6 +38,8 @@ export function NewsletterSignup({
     const locale = useLocale();
     const { globalSettings } = useLayout();
     const texts = globalSettings?.newsletter;
+    // The privacy page is the first of the small links at the bottom of the footer.
+    const privacy = globalSettings?.footer.legalLinks[0];
     const [state, setState] = useState<State>('idle');
     const [email, setEmail] = useState('');
     const fieldId = useId();
@@ -130,11 +132,11 @@ export function NewsletterSignup({
                 <p className="signup__small">
                     {texts?.consentText ? (
                         <>
-                            {texts.consentText} <Link href="/privacy-policy">{t('privacy_policy')}</Link>
+                            {texts.consentText} {privacy && <SiteLink link={privacy}>{t('privacy_policy')}</SiteLink>}
                         </>
                     ) : (
                         t.rich('consent_statement', {
-                            privacyPolicy: (chunks) => <Link href="/privacy-policy">{chunks}</Link>,
+                            privacyPolicy: (chunks) => (privacy ? <SiteLink link={privacy}>{chunks}</SiteLink> : <>{chunks}</>),
                         })
                     )}
                 </p>

@@ -57,10 +57,10 @@ type Source = { file: string; segments: string[] }
  * Every Dutch spelling an English path may have on disk: each segment either
  * translated or left as it is. The fully translated spelling comes first.
  */
-function dutchCandidates(segments: string[]): string[] {
+function dutchCandidates(segments: string[], words: Record<string, string>): string[] {
   let paths: string[][] = [[]]
   for (const segment of segments) {
-    const translated = SEGMENT_NL[segment]
+    const translated = words[segment]
     paths = paths.flatMap((prefix) =>
       translated && translated !== segment ? [[...prefix, translated], [...prefix, segment]] : [[...prefix, segment]],
     )
@@ -106,7 +106,12 @@ function collect(files: string[], locale: 'en' | 'nl', report: Report): Map<stri
   return out
 }
 
-export function planPages(files: string[], report: Report): PagePlan[] {
+/**
+ * @param extra  A site's own English to Dutch address words, laid over the shared list.
+ */
+export function planPages(files: string[], report: Report, extra: Record<string, string> = {}): PagePlan[] {
+  const words = { ...SEGMENT_NL, ...extra }
+  const english = { ...SEGMENT_EN, ...Object.fromEntries(Object.entries(extra).map(([en, nl]) => [nl, en])) }
   for (const file of files) {
     if (file.startsWith('pages/') && !file.startsWith('pages/en/') && !file.startsWith('pages/nl/')) {
       report.add('skipped', file, 'outside a locale folder')
@@ -118,7 +123,7 @@ export function planPages(files: string[], report: Report): PagePlan[] {
   const plans = new Map<string, PagePlan>()
 
   for (const [key, source] of en) {
-    const match = dutchCandidates(source.segments).find((candidate) => nl.has(candidate))
+    const match = dutchCandidates(source.segments, words).find((candidate) => nl.has(candidate))
     const partner = match === undefined ? undefined : nl.get(match)
     if (partner) nl.delete(partner.segments.join('/'))
     else report.add('unpaired-locale', source.file, 'no Dutch counterpart')
@@ -133,7 +138,7 @@ export function planPages(files: string[], report: Report): PagePlan[] {
   }
 
   for (const source of nl.values()) {
-    const key = source.segments.map((s) => SEGMENT_EN[s] ?? s).join('/')
+    const key = source.segments.map((s) => english[s] ?? s).join('/')
     const existing = plans.get(key)
     if (existing) {
       // A second Dutch file for a page that is already planned, usually a stray copy.
@@ -178,4 +183,16 @@ export function planPages(files: string[], report: Report): PagePlan[] {
   return [...plans.values()].sort(
     (a, b) => a.key.split('/').length - b.key.split('/').length || a.key.localeCompare(b.key),
   )
+}
+
+/**
+ * The pages to leave out because nothing is on them. A page with nothing of its own stays
+ * when a page with content sits under it, because that page needs it in its address. The home
+ * page always stays.
+ */
+export function emptyKeysToSkip(plans: PagePlan[], isEmpty: (plan: PagePlan) => boolean): string[] {
+  const empty = plans.filter((plan) => plan.key !== 'home' && !plan.placeholder && isEmpty(plan))
+  const emptyKeys = new Set(empty.map((plan) => plan.key))
+  const kept = plans.filter((plan) => !emptyKeys.has(plan.key) && !plan.placeholder).map((plan) => plan.key)
+  return empty.filter((plan) => !kept.some((key) => key.startsWith(`${plan.key}/`))).map((plan) => plan.key)
 }

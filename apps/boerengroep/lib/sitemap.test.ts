@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { newsItemPath, sitemapEntries } from './sitemap'
+import { emptyLists, newsItemPath, sitemapEntries } from './sitemap'
 
 const base = 'https://example.org'
 const urls = (input: Partial<Parameters<typeof sitemapEntries>[0]>) =>
@@ -17,6 +17,13 @@ describe('the list of addresses offered to search engines', () => {
       expect(list.filter((url) => url === `${base}/en${path}`), path).toHaveLength(1)
       expect(list.filter((url) => url === `${base}/nl${path}`), path).toHaveLength(1)
     }
+  })
+
+  it('leaves out the built-in lists that are named as empty, and keeps the rest', () => {
+    const list = urls({ empty: ['/news', '/library/podcast'] })
+    expect(list.some((url) => url.endsWith('/news') || url.endsWith('/library/podcast'))).toBe(false)
+    expect(list).toContain(`${base}/en/activities/calendar`)
+    expect(list).toContain(`${base}/nl/news/newsletter`)
   })
 
   it('leaves out the test page and the personal newsletter pages', () => {
@@ -61,5 +68,19 @@ describe('where a news item lives', () => {
   it('puts the organisation’s own news under the newsletter and the rest under news from friends', () => {
     expect(newsItemPath({ slug: 'A', organization: 'Boerengroep' })).toBe('/news/newsletter/A')
     expect(newsItemPath({ slug: 'B', organization: 'friends' })).toBe('/news/friends-news/B')
+  })
+})
+
+describe('which built-in lists are empty', () => {
+  it('names every list on a site that has nothing yet, but never the calendar', () => {
+    expect(emptyLists({ news: [], stories: 0, vacancies: 0, podcast: false })).toEqual([
+      '/news', '/news/newsletter', '/news/friends-news', '/activities/past-events', '/vacancies', '/library/podcast',
+    ])
+  })
+  it('names none on a site that uses all of them', () => {
+    expect(emptyLists({ news: [{ organization: 'Boerengroep' }, { organization: 'friends' }], stories: 3, vacancies: 8, podcast: true })).toEqual([])
+  })
+  it('keeps the news page when only friends have news, and leaves out the own list', () => {
+    expect(emptyLists({ news: [{ organization: 'friends' }], stories: 1, vacancies: 1, podcast: true })).toEqual(['/news/newsletter'])
   })
 })
