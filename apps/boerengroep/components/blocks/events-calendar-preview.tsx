@@ -10,6 +10,7 @@ import { Link } from '@/i18n/navigation';
 import { eventPath } from '@/lib/events/ics-site';
 import { pickEvents, splitEvents } from '@/lib/events/select';
 import type { SiteEvent } from '@/lib/events/types';
+import { excerpt } from '@/lib/page-meta';
 import { Section } from '../layout/section';
 import { useBlockData } from './block-data-context';
 
@@ -111,7 +112,7 @@ function LeadEvent({ event }: { event: SiteEvent }) {
                 <EventFacts event={event} />
                 {event.description && (
                     <p className="whats-on__lead-text" lang={lang}>
-                        {event.description}
+                        {excerpt(event.description, 260)}
                     </p>
                 )}
             </div>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { firstParagraph, pageDescription, pageMeta, shorten } from './page-meta'
+import { excerpt, firstParagraph, pageDescription, pageMeta, shorten } from './page-meta'
 
 const word = (text: string) => ({ type: 'text', text })
 const rich = (...nodes: unknown[]) => ({ root: { children: nodes } })
@@ -77,5 +77,34 @@ describe('the description of a page, taken from what is on it', () => {
   it('says nothing when the page holds no words to use', () => {
     expect(pageDescription({ blocks: [{ blockType: 'gallery' }] } as never)).toBeUndefined()
     expect(pageDescription({ blocks: null } as never)).toBeUndefined()
+  })
+})
+
+describe('the opening of a longer text, for a list', () => {
+  it('leaves a short text as it is', () => {
+    expect(excerpt('Bring seeds to swap.')).toBe('Bring seeds to swap.')
+    expect(excerpt('  Bring   seeds\n\nto swap. ')).toBe('Bring seeds to swap.')
+    expect(excerpt(null)).toBe('')
+  })
+  it('stops at the end of a sentence when whole sentences fit', () => {
+    const text = 'Come and hang out with us next week Thursday! Are you curious who the people behind Boerengroep are? Come to Onder de Linden at 19.30 and bring whatever you like to talk about with us.'
+    expect(excerpt(text, 110)).toBe('Come and hang out with us next week Thursday! Are you curious who the people behind Boerengroep are?')
+  })
+  it('cuts at a word, with a mark, when the first sentence alone is too long', () => {
+    const text = 'We are organising a lecture series on the role of peasant farming in the agricultural transition with speakers from many countries and many fields of work'
+    const out = excerpt(text, 80)
+    expect(out.length).toBeLessThanOrEqual(80)
+    expect(out.endsWith('…')).toBe(true)
+    expect(text.startsWith(out.slice(0, -1))).toBe(true)
+    // The word before the mark is whole.
+    expect(text[out.length - 1]).toBe(' ')
+  })
+  it('does not stop at a sentence that would leave only a few words', () => {
+    const text = `Hi! ${'word '.repeat(60)}`
+    expect(excerpt(text, 100).endsWith('…')).toBe(true)
+  })
+  it('does not take the dot of a time or a number for the end of a sentence', () => {
+    const text = 'Come to Onder de Linden at 19.30 for drinks and a talk about what we could do together this coming year, and bring a friend along if you like to do so.'
+    expect(excerpt(text, 60)).not.toBe('Come to Onder de Linden at 19.')
   })
 })

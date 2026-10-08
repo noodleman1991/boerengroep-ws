@@ -389,7 +389,7 @@
   place-items: center;
   overflow: hidden;
   margin-bottom: calc(var(--base) * 1.5);
-  border-radius: 24px;
+  border-radius: 0;
   background: #eef5e6;
 }
 
@@ -451,13 +451,17 @@
 /* The one button of the page, in the green of the site's buttons. Black on it reads at 7:1. */
 .login .form-submit .btn {
   width: 100%;
-  border-radius: 999px;
+  border: 2px solid #111111;
+  border-radius: 2px;
   background: #44ad39;
+  box-shadow: 3px 3px 0 #111111;
   color: #111111;
-  font-weight: 600;
+  font-weight: 700;
 
   &:hover {
+    transform: translate(2px, 2px);
     background: #57c24b;
+    box-shadow: 1px 1px 0 #111111;
   }
 }
 
@@ -473,7 +477,7 @@
     inset: 16px auto 16px 16px;
     width: calc(50vw - 24px);
     margin: 0;
-    border-radius: 28px;
+    border-radius: 0;
   }
 
   /* The sun of the site's footer, rising in the corner. */

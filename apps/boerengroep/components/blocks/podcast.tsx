@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { dateParts, type SiteLocale } from '@/lib/events/time';
+import { excerpt } from '@/lib/page-meta';
 import { pickEpisodes } from '@/lib/podcast';
 import { Section } from '../layout/section';
 import { useBlockData } from './block-data-context';
@@ -41,7 +42,7 @@ export const PodcastBlock = ({ data }: { data: PodcastData }) => {
                                     {episode.duration && <span>{episode.duration}</span>}
                                 </p>
                                 <h3 className="episode__title">{episode.title}</h3>
-                                {episode.description && <p className="episode__text">{episode.description}</p>}
+                                {episode.description && <p className="episode__text">{excerpt(episode.description, 220)}</p>}
                                 {episode.audioUrl && (
                                     <audio controls preload="none" src={episode.audioUrl} aria-label={t('podcast_listen', { title: episode.title })} />
                                 )}

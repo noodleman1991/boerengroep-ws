@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { eventPath } from '@/lib/events/ics-site';
 import type { SiteEvent } from '@/lib/events/types';
+import { excerpt } from '@/lib/page-meta';
 import { DateBlock, EventFacts, KindTag, StatusBadge, useEventLang } from './event-bits';
 
 /**
@@ -31,7 +32,7 @@ export function EventRow({ event, headingLevel: Heading = 'h3', compact = false 
                 <EventFacts event={event} />
                 {!compact && event.description && (
                     <p className="event-row__text" lang={lang}>
-                        {event.description}
+                        {excerpt(event.description, 170)}
                     </p>
                 )}
             </div>

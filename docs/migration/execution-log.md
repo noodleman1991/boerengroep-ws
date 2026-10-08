@@ -370,3 +370,15 @@ Asked for, after a first look at the admin: Boerengroep before Inspringtheater, 
 - The single migration was regenerated as `20261008_181609_initial`.
 - Tests: browser, Boerengroep 125 and Inspringtheater 58 with 2 skipped. App 282 unit, CMS 57 unit and 101 with a database, tool 113 unit and 36 with a database, second app 5, address tool 15. Parity: 238 and 199 checked, 0 failed.
 - Not checked: a real email through Resend from a deployed site, and a real Brevo key saved in the admin against a real Brevo account. Both need the owner's accounts.
+
+## Round 7 (cut-off text in the calendar, and a look of its own, 2026-10-08)
+
+Asked for: "examine the truncated text in the calendar and calendar widget", and for the block components: "look at wur.nl pretty similar - I want to diverge from this in the designs".
+
+- Cut-off text, found in three places. Descriptions in the calendar list and in the large event of the "What's on" block were cut by their box after two or three lines, in the middle of a word ("Come t…"). In the month, the names of events were cut in the middle of a word ("Boerengro ep…"), because a day was 85 pixels wide.
+- Now the site shortens a long description itself, at the end of a sentence when whole sentences fit and otherwise at a whole word with a mark (`excerpt` in `lib/page-meta.ts`, tested), and no box cuts text. The month is a ruled sheet as wide as the page with the chosen day under it, so every name is shown in full. Two browser tests guard this: no text in the list, the month or the block is cut by its box at 1366 and 390 pixels.
+- Compared with wur.nl by looking at it: both sites had rounded panels set in from the edges, rounded pictures, pill buttons, a date tab on the corner of a picture and ruled lists on soft green and cream. The headings already differed (a slab serif here).
+- The new look of the parts of a page: printed matter of a group that makes its own posters. Parcels are cut square and have a hatched edge along their top, as a land map marks a field. A large picture has a block of the second colour shifted behind it, as when two colours are printed off-register. A date is a leaf of a tear-off calendar: weekday on a black band, the day large, the month under it. Buttons are stamps with a hard edge that press in under the pointer. Tabs, filters, the language switch and the menu button are square. The month is a calendar sheet.
+- Kept, because the owner said so earlier: the hill with the sun as footer, the swirl of the logo, the parcels set in from the edges of the window, the announcement as a low strip of its own. The two round things left are the sun and the swirl.
+- It is one set of variables (`--corner`, `--corner-ui`, `--rule`, `--print`, `--print-shift`) and a handful of rules in `site.css`, so Inspringtheater has it too, in its own colours, and it can be tuned or turned back in one place. The login page of the admin follows it.
+- Tests: browser, Boerengroep 127 and Inspringtheater 58 with 2 skipped, including accessibility and twelve screen widths on the new look. App 287 unit. Parity unchanged.

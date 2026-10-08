@@ -14,6 +14,21 @@ export function shorten(text: string, max = 160): string {
   return `${(atWord > 0 ? cut.slice(0, atWord) : cut).replace(/[\s.,;:!?-]+$/, '')}…`;
 }
 
+/**
+ * The opening of a longer text, for a list: whole sentences when they fit in `max`
+ * characters, otherwise cut at a word with a mark. Never cut by the width of a box, which
+ * breaks words in half.
+ */
+export function excerpt(text: string | null | undefined, max = 170): string {
+  const clean = tidy(text ?? '');
+  if (clean.length <= max) return clean;
+  const within = clean.slice(0, max + 1);
+  // The last sentence that ends inside the limit, if that still leaves a decent opening.
+  const ends = [...within.matchAll(/[.!?](?=\s)/g)].map((match) => match.index! + 1);
+  const sentence = ends.filter((end) => end >= max * 0.45).pop();
+  return sentence ? clean.slice(0, sentence) : shorten(clean, max);
+}
+
 /** The first paragraph of a text from the editor, as plain words. Headings are skipped. */
 export function firstParagraph(data: unknown): string | undefined {
   const plain = (node: Node): string => (typeof node.text === 'string' ? node.text : (node.children ?? []).map(plain).join(''));

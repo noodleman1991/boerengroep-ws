@@ -111,6 +111,48 @@ test('kinds of events carry the name of the reader’s language', async ({ page 
   await expect(page.locator('.calendar .chip', { hasText: 'Excursie' })).toHaveCount(1)
 })
 
+/** Text that a box cuts off: clamped to a number of lines or ended with dots, and not fitting. */
+const cutByItsBox = (root: Element) => {
+  const found: string[] = []
+  for (const el of root.querySelectorAll<HTMLElement>('*')) {
+    const style = getComputedStyle(el)
+    const clamped = style.webkitLineClamp !== 'none' && style.webkitLineClamp !== ''
+    const dotted = style.textOverflow === 'ellipsis'
+    const tooBig = el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1
+    if ((clamped || dotted) && tooBig && el.textContent?.trim()) found.push(`${el.className}: ${el.textContent.trim().slice(0, 40)}`)
+  }
+  return found
+}
+
+test('nothing in the calendar is cut off by its box, in the list, the month and the block on a page', async ({ page }) => {
+  for (const width of [1366, 390]) {
+    await page.setViewportSize({ width, height: 900 })
+    await page.goto('/en/activities/calendar')
+    expect(await page.locator('main').evaluate(cutByItsBox), `list at ${width}`).toEqual([])
+    // A description that was shortened ends at a sentence or at a whole word with a mark.
+    for (const text of await page.locator('.event-row__text').allTextContents()) expect(text.trim()).toMatch(/[.!?…]$|^.{0,170}$/)
+    await page.getByRole('button', { name: 'Month', exact: true }).click()
+    await expect(page.locator('.month__table')).toBeVisible()
+    expect(await page.locator('main').evaluate(cutByItsBox), `month at ${width}`).toEqual([])
+    await page.goto('/en')
+    const block = page.locator('.whats-on').first()
+    if (await block.count()) expect(await block.evaluate(cutByItsBox), `block at ${width}`).toEqual([])
+  }
+})
+
+test('the month shows the name of every event in full on a wide screen', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 900 })
+  await page.goto('/en/activities/calendar')
+  await page.getByRole('button', { name: 'Month', exact: true }).click()
+  const titles = page.locator('.month__titles > span:not(.month__more)')
+  test.skip((await titles.count()) === 0, 'this month has no events in this content')
+  // Each name is as tall and as wide as its text needs: nothing is hidden.
+  expect(await titles.evaluateAll((list) => list.filter((el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1).map((el) => el.textContent))).toEqual([])
+  // The sheet is as wide as the page, so a day has room for a name.
+  const sheet = (await page.locator('.month__table').boundingBox())!
+  expect(sheet.width).toBeGreaterThan(1000)
+})
+
 test('an event can be saved as a calendar file', async ({ page, request }) => {
   await page.goto('/en/activities/calendar')
   await page.getByRole('button', { name: 'Past', exact: true }).click()
