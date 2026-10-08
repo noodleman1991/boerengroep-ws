@@ -24,7 +24,7 @@ export default async function Home({ params }: { params: Promise<{ locale: Local
 
   return (
     <Layout rawPageData={resolved.page}>
-      <ClientPage page={resolved.page} data={await loadBlockData(resolved.page.blocks)} />
+      <ClientPage page={resolved.page} data={await loadBlockData(resolved.page.blocks, locale)} />
     </Layout>
   )
 }

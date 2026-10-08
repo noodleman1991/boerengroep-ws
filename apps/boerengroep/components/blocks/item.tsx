@@ -40,7 +40,6 @@ export const ItemBlock = ({ data }: { data: ItemData }) => {
                 {photos.length > 0 && (
                     <div className="item__pictures">
                         <div className="item__stage">
-                            <span className="overprint" aria-hidden="true" />
                             {/* Reachable with the keyboard: arrow keys scroll through the pictures. */}
                             <div
                                 className="item__strip"

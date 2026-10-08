@@ -1,5 +1,5 @@
 {
-  "id": "04ea923b-ecde-429f-b9a4-06eed08ae617",
+  "id": "0c018836-5249-4f28-9ece-8578aed372f3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -401,10 +401,9 @@
           "notNull": false,
           "default": "'upcoming'"
         },
-        "event_type": {
-          "name": "event_type",
-          "type": "enum_pages_blocks_events_calendar_preview_event_type",
-          "typeSchema": "public",
+        "kind_id": {
+          "name": "kind_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -489,9 +488,37 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "pages_blocks_events_calendar_preview_kind_idx": {
+          "name": "pages_blocks_events_calendar_preview_kind_idx",
+          "columns": [
+            {
+              "expression": "kind_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
+        "pages_blocks_events_calendar_preview_kind_id_event_kinds_id_fk": {
+          "name": "pages_blocks_events_calendar_preview_kind_id_event_kinds_id_fk",
+          "tableFrom": "pages_blocks_events_calendar_preview",
+          "tableTo": "event_kinds",
+          "columnsFrom": [
+            "kind_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "pages_blocks_events_calendar_preview_parent_id_fk": {
           "name": "pages_blocks_events_calendar_preview_parent_id_fk",
           "tableFrom": "pages_blocks_events_calendar_preview",
@@ -4573,10 +4600,9 @@
           "notNull": false,
           "default": "'upcoming'"
         },
-        "event_type": {
-          "name": "event_type",
-          "type": "enum__pages_v_blocks_events_calendar_preview_event_type",
-          "typeSchema": "public",
+        "kind_id": {
+          "name": "kind_id",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
@@ -4667,9 +4693,37 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
+        },
+        "_pages_v_blocks_events_calendar_preview_kind_idx": {
+          "name": "_pages_v_blocks_events_calendar_preview_kind_idx",
+          "columns": [
+            {
+              "expression": "kind_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {
+        "_pages_v_blocks_events_calendar_preview_kind_id_event_kinds_id_fk": {
+          "name": "_pages_v_blocks_events_calendar_preview_kind_id_event_kinds_id_fk",
+          "tableFrom": "_pages_v_blocks_events_calendar_preview",
+          "tableTo": "event_kinds",
+          "columnsFrom": [
+            "kind_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
         "_pages_v_blocks_events_calendar_preview_parent_id_fk": {
           "name": "_pages_v_blocks_events_calendar_preview_parent_id_fk",
           "tableFrom": "_pages_v_blocks_events_calendar_preview",
@@ -8791,12 +8845,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "event_type": {
-          "name": "event_type",
-          "type": "enum_events_event_type",
-          "typeSchema": "public",
+        "kind_id": {
+          "name": "kind_id",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "location_address": {
           "name": "location_address",
@@ -8886,6 +8939,21 @@
           "method": "btree",
           "with": {}
         },
+        "events_kind_idx": {
+          "name": "events_kind_idx",
+          "columns": [
+            {
+              "expression": "kind_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "events_image_idx": {
           "name": "events_image_idx",
           "columns": [
@@ -8954,6 +9022,19 @@
           "tableTo": "tenants",
           "columnsFrom": [
             "tenant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "events_kind_id_event_kinds_id_fk": {
+          "name": "events_kind_id_event_kinds_id_fk",
+          "tableFrom": "events",
+          "tableTo": "event_kinds",
+          "columnsFrom": [
+            "kind_id"
           ],
           "columnsTo": [
             "id"
@@ -16231,6 +16312,208 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.event_kinds": {
+      "name": "event_kinds",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tenant_id": {
+          "name": "tenant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "colour": {
+          "name": "colour",
+          "type": "enum_event_kinds_colour",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'green'"
+        },
+        "legacy_id": {
+          "name": "legacy_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "event_kinds_tenant_idx": {
+          "name": "event_kinds_tenant_idx",
+          "columns": [
+            {
+              "expression": "tenant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "event_kinds_legacy_id_idx": {
+          "name": "event_kinds_legacy_id_idx",
+          "columns": [
+            {
+              "expression": "legacy_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "event_kinds_updated_at_idx": {
+          "name": "event_kinds_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "event_kinds_created_at_idx": {
+          "name": "event_kinds_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "event_kinds_tenant_id_tenants_id_fk": {
+          "name": "event_kinds_tenant_id_tenants_id_fk",
+          "tableFrom": "event_kinds",
+          "tableTo": "tenants",
+          "columnsFrom": [
+            "tenant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.event_kinds_locales": {
+      "name": "event_kinds_locales",
+      "schema": "",
+      "columns": {
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "event_kinds_locales_locale_parent_id_unique": {
+          "name": "event_kinds_locales_locale_parent_id_unique",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "event_kinds_locales_parent_id_fk": {
+          "name": "event_kinds_locales_parent_id_fk",
+          "tableFrom": "event_kinds_locales",
+          "tableTo": "event_kinds",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.newsletters_blocks_hero_actions": {
       "name": "newsletters_blocks_hero_actions",
       "schema": "",
@@ -23389,24 +23672,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "title": {
-          "name": "title",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
         "slug": {
           "name": "slug",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
-        },
-        "language": {
-          "name": "language",
-          "type": "enum_vacancies_language",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
         },
         "opportunity_type": {
           "name": "opportunity_type",
@@ -23434,12 +23704,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "duration": {
-          "name": "duration",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "open_application": {
           "name": "open_application",
           "type": "boolean",
@@ -23449,42 +23713,6 @@
         "application_deadline": {
           "name": "application_deadline",
           "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "description": {
-          "name": "description",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "responsibilities": {
-          "name": "responsibilities",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "preferred_qualities": {
-          "name": "preferred_qualities",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "compensation_details": {
-          "name": "compensation_details",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "accessibility_notes": {
-          "name": "accessibility_notes",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "how_to_apply": {
-          "name": "how_to_apply",
-          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },
@@ -23509,12 +23737,6 @@
         "supporting_document_id": {
           "name": "supporting_document_id",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "values_statement": {
-          "name": "values_statement",
-          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },
@@ -23671,6 +23893,128 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.vacancies_locales": {
+      "name": "vacancies_locales",
+      "schema": "",
+      "columns": {
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duration": {
+          "name": "duration",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "responsibilities": {
+          "name": "responsibilities",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "preferred_qualities": {
+          "name": "preferred_qualities",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "compensation_details": {
+          "name": "compensation_details",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "accessibility_notes": {
+          "name": "accessibility_notes",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "how_to_apply": {
+          "name": "how_to_apply",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "values_statement": {
+          "name": "values_statement",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "vacancies_locales_locale_parent_id_unique": {
+          "name": "vacancies_locales_locale_parent_id_unique",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "vacancies_locales_parent_id_fk": {
+          "name": "vacancies_locales_parent_id_fk",
+          "tableFrom": "vacancies_locales",
+          "tableTo": "vacancies",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.vacancies_texts": {
       "name": "vacancies_texts",
       "schema": "",
@@ -23704,6 +24048,13 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
+        },
+        "locale": {
+          "name": "locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -23712,6 +24063,27 @@
           "columns": [
             {
               "expression": "order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "vacancies_texts_locale_parent": {
+          "name": "vacancies_texts_locale_parent",
+          "columns": [
+            {
+              "expression": "locale",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -28007,6 +28379,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "general_symbol_id": {
+          "name": "general_symbol_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "general_contact_address": {
           "name": "general_contact_address",
           "type": "varchar",
@@ -28114,6 +28492,21 @@
           "method": "btree",
           "with": {}
         },
+        "site_settings_general_general_symbol_idx": {
+          "name": "site_settings_general_general_symbol_idx",
+          "columns": [
+            {
+              "expression": "general_symbol_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "site_settings_updated_at_idx": {
           "name": "site_settings_updated_at_idx",
           "columns": [
@@ -28178,6 +28571,19 @@
           "tableTo": "media",
           "columnsFrom": [
             "general_logo_on_dark_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "site_settings_general_symbol_id_media_id_fk": {
+          "name": "site_settings_general_symbol_id_media_id_fk",
+          "tableFrom": "site_settings",
+          "tableTo": "media",
+          "columnsFrom": [
+            "general_symbol_id"
           ],
           "columnsTo": [
             "id"
@@ -29243,6 +29649,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "event_kinds_id": {
+          "name": "event_kinds_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "newsletters_id": {
           "name": "newsletters_id",
           "type": "integer",
@@ -29397,6 +29809,21 @@
           "columns": [
             {
               "expression": "past_events_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payload_locked_documents_rels_event_kinds_id_idx": {
+          "name": "payload_locked_documents_rels_event_kinds_id_idx",
+          "columns": [
+            {
+              "expression": "event_kinds_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -29634,6 +30061,19 @@
           "tableTo": "past_events",
           "columnsFrom": [
             "past_events_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "payload_locked_documents_rels_event_kinds_fk": {
+          "name": "payload_locked_documents_rels_event_kinds_fk",
+          "tableFrom": "payload_locked_documents_rels",
+          "tableTo": "event_kinds",
+          "columnsFrom": [
+            "event_kinds_id"
           ],
           "columnsTo": [
             "id"
@@ -30161,20 +30601,6 @@
         "picked"
       ]
     },
-    "public.enum_pages_blocks_events_calendar_preview_event_type": {
-      "name": "enum_pages_blocks_events_calendar_preview_event_type",
-      "schema": "public",
-      "values": [
-        "talk",
-        "workshop",
-        "lecture",
-        "meeting",
-        "board-meeting",
-        "soup-kitchen",
-        "csa",
-        "excursion"
-      ]
-    },
     "public.enum_pages_blocks_callout_background": {
       "name": "enum_pages_blocks_callout_background",
       "schema": "public",
@@ -30479,20 +30905,6 @@
         "picked"
       ]
     },
-    "public.enum__pages_v_blocks_events_calendar_preview_event_type": {
-      "name": "enum__pages_v_blocks_events_calendar_preview_event_type",
-      "schema": "public",
-      "values": [
-        "talk",
-        "workshop",
-        "lecture",
-        "meeting",
-        "board-meeting",
-        "soup-kitchen",
-        "csa",
-        "excursion"
-      ]
-    },
     "public.enum__pages_v_blocks_callout_background": {
       "name": "enum__pages_v_blocks_callout_background",
       "schema": "public",
@@ -30772,20 +31184,6 @@
         "full",
         "cancelled",
         "postponed"
-      ]
-    },
-    "public.enum_events_event_type": {
-      "name": "enum_events_event_type",
-      "schema": "public",
-      "values": [
-        "talk",
-        "workshop",
-        "lecture",
-        "meeting",
-        "board-meeting",
-        "soup-kitchen",
-        "csa",
-        "excursion"
       ]
     },
     "public.enum_past_events_blocks_hero_actions_type": {
@@ -31352,6 +31750,20 @@
       "values": [
         "en",
         "nl"
+      ]
+    },
+    "public.enum_event_kinds_colour": {
+      "name": "enum_event_kinds_colour",
+      "schema": "public",
+      "values": [
+        "green",
+        "orange",
+        "blue",
+        "red",
+        "purple",
+        "teal",
+        "brown",
+        "grey"
       ]
     },
     "public.enum_newsletters_blocks_hero_actions_type": {
@@ -31952,14 +32364,6 @@
     },
     "public.enum__newsletters_v_published_locale": {
       "name": "enum__newsletters_v_published_locale",
-      "schema": "public",
-      "values": [
-        "en",
-        "nl"
-      ]
-    },
-    "public.enum_vacancies_language": {
-      "name": "enum_vacancies_language",
       "schema": "public",
       "values": [
         "en",

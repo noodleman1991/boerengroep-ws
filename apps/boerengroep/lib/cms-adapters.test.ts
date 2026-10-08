@@ -49,7 +49,7 @@ describe('toSiteEvent', () => {
     description: 'Come',
     startDate: '2026-10-08T17:30:00.000Z',
     endDate: '2026-10-08T19:00:00.000Z',
-    eventType: 'workshop',
+    kind: { id: 5, name: 'Workshop', colour: 'orange' },
     language: 'en',
     location: { address: 'Veerweg 121', mapsLink: null, callLink: '' },
     speakers: [
@@ -72,7 +72,7 @@ describe('toSiteEvent', () => {
       description: 'Come',
       start: '2026-10-08T17:30:00.000Z',
       end: '2026-10-08T19:00:00.000Z',
-      type: 'workshop',
+      kind: { id: '5', name: 'Workshop', colour: 'orange' },
       status: 'full',
       statusNote: 'Waiting list',
       language: 'en',
@@ -100,9 +100,17 @@ describe('toSiteEvent', () => {
   })
 
   it('copes with an event that has only the required fields', () => {
-    const out = toSiteEvent({ id: 1, title: 'x', startDate: '2026-10-08T17:30:00.000Z', eventType: 'talk' } as never)
+    const out = toSiteEvent({ id: 1, title: 'x', startDate: '2026-10-08T17:30:00.000Z' } as never)
     expect(out).toMatchObject({ slug: '1', status: 'scheduled', description: '', place: {}, people: [], featured: false })
     expect(out.image).toBeUndefined()
+    expect(out.kind).toBeUndefined()
+  })
+
+  it('carries the kind an editor gave the event, and none when the kind was removed', () => {
+    expect(toSiteEvent(base as never).kind).toEqual({ id: '5', name: 'Workshop', colour: 'orange' })
+    // A kind that was deleted is left behind as a bare number.
+    expect(toSiteEvent({ ...base, kind: 5 } as never).kind).toBeUndefined()
+    expect(toSiteEvent({ ...base, kind: null } as never).kind).toBeUndefined()
   })
 
   it('falls back to the whole picture when a cut does not exist, and to the title for the description', () => {

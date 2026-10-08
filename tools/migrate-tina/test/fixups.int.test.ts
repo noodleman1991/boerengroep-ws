@@ -24,6 +24,8 @@ const fixups = {
   // Placeholder content that the old site still carries.
   removeFiles: ['events/nl/soepkeuken.mdx', 'speakers/sample-speaker.md', 'tags/sample.mdx'],
   clearPageBodies: ['activities/calendar-sections/breaks'],
+  // A page whose text is really a set of photos with a sentence under each.
+  galleryPages: ['about-us'],
 }
 
 async function byLegacyId(payload: Payload, collection: string, legacyId: string) {
@@ -107,6 +109,22 @@ describe('migration fix-ups', () => {
     const after = await page(payload, 'activities/calendar-sections/breaks', 'en')
     expect(after.title).toBe(before.title)
     expect(after.body ?? null).toBeNull()
+  })
+
+  it('turns the text of a photo page into a gallery, with the sentences as captions', async () => {
+    const before = await migrate(base(payload)).then(() => page(payload, 'about-us', 'en'))
+    expect(before.blocks.map((block: any) => block.blockType)).toEqual(['content'])
+    await migrate({ ...base(payload), fixups })
+    const after = await page(payload, 'about-us', 'en')
+    expect(after.blocks).toHaveLength(1)
+    const gallery = after.blocks[0]
+    expect(gallery).toMatchObject({ blockType: 'gallery', title: 'Photos of the weekend', intro: 'A few moments from the farm.', source: 'pictures' })
+    const photos = await payload.find({ collection: 'media', where: { id: { in: gallery.images.map((image: any) => image.id ?? image) } }, locale: 'en', sort: 'legacyPath', overrideAccess: true })
+    expect(photos.docs.map((doc: any) => [doc.legacyPath, doc.caption])).toEqual([
+      ['/uploads/branding/logo.png', 'The kitchen crew.'],
+      ['/uploads/hero.png', 'Around the fire on Saturday night'],
+    ])
+    expect(gallery.images.map((image: any) => image.legacyPath ?? image)).toEqual(['/uploads/hero.png', '/uploads/branding/logo.png'])
   })
 
   it('stays the same when run again', async () => {

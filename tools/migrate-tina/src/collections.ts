@@ -1,5 +1,6 @@
 import { type Ctx, refId, upsert } from './context'
 import { transformBlocks } from './blocks'
+import { kindMaker } from './event-kinds'
 import { resolveMedia } from './media'
 import { listContent, readTinaFile, type TinaFile } from './read'
 import { eventSlug } from '@sites/cms/event-slug'
@@ -16,8 +17,11 @@ async function each(
   contentDir: string,
   folder: string,
   fn: (file: TinaFile) => Promise<void>,
+  /** Sorts the files, for content where one file must be imported before another. */
+  order?: (a: string, b: string) => number,
 ): Promise<void> {
-  for (const rel of listContent(contentDir, folder)) {
+  const files = listContent(contentDir, folder)
+  for (const rel of order ? [...files].sort(order) : files) {
     try {
       if (ctx.fixups.removeFiles.includes(rel)) {
         await removeImported(ctx, folder, rel)
@@ -67,6 +71,7 @@ export async function importPeople(ctx: Ctx, contentDir: string): Promise<void> 
 export async function importEvents(ctx: Ctx, contentDir: string): Promise<void> {
   // Events had no address of their own on the old site, so they get a readable one: title and date.
   const used = new Set<string>()
+  const kindOf = kindMaker(ctx)
   await each(ctx, contentDir, 'events', async (f) => {
     const d = f.data
     await upsert(ctx, 'events', f.legacyId, {
@@ -81,7 +86,7 @@ export async function importEvents(ctx: Ctx, contentDir: string): Promise<void> 
       },
       startDate: d.startDate,
       endDate: d.endDate || undefined,
-      eventType: d.eventType,
+      kind: await kindOf(d.eventType),
       speakers: ((d.speakers ?? []) as any[]).map((s) => ({
         speaker: refId(ctx, s.speaker, f.legacyId),
         role: s.role,
@@ -95,37 +100,64 @@ export async function importEvents(ctx: Ctx, contentDir: string): Promise<void> 
   })
 }
 
+/**
+ * A vacancy is one post in two languages. The old site had a file per language, so the Dutch
+ * file with the same name as an English one becomes the Dutch of that post. English files go
+ * first, so the post exists when its Dutch arrives.
+ */
 export async function importVacancies(ctx: Ctx, contentDir: string): Promise<void> {
-  await each(ctx, contentDir, 'vacancies', async (f) => {
-    const d = f.data
-    await upsert(ctx, 'vacancies', f.legacyId, {
-      title: d.title,
-      slug: fileSlug(f.legacyId),
-      language: languageOf(f.legacyId),
-      opportunityType: d.opportunityType,
-      location: { type: d.location?.type, cityRegion: d.location?.cityRegion },
-      startDate: d.startDate || undefined,
-      duration: d.duration,
-      openApplication: Boolean(d.openApplication),
-      applicationDeadline: d.applicationDeadline || undefined,
-      description: await ctx.toLexical(d.description, f.legacyId),
-      responsibilities: await ctx.toLexical(d.responsibilities, f.legacyId),
-      requiredSkills: d.requiredSkills ?? [],
-      preferredQualities: await ctx.toLexical(d.preferredQualities, f.legacyId),
-      languagesRequired: d.languagesRequired ?? [],
-      compensation: { details: d.compensation?.details },
-      accessibilityNotes: d.accessibilityNotes,
-      howToApply: await ctx.toLexical(d.howToApply, f.legacyId),
-      contactInfo: {
-        name: d.contactInfo?.name,
-        email: d.contactInfo?.email,
-        phone: d.contactInfo?.phone,
-      },
-      supportingDocument: resolveMedia(ctx, d.supportingDocument, f.legacyId),
-      valuesStatement: await ctx.toLexical(d.valuesStatement, f.legacyId),
-      openToNontraditional: Boolean(d.openToNontraditional),
-    })
-  })
+  const english = new Set(
+    listContent(contentDir, 'vacancies')
+      .filter((rel) => languageOf(rel) !== 'nl')
+      .map(fileSlug),
+  )
+  const order = (rel: string) => (languageOf(rel) === 'nl' ? 1 : 0)
+
+  await each(
+    ctx,
+    contentDir,
+    'vacancies',
+    async (f) => {
+      const d = f.data
+      // The parts that are written out, and so differ per language.
+      const words = {
+        title: d.title,
+        duration: d.duration,
+        description: await ctx.toLexical(d.description, f.legacyId),
+        responsibilities: await ctx.toLexical(d.responsibilities, f.legacyId),
+        requiredSkills: d.requiredSkills ?? [],
+        preferredQualities: await ctx.toLexical(d.preferredQualities, f.legacyId),
+        languagesRequired: d.languagesRequired ?? [],
+        compensation: { details: d.compensation?.details },
+        accessibilityNotes: d.accessibilityNotes,
+        howToApply: await ctx.toLexical(d.howToApply, f.legacyId),
+        valuesStatement: await ctx.toLexical(d.valuesStatement, f.legacyId),
+      }
+      const dutch = languageOf(f.legacyId) === 'nl'
+      if (dutch && english.has(fileSlug(f.legacyId))) {
+        await upsert(ctx, 'vacancies', f.legacyId.replace('/nl/', '/en/'), words, 'nl')
+        return
+      }
+      const settings = {
+        slug: fileSlug(f.legacyId),
+        opportunityType: d.opportunityType,
+        location: { type: d.location?.type, cityRegion: d.location?.cityRegion },
+        startDate: d.startDate || undefined,
+        openApplication: Boolean(d.openApplication),
+        applicationDeadline: d.applicationDeadline || undefined,
+        contactInfo: { name: d.contactInfo?.name, email: d.contactInfo?.email, phone: d.contactInfo?.phone },
+        supportingDocument: resolveMedia(ctx, d.supportingDocument, f.legacyId),
+        openToNontraditional: Boolean(d.openToNontraditional),
+      }
+      await upsert(ctx, 'vacancies', f.legacyId, { ...settings, ...words }, 'en')
+      if (dutch) {
+        // Written in Dutch only. English visitors read the Dutch until someone translates it.
+        await upsert(ctx, 'vacancies', f.legacyId, words, 'nl')
+        ctx.report.add('unpaired-locale', f.legacyId, 'vacancy exists in Dutch only; the Dutch text is shown in English too')
+      }
+    },
+    (a, b) => order(a) - order(b),
+  )
 }
 
 export async function importNewsletters(ctx: Ctx, contentDir: string): Promise<void> {

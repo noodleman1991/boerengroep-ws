@@ -25,7 +25,6 @@ describe('content collections', () => {
         slug: 'Boerengroep-Break-Samhain',
         language: 'en',
         startDate: '2025-10-30T18:30:00.000Z',
-        eventType: 'workshop',
         speakers: [{ speaker: speaker.id, role: 'Host' }],
         tenant,
       } as never,
@@ -38,7 +37,7 @@ describe('content collections', () => {
   it('marks a new event as scheduled and lets an editor mark it full', async () => {
     const event = await payload.create({
       collection: 'events',
-      data: { title: 'Seed swap', slug: 'seed-swap', startDate: '2026-11-01T10:00:00.000Z', eventType: 'workshop', tenant } as never,
+      data: { title: 'Seed swap', slug: 'seed-swap', startDate: '2026-11-01T10:00:00.000Z', tenant } as never,
     })
     expect(event.status).toBe('scheduled')
     const full = await payload.update({
@@ -53,7 +52,7 @@ describe('content collections', () => {
     const make = () =>
       payload.create({
         collection: 'events',
-        data: { title: 'Boerengroep Break', startDate: '2026-12-03T18:30:00.000Z', eventType: 'meeting', tenant } as never,
+        data: { title: 'Boerengroep Break', startDate: '2026-12-03T18:30:00.000Z', tenant } as never,
       })
     const first = await make()
     const second = await make()
@@ -64,7 +63,7 @@ describe('content collections', () => {
   it('keeps the address when the title of an event changes later', async () => {
     const event = await payload.create({
       collection: 'events',
-      data: { title: 'Farm walk', startDate: '2026-12-10T09:00:00.000Z', eventType: 'excursion', tenant } as never,
+      data: { title: 'Farm walk', startDate: '2026-12-10T09:00:00.000Z', tenant } as never,
     })
     const renamed = await payload.update({ collection: 'events', id: event.id, data: { title: 'Winter farm walk' } as never })
     expect(renamed.slug).toBe('farm-walk-2026-12-10')
@@ -74,7 +73,7 @@ describe('content collections', () => {
     const error = await payload
       .create({
         collection: 'events',
-        data: { title: 'Seed swap again', slug: 'seed-swap', startDate: '2026-11-02T10:00:00.000Z', eventType: 'workshop', tenant } as never,
+        data: { title: 'Seed swap again', slug: 'seed-swap', startDate: '2026-11-02T10:00:00.000Z', tenant } as never,
       })
       .catch((e) => e)
     expect(error?.data?.errors?.[0]).toMatchObject({ path: 'slug' })
@@ -104,19 +103,47 @@ describe('content collections', () => {
     expect((recap.photos as any[])[0].caption).toBe('Caption b.png')
   })
 
-  it('rejects an event type that is not in the list', async () => {
+  it('gives an event a kind that editors made themselves, with a name per language and a colour', async () => {
+    const kind = await payload.create({
+      collection: 'event-kinds',
+      locale: 'en',
+      data: { name: 'Seed swap', colour: 'orange', tenant } as never,
+    })
+    await payload.update({ collection: 'event-kinds', id: kind.id, locale: 'nl', data: { name: 'Zadenruil' } as never })
+    const event = await payload.create({
+      collection: 'events',
+      data: { title: 'Autumn seed swap', startDate: '2026-11-21T13:00:00.000Z', kind: kind.id, tenant } as never,
+    })
+    const inDutch = await payload.findByID({ collection: 'events', id: event.id, locale: 'nl', depth: 1 })
+    expect(inDutch.kind).toMatchObject({ name: 'Zadenruil', colour: 'orange' })
+    const inEnglish = await payload.findByID({ collection: 'events', id: event.id, locale: 'en', depth: 1 })
+    expect(inEnglish.kind).toMatchObject({ name: 'Seed swap' })
+  })
+
+  it('lets an event go without a kind, and refuses a colour that is not on the list', async () => {
+    const event = await payload.create({
+      collection: 'events',
+      data: { title: 'No kind', startDate: '2026-11-22T13:00:00.000Z', tenant } as never,
+    })
+    expect(event.kind ?? null).toBeNull()
     await expect(
-      payload.create({
-        collection: 'events',
-        data: {
-          title: 'x',
-          slug: 'x',
-          startDate: '2025-10-30T18:30:00.000Z',
-          eventType: 'party',
-          tenant,
-        } as never,
-      }),
-    ).rejects.toThrow(/Kind of event/)
+      payload.create({ collection: 'event-kinds', data: { name: 'Odd', colour: 'chartreuse', tenant } as never }),
+    ).rejects.toThrow(/Colour/)
+  })
+
+  it('keeps one vacancy in both languages, and shows English where Dutch is not written yet', async () => {
+    const vacancy = await payload.create({
+      collection: 'vacancies',
+      locale: 'en',
+      data: { title: 'Secretary', slug: 'Secretary', opportunityType: 'board', duration: 'One year', requiredSkills: ['Minutes'], tenant } as never,
+    })
+    await payload.update({ collection: 'vacancies', id: vacancy.id, locale: 'nl', data: { title: 'Secretaris' } as never })
+    const nl = await payload.findByID({ collection: 'vacancies', id: vacancy.id, locale: 'nl' })
+    expect(nl.title).toBe('Secretaris')
+    expect(nl.duration).toBe('One year')
+    expect(nl.requiredSkills).toEqual(['Minutes'])
+    expect((await payload.findByID({ collection: 'vacancies', id: vacancy.id, locale: 'en' })).title).toBe('Secretary')
+    expect('language' in nl).toBe(false)
   })
 
   it('keeps an unpublished newsletter away from visitors', async () => {

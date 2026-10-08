@@ -2,7 +2,8 @@
 import type { EventsCalendarPreviewBlock } from '@sites/cms/types';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { DateBlock, EventFacts, StatusBadge, TypeTag, useEventLang } from '@/components/events/event-bits';
+import { BrandSymbol } from '@/components/brand-symbol';
+import { DateBlock, EventFacts, KindTag, StatusBadge, useEventLang } from '@/components/events/event-bits';
 import { EventRow } from '@/components/events/event-row';
 import { MiniMonth } from '@/components/events/mini-month';
 import { Link } from '@/i18n/navigation';
@@ -29,7 +30,7 @@ export const EventsCalendarPreview = ({ data }: { data: EventsCalendarPreviewBlo
         events,
         {
             mode,
-            eventType: data.eventType,
+            kind: refId(data.kind as Ref),
             picked: (data.events ?? []).flatMap((ref) => refId(ref as Ref) ?? []),
             count: mode === 'picked' ? 12 : (data.count ?? 4),
             orRecent: true,
@@ -87,7 +88,7 @@ function LeadEvent({ event }: { event: SiteEvent }) {
                     {event.image?.card ? (
                         <Image src={event.image.card} alt="" width={800} height={600} sizes="(max-width: 900px) 100vw, 50vw" />
                     ) : (
-                        <span className="overprint" aria-hidden="true" />
+                        <BrandSymbol className="whats-on__lead-symbol" />
                     )}
                 </div>
                 <div className="whats-on__lead-date">
@@ -96,7 +97,7 @@ function LeadEvent({ event }: { event: SiteEvent }) {
             </div>
             <div className="whats-on__lead-body">
                 <div className="event-row__tags">
-                    <TypeTag type={event.type} />
+                    <KindTag kind={event.kind} />
                     <StatusBadge status={event.status} />
                 </div>
                 <h3 className="whats-on__lead-title" lang={lang}>

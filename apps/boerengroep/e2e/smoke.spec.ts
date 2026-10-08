@@ -64,13 +64,51 @@ test('the calendar lists events and opens one on its own page', async ({ page })
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1)
 })
 
-test('the month view shows a grid and the events of a chosen day', async ({ page }) => {
+test('the month view is a table of days that can be leafed through', async ({ page }) => {
   await page.goto('/nl/activities/calendar?view=month')
-  await expect(page.getByRole('grid')).toBeVisible()
+  await expect(page.getByRole('table')).toBeVisible()
   await expect(page.getByRole('columnheader')).toHaveCount(7)
   await page.getByRole('button', { name: 'Vorige maand' }).click()
   await page.getByRole('button', { name: 'Deze maand' }).click()
   await expect(page.getByRole('button', { name: 'Deze maand' })).toHaveCount(0)
+})
+
+test('choosing a day in the month shows what is on that day', async ({ page }) => {
+  await page.goto('/en/activities/calendar?view=month')
+  const day = page.locator('button.month__tile').first()
+  test.skip((await day.count()) === 0, 'this month and the days around it have no events in this content')
+  await day.click()
+  await expect(day).toHaveAttribute('aria-pressed', 'true')
+  // "Wednesday 30 September, 2 events": the panel carries the day as its heading.
+  const label = (await day.getAttribute('aria-label'))!
+  await expect(page.locator('.month__day-title')).toHaveText(label.split(',')[0]!)
+  await expect(page.locator('.month__day .event-row').first()).toBeVisible()
+})
+
+test('the calendar filter offers the kinds editors made and narrows the list to one', async ({ page }) => {
+  await page.goto('/en/activities/calendar?view=past')
+  const chips = page.locator('.calendar .chips .chip')
+  test.skip((await chips.count()) < 3, 'the past events in this content are of fewer than two kinds')
+  await expect(chips.first()).toHaveAttribute('aria-pressed', 'true')
+  const kind = chips.nth(1)
+  const count = Number(await kind.locator('.chip__count').textContent())
+  const name = (await kind.textContent())!.replace(/\d+$/, '').trim()
+  await kind.click()
+  await expect(kind).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('.event-row')).toHaveCount(count)
+  expect(new Set(await page.locator('.event-row .event-kind').allTextContents())).toEqual(new Set([name]))
+  // Pressing it again shows everything.
+  await kind.click()
+  await expect(chips.first()).toHaveAttribute('aria-pressed', 'true')
+})
+
+test('kinds of events carry the name of the reader’s language', async ({ page }) => {
+  // "Excursion" is one of the kinds made from the old site's list. Skipped when an editor renamed it.
+  await page.goto('/en/activities/calendar?view=past')
+  const english = page.locator('.calendar .chip', { hasText: 'Excursion' })
+  test.skip((await english.count()) === 0, 'this content has no kind called Excursion')
+  await page.goto('/nl/activities/calendar?view=past')
+  await expect(page.locator('.calendar .chip', { hasText: 'Excursie' })).toHaveCount(1)
 })
 
 test('an event can be saved as a calendar file', async ({ page, request }) => {
@@ -130,6 +168,43 @@ test('a friends item is not served under the main newsletter address', async ({ 
 test('the vacancies page renders', async ({ page }) => {
   await page.goto('/en/vacancies')
   await expect(page.locator('main')).toContainText('Board')
+})
+
+test('a vacancy says whether people can apply, opens, and is the same post in Dutch', async ({ page }) => {
+  await page.goto('/en/vacancies')
+  const vacancies = page.locator('details.vacancy')
+  const count = await vacancies.count()
+  test.skip(count === 0, 'this content has no vacancies')
+  const first = vacancies.first()
+  await expect(first.locator('.vacancy__state')).toHaveText(/^(Open|Apply until .+|Closed)$/)
+  await expect(first.locator('.vacancy__body')).toBeHidden()
+  await first.locator('summary').click()
+  await expect(first.locator('.vacancy__body')).toBeVisible()
+  // A link to one vacancy opens it.
+  const id = await vacancies.nth(count - 1).getAttribute('id')
+  await page.goto(`/en/vacancies#${id}`)
+  await expect(page.locator(`details.vacancy[id="${id}"]`)).toHaveJSProperty('open', true)
+  // One post per vacancy: the Dutch page lists the same ones, in Dutch wording.
+  await page.goto('/nl/vacancies')
+  await expect(page.locator('details.vacancy')).toHaveCount(count)
+  await expect(page.locator('.vacancy__state').first()).toHaveText(/^(Open|Reageren tot en met .+|Gesloten)$/)
+})
+
+test('a page without a picture opens with the symbol of the logo', async ({ page }) => {
+  await page.goto('/en')
+  const symbol = page.locator('.hero__symbol')
+  test.skip((await symbol.count()) === 0, 'the home page has a picture in this content')
+  await expect(symbol).toBeVisible()
+  expect(await symbol.evaluate((img) => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0)).toBe(true)
+})
+
+test('the photo page shows its pictures as a gallery with their captions', async ({ page }) => {
+  const res = await page.goto('/en/library/media')
+  test.skip(res?.status() !== 200, 'this content has no photo page')
+  expect(await page.locator('.mosaic__tile').count()).toBeGreaterThan(1)
+  await expect(page.locator('.mosaic__caption').first()).toBeVisible()
+  await page.locator('.mosaic__tile button').first().click()
+  await expect(page.getByRole('dialog').locator('.lightbox__caption')).not.toBeEmpty()
 })
 
 test('an unknown page gives a 404', async ({ page }) => {

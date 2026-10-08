@@ -40,7 +40,7 @@ export default async function PastEventPage({
 
     return (
         <Layout rawPageData={pastEvent}>
-            <PastEventClientPage pastEvent={toPastEventNode(pastEvent)} data={await loadBlockData(pastEvent.blocks)} />
+            <PastEventClientPage pastEvent={toPastEventNode(pastEvent)} data={await loadBlockData(pastEvent.blocks, locale)} />
         </Layout>
     );
 }

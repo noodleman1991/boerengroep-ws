@@ -75,7 +75,7 @@ green. Alternate white with a colour to give a page rhythm.
 | --- | --- |
 | Opening | The top of a page: headline, a line under it, buttons, a picture or a video |
 | Events | The next events, events of one kind, or events you pick. Shows the first one large |
-| Announcement | One line that links somewhere |
+| Announcement | One line that links somewhere, such as a call for volunteers. It shows as a low coloured strip between two parts of the page |
 | Text | Running text with headings, lists, links, pictures, files and videos |
 | Picture with text | A photo beside or above a few paragraphs |
 | Highlights | Three or four short items of equal weight |
@@ -105,7 +105,10 @@ Each event gets its own page that people can share and add to their own calendar
 - **Status.** Going ahead, Full, Cancelled or Postponed. "Full" shows an orange badge and hides
   the sign-up. Cancelled and postponed events stay visible, crossed out, so people who saved them
   find out. The note next to it is for a short line such as "Waiting list: mail us".
-- **Kind of event** sets the colour on the calendar and lets visitors filter.
+- **Kind of event** sets the colour on the calendar and lets visitors filter. You make the
+  kinds yourself under Calendar, Kinds of events: a name per language and one of eight colours.
+  The calendar shows a filter button for every kind that has events, with the number of events,
+  so a new kind appears with its first event and an unused one disappears by itself.
 - **Where.** Type the place as you would say it. A map link is made from it. Add an online
   meeting link for online or hybrid events.
 - **Picture.** A poster or a photo. After uploading you can crop it and choose the point that
@@ -128,11 +131,26 @@ back. A photo's caption is set on the photo itself, under Library, Pictures and 
 ## News and vacancies
 
 A news item is an article you write here or a link to another website. "News from friends"
-shows on its own page. A vacancy shows on the Vacancies page under its kind. Attach a job
-description as a file and it becomes a download.
+shows on its own page. News items are written in one language: set **Language** to English or
+Dutch, or leave it empty to show the item in both.
 
-These are written in one language. Set **Language** to English or Dutch, or leave it empty to
-show the item in both.
+### Vacancies
+
+A vacancy is one post that holds both languages. Write it in English, switch language at the
+top right and write the Dutch. Until the Dutch is written, Dutch visitors read the English.
+Dates, the kind of position, the contact person and the file are shared by both languages.
+
+Whether people can apply follows from two fields:
+
+- **Always open, no deadline** ticked: the vacancy says "Open" and stays until you remove it.
+- **Apply until** filled in: the vacancy says "Apply until" with that day, and the day itself
+  still counts. The day after it says "Closed", and three days later it leaves the page.
+- Neither: the vacancy says "Open" and stays until you remove it.
+
+A vacancy shows under its kind, the nearest last day first. Every field you fill in is shown,
+and empty ones are left out. Attach a job description as a file and it becomes a download.
+The address of the Vacancies page followed by `#` and the name of a vacancy, which you can copy
+from the page, opens that vacancy directly.
 
 ## Pictures and files
 
@@ -151,7 +169,8 @@ people who work on your site. To get an email for each answer, add one under "Em
 
 One screen with five tabs. Only site admins can change it.
 
-- **General.** Name, logo, a logo for dark backgrounds (used in the footer), one-line
+- **General.** Name, logo, a logo for dark backgrounds (used in the footer), the symbol (the
+  logo without its lettering, shown large at the top of pages without a picture), one-line
   introduction, contact details and social media.
 - **Menu.** The items at the top of every page. Each item goes to a page of the site, a built-in
   section such as the calendar, or any other address. A link to a page keeps working when that

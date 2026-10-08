@@ -1,8 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { eventsByDay, groupByMonth, isUpcoming, pickEvents, splitEvents, typesIn } from './select'
+import { eventsByDay, groupByMonth, isUpcoming, kindsIn, pickEvents, splitEvents } from './select'
 
-type E = { id: number; start: string; end: string | null; type: string; featured?: boolean }
-const e = (id: number, start: string, end: string | null = null, type = 'talk', featured = false): E => ({ id, start, end, type, featured })
+type Kind = { id: string; name: string; colour: string }
+type E = { id: number; start: string; end: string | null; kind?: Kind; featured?: boolean }
+// Kinds as editors make them in the admin panel.
+const KINDS: Record<string, Kind> = {
+  talk: { id: '1', name: 'Talk', colour: 'green' },
+  workshop: { id: '2', name: 'Workshop', colour: 'orange' },
+  pot: { id: '3', name: 'Open Pot', colour: 'red' },
+}
+const e = (id: number, start: string, end: string | null = null, kind: string | null = 'talk', featured = false): E => ({
+  id,
+  start,
+  end,
+  kind: kind ? KINDS[kind] : undefined,
+  featured,
+})
 
 // Thursday 8 October 2026, 14:00 in Wageningen.
 const now = new Date('2026-10-08T12:00:00.000Z')
@@ -65,8 +78,14 @@ describe('grouping', () => {
     expect([...days.keys()]).toEqual(['2026-10-08'])
   })
 
-  it('lists the kinds of events present, in a fixed order', () => {
-    expect(typesIn([e(1, 'x', null, 'workshop'), e(2, 'x', null, 'talk'), e(3, 'x', null, 'workshop'), e(4, 'x', null, 'zzz')])).toEqual(['talk', 'workshop', 'zzz'])
+  it('lists each kind that has events once, by name, with how many events it has', () => {
+    const kinds = kindsIn([e(1, 'x', null, 'workshop'), e(2, 'x', null, 'talk'), e(3, 'x', null, 'workshop'), e(4, 'x', null, 'pot'), e(5, 'x', null, null)], 'en')
+    expect(kinds.map((kind) => [kind.name, kind.count])).toEqual([['Open Pot', 1], ['Talk', 1], ['Workshop', 2]])
+    expect(kinds[0]).toMatchObject({ id: '3', colour: 'red' })
+  })
+
+  it('offers no kinds when no event has one', () => {
+    expect(kindsIn([e(1, 'x', null, null)], 'en')).toEqual([])
   })
 })
 
@@ -85,7 +104,7 @@ describe('events for a band on a page', () => {
   })
 
   it('can stay with one kind', () => {
-    expect(pickEvents(events, { mode: 'type', eventType: 'workshop', count: 3 }, now).map((x) => x.id)).toEqual([2])
+    expect(pickEvents(events, { mode: 'type', kind: 2, count: 3 }, now).map((x) => x.id)).toEqual([2])
   })
 
   it('shows hand-picked events in the editor’s order, also when they have passed', () => {

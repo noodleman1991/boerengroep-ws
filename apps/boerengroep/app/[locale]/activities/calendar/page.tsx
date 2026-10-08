@@ -29,7 +29,7 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
     const { locale } = await params;
     setRequestLocale(locale);
     const [events, settings, t] = await Promise.all([
-        cms.listEvents(),
+        cms.listEvents(locale),
         cms.getSiteSettings(locale),
         getTranslations({ locale, namespace: 'calendar' }),
     ]);

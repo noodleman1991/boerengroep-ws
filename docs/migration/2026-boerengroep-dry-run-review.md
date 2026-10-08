@@ -96,6 +96,27 @@ events really took place, it should stay as a past event.
 With these gone the report counts 33 events instead of 42, 1 speaker instead of 6 and no tags.
 `missing-media` drops from 11 to 6, because five missing pictures belonged to the removed speakers.
 
+### Photo page turned into a gallery: proposed, needs the owner's confirmation
+
+`pages/en/library/media.mdx` ("Picture and Video gallery") was a text with a heading, four
+pictures and a sentence under each. It is imported as a Photo gallery block: the heading is the
+title and each sentence is the caption of the picture above it (`galleryPages` in the fix-ups
+file). That each sentence belongs to the picture above it was checked against the pictures
+themselves. The page also had a hidden older text with three pictures, one of which
+(`IMG_20260716_111223641.jpg`) is on the page nowhere else. That hidden text is left out. The
+picture is still in the library and can be added to the gallery.
+
+### Vacancies are one post in two languages: accepted
+
+All eight vacancies exist only as English files, so each is imported as the English of a post
+and Dutch visitors read the English. Three of them carry Dutch inside the English text. Those
+need a hand afterwards, see "After cutover" in the runbook.
+
+### Kinds of events come from the old fixed list: accepted
+
+The old site knew eight kinds. The import makes a kind for each one in use (seven), named as
+the old site named it in each language, and editors can change them afterwards.
+
 ## Pairing decisions to double-check
 
 Pages were paired across languages by translating each address segment with the table from the old

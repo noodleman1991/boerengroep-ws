@@ -62,6 +62,10 @@
     "tags/tinacms.mdx"
   ],
   "clearPageBodies": [
-    "inspringtheater"
+    "inspringtheater",
+    "library/media"
+  ],
+  "galleryPages": [
+    "library/media"
   ]
 }

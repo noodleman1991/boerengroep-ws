@@ -20,10 +20,10 @@
     --furrow-text: #e7f1de;
     --line: rgb(17 17 17 / 0.12);
 
-    /* How far each band rises over the one before it, like one field behind another. */
-    --arc: clamp(1.1rem, 3vw, 2.75rem);
-    /* How far the footer hill and its sun reach up into the page. */
-    --footer-rise: 6.25rem;
+    /* A part of a page with a colour is a plot: a rounded panel set in from the window's edges. */
+    --plot-gutter: clamp(0.5rem, 1.5vw, 1.25rem);
+    --plot-max: 92rem;
+    --band-radius: clamp(1.4rem, 3vw, 2.5rem);
 
     --header-h: 88px;
     --header-h-compact: 68px;
@@ -160,29 +160,27 @@ a {
     color: var(--field);
 }
 
-/* The logo's overlapping circles, as a background figure. */
-.overprint {
-    position: absolute;
-    pointer-events: none;
-    aspect-ratio: 1.55 / 1;
+/* ---------- Parts of a page ---------- */
+
+/*
+ * Every block and every built-in page is made of the same parts. A white part is open ground.
+ * A part with a colour is a plot: a rounded panel with a little air around it. Because the look
+ * lives here and nowhere else, all components follow it.
+ */
+.band {
+    position: relative;
 }
-.overprint::before,
-.overprint::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    height: 100%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    mix-blend-mode: multiply;
+.band__inner {
+    padding-block: var(--spacing-section);
 }
-.overprint::before {
-    left: 0;
-    background: var(--leaf);
+.band--plot {
+    width: min(100% - 2 * var(--plot-gutter), var(--plot-max));
+    margin: var(--plot-gutter) auto;
+    border-radius: var(--band-radius);
 }
-.overprint::after {
-    right: 0;
-    background: var(--harvest);
+/* Open ground after open ground needs its spacing once, not twice. */
+.section-white + .section-white > .band__inner {
+    padding-top: 0;
 }
 
 /* ---------- Section backgrounds chosen in the admin ---------- */
@@ -438,13 +436,8 @@ a {
 .site-footer-wrap {
     position: relative;
     overflow: hidden;
-    /* It overlaps the end of the page, whose last band shows behind the sun. */
-    margin-top: calc(-1 * var(--footer-rise));
-    padding-top: calc(var(--footer-rise) - 1.25rem);
-    pointer-events: none;
-}
-.site-footer-wrap > * {
-    pointer-events: auto;
+    margin-top: 3rem;
+    padding-top: 5.5rem;
 }
 /* The orange circle of the logo, half behind the hill. */
 .site-footer__sun {
@@ -456,6 +449,10 @@ a {
     border-radius: 50%;
     background: var(--harvest);
 }
+/*
+ * The header and the footer are the frame of the site and run the full width. Between them
+ * lies the page: open ground with plots. The footer closes it as a hill on the horizon.
+ */
 .site-footer {
     position: relative;
     background: var(--furrow);
@@ -463,6 +460,17 @@ a {
     /* A shallow rise in the middle: the horizon of a field. */
     border-radius: 50% 50% 0 0 / 4.5rem 4.5rem 0 0;
     padding: 6.5rem 0 2rem;
+}
+@media (max-width: 767px) {
+    .site-footer__sun {
+        width: 7.5rem;
+        height: 7.5rem;
+        right: 8%;
+    }
+    .site-footer {
+        border-radius: 50% 50% 0 0 / 2.5rem 2.5rem 0 0;
+        padding-top: 4.5rem;
+    }
 }
 .site-footer a {
     color: #ffffff;
@@ -596,17 +604,6 @@ a {
         column-gap: 2rem;
     }
 }
-@media (max-width: 767px) {
-    .site-footer__sun {
-        width: 7.5rem;
-        height: 7.5rem;
-        right: 8%;
-    }
-    .site-footer {
-        border-radius: 50% 50% 0 0 / 2.5rem 2.5rem 0 0;
-        padding-top: 4.5rem;
-    }
-}
 
 /* ---------- Newsletter sign-up ---------- */
 
@@ -705,8 +702,8 @@ a {
 }
 .signup__mark {
     display: block;
-    width: 62px;
-    height: 40px;
+    width: auto;
+    height: 3.4rem;
     margin-bottom: 0.9rem;
 }
 @keyframes signup-arrive {
@@ -753,8 +750,8 @@ a {
 }
 .notice__mark {
     display: block;
-    width: 93px;
-    height: 60px;
+    width: auto;
+    height: 5.5rem;
     margin-bottom: 1.5rem;
 }
 .notice h1 {
@@ -851,28 +848,44 @@ a {
 
 /* ---------- Events ---------- */
 
-/* Each kind of event has a colour, used as a small dot and on the month grid. */
-[data-event-type] {
-    --type: #5d6358;
+/*
+ * The colours an editor can give a kind of event. Each has a strong shade for dots and
+ * outlines and a soft one for tiles. Black text reads on every soft shade.
+ */
+[data-kind-colour] {
+    --kind: #555b52;
+    --kind-soft: #e9ebe7;
 }
-[data-event-type='talk'],
-[data-event-type='lecture'] {
-    --type: var(--leaf-deep);
+[data-kind-colour='green'] {
+    --kind: #1f6b18;
+    --kind-soft: #dcefd8;
 }
-[data-event-type='workshop'] {
-    --type: #c96f00;
+[data-kind-colour='orange'] {
+    --kind: #a85a00;
+    --kind-soft: #fde8c7;
 }
-[data-event-type='excursion'] {
-    --type: #2b5fc7;
+[data-kind-colour='blue'] {
+    --kind: #2456b8;
+    --kind-soft: #dde7fb;
 }
-[data-event-type='soup-kitchen'] {
-    --type: #c2410c;
+[data-kind-colour='red'] {
+    --kind: #b3350b;
+    --kind-soft: #fbe0d6;
 }
-[data-event-type='csa'] {
-    --type: #4a9a3f;
+[data-kind-colour='purple'] {
+    --kind: #6b3fa0;
+    --kind-soft: #ebe0f6;
+}
+[data-kind-colour='teal'] {
+    --kind: #0f6b6b;
+    --kind-soft: #d5eeee;
+}
+[data-kind-colour='brown'] {
+    --kind: #7a4a1e;
+    --kind-soft: #f0e2d3;
 }
 
-.event-type {
+.event-kind {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -880,12 +893,12 @@ a {
     font-weight: 600;
     color: var(--ink-soft);
 }
-.event-type::before {
+.event-kind::before {
     content: '';
     width: 0.6rem;
     height: 0.6rem;
     border-radius: 50%;
-    background: var(--type);
+    background: var(--kind);
 }
 
 .status-badge {
@@ -976,6 +989,14 @@ a {
     align-items: start;
     padding: 1.4rem 0;
     border-top: 1.5px solid var(--ink);
+}
+/* The date stands on a tile in the soft colour of the event's kind. */
+.event-row > .date-block {
+    justify-items: center;
+    padding: 0.6rem 0.3rem 0.55rem;
+    border-radius: 16px;
+    background: var(--kind-soft, var(--mist));
+    text-align: center;
 }
 .event-row__tags {
     display: flex;
@@ -1100,7 +1121,7 @@ a {
     flex-wrap: wrap;
     align-items: center;
     gap: 0.9rem 1.5rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 2rem;
 }
 .segmented {
     display: inline-flex;
@@ -1131,9 +1152,9 @@ a {
 .chip {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    min-height: 36px;
-    padding: 0.3rem 0.85rem;
+    gap: 0.45rem;
+    min-height: 38px;
+    padding: 0.3rem 0.45rem 0.3rem 0.85rem;
     border: 0;
     border-radius: 999px;
     background: transparent;
@@ -1142,33 +1163,78 @@ a {
     font: inherit;
     font-size: 0.9375rem;
     font-weight: 500;
+    text-decoration: none;
     cursor: pointer;
 }
-.chip[data-event-type]::before {
+.chip[data-kind-colour]::before {
     content: '';
-    width: 0.55rem;
-    height: 0.55rem;
+    width: 0.6rem;
+    height: 0.6rem;
     border-radius: 50%;
-    background: var(--type);
+    background: var(--kind);
+}
+/* How many there are, so nobody filters down to nothing. */
+.chip__count {
+    min-width: 1.5rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 999px;
+    background: var(--mist);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
 }
 .chip:hover {
     box-shadow: inset 0 0 0 1.5px var(--ink);
 }
 .chip[aria-pressed='true'] {
-    background: var(--mist);
-    box-shadow: inset 0 0 0 1.5px var(--ink);
+    background: var(--ink);
+    box-shadow: none;
+    color: var(--field);
     font-weight: 600;
 }
+.chip[aria-pressed='true']::before {
+    box-shadow: 0 0 0 2px var(--field);
+}
+.chip[aria-pressed='true'] .chip__count {
+    background: var(--field);
+    color: var(--ink);
+}
+
+/* The list: the name of the month stands beside its events and stays in view while they pass. */
 .calendar__month + .calendar__month {
-    margin-top: 2.5rem;
+    margin-top: 2.75rem;
 }
 .calendar__month-title {
-    margin: 0 0 0.75rem;
-    font-size: 1.15rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 0.8rem;
+    margin: 0 0 0.9rem;
+    font-size: clamp(1.5rem, 3.6vw, 1.9rem);
+    line-height: 1.1;
+}
+.calendar__month-count {
     font-family: var(--font-family-public-sans);
-    font-weight: 700;
+    font-size: 0.9375rem;
+    font-weight: 500;
     letter-spacing: 0;
-    color: var(--leaf-deep);
+    color: var(--ink-soft);
+}
+@media (min-width: 1000px) {
+    .calendar__month {
+        display: grid;
+        grid-template-columns: 12.5rem minmax(0, 1fr);
+        gap: 0 2rem;
+        align-items: start;
+    }
+    .calendar__month-title {
+        position: sticky;
+        top: calc(var(--header-h) + 1.25rem);
+        display: grid;
+        margin: 0;
+        padding-top: 1.3rem;
+    }
 }
 .calendar__empty {
     max-width: 36rem;
@@ -1185,36 +1251,36 @@ a {
     color: var(--ink-soft);
 }
 
-/* ---------- Month grid ---------- */
+/* ---------- Month ---------- */
 
 .month__bar {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: end;
     justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.9rem;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: 1.1rem;
 }
 .month__title {
     margin: 0;
-    font-size: 1.6rem;
+    font-size: clamp(1.7rem, 4.5vw, 2.3rem);
+    line-height: 1.05;
 }
-.month__title::first-letter {
-    text-transform: uppercase;
+.month__summary {
+    margin: 0.3rem 0 0;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
 }
 .month__nav {
     display: flex;
     align-items: center;
     gap: 0.4rem;
 }
-.month__today {
-    min-height: 40px;
-    padding-block: 0.3rem;
-}
 .month__step {
     display: inline-grid;
     place-items: center;
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border: 0;
     border-radius: 50%;
     background: var(--mist);
@@ -1222,72 +1288,153 @@ a {
     cursor: pointer;
 }
 .month__step:hover {
-    background: #dcebcf;
+    background: var(--ink);
+    color: var(--field);
 }
 .month__step svg {
-    width: 1.2rem;
-    height: 1.2rem;
+    width: 1.25rem;
+    height: 1.25rem;
 }
-.month__grid {
-    border-top: 1.5px solid var(--ink);
-    border-bottom: 1.5px solid var(--ink);
-}
-.month__week {
+.month__layout {
     display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 1.5rem;
 }
-.month__week + .month__week {
-    border-top: 1px solid var(--line);
+@media (min-width: 1040px) {
+    /* The chosen day stands beside the month and stays in view. */
+    .month__layout {
+        grid-template-columns: minmax(0, 1.8fr) minmax(19rem, 1fr);
+        align-items: start;
+        gap: 2rem;
+    }
+    .month__day {
+        position: sticky;
+        top: calc(var(--header-h) + 1.25rem);
+    }
 }
-.month__name {
-    padding: 0.5rem 0.6rem;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    color: var(--ink-soft);
+/* The month as a field: every day a tile, with a little ground between them. */
+.month__table {
+    width: calc(100% + 0.6rem);
+    margin: -0.3rem;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    border-collapse: separate;
+    border-spacing: 0.3rem;
+    table-layout: fixed;
 }
-.month__day {
-    min-height: 7.25rem;
-    padding: 0.4rem;
-    border-left: 1px solid var(--line);
-}
-.month__day:first-child {
-    border-left: 0;
-}
-.month__day--outside {
-    background: rgb(17 17 17 / 0.025);
-}
-.month__day--outside .month__number {
-    color: #646a5f;
-}
-.month__number {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0;
+/* The site's general table look (lines, grey heads) does not apply to the month. */
+.month__table :is(th, td) {
     border: 0;
     background: none;
-    color: var(--ink);
-    font: inherit;
-    font-size: 0.9375rem;
+}
+.month__table th {
+    padding: 0 0 0.2rem 0.55rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     text-align: left;
+    color: var(--ink-soft);
 }
-button.month__number {
+.month__table td {
+    /* Lets the tile fill the cell, so the tiles of one week are equally tall. */
+    height: 1px;
+    padding: 0;
+    vertical-align: top;
+}
+.month__tile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 100%;
+    height: 100%;
+    min-height: clamp(3.2rem, 8.4vw, 6.6rem);
+    padding: 0.5rem 0.55rem;
+    border: 0;
+    border-radius: 14px;
+    background: var(--kind-soft);
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+}
+button.month__tile {
     cursor: pointer;
 }
-.month__number > span:first-child {
-    display: inline-grid;
-    place-items: center;
-    min-width: 1.75rem;
-    height: 1.75rem;
+button.month__tile:hover {
+    box-shadow: inset 0 0 0 2px var(--kind);
+}
+button.month__tile[aria-pressed='true'] {
+    box-shadow: inset 0 0 0 2.5px var(--ink);
+}
+/* A day with nothing on: quiet ground. */
+.month__tile--free {
+    background: #f4f6f1;
+}
+/* Days of the month before or after are paler, without becoming hard to read. */
+.month__tile--outside {
+    background: color-mix(in srgb, var(--kind-soft) 45%, #ffffff);
+}
+.month__tile--outside.month__tile--free {
+    background: #f9faf7;
+}
+.month__tile--outside .month__number {
+    font-variation-settings: 'wdth' 66, 'wght' 500;
+    color: #666d61;
+}
+/* The day number borrows the tall, narrow, heavy lettering of the logo. */
+.month__number {
+    font-family: var(--font-roboto-flex, 'Roboto Flex'), var(--font-family-public-sans), sans-serif;
+    font-variation-settings: 'wdth' 66, 'wght' 760;
+    font-size: 1.4rem;
+    line-height: 1;
+}
+.month__tile--free .month__number {
+    font-variation-settings: 'wdth' 66, 'wght' 500;
+    color: #5f665b;
+}
+.month__tile--today .month__number {
+    align-self: flex-start;
+    margin: -0.15rem 0 0 -0.2rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--field);
+}
+/* Titles are set in the narrow face of the dates, so a word like "Boerengroep" fits a tile. */
+.month__titles {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+    font-family: var(--font-roboto-flex, 'Roboto Flex'), var(--font-family-public-sans), sans-serif;
+    font-variation-settings: 'wdth' 64, 'wght' 620;
+    font-size: 0.9rem;
+    line-height: 1.18;
+}
+/* A title may take two lines, so most can be read in full. */
+.month__titles > span {
+    position: relative;
+    display: -webkit-box;
+    overflow: hidden;
+    padding-left: 0.75rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow-wrap: break-word;
+}
+.month__titles > span[data-kind-colour]::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.3em;
+    width: 0.45rem;
+    height: 0.45rem;
     border-radius: 50%;
+    background: var(--kind);
 }
-.month__day--today .month__number > span:first-child {
-    background: var(--leaf);
-    color: var(--ink);
+.month__titles .month__more {
+    font-weight: 500;
+    color: #4d5449;
 }
-.month__day--chosen {
-    background: var(--mist);
+.month__off {
+    text-decoration: line-through;
 }
 .month__dots {
     display: none;
@@ -1297,99 +1444,61 @@ button.month__number {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--type);
+    background: var(--kind);
 }
-.month__chips {
-    display: grid;
-    gap: 3px;
-    margin: 0.3rem 0 0;
-    padding: 0;
-    list-style: none;
-}
-.month__chips li {
-    margin: 0;
-    min-width: 0;
-}
-.month__chip {
-    display: flex;
-    align-items: center;
-    /* Big enough to hit with a finger on a tablet. */
-    min-height: 26px;
-    gap: 0.35rem;
-    padding: 0.2rem 0.4rem 0.2rem 0.5rem;
-    border-left: 3px solid var(--type);
-    border-radius: 3px 8px 8px 3px;
-    background: color-mix(in srgb, var(--type) 12%, white);
-    color: var(--ink);
-    font-size: 0.78rem;
-    line-height: 1.3;
-    text-decoration: none;
-}
-.month__chip:hover {
-    background: color-mix(in srgb, var(--type) 22%, white);
-}
-.month__chip-time {
-    flex: none;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-}
-.month__chip-title {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-.month__chip--off .month__chip-title {
-    text-decoration: line-through;
-}
-.month__more {
-    padding: 0.1rem 0.5rem;
-    border: 0;
-    background: none;
-    color: var(--leaf-deep);
-    font: inherit;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-}
-.month__chosen {
-    margin-top: 1.75rem;
-}
-.month__chosen-title {
-    margin: 0 0 0.75rem;
-    font-size: 1.25rem;
-}
-.month__hint {
-    display: none;
-    color: var(--ink-soft);
-}
-/* Phone: days are small squares with dots. The chosen day's events are listed underneath. */
 @media (max-width: 760px) {
-    .month__day {
-        min-height: 3.4rem;
-        padding: 0.3rem 0.15rem;
+    /* On a small screen a tile shows the day and a dot per event. The titles are in the list below. */
+    .month__table {
+        width: calc(100% + 0.4rem);
+        margin: -0.2rem;
+        border-spacing: 0.2rem;
+    }
+    .month__table th {
+        padding-left: 0;
         text-align: center;
     }
-    .month__name {
-        padding-inline: 0;
-        text-align: center;
+    .month__tile {
+        align-items: center;
+        min-height: 3.2rem;
+        padding: 0.45rem 0.1rem;
+        border-radius: 12px;
+    }
+    .month__tile--today .month__number {
+        align-self: center;
+        margin: -0.15rem 0 0;
     }
     .month__number {
-        flex-direction: column;
-        gap: 2px;
-        width: 100%;
-        min-height: 44px;
+        font-size: 1.2rem;
+    }
+    .month__titles {
+        display: none;
     }
     .month__dots {
         display: flex;
-        justify-content: center;
-        min-height: 6px;
     }
-    .month__chips {
-        display: none;
-    }
-    .month__hint {
-        display: block;
-    }
+}
+/* The chosen day: what is on, in full. */
+.month__day {
+    padding: 1.3rem 1.3rem 0.4rem;
+    border-radius: var(--plot-radius);
+    background: var(--mist);
+}
+.month__day-title {
+    margin: 0 0 0.4rem;
+    font-size: 1.35rem;
+    line-height: 1.2;
+}
+.month__day .event-list {
+    border-bottom: 0;
+}
+.month__day .event-row:first-child {
+    border-top: 0;
+}
+.month__jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1rem 0 0.9rem;
 }
 
 /* ---------- Small menus: add to calendar, share, subscribe ---------- */
@@ -1693,12 +1802,12 @@ button.month__number {
     height: 100%;
     object-fit: cover;
 }
-/* Without a picture the logo's circles fill the frame. */
-.whats-on__lead-picture .overprint {
-    right: -6%;
-    bottom: -38%;
-    width: 78%;
-    opacity: 0.9;
+/* Without a picture the symbol of the logo stands in the frame. */
+.whats-on__lead-picture .whats-on__lead-symbol {
+    width: auto;
+    height: 76%;
+    margin: 6% auto 0;
+    object-fit: contain;
 }
 /* The date sits on the corner of the picture like a ticket stub. */
 .whats-on__lead-date {
@@ -2091,12 +2200,14 @@ video.video__frame {
 .video__start img {
     object-fit: cover;
 }
-.video__start .overprint {
+.video__start .video__symbol {
+    position: absolute;
     left: 50%;
     top: 50%;
-    width: 60%;
+    width: auto;
+    height: 70%;
     translate: -50% -50%;
-    opacity: 0.5;
+    opacity: 0.35;
 }
 .video__play {
     position: relative;
@@ -2407,12 +2518,6 @@ video.video__frame {
 .item__stage {
     position: relative;
 }
-/* The logo's circles look out from behind the picture, at the corner away from the small pictures. */
-.item__stage .overprint {
-    right: -5%;
-    top: -6%;
-    width: 34%;
-}
 .item__strip {
     position: relative;
     display: flex;
@@ -2684,21 +2789,6 @@ video.video__frame {
     align-items: center;
     gap: 0.6rem 0.75rem;
 }
-.actions__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    min-height: 44px;
-    padding-inline: 0.4rem;
-    font-weight: 600;
-    text-decoration: underline;
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 0.2em;
-}
-.actions__link svg {
-    width: 1.1rem;
-    height: 1.1rem;
-}
 /* Links are light on the dark ground, but a green or black button keeps its own text colour. */
 .section-dark .btn-leaf {
     color: var(--ink);
@@ -2714,9 +2804,6 @@ video.video__frame {
 .section-dark .btn-quiet:hover {
     background: var(--field);
     color: var(--ink);
-}
-.section-dark .actions__link {
-    color: var(--field);
 }
 
 .block-head--stacked {
@@ -2758,28 +2845,19 @@ video.video__frame {
 }
 .hero__visual {
     position: relative;
+    min-width: 0;
 }
-.hero__visual img {
-    position: relative;
+.hero__visual > img:not(.hero__symbol) {
     display: block;
     width: 100%;
     height: auto;
     border-radius: var(--plot-radius);
 }
-.hero__visual .video {
-    position: relative;
-}
-/* The logo's circles sit behind the picture and show past its corner. */
-.hero__visual .overprint {
-    right: -5%;
-    bottom: -9%;
-    width: 46%;
-}
 @media (min-width: 900px) {
     .hero--split {
         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
-    .hero--split .hero__visual img {
+    .hero--split .hero__visual > img {
         aspect-ratio: 4 / 3;
         object-fit: cover;
     }
@@ -2795,45 +2873,29 @@ video.video__frame {
 .hero--centered .actions {
     justify-content: center;
 }
-.hero--centered .hero__visual .overprint {
-    right: -2%;
-    bottom: -8%;
-    width: 24%;
-}
-/* Words only: they keep to the left, and the logo's circles are the picture. */
+/* Words only: they keep to the left, and the symbol of the logo stands beside them. */
 .hero--plain {
-    position: relative;
-    min-height: clamp(17rem, 34vw, 26rem);
-    align-content: center;
+    grid-template-columns: minmax(0, 1fr) auto;
 }
 .hero--plain .hero__words {
-    position: relative;
-    max-width: min(46rem, 62%);
+    max-width: 46rem;
 }
-.hero--plain .hero__visual {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+.hero__symbol {
+    display: block;
+    width: auto;
+    height: clamp(11rem, 25vw, 19rem);
 }
-.hero--plain .hero__visual .overprint {
-    right: 2%;
-    bottom: auto;
-    top: 50%;
-    width: min(34%, 26rem);
-    translate: 0 -50%;
-}
-@media (max-width: 760px) {
-    .hero--plain .hero__words {
-        max-width: none;
+@media (max-width: 700px) {
+    /* On a phone the symbol is small and sits at the lower right, after the words. */
+    .hero--plain {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0.5rem;
     }
-    /* On a phone the circles sit low and faint behind the words. */
-    .hero--plain .hero__visual .overprint {
-        right: -18%;
-        top: auto;
-        bottom: -12%;
-        width: 62%;
-        translate: none;
-        opacity: 0.22;
+    .hero--plain .hero__visual {
+        justify-self: end;
+    }
+    .hero__symbol {
+        height: 6.5rem;
     }
 }
 .section-dark .hero__tagline {
@@ -2842,49 +2904,59 @@ video.video__frame {
 
 /* ---------- One line that links somewhere ---------- */
 
-.callout-band {
-    padding-block: 1.5rem;
+/*
+ * A callout is a small plot of its own: a low strip, as wide as the other plots, with the same
+ * air above and below. It belongs to neither neighbour.
+ */
+.band--callout {
+    /* Low enough to be a strip, round enough to read as one piece. */
+    border-radius: min(var(--band-radius), 2.25rem);
 }
 .callout {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    margin: 0;
-    padding: 1.05rem 1.5rem;
-    border-radius: 999px;
-    background: var(--mist);
-    color: var(--ink);
+    min-height: 4.25rem;
+    margin: 0 auto;
+    padding-block: 0.8rem;
+    border-radius: inherit;
+    color: inherit;
     font-family: var(--font-family-enriqueta);
-    font-size: 1.25rem;
-    line-height: 1.3;
+    font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+    line-height: 1.25;
     text-decoration: none;
-    transition: translate 0.15s ease;
 }
-.callout--leaf {
-    background: #cfe9c9;
-}
-.callout--harvest {
-    background: var(--harvest-soft);
-}
-.callout--sky {
-    background: var(--sky-soft);
-}
-.callout--dark {
-    background: var(--furrow);
+.section-dark > .callout {
     color: var(--field);
 }
-a.callout:hover {
-    box-shadow: inset 0 0 0 1.5px currentColor;
+/* The arrow stands in a dark disc: this is what tells a visitor the line can be pressed. */
+.callout svg {
+    flex: none;
+    box-sizing: content-box;
+    width: 1.25rem;
+    height: 1.25rem;
+    padding: 0.65rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--field);
+    transition: translate 0.15s ease;
+}
+.section-dark > .callout svg {
+    background: var(--leaf);
+    color: var(--ink);
 }
 a.callout:hover svg {
     translate: 0.25rem 0;
 }
-.callout svg {
-    flex: none;
-    width: 1.4rem;
-    height: 1.4rem;
-    transition: translate 0.15s ease;
+a.callout:hover > span {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.16em;
+}
+a.callout:focus-visible {
+    outline-offset: -4px;
+    box-shadow: none;
 }
 
 /* ---------- Items side by side ---------- */
@@ -3067,38 +3139,11 @@ a.callout:hover svg {
     max-width: 60rem;
 }
 
-/* ---------- Bands that rise over one another ---------- */
-
-/*
- * A page is a stack of bands. Each band after the first rises over the one before it with a
- * shallow curve, the way one field lies behind another, and the footer is the last hill.
- * Where two bands have the same colour the curve is invisible and nothing changes.
- */
-.band {
-    position: relative;
-}
-.band + .band {
-    margin-top: calc(-1 * var(--arc));
-    border-radius: 50% 50% 0 0 / var(--arc) var(--arc) 0 0;
-}
-/* Room for the next band to rise into. */
-.band:has(+ .band) {
-    padding-bottom: var(--arc);
-}
-/* The last band runs on behind the footer hill and its sun. */
-main {
-    padding-bottom: var(--footer-rise);
-}
-main:has(> .band:last-child) {
-    padding-bottom: 0;
-}
-main > .band:last-child {
-    padding-bottom: var(--footer-rise);
-}
+/* ---------- Pages without an opening block ---------- */
 
 /* The title of a page that has no opening block. */
 .page-title {
-    padding-block: clamp(2.5rem, 6vw, 4rem) 0;
+    padding-block: clamp(2.5rem, 6vw, 4rem) 1.75rem;
 }
 .page-title h1 {
     margin: 0;
@@ -3138,13 +3183,6 @@ main > .band:last-child {
 
 /* ---------- Videos among photos ---------- */
 
-.mosaic__tile .overprint {
-    left: 50%;
-    top: 50%;
-    width: 60%;
-    translate: -50% -50%;
-    opacity: 0.55;
-}
 .mosaic__tile--video button {
     background: var(--furrow);
     cursor: pointer;
@@ -3237,5 +3275,275 @@ main > .band:last-child {
 }
 .block-head > div > p {
     max-width: 40rem;
+}
+
+/* ---------- A page that is only a picture ---------- */
+
+.page-title--centred {
+    text-align: center;
+}
+/* A poster or a map by itself: in the middle of the page, as large as reads well. */
+.rich--visual {
+    display: grid;
+    justify-items: center;
+    gap: 1.5rem;
+    max-width: none;
+}
+.rich--visual .rich-figure {
+    margin: 0;
+}
+.rich--visual .rich-figure img {
+    width: auto;
+    max-width: min(100%, 46rem);
+    max-height: none;
+    margin-inline: auto;
+    border-radius: var(--plot-radius);
+}
+.rich--visual .rich-figure figcaption {
+    text-align: center;
+}
+
+/* ---------- The top of a built-in page ---------- */
+
+.page-head {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 2rem;
+}
+.page-head h1 {
+    margin: 0;
+    font-size: clamp(2.4rem, 6.5vw, 4rem);
+    line-height: 1.04;
+    text-wrap: balance;
+}
+.page-head__intro {
+    max-width: 40rem;
+    margin: 1rem 0 0;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--ink-soft);
+}
+.page-head .chips {
+    margin-top: 1.6rem;
+}
+
+/* ---------- Vacancies ---------- */
+
+.vacancy-group {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+.vacancy-group + .vacancy-group {
+    margin-top: 3rem;
+}
+.vacancy-group__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    margin-bottom: 1rem;
+}
+.vacancy-group__head h2 {
+    margin: 0;
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+    line-height: 1.1;
+}
+.vacancy-group__head p {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+.vacancy-list {
+    display: grid;
+    gap: 0.6rem;
+}
+/* One vacancy: a plot that opens. */
+.vacancy {
+    border-radius: 22px;
+    background: var(--mist);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+.vacancy > summary {
+    position: relative;
+    display: grid;
+    gap: 0.35rem;
+    padding: 1.1rem 3.6rem 1.1rem 1.4rem;
+    border-radius: 22px;
+    list-style: none;
+    cursor: pointer;
+}
+.vacancy > summary::-webkit-details-marker {
+    display: none;
+}
+/* A chevron that turns when the vacancy opens. */
+.vacancy > summary::after {
+    content: '';
+    position: absolute;
+    right: 1.5rem;
+    top: 1.45rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-right: 2.5px solid var(--ink);
+    border-bottom: 2.5px solid var(--ink);
+    rotate: 45deg;
+    transition: rotate 0.15s ease;
+}
+.vacancy[open] > summary::after {
+    top: 1.75rem;
+    rotate: 225deg;
+}
+.vacancy > summary:hover h3 {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.16em;
+}
+.vacancy__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.9rem;
+}
+.vacancy__name h3 {
+    margin: 0;
+    font-size: clamp(1.2rem, 3vw, 1.4rem);
+    line-height: 1.2;
+}
+.vacancy__state {
+    padding: 0.15rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.45;
+}
+.vacancy__state--open {
+    background: var(--leaf);
+    color: var(--ink);
+}
+/* A last day is a reason to hurry: orange. */
+.vacancy__state--until {
+    background: var(--harvest);
+    color: var(--ink);
+}
+.vacancy__state--closed {
+    background: var(--ink);
+    color: var(--field);
+}
+.vacancy__teaser {
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+}
+.vacancy--closed h3 {
+    color: var(--ink-soft);
+}
+.vacancy__body {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 54rem;
+    padding: 0.4rem 1.4rem 1.6rem;
+    /* A long web address in the text must not push the page wider than the screen. */
+    overflow-wrap: anywhere;
+}
+.vacancy__body > * {
+    min-width: 0;
+}
+.vacancy__body h4 {
+    margin: 0 0 0.4rem;
+    font-family: var(--font-family-public-sans);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+.vacancy__body p {
+    margin: 0;
+}
+.vacancy__closed-note {
+    font-weight: 600;
+}
+.vacancy__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+    gap: 0.8rem 1.5rem;
+    margin: 0;
+    padding: 1rem 1.2rem;
+    border-radius: 16px;
+    background: var(--field);
+}
+.vacancy__facts dt {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+}
+.vacancy__facts dd {
+    margin: 0.1rem 0 0;
+    font-weight: 600;
+}
+.vacancy__words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.vacancy__words li {
+    margin: 0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    background: var(--field);
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+.vacancy__welcome {
+    padding-left: 1rem;
+    border-left: 4px solid var(--leaf);
+    font-weight: 600;
+}
+/* How to apply is the point of the whole vacancy, so it stands out. */
+.vacancy__apply {
+    padding: 1.2rem 1.3rem 1.3rem;
+    border-radius: 18px;
+    background: var(--furrow);
+    color: var(--furrow-text);
+}
+.vacancy__apply h4,
+.vacancy__apply .rich :is(p, li, strong) {
+    color: var(--field);
+}
+.vacancy__apply a {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+}
+.vacancy__apply :focus-visible {
+    outline-color: var(--field);
+    box-shadow: none;
+}
+.vacancy__apply address {
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.9rem;
+    font-style: normal;
+    color: var(--field);
+}
+.vacancy__apply .rich + address {
+    padding-top: 0.9rem;
+    border-top: 1px solid rgb(255 255 255 / 0.25);
+}
+.vacancy__contact-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--furrow-text);
+}
+.vacancy-missing {
+    margin: 2.5rem 0 0;
+    color: var(--ink-soft);
+}
+.vacancy-missing span {
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+.vacancy-none h2 {
+    margin: 0 0 0.5rem;
+}
+.vacancy-none p {
+    max-width: 40rem;
+    margin: 0;
 }
 

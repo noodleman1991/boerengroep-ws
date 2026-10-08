@@ -59,7 +59,7 @@ describe('queries', () => {
     ] as const) {
       await payload.create({
         collection: 'events',
-        data: { title, slug: 'same-slug', startDate: '2026-01-01T10:00:00.000Z', eventType: 'talk', tenant } as never,
+        data: { title, slug: 'same-slug', startDate: '2026-01-01T10:00:00.000Z', tenant } as never,
       })
       await payload.create({
         collection: 'vacancies',
@@ -184,6 +184,23 @@ describe('queries', () => {
     expect(await q.listChildPages(history.id, 'en')).toEqual([])
   })
 
+  it('names the kind of an event and a vacancy in the reader’s language', async () => {
+    const kind = await payload.create({ collection: 'event-kinds', locale: 'en', data: { name: 'Excursion', colour: 'blue', tenant: bg } as never })
+    await payload.update({ collection: 'event-kinds', id: kind.id, locale: 'nl', data: { name: 'Excursie' } as never })
+    const event = (await queries('boerengroep').listEvents())[0]!
+    await payload.update({ collection: 'events', id: event.id, data: { kind: kind.id } as never })
+    const q = queries('boerengroep')
+    const name = (docs: { kind?: unknown }[]) => (docs[0]!.kind as { name: string }).name
+    expect(name(await q.listEvents('nl'))).toBe('Excursie')
+    expect(name(await q.listEvents('en'))).toBe('Excursion')
+    expect(((await q.getEvent(event.slug!, 'nl'))!.kind as { name: string }).name).toBe('Excursie')
+
+    const vacancy = (await q.listVacancies('en'))[0]!
+    await payload.update({ collection: 'vacancies', id: vacancy.id, locale: 'nl', data: { title: 'Vacature in het Nederlands' } as never })
+    expect((await q.listVacancies('nl'))[0]!.title).toBe('Vacature in het Nederlands')
+    expect((await q.listVacancies('en'))[0]!.title).toBe('BG event vacancy')
+  })
+
   it('looks a page up by its English path and returns it in Dutch', async () => {
     const res = await queries('boerengroep').getPageByEnglishPath('/about-us/history', 'nl')
     expect(res?.title).toBe('Geschiedenis')
@@ -201,7 +218,7 @@ describe('queries', () => {
   it('scopes every list and lookup to the tenant', async () => {
     const q = queries('boerengroep')
     expect((await q.listEvents()).map((d) => d.title)).toEqual(['BG event'])
-    expect((await q.listVacancies()).map((d) => d.title)).toEqual(['BG event vacancy'])
+    expect((await q.listVacancies('en')).map((d) => d.title)).toEqual(['BG event vacancy'])
     expect((await q.listNewsletters()).map((d) => d.title)).toEqual(['BG event news'])
     expect((await q.getNewsletter('Issue-1', 'en'))?.title).toBe('BG event news')
     expect((await q.getPastEvent('Recap'))?.title).toBe('BG event recap')
@@ -266,7 +283,7 @@ describe('queries', () => {
       },
     })
     await q.listEvents()
-    expect(seen[0]!.tags).toEqual(['boerengroep:events', 'boerengroep:speakers', 'boerengroep:media'])
+    expect(seen[0]!.tags).toEqual(['boerengroep:events', 'boerengroep:speakers', 'boerengroep:event-kinds', 'boerengroep:media'])
     expect(seen[0]!.key.slice(0, 2)).toEqual(['boerengroep', 'listEvents'])
   })
 
@@ -292,7 +309,8 @@ describe('queries', () => {
       expect(seen.get(name), name).toEqual(expect.arrayContaining(['pages', 'forms', 'past-events', 'media']))
     }
     // An event shows its speakers. A story shows its author, its tags, its event and forms in its blocks.
-    expect(seen.get('listEvents')).toEqual(expect.arrayContaining(['events', 'speakers']))
+    // An event shows its speakers and its kind.
+    expect(seen.get('listEvents')).toEqual(expect.arrayContaining(['events', 'speakers', 'event-kinds']))
     for (const name of ['getPastEvent', 'listPastEvents']) {
       expect(seen.get(name), name).toEqual(expect.arrayContaining(['past-events', 'events', 'authors', 'tags', 'forms']))
     }

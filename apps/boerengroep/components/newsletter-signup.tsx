@@ -3,7 +3,7 @@ import React, { useEffect, useId, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { useLayout } from '@/components/layout/layout-context';
-import { OverprintMark } from '@/components/overprint-mark';
+import { BrandSymbol } from '@/components/brand-symbol';
 import { RichText } from '@/components/rich-text';
 import { outcomeOf, type SignupOutcome } from '@/lib/newsletter/signup-state';
 import { hasRichText } from '@/lib/rich-text-utils';
@@ -73,7 +73,7 @@ export function NewsletterSignup({
         const custom = state === 'thanks' && hasRichText(texts?.thanksMessage);
         return (
             <div className={`signup signup--done ${className}`} ref={doneRef} tabIndex={-1} role="status">
-                <OverprintMark className="signup__mark" />
+                <BrandSymbol className="signup__mark" />
                 <Heading className="signup__heading">
                     {state === 'already' ? t('already_title') : texts?.thanksTitle || t('thanks_title')}
                 </Heading>

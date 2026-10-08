@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { useLayout } from '@/components/layout/layout-context';
-import { OverprintMark } from '@/components/overprint-mark';
+import { BrandSymbol } from '@/components/brand-symbol';
 import { RichText } from '@/components/rich-text';
 import { hasRichText } from '@/lib/rich-text-utils';
 
@@ -50,7 +50,7 @@ export const VerifyEmailPage = ({ locale, token }: VerifyEmailPageProps) => {
     return (
         <div className="page-width">
             <div className="notice" aria-live="polite" aria-busy={state === 'confirming'}>
-                <OverprintMark className="notice__mark" />
+                <BrandSymbol className="notice__mark" />
                 <h1>{title}</h1>
                 {state === 'confirmed' && hasRichText(texts?.confirmedMessage) ? (
                     <RichText data={texts?.confirmedMessage} className="notice__text" />

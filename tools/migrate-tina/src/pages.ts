@@ -1,4 +1,5 @@
 import { transformBlocks } from './blocks'
+import { readAsGalleries } from './gallery-pages'
 import { type Ctx, upsert } from './context'
 import { planPages, type PagePlan } from './pages-plan'
 import { listContent, readTinaFile } from './read'
@@ -9,15 +10,58 @@ async function localeData(ctx: Ctx, contentDir: string, file: string, slug: stri
   // The old site never showed this text. A fix-up can leave it out, for placeholder text.
   const leaveOutBody = ctx.fixups.clearPageBodies.includes(key)
   if (leaveOutBody && f.body?.trim()) ctx.report.add('skipped', f.legacyId, 'hidden text left out by a fix-up')
+  const blocks = await transformBlocks(ctx, f.data.blocks, f.legacyId)
   return {
     data: {
       title: f.data.title,
       slug,
-      blocks: await transformBlocks(ctx, f.data.blocks, f.legacyId),
+      blocks: ctx.fixups.galleryPages.includes(key) ? await asGalleries(ctx, blocks, f.legacyId) : blocks,
       body: leaveOutBody ? null : await ctx.toLexical(f.body, f.legacyId),
     },
     previousUrls: (f.data.previousUrls ?? []) as string[],
   }
+}
+
+/**
+ * For a page named as a photo page in the fix-ups: each text block that reads as photos with
+ * captions becomes one gallery block per heading. The captions are saved on the pictures, in
+ * the language of the page, which is where galleries read them.
+ */
+async function asGalleries(ctx: Ctx, blocks: Record<string, unknown>[], legacyId: string): Promise<Record<string, unknown>[]> {
+  const locale = legacyId.split('/')[1] === 'nl' ? 'nl' : 'en'
+  const out: Record<string, unknown>[] = []
+  let turned = 0
+  for (const block of blocks) {
+    const galleries = block.blockType === 'content' ? readAsGalleries(block.body as never) : undefined
+    if (!galleries) {
+      out.push(block)
+      continue
+    }
+    for (const gallery of galleries) {
+      for (const image of gallery.images) {
+        if (!image.caption) continue
+        await ctx.payload.update({
+          collection: 'media',
+          id: image.id,
+          locale,
+          data: { caption: image.caption } as never,
+          overrideAccess: true,
+          context: { disableRevalidate: true },
+        })
+      }
+      out.push({
+        blockType: 'gallery',
+        background: block.background,
+        title: gallery.title,
+        intro: gallery.intro,
+        source: 'pictures',
+        images: gallery.images.map((image) => image.id),
+      })
+      turned++
+    }
+  }
+  if (turned === 0) ctx.report.add('skipped', legacyId, 'named as a photo page, but no text on it reads as photos with captions')
+  return out
 }
 
 function enPath(plan: PagePlan): string | undefined {

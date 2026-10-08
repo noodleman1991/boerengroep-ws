@@ -9,9 +9,13 @@ type Action = {
     id?: string | null;
 };
 
+/** "Read more..." reads better on a button as "Read more". */
+const withoutDots = (label: string) => label.trim().replace(/\s*(\.{2,}|…)$/, '');
+
 /**
- * The buttons of a block. The first button stands out, the following ones are quieter.
- * An address that starts with / stays on the site in the reader's language.
+ * The buttons of a block. The first button is filled, everything after it is an outlined
+ * pill, also what the editor marked as a plain link: an underlined word under a headline
+ * is easy to miss. An address that starts with / stays on the site in the reader's language.
  */
 export function Actions({ actions, tone = 'leaf', className = '' }: {
     actions?: Action[] | null;
@@ -27,11 +31,11 @@ export function Actions({ actions, tone = 'leaf', className = '' }: {
             {list.map((action, index) => {
                 const href = action.link!.trim();
                 const isButton = action.type !== 'link';
-                const look = isButton && !leadGiven ? `btn-${tone}` : isButton ? 'btn-quiet' : 'actions__link';
+                const look = isButton && !leadGiven ? `btn-${tone}` : 'btn-quiet';
                 if (isButton) leadGiven = true;
                 const inner = (
                     <>
-                        {action.label}
+                        {withoutDots(action.label!)}
                         <BlockIcon name={action.icon?.name} />
                     </>
                 );

@@ -2,7 +2,7 @@
 import React, { useId, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { OverprintMark } from '@/components/overprint-mark';
+import { BrandSymbol } from '@/components/brand-symbol';
 
 interface DeleteDataPageProps {
     locale: string;
@@ -60,7 +60,7 @@ export const DeleteDataPage = ({ locale, token }: DeleteDataPageProps) => {
         return (
             <div className="page-width">
                 <div className="notice" role="status">
-                    <OverprintMark className="notice__mark" />
+                    <BrandSymbol className="notice__mark" />
                     <h1>{copy[0]}</h1>
                     <p className="notice__text">{copy[1]}</p>
                     <div className="notice__actions">
@@ -77,7 +77,7 @@ export const DeleteDataPage = ({ locale, token }: DeleteDataPageProps) => {
         return (
             <div className="page-width">
                 <div className="notice">
-                    <OverprintMark className="notice__mark" />
+                    <BrandSymbol className="notice__mark" />
                     <h1>{t('confirm_title')}</h1>
                     <p className="notice__text">{t('confirm_description')}</p>
                     {whatGoes}
@@ -105,7 +105,7 @@ export const DeleteDataPage = ({ locale, token }: DeleteDataPageProps) => {
     return (
         <div className="page-width">
             <div className="notice">
-                <OverprintMark className="notice__mark" />
+                <BrandSymbol className="notice__mark" />
                 <h1>{t('title')}</h1>
                 <p className="notice__text">{t('description')}</p>
                 {whatGoes}

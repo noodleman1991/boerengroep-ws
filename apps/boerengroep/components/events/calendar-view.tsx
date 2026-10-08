@@ -1,7 +1,7 @@
 'use client';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useMemo, useState } from 'react';
-import { groupByMonth, splitEvents, typesIn } from '@/lib/events/select';
+import { groupByMonth, kindsIn, splitEvents } from '@/lib/events/select';
 import { monthLabel, type SiteLocale } from '@/lib/events/time';
 import type { SiteEvent } from '@/lib/events/types';
 import { EventRow } from './event-row';
@@ -12,7 +12,8 @@ const VIEWS: View[] = ['upcoming', 'month', 'past'];
 
 /**
  * The calendar: what is coming as a list, a month grid, and what has been.
- * Visitors can narrow it down to one kind of event.
+ * Visitors can narrow it down to one kind of event. The kinds are the ones editors made in
+ * the admin panel, and only those that have events in the view at hand are offered.
  */
 export function CalendarView({ events, renderedAt, defaultView }: {
     events: SiteEvent[];
@@ -23,7 +24,7 @@ export function CalendarView({ events, renderedAt, defaultView }: {
     const t = useTranslations('calendar');
     const locale = useLocale() as SiteLocale;
     const [view, setView] = useState<View>(defaultView === 'month' ? 'month' : 'upcoming');
-    const [type, setType] = useState<string | null>(null);
+    const [kind, setKind] = useState<string | null>(null);
     const [now, setNow] = useState(() => new Date(renderedAt));
 
     useEffect(() => {
@@ -41,12 +42,13 @@ export function CalendarView({ events, renderedAt, defaultView }: {
         window.history.replaceState(null, '', url);
     };
 
-    const types = useMemo(() => typesIn(events), [events]);
-    const shown = useMemo(() => (type ? events.filter((event) => event.type === type) : events), [events, type]);
-    const { upcoming, past } = useMemo(() => splitEvents(shown, now), [shown, now]);
-    const tType = (key: string) => (t.has(`eventTypes.${key}`) ? t(`eventTypes.${key}`) : key);
-
-    const list = view === 'past' ? past : upcoming;
+    const all = useMemo(() => splitEvents(events, now), [events, now]);
+    // What this view holds before any filter: the filter offers the kinds found in here.
+    const inView = view === 'past' ? all.past : view === 'upcoming' ? all.upcoming : events;
+    const kinds = useMemo(() => kindsIn(inView, locale), [inView, locale]);
+    // A kind chosen in one view may not exist in the next. Then everything is shown again.
+    const active = kind && kinds.some((option) => option.id === kind) ? kind : null;
+    const shown = useMemo(() => (active ? inView.filter((event) => event.kind?.id === active) : inView), [inView, active]);
 
     return (
         <div className="calendar">
@@ -58,21 +60,28 @@ export function CalendarView({ events, renderedAt, defaultView }: {
                         </button>
                     ))}
                 </div>
-                {types.length > 1 && (
+                {kinds.length > 1 && (
                     <div className="chips" role="group" aria-label={t('filter.label')}>
-                        <button type="button" className="chip" aria-pressed={type === null} onClick={() => setType(null)}>
+                        <button type="button" className="chip" aria-pressed={active === null} onClick={() => setKind(null)}>
                             {t('filter.all')}
+                            <span className="chip__count" aria-hidden="true">
+                                {inView.length}
+                            </span>
                         </button>
-                        {types.map((option) => (
+                        {kinds.map((option) => (
                             <button
-                                key={option}
+                                key={option.id}
                                 type="button"
                                 className="chip"
-                                data-event-type={option}
-                                aria-pressed={type === option}
-                                onClick={() => setType(type === option ? null : option)}
+                                data-kind-colour={option.colour}
+                                aria-pressed={active === option.id}
+                                aria-label={t('filter.kind', { name: option.name, count: option.count })}
+                                onClick={() => setKind(active === option.id ? null : option.id)}
                             >
-                                {tType(option)}
+                                {option.name}
+                                <span className="chip__count" aria-hidden="true">
+                                    {option.count}
+                                </span>
                             </button>
                         ))}
                     </div>
@@ -81,11 +90,9 @@ export function CalendarView({ events, renderedAt, defaultView }: {
 
             {view === 'month' ? (
                 <MonthGrid events={shown} now={now} />
-            ) : list.length === 0 ? (
+            ) : shown.length === 0 ? (
                 <div className="calendar__empty">
-                    {type ? (
-                        <p>{t('empty.filtered')}</p>
-                    ) : view === 'past' ? (
+                    {view === 'past' ? (
                         <p>{t('empty.past')}</p>
                     ) : (
                         <>
@@ -95,16 +102,21 @@ export function CalendarView({ events, renderedAt, defaultView }: {
                     )}
                 </div>
             ) : (
-                groupByMonth(list).map((group) => (
-                    <section key={group.month} className="calendar__month">
-                        <h2 className="calendar__month-title">{monthLabel(group.month, locale)}</h2>
-                        <div className="event-list">
-                            {group.events.map((event) => (
-                                <EventRow key={event.id} event={event} />
-                            ))}
-                        </div>
-                    </section>
-                ))
+                <div className="calendar__list">
+                    {groupByMonth(shown).map((group) => (
+                        <section key={group.month} className="calendar__month" aria-labelledby={`month-${group.month}`}>
+                            <h2 className="calendar__month-title" id={`month-${group.month}`}>
+                                {monthLabel(group.month, locale)}
+                                <span className="calendar__month-count">{t('month.count', { count: group.events.length })}</span>
+                            </h2>
+                            <div className="event-list">
+                                {group.events.map((event) => (
+                                    <EventRow key={event.id} event={event} />
+                                ))}
+                            </div>
+                        </section>
+                    ))}
+                </div>
             )}
         </div>
     );

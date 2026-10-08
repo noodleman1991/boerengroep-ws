@@ -26,7 +26,7 @@
 - `pages/nl/index.mdx`: not imported: pages/nl/home.mdx is the home page
 - `pages/nl/library/agroecologie-netwerk.mdx`: not imported: same page as pages/nl/bibliotheek/agroecologie-netwerk.mdx
 
-## skipped (25)
+## skipped (26)
 
 - `speakers/dr-maria-van-der-meer.md`: removed by a fix-up
 - `speakers/lisa-vermeulen.md`: removed by a fix-up
@@ -53,3 +53,4 @@
 - `pages/nl/algemene-voorwaarden.mdx`: removed by a fix-up
 - `pages/en/inspringtheater.mdx`: hidden text left out by a fix-up
 - `pages/nl/inspringtheater.mdx`: hidden text left out by a fix-up
+- `pages/en/library/media.mdx`: hidden text left out by a fix-up

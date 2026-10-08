@@ -26,6 +26,17 @@ describe('the parts of a page, in the order they show', () => {
     expect(pageParts({ title: 'Later hero', blocks: [content(text()), hero] } as never).showTitle).toBe(false)
   })
 
+  it('knows a page that is only a picture, such as a poster, so it can be centred', () => {
+    const picture = { type: 'upload', relationTo: 'media', value: 1 }
+    const poster = { root: { children: [picture, { type: 'paragraph', children: [] }] } }
+    expect(pageParts({ title: 'Contact', body: poster, blocks: [] } as never).visualOnly).toBe(true)
+    expect(pageParts({ title: 'Contact', body: { root: { children: [picture, picture] } }, blocks: null } as never).visualOnly).toBe(true)
+    // Words beside the picture, or blocks on the page, make it an ordinary page.
+    expect(pageParts({ title: 'Contact', body: { root: { children: [picture, { type: 'paragraph', children: [word] }] } }, blocks: [] } as never).visualOnly).toBe(false)
+    expect(pageParts({ title: 'Contact', body: poster, blocks: [hero] } as never).visualOnly).toBe(false)
+    expect(pageParts({ title: 'Contact', body: text(), blocks: [] } as never).visualOnly).toBe(false)
+  })
+
   it('knows a page with nothing on it, so its sub-pages can be listed instead', () => {
     expect(pageParts({ title: 'Activities', blocks: [] } as never).empty).toBe(true)
     expect(pageParts({ title: 'Activities', body: { root: { children: [{ type: 'paragraph', children: [] }] } }, blocks: null } as never).empty).toBe(true)

@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { eventPath } from '@/lib/events/ics-site';
 import type { SiteEvent } from '@/lib/events/types';
-import { DateBlock, EventFacts, StatusBadge, TypeTag, useEventLang } from './event-bits';
+import { DateBlock, EventFacts, KindTag, StatusBadge, useEventLang } from './event-bits';
 
 /**
  * One event in a list: the date large on the left, what and where in the middle, the picture
@@ -17,11 +17,12 @@ export function EventRow({ event, headingLevel: Heading = 'h3', compact = false 
     const off = event.status === 'cancelled' || event.status === 'postponed';
     const lang = useEventLang(event);
     return (
-        <article className={`event-row${compact ? ' event-row--compact' : ''}${off ? ' event-row--off' : ''}`}>
+        // The colour of the kind tints the date, so a list shows at a glance what is what.
+        <article className={`event-row${compact ? ' event-row--compact' : ''}${off ? ' event-row--off' : ''}`} data-kind-colour={event.kind?.colour}>
             <DateBlock date={event.start} />
             <div className="event-row__body">
                 <div className="event-row__tags">
-                    <TypeTag type={event.type} />
+                    <KindTag kind={event.kind} />
                     <StatusBadge status={event.status} />
                 </div>
                 <Heading className="event-row__title" lang={lang}>

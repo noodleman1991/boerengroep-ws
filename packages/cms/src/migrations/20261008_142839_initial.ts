@@ -8,7 +8,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum_pages_blocks_hero_layout" AS ENUM('split', 'centered');
   CREATE TYPE "public"."enum_pages_blocks_events_calendar_preview_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_pages_blocks_events_calendar_preview_mode" AS ENUM('upcoming', 'type', 'picked');
-  CREATE TYPE "public"."enum_pages_blocks_events_calendar_preview_event_type" AS ENUM('talk', 'workshop', 'lecture', 'meeting', 'board-meeting', 'soup-kitchen', 'csa', 'excursion');
   CREATE TYPE "public"."enum_pages_blocks_callout_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_pages_blocks_features_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_pages_blocks_stats_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -38,7 +37,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__pages_v_blocks_hero_layout" AS ENUM('split', 'centered');
   CREATE TYPE "public"."enum__pages_v_blocks_events_calendar_preview_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__pages_v_blocks_events_calendar_preview_mode" AS ENUM('upcoming', 'type', 'picked');
-  CREATE TYPE "public"."enum__pages_v_blocks_events_calendar_preview_event_type" AS ENUM('talk', 'workshop', 'lecture', 'meeting', 'board-meeting', 'soup-kitchen', 'csa', 'excursion');
   CREATE TYPE "public"."enum__pages_v_blocks_callout_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__pages_v_blocks_features_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum__pages_v_blocks_stats_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
@@ -66,7 +64,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__pages_v_published_locale" AS ENUM('en', 'nl');
   CREATE TYPE "public"."enum_events_language" AS ENUM('en', 'nl');
   CREATE TYPE "public"."enum_events_status" AS ENUM('scheduled', 'full', 'cancelled', 'postponed');
-  CREATE TYPE "public"."enum_events_event_type" AS ENUM('talk', 'workshop', 'lecture', 'meeting', 'board-meeting', 'soup-kitchen', 'csa', 'excursion');
   CREATE TYPE "public"."enum_past_events_blocks_hero_actions_type" AS ENUM('button', 'link');
   CREATE TYPE "public"."enum_past_events_blocks_hero_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_past_events_blocks_hero_layout" AS ENUM('split', 'centered');
@@ -122,6 +119,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__past_events_v_version_language" AS ENUM('en', 'nl');
   CREATE TYPE "public"."enum__past_events_v_version_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum__past_events_v_published_locale" AS ENUM('en', 'nl');
+  CREATE TYPE "public"."enum_event_kinds_colour" AS ENUM('green', 'orange', 'blue', 'red', 'purple', 'teal', 'brown', 'grey');
   CREATE TYPE "public"."enum_newsletters_blocks_hero_actions_type" AS ENUM('button', 'link');
   CREATE TYPE "public"."enum_newsletters_blocks_hero_background" AS ENUM('white', 'mist', 'leaf', 'harvest', 'sky', 'dark');
   CREATE TYPE "public"."enum_newsletters_blocks_hero_layout" AS ENUM('split', 'centered');
@@ -181,7 +179,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__newsletters_v_version_organization" AS ENUM('Boerengroep', 'Inspringtheater', 'friends');
   CREATE TYPE "public"."enum__newsletters_v_version_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum__newsletters_v_published_locale" AS ENUM('en', 'nl');
-  CREATE TYPE "public"."enum_vacancies_language" AS ENUM('en', 'nl');
   CREATE TYPE "public"."enum_vacancies_opportunity_type" AS ENUM('volunteer', 'internship', 'coordinator', 'board', 'other');
   CREATE TYPE "public"."enum_vacancies_location_type" AS ENUM('remote', 'in-person', 'hybrid');
   CREATE TYPE "public"."enum_forms_confirmation_type" AS ENUM('message', 'redirect');
@@ -236,7 +233,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"title" varchar,
   	"description" varchar,
   	"mode" "enum_pages_blocks_events_calendar_preview_mode" DEFAULT 'upcoming',
-  	"event_type" "enum_pages_blocks_events_calendar_preview_event_type",
+  	"kind_id" integer,
   	"count" numeric DEFAULT 4,
   	"show_mini_calendar" boolean DEFAULT true,
   	"block_name" varchar
@@ -569,7 +566,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"title" varchar,
   	"description" varchar,
   	"mode" "enum__pages_v_blocks_events_calendar_preview_mode" DEFAULT 'upcoming',
-  	"event_type" "enum__pages_v_blocks_events_calendar_preview_event_type",
+  	"kind_id" integer,
   	"count" numeric DEFAULT 4,
   	"show_mini_calendar" boolean DEFAULT true,
   	"_uuid" varchar,
@@ -908,7 +905,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"description" varchar,
   	"start_date" timestamp(3) with time zone NOT NULL,
   	"end_date" timestamp(3) with time zone,
-  	"event_type" "enum_events_event_type" NOT NULL,
+  	"kind_id" integer,
   	"location_address" varchar,
   	"location_maps_link" varchar,
   	"location_call_link" varchar,
@@ -1533,6 +1530,22 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"media_id" integer
   );
   
+  CREATE TABLE "event_kinds" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"tenant_id" integer,
+  	"colour" "enum_event_kinds_colour" DEFAULT 'green' NOT NULL,
+  	"legacy_id" varchar,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  CREATE TABLE "event_kinds_locales" (
+  	"name" varchar NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
+  );
+  
   CREATE TABLE "newsletters_blocks_hero_actions" (
   	"_order" integer NOT NULL,
   	"_parent_id" varchar NOT NULL,
@@ -2152,31 +2165,36 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE "vacancies" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"tenant_id" integer,
-  	"title" varchar NOT NULL,
   	"slug" varchar NOT NULL,
-  	"language" "enum_vacancies_language",
   	"opportunity_type" "enum_vacancies_opportunity_type" NOT NULL,
   	"location_type" "enum_vacancies_location_type",
   	"location_city_region" varchar,
   	"start_date" timestamp(3) with time zone,
-  	"duration" varchar,
   	"open_application" boolean,
   	"application_deadline" timestamp(3) with time zone,
+  	"contact_info_name" varchar,
+  	"contact_info_email" varchar,
+  	"contact_info_phone" varchar,
+  	"supporting_document_id" integer,
+  	"open_to_nontraditional" boolean,
+  	"legacy_id" varchar,
+  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  CREATE TABLE "vacancies_locales" (
+  	"title" varchar NOT NULL,
+  	"duration" varchar,
   	"description" jsonb,
   	"responsibilities" jsonb,
   	"preferred_qualities" jsonb,
   	"compensation_details" varchar,
   	"accessibility_notes" varchar,
   	"how_to_apply" jsonb,
-  	"contact_info_name" varchar,
-  	"contact_info_email" varchar,
-  	"contact_info_phone" varchar,
-  	"supporting_document_id" integer,
   	"values_statement" jsonb,
-  	"open_to_nontraditional" boolean,
-  	"legacy_id" varchar,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"_parent_id" integer NOT NULL
   );
   
   CREATE TABLE "vacancies_texts" (
@@ -2184,7 +2202,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"order" integer NOT NULL,
   	"parent_id" integer NOT NULL,
   	"path" varchar NOT NULL,
-  	"text" varchar
+  	"text" varchar,
+  	"locale" "_locales"
   );
   
   CREATE TABLE "media" (
@@ -2570,6 +2589,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"general_name" varchar NOT NULL,
   	"general_logo_id" integer,
   	"general_logo_on_dark_id" integer,
+  	"general_symbol_id" integer,
   	"general_contact_address" varchar,
   	"general_contact_email" varchar,
   	"general_contact_phone" varchar,
@@ -2684,6 +2704,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"pages_id" integer,
   	"events_id" integer,
   	"past_events_id" integer,
+  	"event_kinds_id" integer,
   	"newsletters_id" integer,
   	"vacancies_id" integer,
   	"media_id" integer,
@@ -2725,6 +2746,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "pages_blocks_hero_actions" ADD CONSTRAINT "pages_blocks_hero_actions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages_blocks_hero"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_hero" ADD CONSTRAINT "pages_blocks_hero_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages_blocks_hero" ADD CONSTRAINT "pages_blocks_hero_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_events_calendar_preview" ADD CONSTRAINT "pages_blocks_events_calendar_preview_kind_id_event_kinds_id_fk" FOREIGN KEY ("kind_id") REFERENCES "public"."event_kinds"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages_blocks_events_calendar_preview" ADD CONSTRAINT "pages_blocks_events_calendar_preview_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_callout" ADD CONSTRAINT "pages_blocks_callout_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_features_items" ADD CONSTRAINT "pages_blocks_features_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages_blocks_features"("id") ON DELETE cascade ON UPDATE no action;
@@ -2763,6 +2785,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_pages_v_blocks_hero_actions" ADD CONSTRAINT "_pages_v_blocks_hero_actions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v_blocks_hero"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_hero" ADD CONSTRAINT "_pages_v_blocks_hero_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_hero" ADD CONSTRAINT "_pages_v_blocks_hero_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_blocks_events_calendar_preview" ADD CONSTRAINT "_pages_v_blocks_events_calendar_preview_kind_id_event_kinds_id_fk" FOREIGN KEY ("kind_id") REFERENCES "public"."event_kinds"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_events_calendar_preview" ADD CONSTRAINT "_pages_v_blocks_events_calendar_preview_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_callout" ADD CONSTRAINT "_pages_v_blocks_callout_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_features_items" ADD CONSTRAINT "_pages_v_blocks_features_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v_blocks_features"("id") ON DELETE cascade ON UPDATE no action;
@@ -2802,6 +2825,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "events_speakers" ADD CONSTRAINT "events_speakers_speaker_id_speakers_id_fk" FOREIGN KEY ("speaker_id") REFERENCES "public"."speakers"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "events_speakers" ADD CONSTRAINT "events_speakers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "events" ADD CONSTRAINT "events_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "events" ADD CONSTRAINT "events_kind_id_event_kinds_id_fk" FOREIGN KEY ("kind_id") REFERENCES "public"."event_kinds"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "events" ADD CONSTRAINT "events_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "past_events_videos" ADD CONSTRAINT "past_events_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "past_events_blocks_hero_actions" ADD CONSTRAINT "past_events_blocks_hero_actions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events_blocks_hero"("id") ON DELETE cascade ON UPDATE no action;
@@ -2882,6 +2906,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_past_events_v_rels" ADD CONSTRAINT "_past_events_v_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."_past_events_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_past_events_v_rels" ADD CONSTRAINT "_past_events_v_rels_tags_fk" FOREIGN KEY ("tags_id") REFERENCES "public"."tags"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_past_events_v_rels" ADD CONSTRAINT "_past_events_v_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "event_kinds" ADD CONSTRAINT "event_kinds_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "event_kinds_locales" ADD CONSTRAINT "event_kinds_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."event_kinds"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "newsletters_blocks_hero_actions" ADD CONSTRAINT "newsletters_blocks_hero_actions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."newsletters_blocks_hero"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "newsletters_blocks_hero" ADD CONSTRAINT "newsletters_blocks_hero_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "newsletters_blocks_hero" ADD CONSTRAINT "newsletters_blocks_hero_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."newsletters"("id") ON DELETE cascade ON UPDATE no action;
@@ -2959,6 +2985,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_newsletters_v_rels" ADD CONSTRAINT "_newsletters_v_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "vacancies" ADD CONSTRAINT "vacancies_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "vacancies" ADD CONSTRAINT "vacancies_supporting_document_id_media_id_fk" FOREIGN KEY ("supporting_document_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "vacancies_locales" ADD CONSTRAINT "vacancies_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."vacancies"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "vacancies_texts" ADD CONSTRAINT "vacancies_texts_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."vacancies"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "media" ADD CONSTRAINT "media_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "media_locales" ADD CONSTRAINT "media_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
@@ -3008,6 +3035,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "site_settings" ADD CONSTRAINT "site_settings_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "site_settings" ADD CONSTRAINT "site_settings_general_logo_id_media_id_fk" FOREIGN KEY ("general_logo_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "site_settings" ADD CONSTRAINT "site_settings_general_logo_on_dark_id_media_id_fk" FOREIGN KEY ("general_logo_on_dark_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "site_settings" ADD CONSTRAINT "site_settings_general_symbol_id_media_id_fk" FOREIGN KEY ("general_symbol_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "site_settings_locales" ADD CONSTRAINT "site_settings_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."site_settings"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "redirects" ADD CONSTRAINT "redirects_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "users_roles" ADD CONSTRAINT "users_roles_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
@@ -3019,6 +3047,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_pages_fk" FOREIGN KEY ("pages_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_events_fk" FOREIGN KEY ("events_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_past_events_fk" FOREIGN KEY ("past_events_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_event_kinds_fk" FOREIGN KEY ("event_kinds_id") REFERENCES "public"."event_kinds"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_newsletters_fk" FOREIGN KEY ("newsletters_id") REFERENCES "public"."newsletters"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_vacancies_fk" FOREIGN KEY ("vacancies_id") REFERENCES "public"."vacancies"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
@@ -3045,6 +3074,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "pages_blocks_events_calendar_preview_parent_id_idx" ON "pages_blocks_events_calendar_preview" USING btree ("_parent_id");
   CREATE INDEX "pages_blocks_events_calendar_preview_path_idx" ON "pages_blocks_events_calendar_preview" USING btree ("_path");
   CREATE INDEX "pages_blocks_events_calendar_preview_locale_idx" ON "pages_blocks_events_calendar_preview" USING btree ("_locale");
+  CREATE INDEX "pages_blocks_events_calendar_preview_kind_idx" ON "pages_blocks_events_calendar_preview" USING btree ("kind_id");
   CREATE INDEX "pages_blocks_callout_order_idx" ON "pages_blocks_callout" USING btree ("_order");
   CREATE INDEX "pages_blocks_callout_parent_id_idx" ON "pages_blocks_callout" USING btree ("_parent_id");
   CREATE INDEX "pages_blocks_callout_path_idx" ON "pages_blocks_callout" USING btree ("_path");
@@ -3155,6 +3185,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_pages_v_blocks_events_calendar_preview_parent_id_idx" ON "_pages_v_blocks_events_calendar_preview" USING btree ("_parent_id");
   CREATE INDEX "_pages_v_blocks_events_calendar_preview_path_idx" ON "_pages_v_blocks_events_calendar_preview" USING btree ("_path");
   CREATE INDEX "_pages_v_blocks_events_calendar_preview_locale_idx" ON "_pages_v_blocks_events_calendar_preview" USING btree ("_locale");
+  CREATE INDEX "_pages_v_blocks_events_calendar_preview_kind_idx" ON "_pages_v_blocks_events_calendar_preview" USING btree ("kind_id");
   CREATE INDEX "_pages_v_blocks_callout_order_idx" ON "_pages_v_blocks_callout" USING btree ("_order");
   CREATE INDEX "_pages_v_blocks_callout_parent_id_idx" ON "_pages_v_blocks_callout" USING btree ("_parent_id");
   CREATE INDEX "_pages_v_blocks_callout_path_idx" ON "_pages_v_blocks_callout" USING btree ("_path");
@@ -3264,6 +3295,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "events_speakers_speaker_idx" ON "events_speakers" USING btree ("speaker_id");
   CREATE INDEX "events_tenant_idx" ON "events" USING btree ("tenant_id");
   CREATE INDEX "events_slug_idx" ON "events" USING btree ("slug");
+  CREATE INDEX "events_kind_idx" ON "events" USING btree ("kind_id");
   CREATE INDEX "events_image_idx" ON "events" USING btree ("image_id");
   CREATE INDEX "events_legacy_id_idx" ON "events" USING btree ("legacy_id");
   CREATE INDEX "events_updated_at_idx" ON "events" USING btree ("updated_at");
@@ -3440,6 +3472,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_past_events_v_rels_path_idx" ON "_past_events_v_rels" USING btree ("path");
   CREATE INDEX "_past_events_v_rels_tags_id_idx" ON "_past_events_v_rels" USING btree ("tags_id");
   CREATE INDEX "_past_events_v_rels_media_id_idx" ON "_past_events_v_rels" USING btree ("media_id");
+  CREATE INDEX "event_kinds_tenant_idx" ON "event_kinds" USING btree ("tenant_id");
+  CREATE INDEX "event_kinds_legacy_id_idx" ON "event_kinds" USING btree ("legacy_id");
+  CREATE INDEX "event_kinds_updated_at_idx" ON "event_kinds" USING btree ("updated_at");
+  CREATE INDEX "event_kinds_created_at_idx" ON "event_kinds" USING btree ("created_at");
+  CREATE UNIQUE INDEX "event_kinds_locales_locale_parent_id_unique" ON "event_kinds_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "newsletters_blocks_hero_actions_order_idx" ON "newsletters_blocks_hero_actions" USING btree ("_order");
   CREATE INDEX "newsletters_blocks_hero_actions_parent_id_idx" ON "newsletters_blocks_hero_actions" USING btree ("_parent_id");
   CREATE INDEX "newsletters_blocks_hero_order_idx" ON "newsletters_blocks_hero" USING btree ("_order");
@@ -3612,7 +3649,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "vacancies_legacy_id_idx" ON "vacancies" USING btree ("legacy_id");
   CREATE INDEX "vacancies_updated_at_idx" ON "vacancies" USING btree ("updated_at");
   CREATE INDEX "vacancies_created_at_idx" ON "vacancies" USING btree ("created_at");
+  CREATE UNIQUE INDEX "vacancies_locales_locale_parent_id_unique" ON "vacancies_locales" USING btree ("_locale","_parent_id");
   CREATE INDEX "vacancies_texts_order_parent" ON "vacancies_texts" USING btree ("order","parent_id");
+  CREATE INDEX "vacancies_texts_locale_parent" ON "vacancies_texts" USING btree ("locale","parent_id");
   CREATE INDEX "media_tenant_idx" ON "media" USING btree ("tenant_id");
   CREATE INDEX "media_legacy_path_idx" ON "media" USING btree ("legacy_path");
   CREATE INDEX "media_updated_at_idx" ON "media" USING btree ("updated_at");
@@ -3706,6 +3745,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE UNIQUE INDEX "site_settings_tenant_idx" ON "site_settings" USING btree ("tenant_id");
   CREATE INDEX "site_settings_general_general_logo_idx" ON "site_settings" USING btree ("general_logo_id");
   CREATE INDEX "site_settings_general_general_logo_on_dark_idx" ON "site_settings" USING btree ("general_logo_on_dark_id");
+  CREATE INDEX "site_settings_general_general_symbol_idx" ON "site_settings" USING btree ("general_symbol_id");
   CREATE INDEX "site_settings_updated_at_idx" ON "site_settings" USING btree ("updated_at");
   CREATE INDEX "site_settings_created_at_idx" ON "site_settings" USING btree ("created_at");
   CREATE UNIQUE INDEX "site_settings_locales_locale_parent_id_unique" ON "site_settings_locales" USING btree ("_locale","_parent_id");
@@ -3738,6 +3778,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_pages_id_idx" ON "payload_locked_documents_rels" USING btree ("pages_id");
   CREATE INDEX "payload_locked_documents_rels_events_id_idx" ON "payload_locked_documents_rels" USING btree ("events_id");
   CREATE INDEX "payload_locked_documents_rels_past_events_id_idx" ON "payload_locked_documents_rels" USING btree ("past_events_id");
+  CREATE INDEX "payload_locked_documents_rels_event_kinds_id_idx" ON "payload_locked_documents_rels" USING btree ("event_kinds_id");
   CREATE INDEX "payload_locked_documents_rels_newsletters_id_idx" ON "payload_locked_documents_rels" USING btree ("newsletters_id");
   CREATE INDEX "payload_locked_documents_rels_vacancies_id_idx" ON "payload_locked_documents_rels" USING btree ("vacancies_id");
   CREATE INDEX "payload_locked_documents_rels_media_id_idx" ON "payload_locked_documents_rels" USING btree ("media_id");
@@ -3871,6 +3912,8 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "_past_events_v_blocks_item" CASCADE;
   DROP TABLE "_past_events_v" CASCADE;
   DROP TABLE "_past_events_v_rels" CASCADE;
+  DROP TABLE "event_kinds" CASCADE;
+  DROP TABLE "event_kinds_locales" CASCADE;
   DROP TABLE "newsletters_blocks_hero_actions" CASCADE;
   DROP TABLE "newsletters_blocks_hero" CASCADE;
   DROP TABLE "newsletters_blocks_callout" CASCADE;
@@ -3924,6 +3967,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "_newsletters_v_texts" CASCADE;
   DROP TABLE "_newsletters_v_rels" CASCADE;
   DROP TABLE "vacancies" CASCADE;
+  DROP TABLE "vacancies_locales" CASCADE;
   DROP TABLE "vacancies_texts" CASCADE;
   DROP TABLE "media" CASCADE;
   DROP TABLE "media_locales" CASCADE;
@@ -3984,7 +4028,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_pages_blocks_hero_layout";
   DROP TYPE "public"."enum_pages_blocks_events_calendar_preview_background";
   DROP TYPE "public"."enum_pages_blocks_events_calendar_preview_mode";
-  DROP TYPE "public"."enum_pages_blocks_events_calendar_preview_event_type";
   DROP TYPE "public"."enum_pages_blocks_callout_background";
   DROP TYPE "public"."enum_pages_blocks_features_background";
   DROP TYPE "public"."enum_pages_blocks_stats_background";
@@ -4014,7 +4057,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__pages_v_blocks_hero_layout";
   DROP TYPE "public"."enum__pages_v_blocks_events_calendar_preview_background";
   DROP TYPE "public"."enum__pages_v_blocks_events_calendar_preview_mode";
-  DROP TYPE "public"."enum__pages_v_blocks_events_calendar_preview_event_type";
   DROP TYPE "public"."enum__pages_v_blocks_callout_background";
   DROP TYPE "public"."enum__pages_v_blocks_features_background";
   DROP TYPE "public"."enum__pages_v_blocks_stats_background";
@@ -4042,7 +4084,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__pages_v_published_locale";
   DROP TYPE "public"."enum_events_language";
   DROP TYPE "public"."enum_events_status";
-  DROP TYPE "public"."enum_events_event_type";
   DROP TYPE "public"."enum_past_events_blocks_hero_actions_type";
   DROP TYPE "public"."enum_past_events_blocks_hero_background";
   DROP TYPE "public"."enum_past_events_blocks_hero_layout";
@@ -4098,6 +4139,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__past_events_v_version_language";
   DROP TYPE "public"."enum__past_events_v_version_status";
   DROP TYPE "public"."enum__past_events_v_published_locale";
+  DROP TYPE "public"."enum_event_kinds_colour";
   DROP TYPE "public"."enum_newsletters_blocks_hero_actions_type";
   DROP TYPE "public"."enum_newsletters_blocks_hero_background";
   DROP TYPE "public"."enum_newsletters_blocks_hero_layout";
@@ -4157,7 +4199,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum__newsletters_v_version_organization";
   DROP TYPE "public"."enum__newsletters_v_version_status";
   DROP TYPE "public"."enum__newsletters_v_published_locale";
-  DROP TYPE "public"."enum_vacancies_language";
   DROP TYPE "public"."enum_vacancies_opportunity_type";
   DROP TYPE "public"."enum_vacancies_location_type";
   DROP TYPE "public"."enum_forms_confirmation_type";

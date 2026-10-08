@@ -52,7 +52,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     <Layout rawPageData={resolved.page}>
       <ClientPage
         page={resolved.page}
-        data={await loadBlockData(resolved.page.blocks)}
+        data={await loadBlockData(resolved.page.blocks, locale)}
         subPages={pageParts(resolved.page).empty ? await cms.listChildPages(resolved.page.id, locale) : []}
       />
     </Layout>

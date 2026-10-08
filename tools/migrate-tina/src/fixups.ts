@@ -19,9 +19,14 @@ export type Fixups = {
   removeFiles: string[]
   /** Page keys whose hidden text (the body, which the old site never showed) is left out. */
   clearPageBodies: string[]
+  /**
+   * Page keys whose text blocks are really photo pages: a heading, then pictures with a
+   * sentence under each. They become gallery blocks, and the sentences become captions.
+   */
+  galleryPages: string[]
 }
 
-export const emptyFixups: Fixups = { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [] }
+export const emptyFixups: Fixups = { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [], galleryPages: [] }
 
 /** Reads a fix-ups file, filling in the parts it leaves out. */
 export function parseFixups(json: string): Fixups {
@@ -33,5 +38,6 @@ export function parseFixups(json: string): Fixups {
     logo: raw.logo,
     removeFiles: raw.removeFiles ?? [],
     clearPageBodies: raw.clearPageBodies ?? [],
+    galleryPages: raw.galleryPages ?? [],
   }
 }

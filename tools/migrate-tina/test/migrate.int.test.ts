@@ -24,6 +24,7 @@ const input = (payload: Payload) => ({
 const COLLECTIONS = [
   'pages',
   'events',
+  'event-kinds',
   'past-events',
   'newsletters',
   'vacancies',
@@ -79,6 +80,8 @@ describe('migrate', () => {
     expect(await counts(payload)).toEqual({
       pages: 8,
       events: 2,
+      // One for each kind the events use: workshop and Open Pot.
+      'event-kinds': 2,
       'past-events': 1,
       newsletters: 1,
       vacancies: 1,
@@ -89,6 +92,34 @@ describe('migrate', () => {
       redirects: 2,
       'site-settings': 1,
     })
+  })
+
+  it('makes a kind of event for each kind in use, named as the old site named it', async () => {
+    const kinds = async (locale: 'en' | 'nl') =>
+      (await payload.find({ collection: 'event-kinds', locale, sort: 'legacyId', overrideAccess: true })).docs.map((d: any) => [d.legacyId, d.name, d.colour])
+    expect(await kinds('en')).toEqual([
+      ['event-kinds/soup-kitchen', 'Open Pot', 'red'],
+      ['event-kinds/workshop', 'Workshop', 'orange'],
+    ])
+    expect((await kinds('nl')).map((row) => row[1])).toEqual(['Open Pot', 'Werkplaats'])
+    const weekend = (await payload.find({ collection: 'events', where: { legacyId: { equals: 'events/en/Boerengroep-Weekend.mdx' } }, depth: 1, overrideAccess: true })).docs[0] as any
+    expect(weekend.kind.legacyId).toBe('event-kinds/workshop')
+  })
+
+  it('imports a vacancy once, with its Dutch from the file of the same name', async () => {
+    const find = (locale: 'en' | 'nl') =>
+      payload.find({ collection: 'vacancies', locale, fallbackLocale: false as never, overrideAccess: true }).then((res) => res.docs as any[])
+    const [en] = await find('en')
+    const [nl] = await find('nl')
+    expect((await find('en')).length).toBe(1)
+    expect(en.title).toBe('General Board Member')
+    expect(nl.title).toBe('Algemeen bestuurslid')
+    expect(nl.id).toBe(en.id)
+    expect(nl.requiredSkills).toEqual(['organiseren'])
+    expect(en.requiredSkills).toEqual(['organising'])
+    expect(JSON.stringify(nl.description)).toContain('bestuur')
+    expect(en.opportunityType).toBe('board')
+    expect('language' in en).toBe(false)
   })
 
   it('builds localized paths for a paired page', async () => {

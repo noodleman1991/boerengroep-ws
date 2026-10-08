@@ -10,6 +10,7 @@ import sharp from 'sharp'
 import { anyone, authenticated, canAssignTenants } from './access'
 import { type AccessUser, isSuperAdmin } from './access/roles'
 import { Authors } from './collections/authors'
+import { EventKinds } from './collections/event-kinds'
 import { Events } from './collections/events'
 import { Media } from './collections/media'
 import { Newsletters } from './collections/newsletters'
@@ -44,6 +45,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url))
 export const tenantScoped: CollectionConfig[] = [
   Pages,
   Events,
+  EventKinds,
   PastEvents,
   Newsletters,
   Vacancies,
@@ -63,6 +65,7 @@ const MENU_ORDER = [
   'pages',
   'events',
   'past-events',
+  'event-kinds',
   'newsletters',
   'vacancies',
   'media',

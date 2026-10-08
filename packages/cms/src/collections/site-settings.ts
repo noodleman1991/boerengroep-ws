@@ -69,6 +69,16 @@ export const SiteSettings: CollectionConfig = {
               },
             },
             {
+              name: 'symbol',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Symbol',
+              admin: {
+                description:
+                  'The logo without its lettering, with a transparent background. It is shown large as decoration, for example at the top of a page without a picture. Leave empty to use the standard one.',
+              },
+            },
+            {
               name: 'contact',
               type: 'group',
               label: 'Contact details',

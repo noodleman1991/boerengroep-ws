@@ -1,532 +1,244 @@
 'use client';
-import React from 'react';
 import { useTranslations } from 'next-intl';
-import { RichText } from '@/components/rich-text';
-import { hasRichText } from '@/lib/rich-text-utils';
+import { useEffect, useState } from 'react';
 import { Section } from '@/components/layout/section';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Badge } from '@/components/ui/badge';
 import { FileCard } from '@/components/media/file-card';
+import { RichText } from '@/components/rich-text';
+import { formatDay, type SiteLocale } from '@/lib/events/time';
 import type { FileInfo } from '@/lib/files';
-import {
-    CalendarDays,
-    MapPin,
-    Clock,
-    Euro,
-    FileText,
-} from 'lucide-react';
+import { hasRichText } from '@/lib/rich-text-utils';
+import { groupVacancies, type VacancyGroup } from '@/lib/vacancies';
 
-// === Types ===
-interface VacancyNode {
+/** A vacancy as the page reads it. Every part is optional except the title. */
+export type VacancyItem = {
     id: string;
-    opportunityType?: string | null;
+    slug?: string | null;
     title?: string | null;
-    location?: {
-        type?: string | null;
-        cityRegion?: string | null;
-    } | null;
+    opportunityType?: string | null;
+    location?: { type?: string | null; cityRegion?: string | null } | null;
     startDate?: string | null;
     duration?: string | null;
     openApplication?: boolean | null;
     applicationDeadline?: string | null;
-    description?: any;
-    responsibilities?: any;
+    description?: unknown;
+    responsibilities?: unknown;
     requiredSkills?: (string | null)[] | null;
-    preferredQualities?: any;
+    preferredQualities?: unknown;
     languagesRequired?: (string | null)[] | null;
-    compensation?: {
-        details?: string | null;
-    } | null;
+    compensation?: { details?: string | null } | null;
     accessibilityNotes?: string | null;
-    howToApply?: any;
-    contactInfo?: {
-        name?: string | null;
-        email?: string | null;
-        phone?: string | null;
-    } | null;
-    supportingDocument?: string | null;
+    howToApply?: unknown;
+    contactInfo?: { name?: string | null; email?: string | null; phone?: string | null } | null;
     document?: FileInfo | null;
-    valuesStatement?: any;
+    valuesStatement?: unknown;
     openToNontraditional?: boolean | null;
-}
+};
 
-interface VacancyEdge {
-    node?: VacancyNode | null;
-}
+const words = (list: (string | null)[] | null | undefined) => (list ?? []).map((item) => item?.trim()).filter((item): item is string => Boolean(item));
+const anchor = (vacancy: VacancyItem) => `vacancy-${(vacancy.slug || vacancy.id).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
-interface VacancyConnection {
-    edges?: (VacancyEdge | null)[] | null;
-}
-
-interface VacanciesPageProps {
-    vacancies: VacancyConnection;
+/**
+ * Every position people can apply for, grouped by kind. Whether a vacancy is open follows from
+ * what the editor set: always open, open until a day, or closed for a few days before it leaves
+ * the page. Kinds without a vacancy are named at the end, so links to them still land somewhere.
+ */
+export function VacanciesPage({ vacancies, locale, renderedAt }: {
+    vacancies: VacancyItem[];
     locale: string;
-}
-
-const VACANCY_TYPES = [
-    { type: 'volunteer'},
-    { type: 'internship'},
-    { type: 'coordinator'},
-    { type: 'board'},
-    { type: 'other'},
-] as const;
-
-export const VacanciesPage = ({
-                                  vacancies,
-                                  locale,
-                              }: VacanciesPageProps) => {
+    /** When the page was built. Used until the browser's own clock takes over. */
+    renderedAt: string;
+}) {
     const t = useTranslations('vacancies');
-
-    const isApplicationOpen = (deadline: string) => {
-        const deadlineDate = new Date(deadline);
-        const today = new Date();
-        return deadlineDate >= today;
-    };
-
-    const isExpired = (deadline: string) => {
-        const deadlineDate = new Date(deadline);
-        const today = new Date();
-        const threeDaysAfter = new Date(deadlineDate);
-        threeDaysAfter.setDate(threeDaysAfter.getDate() + 3);
-        return today > threeDaysAfter;
-    };
-
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString(
-            locale === 'nl' ? 'nl-NL' : 'en-US',
-            {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
+    const [now, setNow] = useState(() => new Date(renderedAt));
+    useEffect(() => {
+        // The page may have been built a while ago. A deadline may have passed since.
+        setNow(new Date());
+        // A link to one vacancy opens it, on arrival and when only the part after # changes.
+        const openLinked = () => {
+            const target = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
+            if (target instanceof HTMLDetailsElement) {
+                target.open = true;
+                target.scrollIntoView();
             }
-        );
-    };
+        };
+        openLinked();
+        window.addEventListener('hashchange', openLinked);
+        return () => window.removeEventListener('hashchange', openLinked);
+    }, []);
 
-    // Rich text sections are shown only when they hold visible content
-    const hasContent = (content: unknown): boolean => hasRichText(content);
-
-    const filterVacanciesByType = (type: string): VacancyEdge[] => {
-        if (!vacancies.edges) return [];
-        return vacancies.edges
-            .filter((edge): edge is VacancyEdge => {
-                const vacancy = edge?.node;
-                if (!vacancy?.opportunityType) return false;
-                
-                // If it's an open application, always include it
-                if (vacancy.openApplication) return vacancy.opportunityType === type;
-                
-                // Otherwise, check deadline
-                if (!vacancy.applicationDeadline) return false;
-                if (isExpired(vacancy.applicationDeadline)) return false;
-                return vacancy.opportunityType === type;
-            })
-            .sort((a, b) => {
-                // Sort open applications first, then by deadline
-                const aOpen = a.node?.openApplication;
-                const bOpen = b.node?.openApplication;
-                
-                if (aOpen && !bOpen) return -1;
-                if (!aOpen && bOpen) return 1;
-                
-                // Both are the same type (open or deadline), sort by date
-                const da = new Date(a.node?.applicationDeadline || '');
-                const db = new Date(b.node?.applicationDeadline || '');
-                return da.getTime() - db.getTime();
-            });
-    };
-
-    const VacancyAccordion = ({
-                                  vacancies: typeVacancies,
-                                  type,
-                              }: {
-        vacancies: VacancyEdge[];
-        type: string;
-    }) => {
-        if (typeVacancies.length === 0) {
-            return (
-                <section
-                    id={type}
-                    className="space-y-6 scroll-mt-24"
-                >
-                    <div className="flex items-center gap-3">
-                        <h2 className="text-2xl font-semibold">
-                            {t(`types.${type}.title`)}
-                        </h2>
-                    </div>
-                    <p className="text-muted-foreground">
-                        {t(`types.${type}.noOpportunities`)}
-                    </p>
-                </section>
-            );
-        }
-
-        return (
-            <section
-                id={type}
-                className="space-y-6 scroll-mt-24"
-            >
-                <div className="flex items-center gap-3">
-                    <h2 className="text-2xl font-semibold">
-                        {t(`types.${type}.title`)}
-                    </h2>
-                    <Badge
-                        variant="secondary"
-                        className="ml-2"
-                    >
-                        {typeVacancies.length}{' '}
-                        {typeVacancies.length === 1
-                            ? t('opportunity')
-                            : t('opportunities')}
-                    </Badge>
-                </div>
-
-                <Accordion
-                    type="single"
-                    collapsible
-                    className="space-y-4"
-                >
-                    {typeVacancies.map((edge, index) => {
-                        const vacancy = edge.node;
-                        if (!vacancy) return null;
-
-                        const applicationOpen = vacancy.openApplication || 
-                            (vacancy.applicationDeadline ? isApplicationOpen(vacancy.applicationDeadline) : false);
-
-                        return (
-                            <AccordionItem
-                                key={vacancy.id || index}
-                                value={`vacancy-${type}-${index}`}
-                                className="border rounded-lg overflow-hidden bg-white shadow-sm last:border-b"
-                            >
-                                <AccordionTrigger className="hover:no-underline px-4 py-3">
-                                    <div className="flex items-center justify-between w-full mr-4">
-                                        <div className="text-left">
-                                            <div className="font-medium">
-                                                {vacancy.title && vacancy.title.trim() ? 
-                                                    vacancy.title : t('untitledPosition')}
-                                            </div>
-                                        </div>
-                                        <Badge
-                                            variant={
-                                                applicationOpen
-                                                    ? 'default'
-                                                    : 'destructive'
-                                            }
-                                            className={
-                                                applicationOpen
-                                                    ? 'bg-green-500 hover:bg-green-600'
-                                                    : ''
-                                            }
-                                        >
-                                            {applicationOpen
-                                                ? vacancy.openApplication 
-                                                    ? t('status.openNoDeadline') 
-                                                    : t('status.open')
-                                                : t('status.closed')}
-                                        </Badge>
-                                    </div>
-                                </AccordionTrigger>
-
-                                <AccordionContent className="pt-4 px-4 pb-6 space-y-6">
-                                    {/* Quick Info */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-                                        {/* Only show fields that have content */}
-                                        {!vacancy.openApplication && vacancy.applicationDeadline && (
-                                            <div className="flex items-center gap-2">
-                                                <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                                                <div>
-                                                    <div className="font-medium">
-                                                        {t('fields.deadline')}
-                                                    </div>
-                                                    <div className="text-muted-foreground">
-                                                        {formatDate(
-                                                            vacancy.applicationDeadline
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {vacancy.location && (vacancy.location.type || vacancy.location.cityRegion) && (
-                                            <div className="flex items-center gap-2">
-                                                <MapPin className="h-4 w-4 text-muted-foreground" />
-                                                <div>
-                                                    <div className="font-medium">
-                                                        {t('fields.location')}
-                                                    </div>
-                                                    <div className="text-muted-foreground">
-                                                        {vacancy.location.type}
-                                                        {vacancy.location.cityRegion &&
-                                                            ` • ${vacancy.location.cityRegion}`}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {vacancy.startDate && (
-                                            <div className="flex items-center gap-2">
-                                                <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                                                <div>
-                                                    <div className="font-medium">
-                                                        {t('fields.startDate')}
-                                                    </div>
-                                                    <div className="text-muted-foreground">
-                                                        {formatDate(vacancy.startDate)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {vacancy.duration && vacancy.duration.trim() && (
-                                            <div className="flex items-center gap-2">
-                                                <Clock className="h-4 w-4 text-muted-foreground" />
-                                                <div>
-                                                    <div className="font-medium">
-                                                        {t('fields.duration')}
-                                                    </div>
-                                                    <div className="text-muted-foreground">
-                                                        {vacancy.duration}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {vacancy.compensation?.details && vacancy.compensation.details.trim() && (
-                                            <div className="flex items-center gap-2">
-                                                <Euro className="h-4 w-4 text-muted-foreground" />
-                                                <div>
-                                                    <div className="font-medium">
-                                                        {t('fields.compensation')}
-                                                    </div>
-                                                    <div className="text-muted-foreground">
-                                                        {vacancy.compensation.details}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Description */}
-                                    {vacancy.description && (
-                                        <div>
-                                            <h4 className="font-medium mb-2">
-                                                {t('fields.description')}
-                                            </h4>
-                                            <div className="prose prose-sm max-w-none">
-                                                <RichText data={vacancy.description} />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Responsibilities */}
-                                    {hasContent(vacancy.responsibilities) && (
-                                        <div>
-                                            <h4 className="font-medium mb-2">
-                                                {t('fields.responsibilities')}
-                                            </h4>
-                                            <div className="prose prose-sm max-w-none">
-                                                <RichText data={vacancy.responsibilities} />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Skills & Qualities */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {vacancy.requiredSkills &&
-                                            vacancy.requiredSkills.length > 0 && (
-                                                <div>
-                                                    <h4 className="font-medium mb-2">
-                                                        {t('fields.requiredSkills')}
-                                                    </h4>
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {vacancy.requiredSkills.map(
-                                                            (skill, idx) =>
-                                                                skill && (
-                                                                    <Badge
-                                                                        key={idx}
-                                                                        variant="secondary"
-                                                                        className="text-xs"
-                                                                    >
-                                                                        {skill}
-                                                                    </Badge>
-                                                                )
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                        {hasContent(vacancy.preferredQualities) && (
-                                            <div>
-                                                <h4 className="font-medium mb-2">
-                                                    {t('fields.preferredQualities')}
-                                                </h4>
-                                                <div className="prose prose-sm max-w-none">
-                                                    <RichText data={vacancy.preferredQualities} />
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Languages */}
-                                    {vacancy.languagesRequired &&
-                                        vacancy.languagesRequired.length > 0 && (
-                                            <div>
-                                                <h4 className="font-medium mb-2">
-                                                    {t('fields.languagesRequired')}
-                                                </h4>
-                                                <div className="flex flex-wrap gap-1">
-                                                    {vacancy.languagesRequired.map(
-                                                        (lang, idx) =>
-                                                            lang && (
-                                                                <Badge
-                                                                    key={idx}
-                                                                    variant="secondary"
-                                                                    className="text-xs"
-                                                                >
-                                                                    {lang}
-                                                                </Badge>
-                                                            )
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                    {/* Accessibility Notes */}
-                                    {vacancy.accessibilityNotes && vacancy.accessibilityNotes.trim() && (
-                                        <div>
-                                            <h4 className="font-medium mb-2">
-                                                {t('fields.accessibilityNotes')}
-                                            </h4>
-                                            <p className="text-sm text-muted-foreground">
-                                                {vacancy.accessibilityNotes}
-                                            </p>
-                                        </div>
-                                    )}
-
-                                    {/* Supporting Document */}
-                                    {vacancy.document && (
-                                        <div>
-                                            <h4 className="font-medium mb-2">
-                                                {t('fields.supportingDocument')}
-                                            </h4>
-                                            <div className="rich-file">
-                                                <FileCard file={vacancy.document} downloadLabel={t('downloadDocument')} />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Values Statement */}
-                                    {hasContent(vacancy.valuesStatement) && (
-                                        <div>
-                                            <h4 className="font-medium mb-2">
-                                                {t('fields.valuesStatement')}
-                                            </h4>
-                                            <div className="prose prose-sm max-w-none">
-                                                <RichText data={vacancy.valuesStatement} />
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* How to Apply & Contact Info */}
-                                    {hasContent(vacancy.howToApply) && (
-                                        <div className="border-t pt-4">
-                                            <h4 className="font-medium mb-2">
-                                                {t('fields.howToApply')}
-                                            </h4>
-                                            <div className="prose prose-sm max-w-none">
-                                                <RichText data={vacancy.howToApply} />
-                                            </div>
-
-                                            {vacancy.contactInfo && (
-                                                <div className="mt-3">
-                                                    <h5 className="text-sm font-medium mb-1">
-                                                        {t('fields.contactInfo')}
-                                                    </h5>
-                                                    <div className="text-sm text-muted-foreground">
-                                                        {vacancy.contactInfo.name && (
-                                                            <div>{vacancy.contactInfo.name}</div>
-                                                        )}
-                                                        {vacancy.contactInfo.email && (
-                                                            <div>
-                                                                <a
-                                                                    href={`mailto:${vacancy.contactInfo.email}`}
-                                                                    className="text-primary hover:underline"
-                                                                >
-                                                                    {vacancy.contactInfo.email}
-                                                                </a>
-                                                            </div>
-                                                        )}
-                                                        {vacancy.contactInfo.phone && (
-                                                            <div>
-                                                                {vacancy.contactInfo.phone}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {/* Open to Non-Traditional Applicants */}
-                                    {vacancy.openToNontraditional && (
-                                        <div>
-                                            <Badge className="bg-blue-100 text-blue-800">
-                                                {t('fields.openToNontraditional')}
-                                            </Badge>
-                                        </div>
-                                    )}
-                                </AccordionContent>
-                            </AccordionItem>
-                        );
-                    })}
-                </Accordion>
-            </section>
-        );
-    };
+    const groups = groupVacancies(vacancies, now, { includeEmpty: true });
+    const filled = groups.filter((group) => group.items.length > 0);
+    // "Other" is a rest group. Saying there is nothing "for other" helps nobody.
+    const empty = groups.filter((group) => group.items.length === 0 && group.kind !== 'other');
 
     return (
-        <Section>
-            <div className="space-y-16">
-                {/* Page Header */}
-                <div className="text-center space-y-4">
-                    <h1 className="text-4xl font-bold">
-                        {t('title')}
-                    </h1>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        {t('description')}
-                    </p>
-                </div>
+        <>
+            <Section className="page-head">
+                <h1>{t('title')}</h1>
+                <p className="page-head__intro">{t('description')}</p>
+                {filled.length > 1 && (
+                    <nav className="chips" aria-label={t('kinds_nav')}>
+                        {filled.map((group) => (
+                            <a key={group.kind} className="chip" href={`#${group.kind}`}>
+                                {t(`types.${group.kind}.navTitle`)}
+                                <span className="chip__count" aria-hidden="true">
+                                    {group.open}
+                                </span>
+                            </a>
+                        ))}
+                    </nav>
+                )}
+            </Section>
 
-                {/* Quick Navigation */}
-                <div className="flex flex-wrap justify-center gap-4">
-                    {VACANCY_TYPES.map(({ type }) => (
-                        <a
-                            key={type}
-                            href={`#${type}`}
-                            className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors"
-                        >
-                            {t(`types.${type}.navTitle`)}
-                        </a>
+            {filled.length === 0 ? (
+                <Section background="mist" className="vacancy-none">
+                    <h2>{t('none_title')}</h2>
+                    <p>{t('none_text')}</p>
+                </Section>
+            ) : (
+                <Section className="vacancy-groups">
+                    {filled.map((group) => (
+                        <VacancyGroupList key={group.kind} group={group} locale={locale as SiteLocale} />
                     ))}
-                </div>
-
-                {/* Vacancy Sections */}
-                {VACANCY_TYPES.map(({ type }) => {
-                    const typeVacancies = filterVacanciesByType(type);
-                    return (
-                        <VacancyAccordion
-                            key={type}
-                            vacancies={typeVacancies}
-                            type={type}
-                        />
-                    );
-                })}
-            </div>
-        </Section>
+                    {empty.length > 0 && (
+                        <p className="vacancy-missing">
+                            {t('none_for')}{' '}
+                            {empty.map((group, index) => (
+                                <span key={group.kind} id={group.kind}>
+                                    {t(`types.${group.kind}.navTitle`).toLowerCase()}
+                                    {index < empty.length - 1 ? ', ' : '.'}
+                                </span>
+                            ))}
+                        </p>
+                    )}
+                </Section>
+            )}
+        </>
     );
-};
+}
+
+function VacancyGroupList({ group, locale }: { group: VacancyGroup<VacancyItem>; locale: SiteLocale }) {
+    const t = useTranslations('vacancies');
+    return (
+        <section className="vacancy-group" id={group.kind} aria-labelledby={`${group.kind}-title`}>
+            <div className="vacancy-group__head">
+                <h2 id={`${group.kind}-title`}>{t(`types.${group.kind}.title`)}</h2>
+                <p>{t('open_count', { count: group.open })}</p>
+            </div>
+            <div className="vacancy-list">
+                {group.items.map(({ vacancy, state, deadline }) => (
+                    <Vacancy key={vacancy.id} vacancy={vacancy} state={state} deadline={deadline} locale={locale} />
+                ))}
+            </div>
+        </section>
+    );
+}
+
+function Vacancy({ vacancy, state, deadline, locale }: {
+    vacancy: VacancyItem;
+    state: 'open' | 'until' | 'closed';
+    deadline?: string;
+    locale: SiteLocale;
+}) {
+    const t = useTranslations('vacancies');
+    const tMedia = useTranslations('media');
+    const date = (value: string) =>
+        new Intl.DateTimeFormat(locale === 'nl' ? 'nl-NL' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Amsterdam' }).format(new Date(value));
+    const closed = state === 'closed';
+    const place = [vacancy.location?.cityRegion?.trim(), vacancy.location?.type ? t(`place.${vacancy.location.type}`) : undefined].filter(Boolean).join(', ');
+    const skills = words(vacancy.requiredSkills);
+    const languages = words(vacancy.languagesRequired);
+    const contact = vacancy.contactInfo;
+    const hasContact = Boolean(contact?.name?.trim() || contact?.email?.trim() || contact?.phone?.trim());
+
+    // The short facts at the top. Only what the editor filled in is shown.
+    const facts: [string, string][] = [];
+    if (state === 'open') facts.push([t('fields.deadline'), t('always_open')]);
+    else if (deadline) facts.push([t('fields.deadline'), formatDay(deadline, locale)]);
+    if (vacancy.startDate) facts.push([t('fields.startDate'), date(vacancy.startDate)]);
+    if (vacancy.duration?.trim()) facts.push([t('fields.duration'), vacancy.duration.trim()]);
+    if (place) facts.push([t('fields.location'), place]);
+
+    const text = (label: string, value: unknown) =>
+        hasRichText(value) ? (
+            <section>
+                <h4>{label}</h4>
+                <RichText data={value as never} className="rich" />
+            </section>
+        ) : null;
+    const plain = (label: string, value: string | null | undefined) =>
+        value?.trim() ? (
+            <section>
+                <h4>{label}</h4>
+                <p>{value.trim()}</p>
+            </section>
+        ) : null;
+    const list = (label: string, items: string[]) =>
+        items.length > 0 ? (
+            <section>
+                <h4>{label}</h4>
+                <ul className="vacancy__words">
+                    {items.map((item) => (
+                        <li key={item}>{item}</li>
+                    ))}
+                </ul>
+            </section>
+        ) : null;
+
+    return (
+        <details className={`vacancy${closed ? ' vacancy--closed' : ''}`} id={anchor(vacancy)}>
+            <summary>
+                <span className="vacancy__name">
+                    <h3>{vacancy.title?.trim()}</h3>
+                    <span className={`vacancy__state vacancy__state--${state}`}>
+                        {state === 'until' && deadline ? t('status.until', { date: formatDay(deadline, locale) }) : t(`status.${closed ? 'closed' : 'open'}`)}
+                    </span>
+                </span>
+                {(place || vacancy.duration?.trim()) && <span className="vacancy__teaser">{[place, vacancy.duration?.trim()].filter(Boolean).join(' · ')}</span>}
+            </summary>
+
+            <div className="vacancy__body">
+                {closed && <p className="vacancy__closed-note">{t('closed_note')}</p>}
+                {facts.length > 0 && (
+                    <dl className="vacancy__facts">
+                        {facts.map(([label, value]) => (
+                            <div key={label}>
+                                <dt>{label}</dt>
+                                <dd>{value}</dd>
+                            </div>
+                        ))}
+                    </dl>
+                )}
+                {text(t('fields.description'), vacancy.description)}
+                {text(t('fields.responsibilities'), vacancy.responsibilities)}
+                {list(t('fields.requiredSkills'), skills)}
+                {text(t('fields.preferredQualities'), vacancy.preferredQualities)}
+                {list(t('fields.languagesRequired'), languages)}
+                {plain(t('fields.compensation'), vacancy.compensation?.details)}
+                {plain(t('fields.accessibilityNotes'), vacancy.accessibilityNotes)}
+                {text(t('fields.valuesStatement'), vacancy.valuesStatement)}
+                {vacancy.openToNontraditional && <p className="vacancy__welcome">{t('nontraditional')}</p>}
+                {vacancy.document && (
+                    <section>
+                        <h4>{t('fields.supportingDocument')}</h4>
+                        <FileCard file={vacancy.document} downloadLabel={tMedia('download')} />
+                    </section>
+                )}
+                {!closed && (hasRichText(vacancy.howToApply) || hasContact) && (
+                    <section className="vacancy__apply">
+                        <h4>{t('fields.howToApply')}</h4>
+                        {hasRichText(vacancy.howToApply) && <RichText data={vacancy.howToApply as never} className="rich" />}
+                        {hasContact && (
+                            <address>
+                                <span className="vacancy__contact-label">{t('fields.contactInfo')}</span>
+                                {contact?.name?.trim() && <span>{contact.name.trim()}</span>}
+                                {contact?.email?.trim() && <a href={`mailto:${contact.email.trim()}`}>{contact.email.trim()}</a>}
+                                {contact?.phone?.trim() && <a href={`tel:${contact.phone.replace(/[^\d+]/g, '')}`}>{contact.phone.trim()}</a>}
+                            </address>
+                        )}
+                    </section>
+                )}
+            </div>
+        </details>
+    );
+}

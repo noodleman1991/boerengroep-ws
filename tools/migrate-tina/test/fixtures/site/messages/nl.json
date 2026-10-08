@@ -32,5 +32,10 @@
     "legal": {
       "privacy": "Privacybeleid"
     }
+  },
+  "calendar": {
+    "eventTypes": {
+      "workshop": "Werkplaats"
+    }
   }
 }

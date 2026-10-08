@@ -10,7 +10,6 @@ const event: SiteEvent = {
   description: 'Soup and talk.',
   start: '2026-10-08T17:30:00.000Z',
   end: '2026-10-08T19:00:00.000Z',
-  type: 'talk',
   status: 'scheduled',
   place: { address: 'Forum, Wageningen' },
   image: { share: 'https://blob/share.jpg', original: 'https://blob/o.jpg', alt: 'x' },

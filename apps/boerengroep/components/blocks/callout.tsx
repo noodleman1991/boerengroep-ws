@@ -1,16 +1,19 @@
 import type { CalloutBlock } from '@sites/cms/types';
 import { ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { Section } from '../layout/section';
+
+const COLOURS = ['mist', 'leaf', 'harvest', 'sky', 'dark'];
 
 /**
- * One line that links somewhere. It is a pill in the colour the editor chose, sitting on
- * the page itself rather than on a stripe of its own, so it does not cut the page in two.
+ * One line that links somewhere, such as a call for volunteers. It is a plot of its own: a
+ * low strip in the colour the editor chose, as wide as the other coloured parts and with the
+ * same air above and below. So it belongs to neither neighbour and stands between them.
  */
 export const Callout = ({ data }: { data: CalloutBlock }) => {
     const href = data.url?.trim();
     if (!data.text) return null;
-    const look = `callout callout--${data.background ?? 'white'}`;
+    // A callout always has a colour. "White" would make it disappear on the page.
+    const colour = data.background && COLOURS.includes(data.background) ? data.background : 'mist';
     const inner = (
         <>
             <span>{data.text}</span>
@@ -18,18 +21,18 @@ export const Callout = ({ data }: { data: CalloutBlock }) => {
         </>
     );
     return (
-        <Section className="callout-band">
+        <div className={`band band--plot band--callout section-${colour}`}>
             {!href ? (
-                <p className={look}>{inner}</p>
+                <p className="callout page-width">{inner}</p>
             ) : /^https?:/i.test(href) ? (
-                <a className={look} href={href} target="_blank" rel="noopener noreferrer">
+                <a className="callout page-width" href={href} target="_blank" rel="noopener noreferrer">
                     {inner}
                 </a>
             ) : (
-                <Link className={look} href={href.startsWith('/') ? href : `/${href}`}>
+                <Link className="callout page-width" href={href.startsWith('/') ? href : `/${href}`}>
                     {inner}
                 </Link>
             )}
-        </Section>
+        </div>
     );
 };

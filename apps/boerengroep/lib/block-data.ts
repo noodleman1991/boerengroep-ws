@@ -1,4 +1,4 @@
-import { cms } from '@/lib/cms';
+import { cms, type Locale } from '@/lib/cms';
 import { toSiteEvent } from '@/lib/cms-adapters';
 import type { SiteEvent } from '@/lib/events/types';
 import { type Episode, loadPodcast } from '@/lib/podcast';
@@ -16,11 +16,11 @@ type AnyBlock = { blockType?: string | null };
 
 const has = (blocks: AnyBlock[], type: string) => blocks.some((block) => block.blockType === type);
 
-/** Loads only what the blocks on this page use. */
-export async function loadBlockData(blocks: AnyBlock[] | null | undefined): Promise<BlockData> {
+/** Loads only what the blocks on this page use, in the language of the page. */
+export async function loadBlockData(blocks: AnyBlock[] | null | undefined, locale: Locale): Promise<BlockData> {
   const list = blocks ?? [];
   const [events, podcast] = await Promise.all([
-    has(list, 'eventsCalendarPreview') ? cms.listEvents() : [],
+    has(list, 'eventsCalendarPreview') ? cms.listEvents(locale) : [],
     // Forty episodes are plenty for "the latest" and for finding chosen ones by title.
     has(list, 'podcast') ? loadPodcast() : null,
   ]);

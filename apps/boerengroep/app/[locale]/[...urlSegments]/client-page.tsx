@@ -25,14 +25,15 @@ export default function ClientPage({ page, data, subPages = [] }: ClientPageProp
   return (
     <ErrorBoundary>
       {parts.showTitle && (
-        <Section className="page-title">
+        <Section className={`page-title${parts.visualOnly ? ' page-title--centred' : ''}`}>
           <h1>{page.title}</h1>
         </Section>
       )}
       <Blocks blocks={parts.lead} data={data} />
       {parts.showBody && (
         <Section>
-          <RichText data={page.body} className="rich rich--normal" />
+          {/* A page that is only a picture, such as a poster, sits in the middle of the page. */}
+          <RichText data={page.body} className={parts.visualOnly ? 'rich rich--visual' : 'rich rich--normal'} />
         </Section>
       )}
       <Blocks blocks={parts.rest} data={data} />

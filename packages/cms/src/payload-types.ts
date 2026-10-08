@@ -70,6 +70,7 @@ export interface Config {
     pages: Page;
     events: Event;
     'past-events': PastEvent;
+    'event-kinds': EventKind;
     newsletters: Newsletter;
     vacancies: Vacancy;
     media: Media;
@@ -92,6 +93,7 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     'past-events': PastEventsSelect<false> | PastEventsSelect<true>;
+    'event-kinds': EventKindsSelect<false> | EventKindsSelect<true>;
     newsletters: NewslettersSelect<false> | NewslettersSelect<true>;
     vacancies: VacanciesSelect<false> | VacanciesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -380,14 +382,34 @@ export interface EventsCalendarPreviewBlock {
   title?: string | null;
   description?: string | null;
   mode?: ('upcoming' | 'type' | 'picked') | null;
-  eventType?:
-    ('talk' | 'workshop' | 'lecture' | 'meeting' | 'board-meeting' | 'soup-kitchen' | 'csa' | 'excursion') | null;
+  kind?: (number | null) | EventKind;
   events?: (number | Event)[] | null;
   count?: number | null;
   showMiniCalendar?: boolean | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'eventsCalendarPreview';
+}
+/**
+ * The kinds visitors can filter the calendar by, each with its own colour. Add, rename or remove kinds here and the calendar follows. A kind without events is not shown to visitors.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-kinds".
+ */
+export interface EventKind {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * For example "Workshop". Fill it in once per language with the language switch at the top right.
+   */
+  name: string;
+  /**
+   * Shown as a dot next to events of this kind and on the month view.
+   */
+  colour: 'green' | 'orange' | 'blue' | 'red' | 'purple' | 'teal' | 'brown' | 'grey';
+  legacyId?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * Everything on the calendar. Each event gets its own page that people can share and add to their own calendar.
@@ -428,9 +450,9 @@ export interface Event {
    */
   endDate?: string | null;
   /**
-   * Sets the colour on the calendar and lets visitors filter.
+   * Sets the colour on the calendar and lets visitors filter. Missing a kind? Press the plus to add one, or manage them under Calendar, Kinds of events.
    */
-  eventType: 'talk' | 'workshop' | 'lecture' | 'meeting' | 'board-meeting' | 'soup-kitchen' | 'csa' | 'excursion';
+  kind?: (number | null) | EventKind;
   location?: {
     /**
      * Name and address, as you would say it to a friend.
@@ -1342,7 +1364,7 @@ export interface Newsletter {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Ways to join in: volunteering, internships, coordinator and board positions. Each one shows on the Vacancies page under its kind. Fill in what you know and leave the rest empty.
+ * Ways to join in: volunteering, internships, coordinator and board positions. Each one shows on the Vacancies page under its kind. One vacancy holds both languages: write it in English, switch language at the top right and write it in Dutch. Until the Dutch is written, Dutch visitors read the English. Fill in what you know and leave the rest empty.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "vacancies".
@@ -1356,10 +1378,6 @@ export interface Vacancy {
    */
   slug: string;
   /**
-   * The language this is written in. Leave empty to show it to everyone.
-   */
-  language?: ('en' | 'nl') | null;
-  /**
    * Decides under which heading the vacancy shows.
    */
   opportunityType: 'volunteer' | 'internship' | 'coordinator' | 'board' | 'other';
@@ -1372,9 +1390,12 @@ export interface Vacancy {
    * For example "6 months" or "one evening a week".
    */
   duration?: string | null;
+  /**
+   * Tick this for positions people can always apply for. The vacancy then stays on the page until you remove it.
+   */
   openApplication?: boolean | null;
   /**
-   * After this date the vacancy shows as closed.
+   * The last day people can apply. The day after, the vacancy shows as closed, and three days later it leaves the page. Without a date the vacancy stays open.
    */
   applicationDeadline?: string | null;
   description?: {
@@ -1479,6 +1500,9 @@ export interface Vacancy {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Adds a line that says so to the vacancy.
+   */
   openToNontraditional?: boolean | null;
   legacyId?: string | null;
   updatedAt: string;
@@ -1528,6 +1552,10 @@ export interface SiteSetting {
      * Shown in the dark footer. Use a version with light lettering and a transparent background. Leave empty to use the standard light version.
      */
     logoOnDark?: (number | null) | Media;
+    /**
+     * The logo without its lettering, with a transparent background. It is shown large as decoration, for example at the top of a page without a picture. Leave empty to use the standard one.
+     */
+    symbol?: (number | null) | Media;
     /**
      * Shown in the footer. Leave a field empty to hide it.
      */
@@ -1878,6 +1906,10 @@ export interface PayloadLockedDocument {
         value: number | PastEvent;
       } | null)
     | ({
+        relationTo: 'event-kinds';
+        value: number | EventKind;
+      } | null)
+    | ({
         relationTo: 'newsletters';
         value: number | Newsletter;
       } | null)
@@ -2046,7 +2078,7 @@ export interface EventsCalendarPreviewBlockSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   mode?: T;
-  eventType?: T;
+  kind?: T;
   events?: T;
   count?: T;
   showMiniCalendar?: T;
@@ -2309,7 +2341,7 @@ export interface EventsSelect<T extends boolean = true> {
   description?: T;
   startDate?: T;
   endDate?: T;
-  eventType?: T;
+  kind?: T;
   location?:
     | T
     | {
@@ -2380,6 +2412,18 @@ export interface PastEventsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-kinds_select".
+ */
+export interface EventKindsSelect<T extends boolean = true> {
+  tenant?: T;
+  name?: T;
+  colour?: T;
+  legacyId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "newsletters_select".
  */
 export interface NewslettersSelect<T extends boolean = true> {
@@ -2428,7 +2472,6 @@ export interface VacanciesSelect<T extends boolean = true> {
   tenant?: T;
   title?: T;
   slug?: T;
-  language?: T;
   opportunityType?: T;
   location?:
     | T
@@ -2723,6 +2766,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         tagline?: T;
         logo?: T;
         logoOnDark?: T;
+        symbol?: T;
         contact?:
           | T
           | {

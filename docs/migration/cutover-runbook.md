@@ -154,6 +154,14 @@ started working, list their changes from the admin's version history before deci
   text fall back to the site-wide "Wageningen's peasant association | Celebrating 50 years!",
   which is set in `apps/boerengroep/app/[locale]/layout.tsx`. Filling in the one-line
   introduction under Site settings, General replaces that fallback.
+- Three vacancies hold their English and their Dutch in one text, for example "Secretary /
+  Secretaris". A vacancy is now one post in two languages: move the Dutch part of each to the
+  Dutch version (language switch at the top right of the vacancy).
+- The kinds of events were made from the old fixed list. Rename, recolour or merge them under
+  Calendar, Kinds of events. "Talk" and "Lecture" are separate kinds, as they were.
+- If the organisation has its symbol (the logo without lettering) as original artwork, upload
+  it under Site settings, General. Until then the site uses a redrawn one, see
+  `tools/brand-symbol/README.md`.
 - Submit `<site>/sitemap.xml` in Google Search Console. The old site had no sitemap.
 - Tell people about the calendar address `<site>/calendar.ics`, or simply point them at the
   "Subscribe to our calendar" button on the calendar page.
@@ -178,7 +186,7 @@ started working, list their changes from the admin's version history before deci
   are built from `NEXT_PUBLIC_SITE_URL`. A wrong value there shows up as links to the wrong domain.
 - **Emails from forms** are only sent when an editor adds one on a form, and they go out through
   the same mail settings as password resets.
-- **The database has one migration**, `20261008_114307_initial`. From the first deployment on,
+- **The database has one migration**, `20261008_142839_initial`. From the first deployment on,
   every later change to the content model is a new, additive migration next to it.
 - **Browser tests are not part of CI.** CI runs lint, typecheck, the unit tests, the database
   tests and the migration check. The 102 browser tests (behaviour, twelve screen widths,

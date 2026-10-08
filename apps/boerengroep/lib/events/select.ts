@@ -4,9 +4,6 @@ import { dayKey, isAllDay, monthKey } from './time';
 
 type Timed = { start: string; end?: string | null };
 
-/** Kinds of events in the order the filter shows them. Kinds added later come after these. */
-export const EVENT_TYPE_ORDER = ['talk', 'lecture', 'workshop', 'excursion', 'soup-kitchen', 'csa', 'meeting', 'board-meeting'];
-
 const ms = (value: string) => new Date(value).getTime();
 
 /** An end is only believed when it lies after the start. Old content has a few that do not. */
@@ -70,16 +67,28 @@ export function eventsByDay<E extends Timed>(events: E[]): Map<string, E[]> {
   return days;
 }
 
-export function typesIn(events: { type: string }[]): string[] {
-  const present = new Set(events.map((event) => event.type));
-  const known = EVENT_TYPE_ORDER.filter((type) => present.has(type));
-  const other = [...present].filter((type) => !EVENT_TYPE_ORDER.includes(type)).sort();
-  return [...known, ...other];
+type Kind = { id: string; name: string; colour: string };
+
+/**
+ * The kinds the given events have, each once, by name in the reader's language, with the
+ * number of events. The calendar's filter is built from this, so it follows what editors
+ * make in the admin panel: a new kind appears with its first event, and an unused one is gone.
+ */
+export function kindsIn(events: { kind?: Kind }[], locale: string): (Kind & { count: number })[] {
+  const found = new Map<string, Kind & { count: number }>();
+  for (const { kind } of events) {
+    if (!kind) continue;
+    const seen = found.get(kind.id);
+    if (seen) seen.count++;
+    else found.set(kind.id, { ...kind, count: 1 });
+  }
+  return [...found.values()].sort((a, b) => a.name.localeCompare(b.name, locale));
 }
 
 export type PickOptions = {
   mode: 'upcoming' | 'type' | 'picked';
-  eventType?: string | null;
+  /** The id of the kind to stay with, for the mode "type". */
+  kind?: number | string | null;
   picked?: (number | string)[];
   count: number;
   /** Show the most recent events when nothing is coming, so a page is never left with a hole. */
@@ -87,7 +96,7 @@ export type PickOptions = {
 };
 
 /** The events for a band on a page, as the editor set it up. */
-export function pickEvents<E extends Timed & { id: number | string; type: string; featured?: boolean }>(
+export function pickEvents<E extends Timed & { id: number | string; kind?: { id: string }; featured?: boolean }>(
   events: E[],
   options: PickOptions,
   now: Date,
@@ -96,7 +105,8 @@ export function pickEvents<E extends Timed & { id: number | string; type: string
     const byId = new Map(events.map((event) => [String(event.id), event]));
     return (options.picked ?? []).flatMap((id) => byId.get(String(id)) ?? []).slice(0, options.count);
   }
-  const pool = options.mode === 'type' && options.eventType ? events.filter((event) => event.type === options.eventType) : events;
+  const kind = options.mode === 'type' && options.kind != null ? String(options.kind) : null;
+  const pool = kind ? events.filter((event) => event.kind?.id === kind) : events;
   const { upcoming, past } = splitEvents(pool, now);
   if (upcoming.length === 0) return options.orRecent ? past.slice(0, options.count) : [];
   // Spotlighted events lead. The sort is stable, so the rest stay in date order.

@@ -20,7 +20,7 @@ export async function CalendarSections({ locale }: { locale: Locale }) {
     for (const section of SECTIONS) {
         try {
             const page = await cms.getPageByEnglishPath(section.path, locale);
-            if (page) sections.push({ id: section.id, page, data: await loadBlockData(page.blocks) });
+            if (page) sections.push({ id: section.id, page, data: await loadBlockData(page.blocks, locale) });
         } catch (error) {
             console.error(`Error loading calendar section ${section.id}:`, error);
         }
@@ -29,7 +29,7 @@ export async function CalendarSections({ locale }: { locale: Locale }) {
     const t = await getTranslations({ locale, namespace: 'calendar' });
 
     return (
-        <div className="band section-mist">
+        <div className="band band--plot section-mist">
             <div className="page-width calendar-regulars">
                 <h2>{t('sections_title')}</h2>
                 <div className="calendar-regulars__grid">

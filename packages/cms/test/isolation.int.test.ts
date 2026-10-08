@@ -31,7 +31,7 @@ describe('tenant isolation for content', () => {
     })
     bgEvent = await payload.create({
       collection: 'events',
-      data: { title: 'BG event', slug: 'bg-event', startDate: '2026-01-01T10:00:00.000Z', eventType: 'talk', tenant: bg } as never,
+      data: { title: 'BG event', slug: 'bg-event', startDate: '2026-01-01T10:00:00.000Z', tenant: bg } as never,
     })
     await payload.create({
       collection: 'pages',

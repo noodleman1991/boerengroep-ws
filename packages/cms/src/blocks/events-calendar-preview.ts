@@ -1,5 +1,5 @@
 import type { Block } from 'payload'
-import { backgroundField, EVENT_TYPE_OPTIONS } from '../fields/shared'
+import { backgroundField } from '../fields/shared'
 
 type Sibling = { mode?: string } | undefined
 
@@ -31,10 +31,10 @@ export const EventsCalendarPreview: Block = {
       admin: { layout: 'horizontal' },
     },
     {
-      name: 'eventType',
-      type: 'select',
+      name: 'kind',
+      type: 'relationship',
+      relationTo: 'event-kinds',
       label: 'Kind of event',
-      options: EVENT_TYPE_OPTIONS,
       admin: { condition: (_d, s: Sibling) => s?.mode === 'type' },
     },
     {

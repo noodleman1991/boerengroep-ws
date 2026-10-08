@@ -11,6 +11,13 @@ function hasMainHeading(data: unknown): boolean {
   return walk((data as { root?: Node } | null | undefined)?.root);
 }
 
+/** True when a text holds pictures and nothing else: a poster, a map, a scanned flyer. */
+function isOnlyPictures(data: unknown): boolean {
+  const nodes = (data as { root?: Node } | null | undefined)?.root?.children ?? [];
+  const meaningful = nodes.filter((node) => node.type === 'upload' || hasRichText({ root: { children: [node] } }));
+  return meaningful.length > 0 && meaningful.every((node) => node.type === 'upload');
+}
+
 /**
  * How a page is put together: the opening block first, then the page's own text, then the
  * other blocks. A page without any main heading gets its title as one, so every page has
@@ -31,5 +38,7 @@ export function pageParts(page: Pick<Page, 'title' | 'body' | 'blocks'>) {
     showTitle: !headed && Boolean(page.title),
     /** Nothing to show. Such a page lists its sub-pages. */
     empty: blocks.length === 0 && !showBody,
+    /** The whole page is a picture. It is shown in the middle, under a centred title. */
+    visualOnly: blocks.length === 0 && showBody && isOnlyPictures(page.body),
   };
 }

@@ -2,7 +2,7 @@ import type { CollectionBeforeValidateHook, CollectionConfig } from 'payload'
 import { anyone, authenticated } from '../access'
 import { relId } from '../access/roles'
 import { eventSlug } from '../fields/event-slug'
-import { EVENT_TYPE_OPTIONS, languageField, legacyIdField } from '../fields/shared'
+import { languageField, legacyIdField } from '../fields/shared'
 import { uniquePerTenant } from '../hooks/unique-per-tenant'
 import { rowLabel } from '../fields/row-label'
 
@@ -44,7 +44,7 @@ export const Events: CollectionConfig = {
   labels: { singular: 'Event', plural: 'Events' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'startDate', 'eventType', 'status'],
+    defaultColumns: ['title', 'startDate', 'kind', 'status'],
     group: 'Calendar',
     description:
       'Everything on the calendar. Each event gets its own page that people can share and add to their own calendar.',
@@ -112,12 +112,14 @@ export const Events: CollectionConfig = {
       admin: { date: { pickerAppearance: 'dayAndTime' }, description: 'Optional. Without it the event is shown as two hours long in people\'s calendars.' },
     },
     {
-      name: 'eventType',
-      type: 'select',
-      required: true,
+      name: 'kind',
+      type: 'relationship',
+      relationTo: 'event-kinds',
       label: 'Kind of event',
-      options: EVENT_TYPE_OPTIONS,
-      admin: { description: 'Sets the colour on the calendar and lets visitors filter.' },
+      admin: {
+        description:
+          'Sets the colour on the calendar and lets visitors filter. Missing a kind? Press the plus to add one, or manage them under Calendar, Kinds of events.',
+      },
     },
     {
       name: 'location',

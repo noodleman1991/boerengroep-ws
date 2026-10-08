@@ -9,7 +9,6 @@ const event: SiteEvent = {
   description: 'Soup and talk.',
   start: '2026-10-08T17:30:00.000Z',
   end: null,
-  type: 'talk',
   status: 'full',
   statusNote: 'Waiting list',
   place: { address: 'Forum, Wageningen', callLink: 'https://meet.example/x' },

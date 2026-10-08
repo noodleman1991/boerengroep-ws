@@ -161,14 +161,13 @@
     },
     "filter": {
       "label": "Soort activiteit",
-      "all": "Alles"
+      "all": "Alles",
+      "kind": "{name}, {count, plural, one {# evenement} other {# evenementen}}"
     },
     "empty": {
       "upcoming_title": "Er staat nu niets gepland",
       "upcoming_text": "Er komen vaak nieuwe activiteiten bij. Abonneer je op de agenda of de nieuwsbrief, dan hoor je het als eerste.",
-      "filtered": "Hier staat niets van deze soort. Kies een andere soort, of toon alles.",
-      "past": "Nog geen activiteiten geweest.",
-      "day": "Niets op deze dag."
+      "past": "Nog geen activiteiten geweest."
     },
     "month": {
       "previous": "Vorige maand",
@@ -176,8 +175,9 @@
       "today": "Deze maand",
       "more": "nog {count}",
       "count": "{count, plural, one {# activiteit} other {# activiteiten}}",
-      "on_day": "Op {date}",
-      "pick_day": "Kies een dag om te zien wat er is."
+      "nothing": "Niets gepland in {month}",
+      "go_next": "Ga naar {month}",
+      "go_last": "Terug naar {month}"
     },
     "status": {
       "full": "Vol",
@@ -234,17 +234,7 @@
       "all": "Bekijk de hele agenda",
       "empty": "Er staat nu niets gepland. Er komen vaak nieuwe activiteiten bij."
     },
-    "sections_title": "Elke week en elke maand",
-    "eventTypes": {
-      "talk": "Lezing",
-      "workshop": "Workshop",
-      "lecture": "College",
-      "meeting": "Vergadering",
-      "board-meeting": "Bestuursvergadering",
-      "soup-kitchen": "Open Pot",
-      "csa": "CSA",
-      "excursion": "Excursie"
-    }
+    "sections_title": "Elke week en elke maand"
   },
   "footer": {
     "contact": {
@@ -322,16 +312,6 @@
   "vacancies": {
     "title": "Kansen",
     "description": "Ontdek zinvolle kansen om bij te dragen aan onze missie via vrijwilligerswerk, stages en werkgelegenheid.",
-    "opportunity": "kans",
-    "opportunities": "kansen",
-    "untitledPosition": "Positie zonder titel",
-    "organizationNotSpecified": "Organisatie niet gespecificeerd",
-    "downloadDocument": "Document downloaden",
-    "status": {
-      "open": "Open",
-      "openNoDeadline": "Open",
-      "closed": "Gesloten"
-    },
     "types": {
       "volunteer": {
         "title": "Vrijwilligersmogelijkheden",
@@ -359,23 +339,40 @@
         "noOpportunities": "Momenteel geen andere kansen beschikbaar."
       }
     },
+    "kinds_nav": "Soorten functies",
+    "open_count": "{count, plural, =0 {nu niets open} one {# open} other {# open}}",
+    "none_title": "Op dit moment niets open",
+    "none_text": "Er zijn nu geen vacatures. Kom later terug, of schrijf ons: we horen graag van mensen die mee willen doen.",
+    "none_for": "Nu niets voor",
+    "closed_note": "Je kunt niet meer reageren op deze vacature.",
+    "always_open": "Altijd open",
+    "nontraditional": "Ook open voor mensen zonder de gebruikelijke achtergrond.",
+    "status": {
+      "open": "Open",
+      "until": "Reageren tot en met {date}",
+      "closed": "Gesloten"
+    },
+    "place": {
+      "remote": "Vanuit huis",
+      "in-person": "Op locatie",
+      "hybrid": "Deels vanuit huis"
+    },
     "fields": {
-      "deadline": "Deadline",
-      "location": "Locatie",
-      "startDate": "Startdatum",
-      "duration": "Duur",
-      "compensation": "Vergoeding",
-      "description": "Beschrijving",
-      "responsibilities": "Verantwoordelijkheden",
-      "requiredSkills": "Vereiste Vaardigheden",
-      "preferredQualities": "Gewenste Eigenschappen",
-      "languagesRequired": "Vereiste Talen",
-      "accessibilityNotes": "Toegankelijkheidsnotities",
-      "supportingDocument": "Bestanden",
-      "valuesStatement": "Waarden & Engagement",
-      "howToApply": "Hoe solliciteren",
-      "contactInfo": "Contactinformatie",
-      "openToNontraditional": "Open voor niet-traditionele kandidaten"
+      "deadline": "Reageren tot en met",
+      "startDate": "Start",
+      "duration": "Hoe lang",
+      "location": "Waar",
+      "compensation": "Wat je krijgt",
+      "description": "Over de functie",
+      "responsibilities": "Wat je gaat doen",
+      "requiredSkills": "Wat je moet kunnen",
+      "preferredQualities": "Mooi meegenomen",
+      "languagesRequired": "Talen",
+      "accessibilityNotes": "Toegankelijkheid",
+      "valuesStatement": "Waar we voor staan",
+      "howToApply": "Zo reageer je",
+      "contactInfo": "Contactpersoon",
+      "supportingDocument": "Functieomschrijving"
     }
   },
   "podcast": {

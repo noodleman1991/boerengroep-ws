@@ -7,6 +7,7 @@ export const PAGE_KINDS: { name: string; path: string }[] = [
   { name: 'content page with an opening picture', path: '/en/about-us/what-is-boerengroep' },
   { name: 'content page with only its own text', path: '/en/contact' },
   { name: 'page that lists its sub-pages', path: '/en/activities' },
+  { name: 'photo page', path: '/en/library/media' },
   { name: 'calendar', path: '/en/activities/calendar' },
   { name: 'calendar, month view', path: '/en/activities/calendar?view=month' },
   { name: 'calendar, past', path: '/en/activities/calendar?view=past' },

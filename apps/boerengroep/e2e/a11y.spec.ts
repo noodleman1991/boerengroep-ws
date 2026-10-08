@@ -83,6 +83,23 @@ test.describe('with things open', () => {
     expect(await problems(page)).toEqual([])
   })
 
+  test('an open vacancy and a chosen day in the month', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await page.goto('/en/vacancies')
+    const vacancy = page.locator('details.vacancy').first()
+    if (await vacancy.count()) {
+      await vacancy.locator('summary').click()
+      await expect(vacancy.locator('.vacancy__body')).toBeVisible()
+      expect(await problems(page)).toEqual([])
+    }
+    await page.goto('/en/activities/calendar?view=month')
+    const day = page.locator('button.month__tile').first()
+    if (await day.count()) {
+      await day.click()
+      expect(await problems(page)).toEqual([])
+    }
+  })
+
   test('the newsletter box with an error and after signing up', async ({ page }) => {
     await page.route('**/api/newsletter/subscribe', (route) => route.fulfill({ json: { status: 'pending' } }))
     await page.goto('/en')
@@ -207,9 +224,14 @@ test('with less motion asked for, menus still open next to their button', async 
   await button.click()
   const menu = page.locator('.site-menu')
   await expect(menu).toBeVisible()
+  // Directly under the button, not in a corner of the screen. The menu is placed a moment after it appears.
+  await expect
+    .poll(async () => {
+      const [from, to] = [await button.boundingBox(), await menu.boundingBox()]
+      return Math.abs(to!.y - (from!.y + from!.height))
+    })
+    .toBeLessThan(24)
   const [from, to] = [await button.boundingBox(), await menu.boundingBox()]
-  // Directly under the button, not in a corner of the screen.
-  expect(Math.abs(to!.y - (from!.y + from!.height))).toBeLessThan(24)
   expect(to!.x + to!.width).toBeGreaterThan(from!.x)
   await context.close()
 })

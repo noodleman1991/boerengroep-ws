@@ -2,14 +2,12 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
-import { Link } from '@/i18n/navigation';
-import { eventPath } from '@/lib/events/ics-site';
 import { eventsByDay } from '@/lib/events/select';
-import { dayKey, formatDay, formatTime, isAllDay, monthGrid, monthKey, monthLabel, shiftMonth, type SiteLocale } from '@/lib/events/time';
+import { dayKey, formatDay, monthGrid, monthKey, monthLabel, shiftMonth, type SiteLocale } from '@/lib/events/time';
 import type { SiteEvent } from '@/lib/events/types';
 import { EventRow } from './event-row';
 
-const CHIPS_PER_DAY = 3;
+const TITLES_PER_DAY = 2;
 
 /** Monday to Sunday, short, in the reader's language. 5 January 2026 is a Monday. */
 function weekdayNames(locale: SiteLocale): { short: string; long: string }[] {
@@ -21,33 +19,51 @@ function weekdayNames(locale: SiteLocale): { short: string; long: string }[] {
     });
 }
 
+/** The day to open a month on: today when something is on, else the next day with something, else the first. */
+function dayToOpen(month: string, days: string[], today: string): string | null {
+    const inMonth = days.filter((day) => day.startsWith(month));
+    if (inMonth.length === 0) return null;
+    return inMonth.find((day) => day >= today) ?? inMonth[0]!;
+}
+
 /**
- * A month as a grid. On a wide screen each day lists its events. On a phone a day shows
- * dots, and choosing the day lists its events underneath.
+ * A month as a field of days. A day with events is a tile in the colour of what is on, and
+ * choosing it shows that day's events beside the month (under it on a small screen). The month
+ * opens on the next day that has something, so the panel is never empty without reason.
  */
 export function MonthGrid({ events, now }: { events: SiteEvent[]; now: Date }) {
     const t = useTranslations('calendar');
     const locale = useLocale() as SiteLocale;
     const today = dayKey(now);
     const byDay = useMemo(() => eventsByDay(events), [events]);
+    const days = useMemo(() => [...byDay.keys()].sort(), [byDay]);
     const [month, setMonth] = useState(() => monthKey(now));
-    const [chosen, setChosen] = useState<string | null>(() => (byDay.has(today) ? today : null));
+    // What the visitor chose. Until then, and after a change of month or filter, the month opens itself.
+    const [picked, setPicked] = useState<string | null>(null);
+    const chosen = picked && byDay.has(picked) && monthGrid(month).flat().includes(picked) ? picked : dayToOpen(month, days, today);
 
     const weeks = monthGrid(month);
     const names = weekdayNames(locale);
     const chosenEvents = chosen ? (byDay.get(chosen) ?? []) : [];
+    const inMonth = days.filter((day) => day.startsWith(month)).reduce((sum, day) => sum + (byDay.get(day)?.filter((event) => dayKey(event.start) === day).length ?? 0), 0);
+    // Where to send someone who lands in an empty month.
+    const nextBusy = days.find((day) => day.slice(0, 7) > month)?.slice(0, 7);
+    const lastBusy = [...days].reverse().find((day) => day.slice(0, 7) < month)?.slice(0, 7);
 
     const go = (to: string) => {
         setMonth(to);
-        setChosen(to === monthKey(now) && byDay.has(today) ? today : null);
+        setPicked(null);
     };
 
     return (
         <div className="month">
             <div className="month__bar">
-                <h2 className="month__title" aria-live="polite">
-                    {monthLabel(month, locale)}
-                </h2>
+                <div>
+                    <h2 className="month__title" aria-live="polite">
+                        {monthLabel(month, locale)}
+                    </h2>
+                    <p className="month__summary">{t('month.count', { count: inMonth })}</p>
+                </div>
                 <div className="month__nav">
                     {month !== monthKey(now) && (
                         <button type="button" className="btn-quiet month__today" onClick={() => go(monthKey(now))}>
@@ -63,96 +79,105 @@ export function MonthGrid({ events, now }: { events: SiteEvent[]; now: Date }) {
                 </div>
             </div>
 
-            <div className="month__grid" role="grid" aria-label={monthLabel(month, locale)}>
-                <div className="month__week month__week--names" role="row">
-                    {names.map((name) => (
-                        <div key={name.long} className="month__name" role="columnheader" aria-label={name.long}>
-                            {name.short}
-                        </div>
-                    ))}
-                </div>
-                {weeks.map((week) => (
-                    <div key={week[0]} className="month__week" role="row">
-                        {week.map((day) => {
-                            const list = byDay.get(day) ?? [];
-                            const outside = !day.startsWith(month);
-                            const number = Number(day.slice(8));
-                            const classes = ['month__day'];
-                            if (outside) classes.push('month__day--outside');
-                            if (day === today) classes.push('month__day--today');
-                            if (day === chosen) classes.push('month__day--chosen');
-                            return (
-                                <div key={day} className={classes.join(' ')} role="gridcell">
-                                    {list.length > 0 ? (
-                                        <button
-                                            type="button"
-                                            className="month__number"
-                                            aria-pressed={day === chosen}
-                                            aria-label={`${formatDay(day, locale)}, ${t('month.count', { count: list.length })}`}
-                                            onClick={() => setChosen(day === chosen ? null : day)}
-                                        >
-                                            <span>{number}</span>
-                                            <span className="month__dots" aria-hidden="true">
-                                                {list.slice(0, 3).map((event) => (
-                                                    <i key={event.id} data-event-type={event.type} />
-                                                ))}
-                                            </span>
-                                        </button>
-                                    ) : (
-                                        <span className="month__number">
-                                            <span aria-hidden="true">{number}</span>
-                                            <span className="sr-only">{formatDay(day, locale)}</span>
-                                        </span>
-                                    )}
-                                    {list.length > 0 && (
-                                        <ul className="month__chips">
-                                            {list.slice(0, CHIPS_PER_DAY).map((event) => (
-                                                <li key={event.id}>
-                                                    <Link
-                                                        href={eventPath(event.slug)}
-                                                        className={`month__chip${event.status === 'cancelled' || event.status === 'postponed' ? ' month__chip--off' : ''}`}
-                                                        data-event-type={event.type}
-                                                    >
-                                                        {!isAllDay(event.start, event.end) && dayKey(event.start) === day && (
-                                                            <span className="month__chip-time">{formatTime(event.start, locale)}</span>
-                                                        )}
-                                                        <span className="month__chip-title">{event.title}</span>
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                            {list.length > CHIPS_PER_DAY && (
-                                                <li>
-                                                    <button type="button" className="month__more" onClick={() => setChosen(day)}>
-                                                        {t('month.more', { count: list.length - CHIPS_PER_DAY })}
-                                                    </button>
-                                                </li>
+            <div className="month__layout">
+                <table className="month__table">
+                    <caption className="sr-only">{monthLabel(month, locale)}</caption>
+                    <thead>
+                        <tr>
+                            {names.map((name) => (
+                                <th key={name.long} scope="col" abbr={name.long}>
+                                    <span aria-hidden="true">{name.short}</span>
+                                    <span className="sr-only">{name.long}</span>
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {weeks.map((week) => (
+                            <tr key={week[0]}>
+                                {week.map((day) => {
+                                    const list = byDay.get(day) ?? [];
+                                    const number = Number(day.slice(8));
+                                    const classes = ['month__tile'];
+                                    if (!day.startsWith(month)) classes.push('month__tile--outside');
+                                    if (day < today) classes.push('month__tile--past');
+                                    if (day === today) classes.push('month__tile--today');
+                                    return (
+                                        <td key={day}>
+                                            {list.length > 0 ? (
+                                                <button
+                                                    type="button"
+                                                    className={classes.join(' ')}
+                                                    data-kind-colour={list[0]!.kind?.colour ?? 'grey'}
+                                                    aria-pressed={day === chosen}
+                                                    aria-label={`${formatDay(day, locale)}, ${t('month.count', { count: list.length })}`}
+                                                    onClick={() => setPicked(day)}
+                                                >
+                                                    <span className="month__number">{number}</span>
+                                                    <span className="month__titles" aria-hidden="true">
+                                                        {list.slice(0, TITLES_PER_DAY).map((event) => (
+                                                            <span
+                                                                key={event.id}
+                                                                className={event.status === 'cancelled' || event.status === 'postponed' ? 'month__off' : undefined}
+                                                                data-kind-colour={event.kind?.colour ?? 'grey'}
+                                                            >
+                                                                {event.title}
+                                                            </span>
+                                                        ))}
+                                                        {list.length > TITLES_PER_DAY && <span className="month__more">{t('month.more', { count: list.length - TITLES_PER_DAY })}</span>}
+                                                    </span>
+                                                    <span className="month__dots" aria-hidden="true">
+                                                        {list.slice(0, 3).map((event) => (
+                                                            <i key={event.id} data-kind-colour={event.kind?.colour ?? 'grey'} />
+                                                        ))}
+                                                    </span>
+                                                </button>
+                                            ) : (
+                                                <span className={`${classes.join(' ')} month__tile--free`}>
+                                                    <span className="month__number" aria-hidden="true">
+                                                        {number}
+                                                    </span>
+                                                    <span className="sr-only">{formatDay(day, locale)}</span>
+                                                </span>
                                             )}
-                                        </ul>
-                                    )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                ))}
-            </div>
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
 
-            <div className="month__chosen" aria-live="polite">
-                {chosen ? (
-                    <>
-                        <h3 className="month__chosen-title">{t('month.on_day', { date: formatDay(chosen, locale) })}</h3>
-                        {chosenEvents.length > 0 ? (
+                <div className="month__day" aria-live="polite">
+                    {chosen ? (
+                        <>
+                            <h3 className="month__day-title">{formatDay(chosen, locale)}</h3>
                             <div className="event-list">
                                 {chosenEvents.map((event) => (
-                                    <EventRow key={event.id} event={event} headingLevel="h4" />
+                                    <EventRow key={event.id} event={event} headingLevel="h4" compact />
                                 ))}
                             </div>
-                        ) : (
-                            <p>{t('empty.day')}</p>
-                        )}
-                    </>
-                ) : (
-                    <p className="month__hint">{t('month.pick_day')}</p>
-                )}
+                        </>
+                    ) : (
+                        <>
+                            <h3 className="month__day-title">{t('month.nothing', { month: monthLabel(month, locale) })}</h3>
+                            {(nextBusy || lastBusy) && (
+                                <div className="month__jump">
+                                    {nextBusy && (
+                                        <button type="button" className="btn-leaf" onClick={() => go(nextBusy)}>
+                                            {t('month.go_next', { month: monthLabel(nextBusy, locale) })}
+                                        </button>
+                                    )}
+                                    {lastBusy && (
+                                        <button type="button" className="btn-quiet" onClick={() => go(lastBusy)}>
+                                            {t('month.go_last', { month: monthLabel(lastBusy, locale) })}
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );

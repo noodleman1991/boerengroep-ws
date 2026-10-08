@@ -1,18 +1,6 @@
 import type { Field } from 'payload'
 import { rowLabel } from './row-label'
 
-/** Kinds of events. The value is stored, the label is what editors and visitors read. */
-export const EVENT_TYPE_OPTIONS = [
-  { label: 'Talk', value: 'talk' },
-  { label: 'Workshop', value: 'workshop' },
-  { label: 'Lecture', value: 'lecture' },
-  { label: 'Meeting', value: 'meeting' },
-  { label: 'Board Meeting', value: 'board-meeting' },
-  { label: 'Open Pot', value: 'soup-kitchen' },
-  { label: 'CSA', value: 'csa' },
-  { label: 'Excursion', value: 'excursion' },
-]
-
 /** Background of a section. Presets keep the site consistent and readable. */
 export const BACKGROUND_OPTIONS = [
   { label: 'White', value: 'white' },

@@ -1,43 +1,31 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { cms } from '@/lib/cms';
-import { asConnection, toVacancyNode } from '@/lib/cms-adapters';
-import { VacanciesPage } from '@/components/vacancies-page';
 import Layout from '@/components/layout/layout';
+import { VacanciesPage } from '@/components/vacancies-page';
+import { cms, type Locale } from '@/lib/cms';
+import { toVacancyNode } from '@/lib/cms-adapters';
+import { siteMeta } from '@/lib/site-meta';
 
-interface VacanciesPageProps {
-    params: Promise<{ locale: string }>;
-}
+export const revalidate = 3600;
 
-export async function generateMetadata({ params }: VacanciesPageProps): Promise<Metadata> {
+type Props = { params: Promise<{ locale: Locale }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { locale } = await params;
     setRequestLocale(locale);
     const t = await getTranslations({ locale, namespace: 'vacancies' });
-
-    return {
-        title: `${t('title')} - Stichting Boerengroep`,
-        description: t('description'),
-    };
+    return siteMeta(locale, { title: t('title'), description: t('description'), path: '/vacancies' });
 }
 
-async function getVacanciesData() {
-    try {
-        return { vacancies: asConnection((await cms.listVacancies()).map(toVacancyNode)) };
-    } catch (error) {
-        console.error('Error fetching vacancies data:', error);
-        return { vacancies: { edges: [] } };
-    }
-}
-
-export default async function VacanciesRoute({ params }: VacanciesPageProps) {
+/** The vacancies in the reader's language. What is not written in Dutch yet is shown in English. */
+export default async function VacanciesRoute({ params }: Props) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const { vacancies } = await getVacanciesData();
-
+    const vacancies = (await cms.listVacancies(locale)).map(toVacancyNode);
 
     return (
         <Layout>
-            <VacanciesPage vacancies={vacancies} locale={locale} />
+            <VacanciesPage vacancies={vacancies} locale={locale} renderedAt={new Date().toISOString()} />
         </Layout>
     );
 }

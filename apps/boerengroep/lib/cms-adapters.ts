@@ -11,7 +11,7 @@ import type {
   Vacancy,
 } from '@sites/cms/types'
 import { type LinkValue, resolveLink } from '@sites/cms/links'
-import type { EventStatus, SiteEvent } from './events/types'
+import type { EventKind, EventStatus, SiteEvent } from './events/types'
 import { fileInfo } from './files'
 import { toPhotos } from './photos'
 
@@ -50,6 +50,13 @@ function person(
 
 const text = (value: string | null | undefined) => value?.trim() || undefined
 
+/** The kind of an event, when it was loaded along with the event. */
+function eventKind(value: Event['kind']): EventKind | undefined {
+  const kind = populated<{ id: number | string; name?: string | null; colour?: string | null }>(value as never)
+  const name = kind?.name?.trim()
+  return kind && name ? { id: String(kind.id), name, colour: kind.colour ?? 'grey' } : undefined
+}
+
 /** An event in the one shape every part of the site reads. */
 export function toSiteEvent(e: Event): SiteEvent {
   const picture = populated<Media>(e.image)
@@ -62,7 +69,7 @@ export function toSiteEvent(e: Event): SiteEvent {
     description: e.description?.trim() ?? '',
     start: e.startDate,
     end,
-    type: e.eventType,
+    kind: eventKind(e.kind),
     status: (e.status ?? 'scheduled') as EventStatus,
     statusNote: text(e.statusNote),
     language: e.language ?? undefined,
@@ -186,6 +193,7 @@ export function toGlobalSettings(s: SiteSetting | null) {
     tagline: general?.tagline ?? undefined,
     logo: mediaUrl(general?.logo),
     logoOnDark: mediaUrl(general?.logoOnDark),
+    symbol: mediaUrl(general?.symbol),
     contact: {
       addressLines: (general?.contact?.address ?? '')
         .split('\n')

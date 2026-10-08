@@ -17,6 +17,15 @@ export type EventImage = {
   alt: string;
 };
 
+/** A kind of event, as an editor made it in the admin panel. */
+export type EventKind = {
+  id: string;
+  /** In the reader's language. */
+  name: string;
+  /** One of the named colours an editor can choose. */
+  colour: string;
+};
+
 /** An event as the site shows it. */
 export type SiteEvent = {
   id: number | string;
@@ -26,7 +35,8 @@ export type SiteEvent = {
   start: string;
   /** Only set when it lies after the start. */
   end: string | null;
-  type: string;
+  /** Missing when the editor chose none, or when the kind was removed later. */
+  kind?: EventKind;
   status: EventStatus;
   statusNote?: string;
   language?: string;

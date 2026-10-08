@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { DateBlock, StatusBadge, TypeTag } from '@/components/events/event-bits';
+import { DateBlock, StatusBadge, KindTag } from '@/components/events/event-bits';
 import { EventActions } from '@/components/events/event-actions';
 import Layout from '@/components/layout/layout';
 import { RichText } from '@/components/rich-text';
@@ -22,8 +22,8 @@ export const revalidate = 3600;
 
 type Props = { params: Promise<{ locale: Locale; slug: string }> };
 
-async function load(slug: string) {
-    const found = await cms.getEvent(decodeURIComponent(slug));
+async function load(slug: string, locale: Locale) {
+    const found = await cms.getEvent(decodeURIComponent(slug), locale);
     return found ? toSiteEvent(found) : null;
 }
 
@@ -32,7 +32,7 @@ const absolute = (address: string) => (address.startsWith('/') ? `${siteUrl()}${
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { locale, slug } = await params;
     setRequestLocale(locale);
-    const event = await load(slug);
+    const event = await load(slug, locale);
     if (!event) return {};
     const settings = await cms.getSiteSettings(locale);
     const site = settings?.general?.name ?? 'Stichting Boerengroep';
@@ -55,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EventPage({ params }: Props) {
     const { locale, slug } = await params;
     setRequestLocale(locale);
-    const event = await load(slug);
+    const event = await load(slug, locale);
     if (!event) notFound();
 
     const [t, settings] = await Promise.all([getTranslations({ locale, namespace: 'calendar' }), cms.getSiteSettings(locale)]);
@@ -81,7 +81,7 @@ export default async function EventPage({ params }: Props) {
                     <DateBlock date={event.start} className="date-block--large" />
                     <div>
                         <div className="event-row__tags">
-                            <TypeTag type={event.type} />
+                            <KindTag kind={event.kind} />
                             <StatusBadge status={event.status} />
                         </div>
                         <h1 className={going ? undefined : 'event-page__title--off'} lang={lang}>

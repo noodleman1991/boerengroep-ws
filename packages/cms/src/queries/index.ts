@@ -40,7 +40,7 @@ type FindOptions = {
  */
 const BLOCKS_SHOW = ['forms', 'past-events']
 const PAGE_SHOWS = ['pages', ...BLOCKS_SHOW]
-const EVENT_SHOWS = ['events', 'speakers']
+const EVENT_SHOWS = ['events', 'speakers', 'event-kinds']
 const STORY_SHOWS = ['past-events', 'events', 'authors', 'tags', 'forms']
 const NEWSLETTER_SHOWS = ['newsletters', 'authors', 'tags', ...BLOCKS_SHOW]
 
@@ -240,16 +240,17 @@ export function createQueries(deps: QueryDeps) {
       })
     },
 
-    listEvents(): Promise<Event[]> {
-      return run('listEvents', [], EVENT_SHOWS, (draft) =>
-        find<Event>('events', draft, { hasDrafts: false, sort: 'startDate' }),
+    /** Every event. The language decides how the kind of each event is named. */
+    listEvents(locale: Locale = 'en'): Promise<Event[]> {
+      return run('listEvents', [locale], EVENT_SHOWS, (draft) =>
+        find<Event>('events', draft, { hasDrafts: false, locale, sort: 'startDate' }),
       )
     },
 
     /** One event by the last part of its address. */
-    getEvent(slug: string): Promise<Event | null> {
-      return run('getEvent', [slug], EVENT_SHOWS, async (draft) => {
-        const docs = await find<Event>('events', draft, { hasDrafts: false, limit: 1, where: [{ slug: { equals: slug } }] })
+    getEvent(slug: string, locale: Locale = 'en'): Promise<Event | null> {
+      return run('getEvent', [slug, locale], EVENT_SHOWS, async (draft) => {
+        const docs = await find<Event>('events', draft, { hasDrafts: false, locale, limit: 1, where: [{ slug: { equals: slug } }] })
         return docs[0] ?? null
       })
     },
@@ -304,9 +305,10 @@ export function createQueries(deps: QueryDeps) {
       })
     },
 
-    listVacancies(): Promise<Vacancy[]> {
-      return run('listVacancies', [], ['vacancies'], (draft) =>
-        find<Vacancy>('vacancies', draft, { hasDrafts: false }),
+    /** Every vacancy in one language. A part that is not written in Dutch yet comes back in English. */
+    listVacancies(locale: Locale): Promise<Vacancy[]> {
+      return run('listVacancies', [locale], ['vacancies'], (draft) =>
+        find<Vacancy>('vacancies', draft, { hasDrafts: false, locale }),
       )
     },
 

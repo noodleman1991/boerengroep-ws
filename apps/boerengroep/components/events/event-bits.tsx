@@ -1,7 +1,7 @@
 import { Clock, MapPin, Video } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { dateParts, formatTimes, type SiteLocale } from '@/lib/events/time';
-import type { EventStatus, SiteEvent } from '@/lib/events/types';
+import type { EventKind, EventStatus, SiteEvent } from '@/lib/events/types';
 
 /**
  * An event is written in one language. Shown on a page in the other language, its words are
@@ -25,12 +25,12 @@ export function DateBlock({ date, className = '' }: { date: string; className?: 
     );
 }
 
-/** The kind of event, with its colour. */
-export function TypeTag({ type }: { type: string }) {
-    const t = useTranslations('calendar.eventTypes');
+/** The kind of event with its colour, as an editor made it in the admin panel. Nothing for an event without a kind. */
+export function KindTag({ kind }: { kind?: EventKind }) {
+    if (!kind) return null;
     return (
-        <span className="event-type" data-event-type={type}>
-            {t.has(type) ? t(type) : type}
+        <span className="event-kind" data-kind-colour={kind.colour}>
+            {kind.name}
         </span>
     );
 }

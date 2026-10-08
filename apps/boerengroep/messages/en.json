@@ -161,14 +161,13 @@
     },
     "filter": {
       "label": "Kind of event",
-      "all": "Everything"
+      "all": "Everything",
+      "kind": "{name}, {count, plural, one {# event} other {# events}}"
     },
     "empty": {
       "upcoming_title": "Nothing planned right now",
       "upcoming_text": "New events are added often. Subscribe to the calendar or the newsletter and you hear it first.",
-      "filtered": "Nothing of this kind here. Choose another kind, or show everything.",
-      "past": "No past events yet.",
-      "day": "Nothing on this day."
+      "past": "No past events yet."
     },
     "month": {
       "previous": "Previous month",
@@ -176,8 +175,9 @@
       "today": "This month",
       "more": "{count} more",
       "count": "{count, plural, one {# event} other {# events}}",
-      "on_day": "On {date}",
-      "pick_day": "Choose a day to see what is on."
+      "nothing": "Nothing planned in {month}",
+      "go_next": "Go to {month}",
+      "go_last": "Back to {month}"
     },
     "status": {
       "full": "Full",
@@ -234,17 +234,7 @@
       "all": "See the full calendar",
       "empty": "Nothing planned right now. New events are added often."
     },
-    "sections_title": "Every week and every month",
-    "eventTypes": {
-      "talk": "Talk",
-      "workshop": "Workshop",
-      "lecture": "Lecture",
-      "meeting": "Meeting",
-      "board-meeting": "Board Meeting",
-      "soup-kitchen": "Open Pot",
-      "csa": "CSA",
-      "excursion": "Excursion"
-    }
+    "sections_title": "Every week and every month"
   },
   "footer": {
     "contact": {
@@ -322,16 +312,6 @@
   "vacancies": {
     "title": "Opportunities",
     "description": "Discover meaningful opportunities to contribute to our mission through volunteering, internships, and employment.",
-    "opportunity": "opportunity",
-    "opportunities": "opportunities",
-    "untitledPosition": "Untitled Position",
-    "organizationNotSpecified": "Organization not specified",
-    "downloadDocument": "Download Document",
-    "status": {
-      "open": "Open",
-      "openNoDeadline": "Open",
-      "closed": "Closed"
-    },
     "types": {
       "volunteer": {
         "title": "Volunteer Opportunities",
@@ -359,23 +339,40 @@
         "noOpportunities": "No other opportunities available at the moment."
       }
     },
+    "kinds_nav": "Kinds of positions",
+    "open_count": "{count, plural, =0 {none open right now} one {# open} other {# open}}",
+    "none_title": "Nothing open right now",
+    "none_text": "There are no positions at the moment. Come back later, or write to us: we are always glad to hear from people who want to join in.",
+    "none_for": "Nothing right now for",
+    "closed_note": "People can no longer apply for this position.",
+    "always_open": "Always open",
+    "nontraditional": "Also open to people without the usual background.",
+    "status": {
+      "open": "Open",
+      "until": "Apply until {date}",
+      "closed": "Closed"
+    },
+    "place": {
+      "remote": "From home",
+      "in-person": "On location",
+      "hybrid": "Partly from home"
+    },
     "fields": {
-      "deadline": "Deadline",
-      "location": "Location",
-      "startDate": "Start Date",
-      "duration": "Duration",
-      "compensation": "Compensation",
-      "description": "Description",
-      "responsibilities": "Responsibilities",
-      "requiredSkills": "Required Skills",
-      "preferredQualities": "Preferred Qualities",
-      "languagesRequired": "Required Languages",
-      "accessibilityNotes": "Accessibility Notes",
-      "supportingDocument": "Files",
-      "valuesStatement": "Values & Commitment",
-      "howToApply": "How to Apply",
-      "contactInfo": "Contact Information",
-      "openToNontraditional": "Open to Nontraditional Applicants"
+      "deadline": "Apply until",
+      "startDate": "Starts",
+      "duration": "How long",
+      "location": "Where",
+      "compensation": "What you get",
+      "description": "About the position",
+      "responsibilities": "What you will do",
+      "requiredSkills": "Skills needed",
+      "preferredQualities": "Nice to have",
+      "languagesRequired": "Languages",
+      "accessibilityNotes": "Accessibility",
+      "valuesStatement": "What we stand for",
+      "howToApply": "How to apply",
+      "contactInfo": "Who to contact",
+      "supportingDocument": "Job description"
     }
   },
   "podcast": {

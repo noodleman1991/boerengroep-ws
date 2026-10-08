@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import Layout from '@/components/layout/layout';
-import { OverprintMark } from '@/components/overprint-mark';
+import { BrandSymbol } from '@/components/brand-symbol';
 import { Link } from '@/i18n/navigation';
 
 /** Shown for an address that leads nowhere. It keeps the menu, so nobody is stuck. */
@@ -10,7 +10,7 @@ export default async function NotFound() {
         <Layout>
             <div className="page-width">
                 <div className="notice">
-                    <OverprintMark className="notice__mark" />
+                    <BrandSymbol className="notice__mark" />
                     <h1>{t('title')}</h1>
                     <p className="notice__text">{t('text')}</p>
                     <div className="notice__actions">
