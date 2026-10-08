@@ -11,9 +11,17 @@ export type Fixups = {
   redirects: { from: string; to: string }[]
   /** Upload path of the logo to use when the old settings point at a file that does not exist. */
   logo?: string
+  /**
+   * Content files that are not imported, and whose item is removed if an earlier run imported it.
+   * For placeholder content the old site still carries, for example `events/nl/what.mdx`.
+   * Pages go in `removePages`, because a page is made of two files.
+   */
+  removeFiles: string[]
+  /** Page keys whose hidden text (the body, which the old site never showed) is left out. */
+  clearPageBodies: string[]
 }
 
-export const emptyFixups: Fixups = { removePages: [], pageOverrides: {}, redirects: [] }
+export const emptyFixups: Fixups = { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [] }
 
 /** Reads a fix-ups file, filling in the parts it leaves out. */
 export function parseFixups(json: string): Fixups {
@@ -23,5 +31,7 @@ export function parseFixups(json: string): Fixups {
     pageOverrides: raw.pageOverrides ?? {},
     redirects: raw.redirects ?? [],
     logo: raw.logo,
+    removeFiles: raw.removeFiles ?? [],
+    clearPageBodies: raw.clearPageBodies ?? [],
   }
 }

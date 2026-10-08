@@ -391,6 +391,15 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
+  CREATE TABLE "pages_blocks_gallery_videos" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"url" varchar,
+  	"caption" varchar
+  );
+  
   CREATE TABLE "pages_blocks_gallery" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -399,6 +408,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" varchar PRIMARY KEY NOT NULL,
   	"background" "enum_pages_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
+  	"intro" varchar,
   	"source" "enum_pages_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"block_name" varchar
@@ -484,6 +494,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"button_label" varchar,
   	"link_url" varchar,
   	"form_id" integer,
+  	"note" varchar,
   	"block_name" varchar
   );
   
@@ -726,6 +737,16 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
+  CREATE TABLE "_pages_v_blocks_gallery_videos" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"_locale" "_locales" NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"url" varchar,
+  	"caption" varchar,
+  	"_uuid" varchar
+  );
+  
   CREATE TABLE "_pages_v_blocks_gallery" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -734,6 +755,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" serial PRIMARY KEY NOT NULL,
   	"background" "enum__pages_v_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
+  	"intro" varchar,
   	"source" "enum__pages_v_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"_uuid" varchar,
@@ -826,6 +848,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"button_label" varchar,
   	"link_url" varchar,
   	"form_id" integer,
+  	"note" varchar,
   	"_uuid" varchar,
   	"block_name" varchar
   );
@@ -895,6 +918,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"legacy_id" varchar,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+  );
+  
+  CREATE TABLE "past_events_videos" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"url" varchar,
+  	"caption" varchar
   );
   
   CREATE TABLE "past_events_blocks_hero_actions" (
@@ -1061,6 +1092,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
+  CREATE TABLE "past_events_blocks_gallery_videos" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"url" varchar,
+  	"caption" varchar
+  );
+  
   CREATE TABLE "past_events_blocks_gallery" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -1068,6 +1107,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" varchar PRIMARY KEY NOT NULL,
   	"background" "enum_past_events_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
+  	"intro" varchar,
   	"source" "enum_past_events_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"block_name" varchar
@@ -1141,6 +1181,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"button_label" varchar,
   	"link_url" varchar,
   	"form_id" integer,
+  	"note" varchar,
   	"block_name" varchar
   );
   
@@ -1169,6 +1210,15 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"path" varchar NOT NULL,
   	"tags_id" integer,
   	"media_id" integer
+  );
+  
+  CREATE TABLE "_past_events_v_version_videos" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"url" varchar,
+  	"caption" varchar,
+  	"_uuid" varchar
   );
   
   CREATE TABLE "_past_events_v_blocks_hero_actions" (
@@ -1349,6 +1399,15 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
+  CREATE TABLE "_past_events_v_blocks_gallery_videos" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"url" varchar,
+  	"caption" varchar,
+  	"_uuid" varchar
+  );
+  
   CREATE TABLE "_past_events_v_blocks_gallery" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -1356,6 +1415,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" serial PRIMARY KEY NOT NULL,
   	"background" "enum__past_events_v_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
+  	"intro" varchar,
   	"source" "enum__past_events_v_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"_uuid" varchar,
@@ -1435,6 +1495,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"button_label" varchar,
   	"link_url" varchar,
   	"form_id" integer,
+  	"note" varchar,
   	"_uuid" varchar,
   	"block_name" varchar
   );
@@ -1636,6 +1697,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
+  CREATE TABLE "newsletters_blocks_gallery_videos" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" varchar NOT NULL,
+  	"id" varchar PRIMARY KEY NOT NULL,
+  	"url" varchar,
+  	"caption" varchar
+  );
+  
   CREATE TABLE "newsletters_blocks_gallery" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -1643,6 +1712,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" varchar PRIMARY KEY NOT NULL,
   	"background" "enum_newsletters_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
+  	"intro" varchar,
   	"source" "enum_newsletters_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"block_name" varchar
@@ -1716,6 +1786,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"button_label" varchar,
   	"link_url" varchar,
   	"form_id" integer,
+  	"note" varchar,
   	"block_name" varchar
   );
   
@@ -1934,6 +2005,15 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
+  CREATE TABLE "_newsletters_v_blocks_gallery_videos" (
+  	"_order" integer NOT NULL,
+  	"_parent_id" integer NOT NULL,
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"url" varchar,
+  	"caption" varchar,
+  	"_uuid" varchar
+  );
+  
   CREATE TABLE "_newsletters_v_blocks_gallery" (
   	"_order" integer NOT NULL,
   	"_parent_id" integer NOT NULL,
@@ -1941,6 +2021,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"id" serial PRIMARY KEY NOT NULL,
   	"background" "enum__newsletters_v_blocks_gallery_background" DEFAULT 'white',
   	"title" varchar,
+  	"intro" varchar,
   	"source" "enum__newsletters_v_blocks_gallery_source" DEFAULT 'pictures',
   	"past_event_id" integer,
   	"_uuid" varchar,
@@ -2020,6 +2101,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"button_label" varchar,
   	"link_url" varchar,
   	"form_id" integer,
+  	"note" varchar,
   	"_uuid" varchar,
   	"block_name" varchar
   );
@@ -2487,6 +2569,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"title" varchar,
   	"general_name" varchar NOT NULL,
   	"general_logo_id" integer,
+  	"general_logo_on_dark_id" integer,
   	"general_contact_address" varchar,
   	"general_contact_email" varchar,
   	"general_contact_phone" varchar,
@@ -2658,6 +2741,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "pages_blocks_video" ADD CONSTRAINT "pages_blocks_video_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_image_text" ADD CONSTRAINT "pages_blocks_image_text_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages_blocks_image_text" ADD CONSTRAINT "pages_blocks_image_text_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "pages_blocks_gallery_videos" ADD CONSTRAINT "pages_blocks_gallery_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages_blocks_gallery"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_gallery" ADD CONSTRAINT "pages_blocks_gallery_past_event_id_past_events_id_fk" FOREIGN KEY ("past_event_id") REFERENCES "public"."past_events"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "pages_blocks_gallery" ADD CONSTRAINT "pages_blocks_gallery_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "pages_blocks_documents_files" ADD CONSTRAINT "pages_blocks_documents_files_file_id_media_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -2695,6 +2779,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_pages_v_blocks_video" ADD CONSTRAINT "_pages_v_blocks_video_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_image_text" ADD CONSTRAINT "_pages_v_blocks_image_text_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_image_text" ADD CONSTRAINT "_pages_v_blocks_image_text_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_pages_v_blocks_gallery_videos" ADD CONSTRAINT "_pages_v_blocks_gallery_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v_blocks_gallery"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_gallery" ADD CONSTRAINT "_pages_v_blocks_gallery_past_event_id_past_events_id_fk" FOREIGN KEY ("past_event_id") REFERENCES "public"."past_events"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_gallery" ADD CONSTRAINT "_pages_v_blocks_gallery_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_pages_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_pages_v_blocks_documents_files" ADD CONSTRAINT "_pages_v_blocks_documents_files_file_id_media_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -2718,6 +2803,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "events_speakers" ADD CONSTRAINT "events_speakers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "events" ADD CONSTRAINT "events_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "events" ADD CONSTRAINT "events_image_id_media_id_fk" FOREIGN KEY ("image_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "past_events_videos" ADD CONSTRAINT "past_events_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "past_events_blocks_hero_actions" ADD CONSTRAINT "past_events_blocks_hero_actions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events_blocks_hero"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "past_events_blocks_hero" ADD CONSTRAINT "past_events_blocks_hero_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "past_events_blocks_hero" ADD CONSTRAINT "past_events_blocks_hero_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
@@ -2736,6 +2822,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "past_events_blocks_video" ADD CONSTRAINT "past_events_blocks_video_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "past_events_blocks_image_text" ADD CONSTRAINT "past_events_blocks_image_text_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "past_events_blocks_image_text" ADD CONSTRAINT "past_events_blocks_image_text_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "past_events_blocks_gallery_videos" ADD CONSTRAINT "past_events_blocks_gallery_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events_blocks_gallery"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "past_events_blocks_gallery" ADD CONSTRAINT "past_events_blocks_gallery_past_event_id_past_events_id_fk" FOREIGN KEY ("past_event_id") REFERENCES "public"."past_events"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "past_events_blocks_gallery" ADD CONSTRAINT "past_events_blocks_gallery_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "past_events_blocks_documents_files" ADD CONSTRAINT "past_events_blocks_documents_files_file_id_media_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -2755,6 +2842,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "past_events_rels" ADD CONSTRAINT "past_events_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."past_events"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "past_events_rels" ADD CONSTRAINT "past_events_rels_tags_fk" FOREIGN KEY ("tags_id") REFERENCES "public"."tags"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "past_events_rels" ADD CONSTRAINT "past_events_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_past_events_v_version_videos" ADD CONSTRAINT "_past_events_v_version_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_past_events_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_past_events_v_blocks_hero_actions" ADD CONSTRAINT "_past_events_v_blocks_hero_actions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_past_events_v_blocks_hero"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_past_events_v_blocks_hero" ADD CONSTRAINT "_past_events_v_blocks_hero_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_past_events_v_blocks_hero" ADD CONSTRAINT "_past_events_v_blocks_hero_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_past_events_v"("id") ON DELETE cascade ON UPDATE no action;
@@ -2773,6 +2861,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_past_events_v_blocks_video" ADD CONSTRAINT "_past_events_v_blocks_video_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_past_events_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_past_events_v_blocks_image_text" ADD CONSTRAINT "_past_events_v_blocks_image_text_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_past_events_v_blocks_image_text" ADD CONSTRAINT "_past_events_v_blocks_image_text_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_past_events_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_past_events_v_blocks_gallery_videos" ADD CONSTRAINT "_past_events_v_blocks_gallery_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_past_events_v_blocks_gallery"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_past_events_v_blocks_gallery" ADD CONSTRAINT "_past_events_v_blocks_gallery_past_event_id_past_events_id_fk" FOREIGN KEY ("past_event_id") REFERENCES "public"."past_events"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_past_events_v_blocks_gallery" ADD CONSTRAINT "_past_events_v_blocks_gallery_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_past_events_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_past_events_v_blocks_documents_files" ADD CONSTRAINT "_past_events_v_blocks_documents_files_file_id_media_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -2811,6 +2900,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "newsletters_blocks_video" ADD CONSTRAINT "newsletters_blocks_video_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."newsletters"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "newsletters_blocks_image_text" ADD CONSTRAINT "newsletters_blocks_image_text_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "newsletters_blocks_image_text" ADD CONSTRAINT "newsletters_blocks_image_text_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."newsletters"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "newsletters_blocks_gallery_videos" ADD CONSTRAINT "newsletters_blocks_gallery_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."newsletters_blocks_gallery"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "newsletters_blocks_gallery" ADD CONSTRAINT "newsletters_blocks_gallery_past_event_id_past_events_id_fk" FOREIGN KEY ("past_event_id") REFERENCES "public"."past_events"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "newsletters_blocks_gallery" ADD CONSTRAINT "newsletters_blocks_gallery_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."newsletters"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "newsletters_blocks_documents_files" ADD CONSTRAINT "newsletters_blocks_documents_files_file_id_media_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -2847,6 +2937,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "_newsletters_v_blocks_video" ADD CONSTRAINT "_newsletters_v_blocks_video_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_newsletters_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_newsletters_v_blocks_image_text" ADD CONSTRAINT "_newsletters_v_blocks_image_text_image_src_id_media_id_fk" FOREIGN KEY ("image_src_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_newsletters_v_blocks_image_text" ADD CONSTRAINT "_newsletters_v_blocks_image_text_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_newsletters_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_newsletters_v_blocks_gallery_videos" ADD CONSTRAINT "_newsletters_v_blocks_gallery_videos_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_newsletters_v_blocks_gallery"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_newsletters_v_blocks_gallery" ADD CONSTRAINT "_newsletters_v_blocks_gallery_past_event_id_past_events_id_fk" FOREIGN KEY ("past_event_id") REFERENCES "public"."past_events"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "_newsletters_v_blocks_gallery" ADD CONSTRAINT "_newsletters_v_blocks_gallery_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_newsletters_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_newsletters_v_blocks_documents_files" ADD CONSTRAINT "_newsletters_v_blocks_documents_files_file_id_media_id_fk" FOREIGN KEY ("file_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
@@ -2916,6 +3007,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "site_settings_footer_legal_links_locales" ADD CONSTRAINT "site_settings_footer_legal_links_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."site_settings_footer_legal_links"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "site_settings" ADD CONSTRAINT "site_settings_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "site_settings" ADD CONSTRAINT "site_settings_general_logo_id_media_id_fk" FOREIGN KEY ("general_logo_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "site_settings" ADD CONSTRAINT "site_settings_general_logo_on_dark_id_media_id_fk" FOREIGN KEY ("general_logo_on_dark_id") REFERENCES "public"."media"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "site_settings_locales" ADD CONSTRAINT "site_settings_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."site_settings"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "redirects" ADD CONSTRAINT "redirects_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "users_roles" ADD CONSTRAINT "users_roles_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
@@ -3000,6 +3092,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "pages_blocks_image_text_path_idx" ON "pages_blocks_image_text" USING btree ("_path");
   CREATE INDEX "pages_blocks_image_text_locale_idx" ON "pages_blocks_image_text" USING btree ("_locale");
   CREATE INDEX "pages_blocks_image_text_image_image_src_idx" ON "pages_blocks_image_text" USING btree ("image_src_id");
+  CREATE INDEX "pages_blocks_gallery_videos_order_idx" ON "pages_blocks_gallery_videos" USING btree ("_order");
+  CREATE INDEX "pages_blocks_gallery_videos_parent_id_idx" ON "pages_blocks_gallery_videos" USING btree ("_parent_id");
+  CREATE INDEX "pages_blocks_gallery_videos_locale_idx" ON "pages_blocks_gallery_videos" USING btree ("_locale");
   CREATE INDEX "pages_blocks_gallery_order_idx" ON "pages_blocks_gallery" USING btree ("_order");
   CREATE INDEX "pages_blocks_gallery_parent_id_idx" ON "pages_blocks_gallery" USING btree ("_parent_id");
   CREATE INDEX "pages_blocks_gallery_path_idx" ON "pages_blocks_gallery" USING btree ("_path");
@@ -3107,6 +3202,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_pages_v_blocks_image_text_path_idx" ON "_pages_v_blocks_image_text" USING btree ("_path");
   CREATE INDEX "_pages_v_blocks_image_text_locale_idx" ON "_pages_v_blocks_image_text" USING btree ("_locale");
   CREATE INDEX "_pages_v_blocks_image_text_image_image_src_idx" ON "_pages_v_blocks_image_text" USING btree ("image_src_id");
+  CREATE INDEX "_pages_v_blocks_gallery_videos_order_idx" ON "_pages_v_blocks_gallery_videos" USING btree ("_order");
+  CREATE INDEX "_pages_v_blocks_gallery_videos_parent_id_idx" ON "_pages_v_blocks_gallery_videos" USING btree ("_parent_id");
+  CREATE INDEX "_pages_v_blocks_gallery_videos_locale_idx" ON "_pages_v_blocks_gallery_videos" USING btree ("_locale");
   CREATE INDEX "_pages_v_blocks_gallery_order_idx" ON "_pages_v_blocks_gallery" USING btree ("_order");
   CREATE INDEX "_pages_v_blocks_gallery_parent_id_idx" ON "_pages_v_blocks_gallery" USING btree ("_parent_id");
   CREATE INDEX "_pages_v_blocks_gallery_path_idx" ON "_pages_v_blocks_gallery" USING btree ("_path");
@@ -3170,6 +3268,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "events_legacy_id_idx" ON "events" USING btree ("legacy_id");
   CREATE INDEX "events_updated_at_idx" ON "events" USING btree ("updated_at");
   CREATE INDEX "events_created_at_idx" ON "events" USING btree ("created_at");
+  CREATE INDEX "past_events_videos_order_idx" ON "past_events_videos" USING btree ("_order");
+  CREATE INDEX "past_events_videos_parent_id_idx" ON "past_events_videos" USING btree ("_parent_id");
   CREATE INDEX "past_events_blocks_hero_actions_order_idx" ON "past_events_blocks_hero_actions" USING btree ("_order");
   CREATE INDEX "past_events_blocks_hero_actions_parent_id_idx" ON "past_events_blocks_hero_actions" USING btree ("_parent_id");
   CREATE INDEX "past_events_blocks_hero_order_idx" ON "past_events_blocks_hero" USING btree ("_order");
@@ -3211,6 +3311,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "past_events_blocks_image_text_parent_id_idx" ON "past_events_blocks_image_text" USING btree ("_parent_id");
   CREATE INDEX "past_events_blocks_image_text_path_idx" ON "past_events_blocks_image_text" USING btree ("_path");
   CREATE INDEX "past_events_blocks_image_text_image_image_src_idx" ON "past_events_blocks_image_text" USING btree ("image_src_id");
+  CREATE INDEX "past_events_blocks_gallery_videos_order_idx" ON "past_events_blocks_gallery_videos" USING btree ("_order");
+  CREATE INDEX "past_events_blocks_gallery_videos_parent_id_idx" ON "past_events_blocks_gallery_videos" USING btree ("_parent_id");
   CREATE INDEX "past_events_blocks_gallery_order_idx" ON "past_events_blocks_gallery" USING btree ("_order");
   CREATE INDEX "past_events_blocks_gallery_parent_id_idx" ON "past_events_blocks_gallery" USING btree ("_parent_id");
   CREATE INDEX "past_events_blocks_gallery_path_idx" ON "past_events_blocks_gallery" USING btree ("_path");
@@ -3249,6 +3351,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "past_events_rels_path_idx" ON "past_events_rels" USING btree ("path");
   CREATE INDEX "past_events_rels_tags_id_idx" ON "past_events_rels" USING btree ("tags_id");
   CREATE INDEX "past_events_rels_media_id_idx" ON "past_events_rels" USING btree ("media_id");
+  CREATE INDEX "_past_events_v_version_videos_order_idx" ON "_past_events_v_version_videos" USING btree ("_order");
+  CREATE INDEX "_past_events_v_version_videos_parent_id_idx" ON "_past_events_v_version_videos" USING btree ("_parent_id");
   CREATE INDEX "_past_events_v_blocks_hero_actions_order_idx" ON "_past_events_v_blocks_hero_actions" USING btree ("_order");
   CREATE INDEX "_past_events_v_blocks_hero_actions_parent_id_idx" ON "_past_events_v_blocks_hero_actions" USING btree ("_parent_id");
   CREATE INDEX "_past_events_v_blocks_hero_order_idx" ON "_past_events_v_blocks_hero" USING btree ("_order");
@@ -3290,6 +3394,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_past_events_v_blocks_image_text_parent_id_idx" ON "_past_events_v_blocks_image_text" USING btree ("_parent_id");
   CREATE INDEX "_past_events_v_blocks_image_text_path_idx" ON "_past_events_v_blocks_image_text" USING btree ("_path");
   CREATE INDEX "_past_events_v_blocks_image_text_image_image_src_idx" ON "_past_events_v_blocks_image_text" USING btree ("image_src_id");
+  CREATE INDEX "_past_events_v_blocks_gallery_videos_order_idx" ON "_past_events_v_blocks_gallery_videos" USING btree ("_order");
+  CREATE INDEX "_past_events_v_blocks_gallery_videos_parent_id_idx" ON "_past_events_v_blocks_gallery_videos" USING btree ("_parent_id");
   CREATE INDEX "_past_events_v_blocks_gallery_order_idx" ON "_past_events_v_blocks_gallery" USING btree ("_order");
   CREATE INDEX "_past_events_v_blocks_gallery_parent_id_idx" ON "_past_events_v_blocks_gallery" USING btree ("_parent_id");
   CREATE INDEX "_past_events_v_blocks_gallery_path_idx" ON "_past_events_v_blocks_gallery" USING btree ("_path");
@@ -3375,6 +3481,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "newsletters_blocks_image_text_parent_id_idx" ON "newsletters_blocks_image_text" USING btree ("_parent_id");
   CREATE INDEX "newsletters_blocks_image_text_path_idx" ON "newsletters_blocks_image_text" USING btree ("_path");
   CREATE INDEX "newsletters_blocks_image_text_image_image_src_idx" ON "newsletters_blocks_image_text" USING btree ("image_src_id");
+  CREATE INDEX "newsletters_blocks_gallery_videos_order_idx" ON "newsletters_blocks_gallery_videos" USING btree ("_order");
+  CREATE INDEX "newsletters_blocks_gallery_videos_parent_id_idx" ON "newsletters_blocks_gallery_videos" USING btree ("_parent_id");
   CREATE INDEX "newsletters_blocks_gallery_order_idx" ON "newsletters_blocks_gallery" USING btree ("_order");
   CREATE INDEX "newsletters_blocks_gallery_parent_id_idx" ON "newsletters_blocks_gallery" USING btree ("_parent_id");
   CREATE INDEX "newsletters_blocks_gallery_path_idx" ON "newsletters_blocks_gallery" USING btree ("_path");
@@ -3453,6 +3561,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "_newsletters_v_blocks_image_text_parent_id_idx" ON "_newsletters_v_blocks_image_text" USING btree ("_parent_id");
   CREATE INDEX "_newsletters_v_blocks_image_text_path_idx" ON "_newsletters_v_blocks_image_text" USING btree ("_path");
   CREATE INDEX "_newsletters_v_blocks_image_text_image_image_src_idx" ON "_newsletters_v_blocks_image_text" USING btree ("image_src_id");
+  CREATE INDEX "_newsletters_v_blocks_gallery_videos_order_idx" ON "_newsletters_v_blocks_gallery_videos" USING btree ("_order");
+  CREATE INDEX "_newsletters_v_blocks_gallery_videos_parent_id_idx" ON "_newsletters_v_blocks_gallery_videos" USING btree ("_parent_id");
   CREATE INDEX "_newsletters_v_blocks_gallery_order_idx" ON "_newsletters_v_blocks_gallery" USING btree ("_order");
   CREATE INDEX "_newsletters_v_blocks_gallery_parent_id_idx" ON "_newsletters_v_blocks_gallery" USING btree ("_parent_id");
   CREATE INDEX "_newsletters_v_blocks_gallery_path_idx" ON "_newsletters_v_blocks_gallery" USING btree ("_path");
@@ -3595,6 +3705,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE UNIQUE INDEX "site_settings_footer_legal_links_locales_locale_parent_id_un" ON "site_settings_footer_legal_links_locales" USING btree ("_locale","_parent_id");
   CREATE UNIQUE INDEX "site_settings_tenant_idx" ON "site_settings" USING btree ("tenant_id");
   CREATE INDEX "site_settings_general_general_logo_idx" ON "site_settings" USING btree ("general_logo_id");
+  CREATE INDEX "site_settings_general_general_logo_on_dark_idx" ON "site_settings" USING btree ("general_logo_on_dark_id");
   CREATE INDEX "site_settings_updated_at_idx" ON "site_settings" USING btree ("updated_at");
   CREATE INDEX "site_settings_created_at_idx" ON "site_settings" USING btree ("created_at");
   CREATE UNIQUE INDEX "site_settings_locales_locale_parent_id_unique" ON "site_settings_locales" USING btree ("_locale","_parent_id");
@@ -3667,6 +3778,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "pages_blocks_testimonial" CASCADE;
   DROP TABLE "pages_blocks_video" CASCADE;
   DROP TABLE "pages_blocks_image_text" CASCADE;
+  DROP TABLE "pages_blocks_gallery_videos" CASCADE;
   DROP TABLE "pages_blocks_gallery" CASCADE;
   DROP TABLE "pages_blocks_documents_files" CASCADE;
   DROP TABLE "pages_blocks_documents" CASCADE;
@@ -3693,6 +3805,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "_pages_v_blocks_testimonial" CASCADE;
   DROP TABLE "_pages_v_blocks_video" CASCADE;
   DROP TABLE "_pages_v_blocks_image_text" CASCADE;
+  DROP TABLE "_pages_v_blocks_gallery_videos" CASCADE;
   DROP TABLE "_pages_v_blocks_gallery" CASCADE;
   DROP TABLE "_pages_v_blocks_documents_files" CASCADE;
   DROP TABLE "_pages_v_blocks_documents" CASCADE;
@@ -3706,6 +3819,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "_pages_v_rels" CASCADE;
   DROP TABLE "events_speakers" CASCADE;
   DROP TABLE "events" CASCADE;
+  DROP TABLE "past_events_videos" CASCADE;
   DROP TABLE "past_events_blocks_hero_actions" CASCADE;
   DROP TABLE "past_events_blocks_hero" CASCADE;
   DROP TABLE "past_events_blocks_callout" CASCADE;
@@ -3720,6 +3834,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "past_events_blocks_testimonial" CASCADE;
   DROP TABLE "past_events_blocks_video" CASCADE;
   DROP TABLE "past_events_blocks_image_text" CASCADE;
+  DROP TABLE "past_events_blocks_gallery_videos" CASCADE;
   DROP TABLE "past_events_blocks_gallery" CASCADE;
   DROP TABLE "past_events_blocks_documents_files" CASCADE;
   DROP TABLE "past_events_blocks_documents_files_locales" CASCADE;
@@ -3730,6 +3845,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "past_events_blocks_item" CASCADE;
   DROP TABLE "past_events" CASCADE;
   DROP TABLE "past_events_rels" CASCADE;
+  DROP TABLE "_past_events_v_version_videos" CASCADE;
   DROP TABLE "_past_events_v_blocks_hero_actions" CASCADE;
   DROP TABLE "_past_events_v_blocks_hero" CASCADE;
   DROP TABLE "_past_events_v_blocks_callout" CASCADE;
@@ -3744,6 +3860,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "_past_events_v_blocks_testimonial" CASCADE;
   DROP TABLE "_past_events_v_blocks_video" CASCADE;
   DROP TABLE "_past_events_v_blocks_image_text" CASCADE;
+  DROP TABLE "_past_events_v_blocks_gallery_videos" CASCADE;
   DROP TABLE "_past_events_v_blocks_gallery" CASCADE;
   DROP TABLE "_past_events_v_blocks_documents_files" CASCADE;
   DROP TABLE "_past_events_v_blocks_documents_files_locales" CASCADE;
@@ -3768,6 +3885,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "newsletters_blocks_testimonial" CASCADE;
   DROP TABLE "newsletters_blocks_video" CASCADE;
   DROP TABLE "newsletters_blocks_image_text" CASCADE;
+  DROP TABLE "newsletters_blocks_gallery_videos" CASCADE;
   DROP TABLE "newsletters_blocks_gallery" CASCADE;
   DROP TABLE "newsletters_blocks_documents_files" CASCADE;
   DROP TABLE "newsletters_blocks_documents_files_locales" CASCADE;
@@ -3793,6 +3911,7 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "_newsletters_v_blocks_testimonial" CASCADE;
   DROP TABLE "_newsletters_v_blocks_video" CASCADE;
   DROP TABLE "_newsletters_v_blocks_image_text" CASCADE;
+  DROP TABLE "_newsletters_v_blocks_gallery_videos" CASCADE;
   DROP TABLE "_newsletters_v_blocks_gallery" CASCADE;
   DROP TABLE "_newsletters_v_blocks_documents_files" CASCADE;
   DROP TABLE "_newsletters_v_blocks_documents_files_locales" CASCADE;

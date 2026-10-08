@@ -8,16 +8,17 @@ import { Actions } from './actions';
 
 /**
  * The opening of a page. "Split" puts the words left and the picture right, with the logo's
- * circles behind the picture. "Centred" puts the picture under the words.
+ * circles behind the picture. "Centred" puts the picture under the words. An opening without
+ * a picture keeps its words on the left and lets the circles be the picture.
  */
 export const Hero = ({ data }: { data: HeroBlock }) => {
     const picture = mediaUrl(data.image?.src, 'wide') ?? mediaUrl(data.image?.src);
     const video = data.image?.videoUrl?.trim();
     const hasVisual = Boolean(picture || video);
-    const layout = data.layout === 'centered' ? 'centered' : 'split';
+    const layout = !hasVisual ? 'plain' : data.layout === 'centered' ? 'centered' : 'split';
 
     return (
-        <Section background={data.background} className={`hero hero--${layout}${hasVisual ? '' : ' hero--plain'}`}>
+        <Section background={data.background} className={`hero hero--${layout}`}>
             <div className="hero__words">
                 {data.headline && <h1>{data.headline}</h1>}
                 {data.tagline && <p className="hero__tagline">{data.tagline}</p>}

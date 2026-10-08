@@ -158,7 +158,7 @@ function EpisodeCard({ episode, episodeNumber, onPlay, locale }: EpisodeCardProp
             </div>
           )}
 
-          <div className="flex-1 space-y-3">
+          <div className="flex-1 min-w-0 space-y-3">
             {/* Description Preview */}
             <p className="text-sm text-muted-foreground leading-relaxed">
               <span className="line-clamp-2">

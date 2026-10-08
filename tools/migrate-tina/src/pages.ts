@@ -4,14 +4,17 @@ import { planPages, type PagePlan } from './pages-plan'
 import { listContent, readTinaFile } from './read'
 import { Report } from './report'
 
-async function localeData(ctx: Ctx, contentDir: string, file: string, slug: string) {
+async function localeData(ctx: Ctx, contentDir: string, file: string, slug: string, key: string) {
   const f = readTinaFile(contentDir, file)
+  // The old site never showed this text. A fix-up can leave it out, for placeholder text.
+  const leaveOutBody = ctx.fixups.clearPageBodies.includes(key)
+  if (leaveOutBody && f.body?.trim()) ctx.report.add('skipped', f.legacyId, 'hidden text left out by a fix-up')
   return {
     data: {
       title: f.data.title,
       slug,
       blocks: await transformBlocks(ctx, f.data.blocks, f.legacyId),
-      body: await ctx.toLexical(f.body, f.legacyId),
+      body: leaveOutBody ? null : await ctx.toLexical(f.body, f.legacyId),
     },
     previousUrls: (f.data.previousUrls ?? []) as string[],
   }
@@ -39,12 +42,12 @@ async function importOne(ctx: Ctx, contentDir: string, plan: PagePlan): Promise<
     }
   } else {
     if (plan.enFile) {
-      const en = await localeData(ctx, contentDir, plan.enFile, last(plan.enSegments!))
+      const en = await localeData(ctx, contentDir, plan.enFile, last(plan.enSegments!), plan.key)
       oldUrls.push(...en.previousUrls)
       await upsert(ctx, 'pages', legacyId, { ...en.data, ...override?.en, parent, _status: 'published' }, 'en')
     }
     if (plan.nlFile) {
-      const nl = await localeData(ctx, contentDir, plan.nlFile, last(plan.nlSegments!))
+      const nl = await localeData(ctx, contentDir, plan.nlFile, last(plan.nlSegments!), plan.key)
       oldUrls.push(...nl.previousUrls)
       await upsert(ctx, 'pages', legacyId, { ...nl.data, ...override?.nl, parent, _status: 'published' }, 'nl')
     }

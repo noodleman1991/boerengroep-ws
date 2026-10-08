@@ -30,11 +30,7 @@ interface BlocksProps {
 
 export const Blocks = ({ blocks, data }: BlocksProps) => {
   if (!blocks) return null
-  const list = blocks.map((block, i) => (
-    <div key={block.id ?? i}>
-      <Block block={block} />
-    </div>
-  ))
+  const list = blocks.map((block, i) => <Block key={block.id ?? i} block={block} />)
   // Blocks nested inside another page's blocks keep the data of the page around them.
   return data ? <BlockDataProvider value={data}>{list}</BlockDataProvider> : <>{list}</>
 }

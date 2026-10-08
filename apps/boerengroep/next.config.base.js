@@ -19,7 +19,13 @@ const baseConfig = {
         source: '/(.*)',
         headers: [
           { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
-          { key: 'Content-Security-Policy', value: "frame-ancestors 'self'" }
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'self'" },
+          // Browsers must not guess the type of a file, for example of an upload.
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          // Other sites learn which site a visitor came from, not which page.
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          // The site never asks for these, so nothing embedded in it can either.
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
         ],
       },
       {

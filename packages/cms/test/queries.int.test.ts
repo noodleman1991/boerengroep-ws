@@ -173,6 +173,17 @@ describe('queries', () => {
     })
   })
 
+  it('lists the published sub-pages of a page, in the reader’s language', async () => {
+    const q = queries('boerengroep')
+    const about = (await q.resolvePage('en', '/about-us'))!.page!
+    expect(await q.listChildPages(about.id, 'en')).toEqual([{ title: 'History', path: '/about-us/history' }])
+    expect(await q.listChildPages(about.id, 'nl')).toEqual([{ title: 'Geschiedenis', path: '/over-ons/geschiedenis' }])
+    // A page of the other site, or one without sub-pages, lists nothing.
+    expect(await queries('inspringtheater').listChildPages(about.id, 'en')).toEqual([])
+    const history = (await q.resolvePage('en', '/about-us/history'))!.page!
+    expect(await q.listChildPages(history.id, 'en')).toEqual([])
+  })
+
   it('looks a page up by its English path and returns it in Dutch', async () => {
     const res = await queries('boerengroep').getPageByEnglishPath('/about-us/history', 'nl')
     expect(res?.title).toBe('Geschiedenis')

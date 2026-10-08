@@ -41,5 +41,27 @@
       "to": "/activities/open-pot-student-kitchen"
     }
   ],
-  "logo": "/uploads/branding/boerengroep-logo-zwart.png"
+  "logo": "/uploads/branding/boerengroep-logo-zwart.png",
+  "removeFiles": [
+    "events/nl/bestuursvergadering-januari.mdx",
+    "events/nl/workshop-regeneratieve-landbouw.mdx",
+    "events/nl/soepkeuken-wageningen.mdx",
+    "events/nl/informatiesessie-csa.mdx",
+    "events/nl/talk-jonge-boeren.mdx",
+    "events/nl/lezing-toekomst-voedselsystemen.mdx",
+    "events/nl/beleid-bijeenkomst-eu-green-deal.mdx",
+    "events/nl/excursie-biologische-boerderij.mdx",
+    "events/nl/what.mdx",
+    "speakers/dr-maria-van-der-meer.md",
+    "speakers/lisa-vermeulen.md",
+    "speakers/pieter-janssen.md",
+    "speakers/prof-dr-johanna-de-wit.md",
+    "speakers/tom-van-houten.md",
+    "tags/markdown.mdx",
+    "tags/mermaid.mdx",
+    "tags/tinacms.mdx"
+  ],
+  "clearPageBodies": [
+    "inspringtheater"
+  ]
 }

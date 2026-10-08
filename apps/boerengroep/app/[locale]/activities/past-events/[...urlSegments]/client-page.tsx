@@ -10,6 +10,7 @@ import { Link } from '@/i18n/navigation';
 import type { BlockData } from '@/lib/block-data';
 import type { toPastEventNode } from '@/lib/cms-adapters';
 import { eventPath } from '@/lib/events/ics-site';
+import { toVideoItems } from '@/lib/gallery';
 import { formatDay, dayKey, type SiteLocale } from '@/lib/events/time';
 
 interface ClientPastEventProps {
@@ -21,6 +22,7 @@ interface ClientPastEventProps {
 export default function PastEventClientPage({ pastEvent, data }: ClientPastEventProps) {
   const t = useTranslations('pastEvents');
   const locale = useLocale() as SiteLocale;
+  const videos = toVideoItems(pastEvent.videos);
   const date = new Date(pastEvent.date);
   const when = Number.isNaN(date.getTime()) ? null : `${formatDay(dayKey(date), locale)} ${date.getFullYear()}`;
 
@@ -50,12 +52,12 @@ export default function PastEventClientPage({ pastEvent, data }: ClientPastEvent
 
         {pastEvent.blocks.length > 0 && <Blocks blocks={pastEvent.blocks} data={data} />}
 
-        {(pastEvent.photos.length > 0 || pastEvent.relatedEvent) && (
+        {(pastEvent.photos.length > 0 || videos.length > 0 || pastEvent.relatedEvent) && (
           <div className="page-width story__after">
-            {pastEvent.photos.length > 0 && (
+            {(pastEvent.photos.length > 0 || videos.length > 0) && (
               <section>
                 <h2>{t('photos')}</h2>
-                <Gallery photos={pastEvent.photos} />
+                <Gallery photos={pastEvent.photos} videos={videos} />
               </section>
             )}
             {pastEvent.relatedEvent && (

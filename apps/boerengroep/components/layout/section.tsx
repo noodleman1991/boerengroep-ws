@@ -12,7 +12,7 @@ const PRESETS = ['white', 'mist', 'leaf', 'harvest', 'sky', 'dark'];
 export const Section: React.FC<SectionProps> = ({ className, children, background, ...props }) => {
     const preset = background && PRESETS.includes(background) ? background : 'white';
     return (
-        <div className={`section-${preset}`}>
+        <div className={`band section-${preset}`}>
             <section
                 // The same width and side margins as the header and footer, so everything lines up.
                 className={cn("page-width py-[var(--spacing-section)]", className)}

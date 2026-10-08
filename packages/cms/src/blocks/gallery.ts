@@ -1,5 +1,6 @@
 import type { Block } from 'payload'
-import { backgroundField } from '../fields/shared'
+import { rowLabel } from '../fields/row-label'
+import { backgroundField, videoFields } from '../fields/shared'
 
 type Sibling = { source?: string } | undefined
 
@@ -17,6 +18,7 @@ export const Gallery: Block = {
   fields: [
     backgroundField,
     { name: 'title', type: 'text' },
+    { name: 'intro', type: 'textarea', label: 'A few words above the photos', admin: { description: 'Optional.' } },
     {
       name: 'source',
       type: 'radio',
@@ -38,6 +40,18 @@ export const Gallery: Block = {
         condition: (_d, s: Sibling) => (s?.source ?? 'pictures') === 'pictures',
         description: 'Drop several photos at once. Drag to change the order. Add a caption by opening a photo.',
       },
+    },
+    {
+      name: 'videos',
+      type: 'array',
+      label: 'Videos among the photos',
+      labels: { singular: 'Video', plural: 'Videos' },
+      admin: {
+        condition: (_d, s: Sibling) => (s?.source ?? 'pictures') === 'pictures',
+        description: 'Optional. Videos get the large places in the mosaic. They only load after a visitor presses play.',
+        components: rowLabel('caption', 'Video').components,
+      },
+      fields: videoFields,
     },
     {
       name: 'pastEvent',

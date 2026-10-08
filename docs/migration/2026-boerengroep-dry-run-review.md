@@ -69,6 +69,33 @@ Files that the current site never serves, because another file answers the same 
 
 - `pages/about.mdx` and `pages/test-page.en.mdx` sit outside the language folders and are starter leftovers.
 
+### Placeholder content left out (17 files, one hidden text): proposed, needs the owner's confirmation
+
+The old content still carries material that looks like starter or sample content. It is left out
+of the import by `docs/migration/boerengroep-fixups.json` (`removeFiles` and `clearPageBodies`).
+Nothing is changed in the old content itself, so the live site keeps showing it until cutover.
+To keep an item, take its line out of that file before the import.
+
+- Eight Dutch events dated January and February 2025, all without a picture and written in the
+  same generic voice: `bestuursvergadering-januari`, `workshop-regeneratieve-landbouw`,
+  `soepkeuken-wageningen`, `informatiesessie-csa`, `talk-jonge-boeren`,
+  `lezing-toekomst-voedselsystemen`, `beleid-bijeenkomst-eu-green-deal`,
+  `excursie-biologische-boerderij`.
+- One event named "what" (28 July 2025) with no text.
+- Five speakers who appear only on those eight events: Dr. Maria van der Meer, Lisa Vermeulen,
+  Pieter Janssen, Prof. Dr. Johanna de Wit, Tom van Houten. The speaker "Marcha" stays.
+- Three tags from the starter kit that no story uses: `markdown`, `mermaid`, `TinaCMS`.
+- The hidden text of the Inspringtheater page ("Welcome to Inspringtheater - a unique platform
+  for creativity and expression..."). The old site never showed it. The page's blocks, which hold
+  the real text about the theatre group, stay.
+
+Why this is a judgement and not a fact: the files do not say they are samples. The reading rests
+on their pattern (made together, generic text, people who appear nowhere else). If any of these
+events really took place, it should stay as a past event.
+
+With these gone the report counts 33 events instead of 42, 1 speaker instead of 6 and no tags.
+`missing-media` drops from 11 to 6, because five missing pictures belonged to the removed speakers.
+
 ## Pairing decisions to double-check
 
 Pages were paired across languages by translating each address segment with the table from the old

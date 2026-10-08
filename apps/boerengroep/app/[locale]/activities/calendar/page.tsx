@@ -37,6 +37,7 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
 
     return (
         <Layout>
+            <div className="band section-white">
             <div className="page-width calendar-page">
                 <header className="calendar-page__head">
                     <div>
@@ -52,6 +53,7 @@ export default async function CalendarPage({ params }: CalendarPageProps) {
                     renderedAt={new Date().toISOString()}
                     defaultView={calendar?.defaultView === 'month' ? 'month' : 'list'}
                 />
+            </div>
             </div>
             <CalendarSections locale={locale} />
         </Layout>

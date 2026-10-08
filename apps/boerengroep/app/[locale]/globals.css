@@ -500,7 +500,7 @@ button, [role="button"] {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
-        transform: none !important;
+        scroll-behavior: auto !important;
     }
 
     /* Ensure sub-menu items have no animations even with reduced motion */
@@ -509,11 +509,7 @@ button, [role="button"] {
     }
 }
 
-*:focus-visible {
-    outline: 2px solid hsl(var(--ring)) !important;
-    outline-offset: 2px !important;
-    border-radius: calc(var(--radius) - 2px) !important;
-}
+/* The focus ring is defined once, in site.css. */
 
 /* Dark mode refinements */
 @media (prefers-color-scheme: dark) {

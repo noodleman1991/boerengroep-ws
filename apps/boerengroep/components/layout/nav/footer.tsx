@@ -3,7 +3,7 @@
 import React from "react";
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { LogoImage } from "../../logo";
+import { FALLBACK_LOGO_ON_DARK, LogoImage } from "../../logo";
 import { useLayout } from "../layout-context";
 import { SiteLink } from "../site-link";
 import { NewsletterSignup } from "../../newsletter-signup";
@@ -24,7 +24,7 @@ export const Footer = () => {
     const t = useTranslations('footer');
     const tNav = useTranslations('navigation');
     if (!globalSettings) return null;
-    const { name, tagline, logo, contact, social, footer } = globalSettings;
+    const { name, tagline, logoOnDark, contact, social, footer } = globalSettings;
     const hasContact = contact.addressLines.length > 0 || contact.email || contact.phone;
 
     return (
@@ -35,7 +35,7 @@ export const Footer = () => {
                     <div className="site-footer__grid">
                         <div className="site-footer__brand">
                             <Link href="/" aria-label={tNav('home')}>
-                                <LogoImage src={logo} name={name || 'Home'} />
+                                <LogoImage src={logoOnDark || FALLBACK_LOGO_ON_DARK} name={name || 'Home'} />
                             </Link>
                             {tagline && <p className="site-footer__tagline">{tagline}</p>}
                             {hasContact && (

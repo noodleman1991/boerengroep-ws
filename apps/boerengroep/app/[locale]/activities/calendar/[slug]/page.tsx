@@ -65,6 +65,8 @@ export default async function EventPage({ params }: Props) {
     const call = webAddress(event.place.callLink);
     const going = event.status === 'scheduled' || event.status === 'full';
     const url = `${siteUrl()}/${locale}${eventPath(event.slug)}`;
+    // The event's own words carry their language when the page is in the other one.
+    const lang = event.language && event.language !== locale ? event.language : undefined;
     const portrait = Boolean(event.image?.width && event.image.height && event.image.height > event.image.width);
 
     return (
@@ -82,7 +84,9 @@ export default async function EventPage({ params }: Props) {
                             <TypeTag type={event.type} />
                             <StatusBadge status={event.status} />
                         </div>
-                        <h1 className={going ? undefined : 'event-page__title--off'}>{event.title}</h1>
+                        <h1 className={going ? undefined : 'event-page__title--off'} lang={lang}>
+                            {event.title}
+                        </h1>
                     </div>
                 </header>
 
@@ -146,7 +150,7 @@ export default async function EventPage({ params }: Props) {
                         {going && !passed && <EventActions event={event} siteUrl={siteUrl()} />}
 
                         {event.description && (
-                            <div className="event-page__text">
+                            <div className="event-page__text" lang={lang}>
                                 {event.description.split(/\n{1,}/).map((paragraph, index) => (
                                     <p key={index}>{paragraph}</p>
                                 ))}

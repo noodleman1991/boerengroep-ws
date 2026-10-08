@@ -219,6 +219,20 @@ export function createQueries(deps: QueryDeps) {
       return out
     },
 
+    /** The published pages directly under a page: their title and address in one language. */
+    listChildPages(parentId: number | string, locale: Locale): Promise<{ title: string; path: string }[]> {
+      return run('listChildPages', [String(parentId), locale], ['pages'], async (draft) => {
+        const docs = await find<Page>('pages', draft, {
+          hasDrafts: true,
+          locale,
+          depth: 0,
+          sort: 'title',
+          where: [{ parent: { equals: parentId } }],
+        })
+        return docs.flatMap((doc) => (doc.title && doc.path ? [{ title: doc.title, path: doc.path }] : []))
+      })
+    },
+
     getSiteSettings(locale: Locale): Promise<SiteSetting | null> {
       return run('getSiteSettings', [locale], ['site-settings', 'pages'], async (draft) => {
         const docs = await find<SiteSetting>('site-settings', draft, { hasDrafts: false, locale, limit: 1 })

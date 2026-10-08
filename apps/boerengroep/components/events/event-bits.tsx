@@ -3,6 +3,15 @@ import { useLocale, useTranslations } from 'next-intl';
 import { dateParts, formatTimes, type SiteLocale } from '@/lib/events/time';
 import type { EventStatus, SiteEvent } from '@/lib/events/types';
 
+/**
+ * An event is written in one language. Shown on a page in the other language, its words are
+ * marked with their own language, so a screen reader pronounces them correctly.
+ */
+export function useEventLang(event: Pick<SiteEvent, 'language'>): string | undefined {
+    const locale = useLocale();
+    return event.language && event.language !== locale ? event.language : undefined;
+}
+
 /** The large date beside an event: weekday, day number, month. */
 export function DateBlock({ date, className = '' }: { date: string; className?: string }) {
     const locale = useLocale() as SiteLocale;

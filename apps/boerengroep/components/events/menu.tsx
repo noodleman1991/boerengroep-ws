@@ -17,7 +17,7 @@ export function Menu({ label, icon, variant = 'quiet', open, onOpenChange, child
                 {icon}
                 {label}
             </PopoverTrigger>
-            <PopoverContent align="start" sideOffset={8} collisionPadding={16} className="site-menu">
+            <PopoverContent align="start" sideOffset={8} collisionPadding={16} className="site-menu" aria-label={label}>
                 {children}
             </PopoverContent>
         </Popover>

@@ -781,11 +781,31 @@ export interface GalleryBlock {
    */
   background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
   title?: string | null;
+  /**
+   * Optional.
+   */
+  intro?: string | null;
   source?: ('pictures' | 'pastEvent') | null;
   /**
    * Drop several photos at once. Drag to change the order. Add a caption by opening a photo.
    */
   images?: (number | Media)[] | null;
+  /**
+   * Optional. Videos get the large places in the mosaic. They only load after a visitor presses play.
+   */
+  videos?:
+    | {
+        /**
+         * For example https://www.youtube.com/watch?v=... or https://vimeo.com/...
+         */
+        url: string;
+        /**
+         * Optional. Shown on the video in the mosaic and under it when it plays.
+         */
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * The gallery links back to the story of this event.
    */
@@ -845,6 +865,22 @@ export interface PastEvent {
    * Drop all the photos of the day here at once. They show as a mosaic on the story, and can be reused in a Photo gallery block on any page.
    */
   photos?: (number | Media)[] | null;
+  /**
+   * Optional. Videos of the day, shown among the photos. They only load after a visitor presses play.
+   */
+  videos?:
+    | {
+        /**
+         * For example https://www.youtube.com/watch?v=... or https://vimeo.com/...
+         */
+        url: string;
+        /**
+         * Optional. Shown on the video in the mosaic and under it when it plays.
+         */
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Optional extras under the text: a video, a quote, files.
    */
@@ -1180,12 +1216,12 @@ export interface ItemBlock {
     [k: string]: unknown;
   } | null;
   /**
-   * Free text, for example "€15" or "pay what you can".
+   * Free text, for example "€15" or "what you can spare". Shown large next to the pictures.
    */
   priceText?: string | null;
   actionType?: ('link' | 'form') | null;
   /**
-   * For example "Order a shirt".
+   * For example "Get a shirt for a donation".
    */
   buttonLabel?: string | null;
   linkUrl?: string | null;
@@ -1193,6 +1229,10 @@ export interface ItemBlock {
    * Answers arrive under Form responses.
    */
   form?: (number | null) | Form;
+  /**
+   * Say here what people agree to. Leave empty for the standard line: "This is a donation to (your organisation), not a purchase."
+   */
+  note?: string | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'item';
@@ -1481,9 +1521,13 @@ export interface SiteSetting {
      */
     tagline?: string | null;
     /**
-     * Shown in the header and the footer. A wide image with a transparent background works best.
+     * Shown in the header. A wide image with a transparent background works best.
      */
     logo?: (number | null) | Media;
+    /**
+     * Shown in the dark footer. Use a version with light lettering and a transparent background. Leave empty to use the standard light version.
+     */
+    logoOnDark?: (number | null) | Media;
     /**
      * Shown in the footer. Leave a field empty to hide it.
      */
@@ -2161,8 +2205,16 @@ export interface ImageTextBlockSelect<T extends boolean = true> {
 export interface GalleryBlockSelect<T extends boolean = true> {
   background?: T;
   title?: T;
+  intro?: T;
   source?: T;
   images?: T;
+  videos?:
+    | T
+    | {
+        url?: T;
+        caption?: T;
+        id?: T;
+      };
   pastEvent?: T;
   id?: T;
   blockName?: T;
@@ -2239,6 +2291,7 @@ export interface ItemBlockSelect<T extends boolean = true> {
   buttonLabel?: T;
   linkUrl?: T;
   form?: T;
+  note?: T;
   id?: T;
   blockName?: T;
 }
@@ -2294,6 +2347,13 @@ export interface PastEventsSelect<T extends boolean = true> {
   relatedEvent?: T;
   tags?: T;
   photos?: T;
+  videos?:
+    | T
+    | {
+        url?: T;
+        caption?: T;
+        id?: T;
+      };
   blocks?:
     | T
     | {
@@ -2662,6 +2722,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         name?: T;
         tagline?: T;
         logo?: T;
+        logoOnDark?: T;
         contact?:
           | T
           | {

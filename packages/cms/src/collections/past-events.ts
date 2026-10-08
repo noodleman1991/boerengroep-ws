@@ -1,7 +1,8 @@
 import type { CollectionConfig } from 'payload'
 import { authenticated, publishedOrAuthenticated } from '../access'
 import { articleBlocks } from '../blocks'
-import { languageField, legacyIdField, slugField } from '../fields/shared'
+import { rowLabel } from '../fields/row-label'
+import { languageField, legacyIdField, slugField, videoFields } from '../fields/shared'
 
 export const PastEvents: CollectionConfig = {
   slug: 'past-events',
@@ -50,6 +51,16 @@ export const PastEvents: CollectionConfig = {
         description:
           'Drop all the photos of the day here at once. They show as a mosaic on the story, and can be reused in a Photo gallery block on any page.',
       },
+    },
+    {
+      name: 'videos',
+      type: 'array',
+      labels: { singular: 'Video', plural: 'Videos' },
+      admin: {
+        description: 'Optional. Videos of the day, shown among the photos. They only load after a visitor presses play.',
+        components: rowLabel('caption', 'Video').components,
+      },
+      fields: videoFields,
     },
     {
       name: 'blocks',

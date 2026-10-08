@@ -55,7 +55,17 @@ export const SiteSettings: CollectionConfig = {
               type: 'upload',
               relationTo: 'media',
               admin: {
-                description: 'Shown in the header and the footer. A wide image with a transparent background works best.',
+                description: 'Shown in the header. A wide image with a transparent background works best.',
+              },
+            },
+            {
+              name: 'logoOnDark',
+              type: 'upload',
+              relationTo: 'media',
+              label: 'Logo for dark backgrounds',
+              admin: {
+                description:
+                  'Shown in the dark footer. Use a version with light lettering and a transparent background. Leave empty to use the standard light version.',
               },
             },
             {

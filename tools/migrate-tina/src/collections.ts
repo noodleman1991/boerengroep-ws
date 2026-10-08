@@ -19,11 +19,29 @@ async function each(
 ): Promise<void> {
   for (const rel of listContent(contentDir, folder)) {
     try {
+      if (ctx.fixups.removeFiles.includes(rel)) {
+        await removeImported(ctx, folder, rel)
+        ctx.report.add('skipped', rel, 'removed by a fix-up')
+        continue
+      }
       await fn(readTinaFile(contentDir, rel))
     } catch (err) {
       ctx.report.add('error', rel, (err as Error).message)
     }
   }
+}
+
+/**
+ * Removes what an earlier run made from a content file. Only items of this site that carry
+ * the file's name as their origin are touched, so nothing an editor made can be hit.
+ * The folder names of the old content are the collection names.
+ */
+async function removeImported(ctx: Ctx, collection: string, legacyId: string): Promise<void> {
+  await ctx.payload.delete({
+    collection: collection as never,
+    where: { and: [{ legacyId: { equals: legacyId } }, { tenant: { equals: ctx.tenantId } }] },
+    overrideAccess: true,
+  })
 }
 
 export async function importPeople(ctx: Ctx, contentDir: string): Promise<void> {

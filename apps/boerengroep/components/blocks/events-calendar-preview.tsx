@@ -2,7 +2,7 @@
 import type { EventsCalendarPreviewBlock } from '@sites/cms/types';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { DateBlock, EventFacts, StatusBadge, TypeTag } from '@/components/events/event-bits';
+import { DateBlock, EventFacts, StatusBadge, TypeTag, useEventLang } from '@/components/events/event-bits';
 import { EventRow } from '@/components/events/event-row';
 import { MiniMonth } from '@/components/events/mini-month';
 import { Link } from '@/i18n/navigation';
@@ -79,6 +79,7 @@ export const EventsCalendarPreview = ({ data }: { data: EventsCalendarPreviewBlo
 };
 
 function LeadEvent({ event }: { event: SiteEvent }) {
+    const lang = useEventLang(event);
     return (
         <article className="whats-on__lead">
             <div className="whats-on__lead-frame">
@@ -98,11 +99,15 @@ function LeadEvent({ event }: { event: SiteEvent }) {
                     <TypeTag type={event.type} />
                     <StatusBadge status={event.status} />
                 </div>
-                <h3 className="whats-on__lead-title">
+                <h3 className="whats-on__lead-title" lang={lang}>
                     <Link href={eventPath(event.slug)}>{event.title}</Link>
                 </h3>
                 <EventFacts event={event} />
-                {event.description && <p className="whats-on__lead-text">{event.description}</p>}
+                {event.description && (
+                    <p className="whats-on__lead-text" lang={lang}>
+                        {event.description}
+                    </p>
+                )}
             </div>
         </article>
     );

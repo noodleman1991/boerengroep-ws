@@ -45,9 +45,9 @@ export default function PastEventsClientPage(props: ClientPastEventProps) {
       <Section>
         <div className="container flex flex-col items-center gap-16">
           <div className="text-center">
-            <h2 className="mx-auto mb-6 text-pretty text-3xl font-semibold md:text-4xl lg:max-w-3xl">
+            <h1 className="mx-auto mb-6 text-pretty text-3xl font-semibold md:text-4xl lg:max-w-3xl">
               {t('title')}
-            </h2>
+            </h1>
             <p className="mx-auto max-w-2xl text-muted-foreground md:text-lg">
               {t('description')}
             </p>
@@ -66,14 +66,14 @@ export default function PastEventsClientPage(props: ClientPastEventProps) {
                         {pastEvent.tags?.map((tag) => <span key={tag}>{tag}</span>)}
                       </div>
                     </div>
-                    <h3 className="text-xl font-semibold md:text-2xl lg:text-3xl">
+                    <h2 className="text-xl font-semibold md:text-2xl lg:text-3xl">
                       <Link
                         href={pastEvent.url}
                         className="hover:underline"
                       >
                         {pastEvent.title}
                       </Link>
-                    </h3>
+                    </h2>
                     <div className="mt-4 text-muted-foreground md:mt-5">
                       <RichText data={pastEvent.excerpt} />
                     </div>

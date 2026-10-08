@@ -36,7 +36,10 @@
       "contact": "Contact",
       "vacancies": "Vacancies",
       "open-pot-student-kitchen": "Open Pot"
-    }
+    },
+    "skip": "Skip to the content",
+    "main-menu": "Main menu",
+    "menu-of": "Pages under {name}"
   },
   "newsletter": {
     "title": "Newsletter",
@@ -47,7 +50,7 @@
     "back_to_newsletter": "Back to Newsletter",
     "signup": {
       "title": "Stay informed",
-      "description": "Our newsletter brings news about farming, food and what we organise. About once a month.",
+      "description": "News about farming, food and what we organise, in your inbox.",
       "email_label": "Email address",
       "email_placeholder": "Your email address",
       "consent_statement": "By signing up, you consent to receive our newsletter and agree to our <privacyPolicy>privacy policy</privacyPolicy>.",
@@ -149,7 +152,7 @@
   },
   "calendar": {
     "title": "What's on",
-    "description": "Talks, workshops, excursions and shared meals. Everyone is welcome.",
+    "description": "Talks, workshops, excursions and shared meals.",
     "views": {
       "label": "What to show",
       "upcoming": "Upcoming",
@@ -306,7 +309,8 @@
   },
   "language-switcher": {
     "toggle-language-menu": "Switch language",
-    "help-translate": "Help us translate"
+    "help-translate": "Help us translate",
+    "label": "Language"
   },
   "common": {
     "read-more": "Read more",
@@ -456,14 +460,28 @@
     "video_open": "Open the video",
     "download": "Download",
     "downloads": "Downloads",
-    "previous_picture": "Previous picture",
-    "next_picture": "Next picture",
     "picture": "Picture {n} of {total}",
-    "order": "Order",
-    "order_close": "Close the form",
+    "order": "Get one for a donation",
     "podcast_title": "Listen to our podcast",
     "podcast_all": "All episodes",
     "podcast_listen": "Listen to {title}",
-    "pictures": "Pictures"
+    "pictures": "Pictures",
+    "suggested_donation": "Suggested donation",
+    "donation_note": "This is a donation to {name}, not a purchase.",
+    "open_video": "Play video {n} of {total}",
+    "all_items": "All photos and videos",
+    "show_picture": "Show picture {n}"
+  },
+  "notFound": {
+    "title": "This page does not exist",
+    "text": "It may have moved or been removed. The menu at the top leads everywhere, or start again from the home page.",
+    "home": "To the home page",
+    "calendar": "See what is on"
+  },
+  "pageError": {
+    "title": "Something went wrong",
+    "text": "This page could not be shown. Try again, or start from the home page.",
+    "retry": "Try again",
+    "home": "To the home page"
   }
 }

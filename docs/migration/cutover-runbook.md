@@ -83,7 +83,9 @@ The subscriber database needs no change for this.
    - `APP_DIR` tells the tool which addresses belong to built-in routes, so menu items for the
      calendar, news lists, podcast and vacancies keep their plain address.
    - `FIXUPS_FILE` holds the corrections the old content cannot express: the Dutch "Open Pot"
-     page, the removed cookie and terms pages with their forwarding addresses, and the logo.
+     page, the removed cookie and terms pages with their forwarding addresses, the logo, and
+     the placeholder content that is left out (see "Placeholder content left out" in
+     `2026-boerengroep-dry-run-review.md` and confirm that list first).
      Without it those are not applied.
    - Use `origin/main`, not a local `main`. Editors publish through Tina Cloud straight to GitHub,
      so a local checkout can be weeks behind the live site.
@@ -102,13 +104,17 @@ The subscriber database needs no change for this.
    content from the dry run, such as the vacancy "General Board Member". Adjust them if editors
    changed that content. The run includes automated accessibility checks on each kind of page.
    Two groups of tests skip themselves unless you ask for them:
-   - the block tests need the "Block examples" page. Create it as a draft, or published with
-     `DEMO_PUBLISH=1`, by running `pnpm --filter @sites/cms seed:demo` with the same variables
-     as the seed in step 2. Editors can keep it as a reference or delete it.
+   - the block tests need a test page that carries every block. Create it with
+     `TEST_PAGE_PUBLISH=1 pnpm --filter @sites/cms seed:test-page` and the same variables as the
+     seed in step 2. Its texts only name the blocks. Delete the page "Test page for blocks" and
+     the form "Test form" afterwards, so neither reaches production.
    - the admin test needs `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in the environment.
-8. Open `<preview origin>/calendar.ics` and one event page. Subscribe to the calendar from a
+8. Open `<preview origin>/sitemap.xml` and `<preview origin>/robots.txt`. Every address in the
+   sitemap must start with the origin you expect. A wrong origin means `NEXT_PUBLIC_SITE_URL`
+   is wrong. Vercel keeps preview deployments out of search engines by itself.
+9. Open `<preview origin>/calendar.ics` and one event page. Subscribe to the calendar from a
    phone once, and check that an event's "Add to my calendar" file opens.
-9. Create one account per person in the admin under People and sites, People, with the role
+10. Create one account per person in the admin under People and sites, People, with the role
    Editor on Boerengroep. Ask each editor to log in on the preview and edit a draft page.
 
 ## Cutover day
@@ -141,6 +147,14 @@ started working, list their changes from the admin's version history before deci
   that tab says what is still missing.
 - Four events in the old content end before they start, for example "Lecture series" on
   7 October. The site shows them with their start only. Correct the end dates under Calendar, Events.
+- Every page now has its own title and description for search engines and link previews. The
+  description is the line under the headline of the page's opening block, or else its first
+  paragraph. Two texts are worth a look, because they now show in search results:
+  the Dutch home page says "De website is nog onder constructie ;)", and pages without any
+  text fall back to the site-wide "Wageningen's peasant association | Celebrating 50 years!",
+  which is set in `apps/boerengroep/app/[locale]/layout.tsx`. Filling in the one-line
+  introduction under Site settings, General replaces that fallback.
+- Submit `<site>/sitemap.xml` in Google Search Console. The old site had no sitemap.
 - Tell people about the calendar address `<site>/calendar.ics`, or simply point them at the
   "Subscribe to our calendar" button on the calendar page.
 - Fix the entries marked `fix in admin after cutover` in `2026-boerengroep-dry-run-review.md`:
@@ -164,8 +178,12 @@ started working, list their changes from the admin's version history before deci
   are built from `NEXT_PUBLIC_SITE_URL`. A wrong value there shows up as links to the wrong domain.
 - **Emails from forms** are only sent when an editor adds one on a form, and they go out through
   the same mail settings as password resets.
-- **The database has one migration**, `20261008_110137_initial`. From the first deployment on,
+- **The database has one migration**, `20261008_114307_initial`. From the first deployment on,
   every later change to the content model is a new, additive migration next to it.
+- **Browser tests are not part of CI.** CI runs lint, typecheck, the unit tests, the database
+  tests and the migration check. The 102 browser tests (behaviour, twelve screen widths,
+  accessibility) need a built site with content, so run them by hand against the preview before
+  every cutover-sized change: `E2E_BASE_URL=<origin> pnpm --filter boerengroep e2e`.
 - **Local development.** `pnpm --filter boerengroep dev` needs the database from
   `packages/cms/docker-compose.yml` and the variables in `apps/boerengroep/.env.local`.
   On a machine with 8 GB of memory, prefer `pnpm --filter boerengroep build` and `start`.

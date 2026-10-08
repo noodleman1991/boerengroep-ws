@@ -1,5 +1,5 @@
 {
-  "id": "9f458187-cb5f-4a14-ab66-d8ecdeac3107",
+  "id": "04ea923b-ecde-429f-b9a4-06eed08ae617",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -2308,6 +2308,116 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.pages_blocks_gallery_videos": {
+      "name": "pages_blocks_gallery_videos",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "pages_blocks_gallery_videos_order_idx": {
+          "name": "pages_blocks_gallery_videos_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_gallery_videos_parent_id_idx": {
+          "name": "pages_blocks_gallery_videos_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "pages_blocks_gallery_videos_locale_idx": {
+          "name": "pages_blocks_gallery_videos_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "pages_blocks_gallery_videos_parent_id_fk": {
+          "name": "pages_blocks_gallery_videos_parent_id_fk",
+          "tableFrom": "pages_blocks_gallery_videos",
+          "tableTo": "pages_blocks_gallery",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.pages_blocks_gallery": {
       "name": "pages_blocks_gallery",
       "schema": "",
@@ -2353,6 +2463,12 @@
         },
         "title": {
           "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "intro": {
+          "name": "intro",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -3432,6 +3548,12 @@
         "form_id": {
           "name": "form_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -6436,6 +6558,122 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public._pages_v_blocks_gallery_videos": {
+      "name": "_pages_v_blocks_gallery_videos",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_locale": {
+          "name": "_locale",
+          "type": "_locales",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_pages_v_blocks_gallery_videos_order_idx": {
+          "name": "_pages_v_blocks_gallery_videos_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_gallery_videos_parent_id_idx": {
+          "name": "_pages_v_blocks_gallery_videos_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_pages_v_blocks_gallery_videos_locale_idx": {
+          "name": "_pages_v_blocks_gallery_videos_locale_idx",
+          "columns": [
+            {
+              "expression": "_locale",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_pages_v_blocks_gallery_videos_parent_id_fk": {
+          "name": "_pages_v_blocks_gallery_videos_parent_id_fk",
+          "tableFrom": "_pages_v_blocks_gallery_videos",
+          "tableTo": "_pages_v_blocks_gallery",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public._pages_v_blocks_gallery": {
       "name": "_pages_v_blocks_gallery",
       "schema": "",
@@ -6481,6 +6719,12 @@
         },
         "title": {
           "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "intro": {
+          "name": "intro",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -7605,6 +7849,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "note": {
+          "name": "note",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "_uuid": {
           "name": "_uuid",
           "type": "varchar",
@@ -8722,6 +8972,94 @@
             "id"
           ],
           "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.past_events_videos": {
+      "name": "past_events_videos",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "past_events_videos_order_idx": {
+          "name": "past_events_videos_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "past_events_videos_parent_id_idx": {
+          "name": "past_events_videos_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "past_events_videos_parent_id_fk": {
+          "name": "past_events_videos_parent_id_fk",
+          "tableFrom": "past_events_videos",
+          "tableTo": "past_events",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -10553,6 +10891,94 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.past_events_blocks_gallery_videos": {
+      "name": "past_events_blocks_gallery_videos",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "past_events_blocks_gallery_videos_order_idx": {
+          "name": "past_events_blocks_gallery_videos_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "past_events_blocks_gallery_videos_parent_id_idx": {
+          "name": "past_events_blocks_gallery_videos_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "past_events_blocks_gallery_videos_parent_id_fk": {
+          "name": "past_events_blocks_gallery_videos_parent_id_fk",
+          "tableFrom": "past_events_blocks_gallery_videos",
+          "tableTo": "past_events_blocks_gallery",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.past_events_blocks_gallery": {
       "name": "past_events_blocks_gallery",
       "schema": "",
@@ -10591,6 +11017,12 @@
         },
         "title": {
           "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "intro": {
+          "name": "intro",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -11464,6 +11896,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "note": {
+          "name": "note",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "block_name": {
           "name": "block_name",
           "type": "varchar",
@@ -12015,6 +12453,100 @@
           "tableTo": "media",
           "columnsFrom": [
             "media_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public._past_events_v_version_videos": {
+      "name": "_past_events_v_version_videos",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_past_events_v_version_videos_order_idx": {
+          "name": "_past_events_v_version_videos_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_past_events_v_version_videos_parent_id_idx": {
+          "name": "_past_events_v_version_videos_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_past_events_v_version_videos_parent_id_fk": {
+          "name": "_past_events_v_version_videos_parent_id_fk",
+          "tableFrom": "_past_events_v_version_videos",
+          "tableTo": "_past_events_v",
+          "columnsFrom": [
+            "_parent_id"
           ],
           "columnsTo": [
             "id"
@@ -13935,6 +14467,100 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public._past_events_v_blocks_gallery_videos": {
+      "name": "_past_events_v_blocks_gallery_videos",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_past_events_v_blocks_gallery_videos_order_idx": {
+          "name": "_past_events_v_blocks_gallery_videos_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_past_events_v_blocks_gallery_videos_parent_id_idx": {
+          "name": "_past_events_v_blocks_gallery_videos_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_past_events_v_blocks_gallery_videos_parent_id_fk": {
+          "name": "_past_events_v_blocks_gallery_videos_parent_id_fk",
+          "tableFrom": "_past_events_v_blocks_gallery_videos",
+          "tableTo": "_past_events_v_blocks_gallery",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public._past_events_v_blocks_gallery": {
       "name": "_past_events_v_blocks_gallery",
       "schema": "",
@@ -13973,6 +14599,12 @@
         },
         "title": {
           "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "intro": {
+          "name": "intro",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -14879,6 +15511,12 @@
         "form_id": {
           "name": "form_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -17415,6 +18053,94 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.newsletters_blocks_gallery_videos": {
+      "name": "newsletters_blocks_gallery_videos",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "newsletters_blocks_gallery_videos_order_idx": {
+          "name": "newsletters_blocks_gallery_videos_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "newsletters_blocks_gallery_videos_parent_id_idx": {
+          "name": "newsletters_blocks_gallery_videos_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "newsletters_blocks_gallery_videos_parent_id_fk": {
+          "name": "newsletters_blocks_gallery_videos_parent_id_fk",
+          "tableFrom": "newsletters_blocks_gallery_videos",
+          "tableTo": "newsletters_blocks_gallery",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.newsletters_blocks_gallery": {
       "name": "newsletters_blocks_gallery",
       "schema": "",
@@ -17453,6 +18179,12 @@
         },
         "title": {
           "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "intro": {
+          "name": "intro",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -18323,6 +19055,12 @@
         "form_id": {
           "name": "form_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -20834,6 +21572,100 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public._newsletters_v_blocks_gallery_videos": {
+      "name": "_newsletters_v_blocks_gallery_videos",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "_uuid": {
+          "name": "_uuid",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "_newsletters_v_blocks_gallery_videos_order_idx": {
+          "name": "_newsletters_v_blocks_gallery_videos_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "_newsletters_v_blocks_gallery_videos_parent_id_idx": {
+          "name": "_newsletters_v_blocks_gallery_videos_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "_newsletters_v_blocks_gallery_videos_parent_id_fk": {
+          "name": "_newsletters_v_blocks_gallery_videos_parent_id_fk",
+          "tableFrom": "_newsletters_v_blocks_gallery_videos",
+          "tableTo": "_newsletters_v_blocks_gallery",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public._newsletters_v_blocks_gallery": {
       "name": "_newsletters_v_blocks_gallery",
       "schema": "",
@@ -20872,6 +21704,12 @@
         },
         "title": {
           "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "intro": {
+          "name": "intro",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -21778,6 +22616,12 @@
         "form_id": {
           "name": "form_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -27157,6 +28001,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "general_logo_on_dark_id": {
+          "name": "general_logo_on_dark_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "general_contact_address": {
           "name": "general_contact_address",
           "type": "varchar",
@@ -27249,6 +28099,21 @@
           "method": "btree",
           "with": {}
         },
+        "site_settings_general_general_logo_on_dark_idx": {
+          "name": "site_settings_general_general_logo_on_dark_idx",
+          "columns": [
+            {
+              "expression": "general_logo_on_dark_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "site_settings_updated_at_idx": {
           "name": "site_settings_updated_at_idx",
           "columns": [
@@ -27300,6 +28165,19 @@
           "tableTo": "media",
           "columnsFrom": [
             "general_logo_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "site_settings_general_logo_on_dark_id_media_id_fk": {
+          "name": "site_settings_general_logo_on_dark_id_media_id_fk",
+          "tableFrom": "site_settings",
+          "tableTo": "media",
+          "columnsFrom": [
+            "general_logo_on_dark_id"
           ],
           "columnsTo": [
             "id"

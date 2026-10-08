@@ -40,7 +40,7 @@ export function PodcastHeader({ podcast, locale }: PodcastHeaderProps) {
           )}
 
           {/* Podcast Info */}
-          <div className="flex-1 space-y-4">
+          <div className="flex-1 min-w-0 space-y-4">
             <div>
               <h1 className="text-3xl font-bold mb-2">{podcast.title}</h1>
               {podcast.author && (
@@ -50,7 +50,7 @@ export function PodcastHeader({ podcast, locale }: PodcastHeaderProps) {
               )}
             </div>
 
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed [overflow-wrap:anywhere]">
               {podcast.description}
             </p>
 

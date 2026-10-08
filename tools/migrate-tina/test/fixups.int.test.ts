@@ -21,6 +21,14 @@ const fixups = {
     { from: '/accessibility', to: '/about-us' },
     { from: '/over-ons/geschiedenis', to: '/about-us/history' },
   ],
+  // Placeholder content that the old site still carries.
+  removeFiles: ['events/nl/soepkeuken.mdx', 'speakers/sample-speaker.md', 'tags/sample.mdx'],
+  clearPageBodies: ['activities/calendar-sections/breaks'],
+}
+
+async function byLegacyId(payload: Payload, collection: string, legacyId: string) {
+  const res = await payload.find({ collection: collection as never, where: { legacyId: { equals: legacyId } }, draft: true, overrideAccess: true })
+  return res.docs[0] as any
 }
 
 async function page(payload: Payload, key: string, locale: 'en' | 'nl') {
@@ -74,6 +82,31 @@ describe('migration fix-ups', () => {
       { kind: 'skipped', legacyId: 'pages/en/accessibility.mdx', message: 'removed by a fix-up' },
     ])
     expect(report.failed).toBe(false)
+  })
+
+  it('removes placeholder events, people and tags that an earlier run imported, and nothing else', async () => {
+    expect(await byLegacyId(payload, 'events', 'events/nl/soepkeuken.mdx')).toBeUndefined()
+    expect(await byLegacyId(payload, 'speakers', 'speakers/sample-speaker.md')).toBeUndefined()
+    expect(await byLegacyId(payload, 'tags', 'tags/sample.mdx')).toBeUndefined()
+    expect((await byLegacyId(payload, 'events', 'events/en/Boerengroep-Weekend.mdx'))?.title).toBeTruthy()
+    expect((await byLegacyId(payload, 'speakers', 'speakers/maria.md'))?.name).toBe('Dr. Maria van der Meer')
+    expect((await byLegacyId(payload, 'tags', 'tags/weekend.mdx'))?.name).toBe('weekend')
+  })
+
+  it('says in the report which files were left out', async () => {
+    const report = await migrate({ ...base(payload), fixups })
+    for (const file of fixups.removeFiles) {
+      expect(report.entries.filter((e) => e.legacyId === file)).toEqual([{ kind: 'skipped', legacyId: file, message: 'removed by a fix-up' }])
+    }
+  })
+
+  it('empties the hidden text of a page named in the fix-ups and keeps the page', async () => {
+    const before = await migrate(base(payload)).then(() => page(payload, 'activities/calendar-sections/breaks', 'en'))
+    expect(JSON.stringify(before.body)).toContain('text')
+    await migrate({ ...base(payload), fixups })
+    const after = await page(payload, 'activities/calendar-sections/breaks', 'en')
+    expect(after.title).toBe(before.title)
+    expect(after.body ?? null).toBeNull()
   })
 
   it('stays the same when run again', async () => {

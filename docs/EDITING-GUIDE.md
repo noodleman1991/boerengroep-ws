@@ -45,6 +45,15 @@ A page has a **title**, an **address** and **blocks**.
 - **Sits under** makes a page a sub-page. `history` under `about-us` becomes `/about-us/history`.
 - **Blocks** are the parts of the page from top to bottom. Press "Add block", pick one, fill it in.
   Drag a block by its handle to move it. Each block starts with one line that says what it is for.
+- **Text** is the page's own plain text. It shows right under the opening block, before the
+  other blocks.
+
+A page that does not start with an Opening block gets its title as its heading. A page with
+nothing on it lists the pages that sit under it.
+
+Search engines and link previews show the page's title, and as its description the line under
+the headline of the Opening block, or else the first paragraph of the page. Write those two with
+a stranger in mind.
 
 ### Two languages
 
@@ -74,14 +83,12 @@ green. Alternate white with a colour to give a page rhythm.
 | Quotes | What people say about you |
 | Invitation | One clear next step with a button, usually at the end of a page |
 | Video | A YouTube or Vimeo link. It only loads after a visitor presses play |
-| Photo gallery | Photos as a mosaic that open large. Your own choice, or the photos of a past event |
+| Photo gallery | Photos and videos as a mosaic that open large, with captions. Your own choice, or those of a past event |
 | Downloads | Files to download, with name, kind and size |
 | Podcast episodes | The latest episodes, or ones you choose by a few words of their title |
 | Newsletter sign-up | The sign-up box anywhere on a page |
 | Form | A form you built under Forms |
-| Item to order | Something to order or sign up for, such as a T-shirt: pictures, details, price, one button |
-
-To see every block filled in, ask your admin for the "Block examples" page.
+| Item for a donation | Something people get for a donation, such as a T-shirt: pictures, details, the suggested donation, one button and small print you can edit. It is a donation, not a sale |
 
 **Symbols.** Where a block asks for a symbol, type one of these names: Apple, ArrowRight, Bike,
 BookOpen, Calendar, Camera, Clock, Download, ExternalLink, Film, Globe, GraduationCap, HandHeart,
@@ -114,8 +121,9 @@ off under Site settings, Calendar.
 ## Stories of past events
 
 Write how it went, and drop all photos of the day in **Photos** at once. They show as a mosaic.
-Choose **The event on the calendar** and the event page links to the story and back. A photo's
-caption is set on the photo itself, under Library, Pictures and files.
+Add **Videos** by their YouTube or Vimeo link, each with a caption. Videos get the large places
+in the mosaic. Choose **The event on the calendar** and the event page links to the story and
+back. A photo's caption is set on the photo itself, under Library, Pictures and files.
 
 ## News and vacancies
 
@@ -136,21 +144,22 @@ upload PDF, Word, Excel, PowerPoint, OpenDocument, text and CSV files as well.
 
 Under Forms you build a form: add fields (text, email, number, choice, long text, tick box),
 say which ones are needed, and write the message people see afterwards. Place it on a page with
-the Form block or the "Item to order" block. Answers arrive under Form responses and can only be read by
+the Form block or the "Item for a donation" block. Answers arrive under Form responses and can only be read by
 people who work on your site. To get an email for each answer, add one under "Emails" on the form.
 
 ## Site settings
 
 One screen with five tabs. Only site admins can change it.
 
-- **General.** Name, logo, one-line introduction, contact details and social media.
+- **General.** Name, logo, a logo for dark backgrounds (used in the footer), one-line
+  introduction, contact details and social media.
 - **Menu.** The items at the top of every page. Each item goes to a page of the site, a built-in
   section such as the calendar, or any other address. A link to a page keeps working when that
   page moves. An item can have a dropdown. Tick "Show as a button" for the one thing you most
   want visitors to do.
 - **Footer.** Link columns and the small links at the very bottom.
-- **Newsletter.** The texts of the sign-up box, the thank-you people read after signing up, and
-  the message after they confirm. At the top is a check, "Does the sign-up reach Brevo?". It
+- **Newsletter.** The texts of the sign-up box, including the small print about consent, the
+  thank-you people read after signing up, and the message after they confirm. At the top is a check, "Does the sign-up reach Brevo?". It
   says in plain words whether the link works, lists your Brevo lists with their numbers, and
   offers a button that adds everyone who is missing from the list.
 - **Calendar.** The text above the calendar, the first view (list or month) and the subscribe

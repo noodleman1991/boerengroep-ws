@@ -22,7 +22,7 @@ export type MigrateInput = {
   /** Addresses served by built-in routes of the app, for example `/vacancies`. */
   reservedPaths?: string[]
   /** Hand-written corrections for this site. */
-  fixups?: Fixups
+  fixups?: Partial<Fixups>
   /** The old site's translation files, keyed by language. */
   messages?: { en?: unknown; nl?: unknown }
 }
@@ -48,7 +48,8 @@ export async function migrate(input: MigrateInput): Promise<Report> {
     ids: new Map(),
     pageByEnPath: new Map(),
     reservedPaths: new Set(input.reservedPaths ?? []),
-    fixups: input.fixups ?? emptyFixups,
+    // A fix-ups object may leave parts out.
+    fixups: { ...emptyFixups, ...input.fixups },
     messages: input.messages ?? {},
     toLexical: await makeToLexical(payload, report, media),
   }

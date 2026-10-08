@@ -29,7 +29,7 @@ test('an old Dutch link with English segments lands on the Dutch URL', async ({ 
 
 test('the language switcher keeps the visitor on the same page', async ({ page }) => {
   await page.goto('/en/about-us/history')
-  await page.getByRole('link', { name: 'Switch to Dutch' }).first().click()
+  await page.getByRole('link', { name: 'Schakel naar Nederlands' }).first().click()
   await expect(page).toHaveURL(/\/nl\/over-ons\/geschiedenis$/)
   await page.getByRole('link', { name: 'Switch to English' }).first().click()
   await expect(page).toHaveURL(/\/en\/about-us\/history$/)
@@ -241,25 +241,28 @@ test('the newsletter endpoints do not report on the server setup to visitors', a
   expect((await request.post('/api/newsletter/sync')).status()).toBe(401)
 })
 
-// The block tests use the "Block examples" page (pnpm --filter @sites/cms seed:demo).
+// The block tests use the test page (pnpm --filter @sites/cms seed:test-page).
 // Where that page does not exist, for example on a fresh database, they are skipped.
-const examples = '/en/block-examples'
+const examples = '/en/test-blocks'
 async function openExamples(page: import('@playwright/test').Page) {
   const res = await page.goto(examples)
-  test.skip(res?.status() !== 200, 'the Block examples page is not seeded here')
+  test.skip(res?.status() !== 200, 'the test page for blocks is not seeded here')
 }
 
 test('a photo opens large and the arrow keys move through the gallery', async ({ page }) => {
   await openExamples(page)
-  await page.getByRole('button', { name: /^Open photo 1 of/ }).first().click()
+  await page.getByRole('button', { name: /^Open photo \d+ of/ }).first().click()
   const large = page.getByRole('dialog')
   await expect(large).toBeVisible()
-  await expect(large).toContainText(/1 of \d+/)
+  const count = large.locator('.lightbox__count')
+  const first = Number((await count.textContent())!.split(' ')[0])
   await page.keyboard.press('ArrowRight')
-  await expect(large).toContainText(/2 of \d+/)
+  await expect(count).toHaveText(new RegExp(`^${first + 1} of`))
   await page.keyboard.press('ArrowLeft')
-  await page.keyboard.press('ArrowLeft')
-  await expect(large).not.toContainText(/^1 of/)
+  await expect(count).toHaveText(new RegExp(`^${first} of`))
+  // The strip of small pictures jumps straight to one.
+  await large.locator('.lightbox__thumb').last().click()
+  await expect(large.locator('.lightbox__thumb').last()).toHaveAttribute('aria-current', 'true')
   await page.keyboard.press('Escape')
   await expect(large).toHaveCount(0)
 })
@@ -286,24 +289,49 @@ test('a form says what is missing, and thanks you when it is complete', async ({
   await form.scrollIntoViewIfNeeded()
   // The site ignores answers that arrive faster than a person can type.
   await page.waitForTimeout(1700)
-  await form.getByRole('button', { name: 'Send my order' }).click()
+  await form.getByRole('button', { name: 'Send the test' }).click()
   await expect(form.getByText('Fill this in.').first()).toBeVisible()
   await form.getByLabel('Your name').fill('Test visitor')
   await form.getByLabel('Email').fill('test@example.org')
   await form.getByLabel('Size').selectOption('m')
-  await form.getByLabel(/I pick it up/).check()
-  await form.getByRole('button', { name: 'Send my order' }).click()
+  await form.getByLabel(/I understand this is a test/).check()
+  await form.getByRole('button', { name: 'Send the test' }).click()
   await expect(page.locator('.form-block').getByRole('status')).toContainText('Thank you')
 })
 
-test('an item shows its order form after pressing the button', async ({ page }) => {
+test('an item says it is a donation, shows its pictures and opens its form', async ({ page }) => {
   await openExamples(page)
   const item = page.locator('.item')
+  await expect(item).toContainText('Suggested donation')
+  await expect(item.locator('.item__note')).toContainText('This is a donation to')
+  await expect(item.locator('.item__note')).toContainText('not a purchase')
+  await item.getByRole('button', { name: 'Show picture 2' }).click()
+  await expect(item.getByRole('button', { name: 'Show picture 2' })).toHaveAttribute('aria-current', 'true')
   await expect(item.locator('form')).toHaveCount(0)
-  await item.getByRole('button', { name: 'Order a shirt' }).click()
+  await item.getByRole('button', { name: 'Ask for one' }).click()
   await expect(item.locator('form')).toBeVisible()
-  await item.getByRole('button', { name: 'Next picture' }).click()
-  await expect(item).toContainText('2 of 3')
+})
+
+test('a video among the photos plays in the large view only when asked', async ({ page }) => {
+  const asked: string[] = []
+  await page.route((url) => /youtube|ytimg|vimeo/.test(url.hostname), async (route) => {
+    asked.push(new URL(route.request().url()).hostname)
+    await route.abort()
+  })
+  await openExamples(page)
+  const tile = page.getByRole('button', { name: /^Play video \d+ of/ }).first()
+  await tile.scrollIntoViewIfNeeded()
+  expect(asked).toEqual([])
+  // Reaching the video with the arrow keys does not load it.
+  await page.getByRole('button', { name: /^Open photo \d+ of/ }).first().click()
+  const large = page.getByRole('dialog')
+  await large.locator('.lightbox__thumb').first().click()
+  await expect(large.getByRole('button', { name: /Play video/ }).first()).toBeVisible()
+  expect(asked).toEqual([])
+  await page.keyboard.press('Escape')
+  // Pressing play on the tile does.
+  await tile.click()
+  await expect(page.getByRole('dialog').locator('iframe')).toHaveAttribute('src', /youtube-nocookie\.com\/embed\//)
 })
 
 test('form answers cannot be sent for a form of another site or with made-up fields', async ({ request }) => {

@@ -29,7 +29,7 @@ export async function CalendarSections({ locale }: { locale: Locale }) {
     const t = await getTranslations({ locale, namespace: 'calendar' });
 
     return (
-        <div className="section-mist">
+        <div className="band section-mist">
             <div className="page-width calendar-regulars">
                 <h2>{t('sections_title')}</h2>
                 <div className="calendar-regulars__grid">

@@ -130,13 +130,13 @@ export const NewsletterList = ({ newsletters, locale, filter, title, description
                                                     href={href as string}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="hover:underline flex items-center gap-2"
+                                                    className="hover:underline flex min-h-7 items-center gap-2"
                                                 >
                                                     {newsletter.title}
                                                     <ExternalLink className="h-4 w-4 shrink-0" />
                                                 </a>
                                             ) : (
-                                                <Link href={href} className="hover:underline">
+                                                <Link href={href} className="hover:underline inline-block min-h-7">
                                                     {newsletter.title}
                                                 </Link>
                                             )}

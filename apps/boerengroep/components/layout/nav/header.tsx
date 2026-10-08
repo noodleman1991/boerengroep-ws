@@ -26,6 +26,12 @@ export const Header = () => {
     const [sheetItem, setSheetItem] = useState<number | null>(null);
     const [compact, setCompact] = useState(false);
     const navRef = useRef<HTMLElement>(null);
+    const burgerRef = useRef<HTMLButtonElement>(null);
+    // Read inside the key handler, which is set up once.
+    const openRef = useRef<number | null>(null);
+    openRef.current = open;
+    const sheetRef = useRef(false);
+    sheetRef.current = sheetOpen;
 
     // Slimmer bar once the visitor has scrolled past the top.
     useEffect(() => {
@@ -42,10 +48,14 @@ export const Header = () => {
     }, [pathname]);
     useEffect(() => {
         const onKey = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                setOpen(null);
-                setSheetOpen(false);
+            if (event.key !== 'Escape') return;
+            // Give the keyboard back to the button that opened the menu, so nobody is left nowhere.
+            if (openRef.current !== null) {
+                navRef.current?.querySelector<HTMLButtonElement>(`[aria-controls="nav-panel-${openRef.current}"]`)?.focus();
             }
+            if (sheetRef.current) burgerRef.current?.focus();
+            setOpen(null);
+            setSheetOpen(false);
         };
         const onClick = (event: MouseEvent) => {
             if (navRef.current && !navRef.current.contains(event.target as Node)) setOpen(null);
@@ -59,8 +69,13 @@ export const Header = () => {
     }, []);
     useEffect(() => {
         document.body.style.overflow = sheetOpen ? 'hidden' : '';
+        // While the phone menu covers the page, the page behind it is out of reach for
+        // the keyboard and for screen readers too.
+        const behind = document.querySelectorAll<HTMLElement>('main, .site-footer-wrap, .skip-link');
+        for (const element of behind) element.inert = sheetOpen;
         return () => {
             document.body.style.overflow = '';
+            for (const element of behind) element.inert = false;
         };
     }, [sheetOpen]);
 
@@ -72,14 +87,20 @@ export const Header = () => {
                     <LogoImage src={globalSettings?.logo} name={globalSettings?.name || 'Home'} />
                 </Link>
 
-                <nav className="site-nav" aria-label="Main" ref={navRef}>
+                <nav className="site-nav" aria-label={t('main-menu')} ref={navRef}>
                     <ul className="site-nav__list">
                         {nav.map((item, index) => {
                             const current = !item.external && isCurrent(pathname, item.href);
                             if (item.children.length > 0) {
                                 const expanded = open === index;
                                 return (
-                                    <li key={index}>
+                                    <li
+                                        key={index}
+                                        // Tabbing out of an open dropdown closes it.
+                                        onBlur={(event) => {
+                                            if (expanded && !event.currentTarget.contains(event.relatedTarget as Node | null)) setOpen(null);
+                                        }}
+                                    >
                                         <button
                                             type="button"
                                             className="site-nav__item"
@@ -92,7 +113,7 @@ export const Header = () => {
                                             <ChevronDown className="site-nav__chevron" aria-hidden="true" />
                                         </button>
                                         {expanded && (
-                                            <ul className="site-nav__panel" id={`nav-panel-${index}`}>
+                                            <ul className="site-nav__panel" id={`nav-panel-${index}`} aria-label={t('menu-of', { name: item.label })}>
                                                 <li>
                                                     <SiteLink link={item}>{item.label}</SiteLink>
                                                 </li>
@@ -126,6 +147,7 @@ export const Header = () => {
                     <button
                         type="button"
                         className="site-header__burger"
+                        ref={burgerRef}
                         aria-label={sheetOpen ? t('close-menu') : t('open-menu')}
                         aria-expanded={sheetOpen}
                         onClick={() => setSheetOpen(!sheetOpen)}
@@ -139,7 +161,7 @@ export const Header = () => {
             {/* Outside the header: its blur effect would otherwise trap this full-screen sheet inside the bar. */}
             {sheetOpen && (
                 <div className="site-sheet">
-                    <nav aria-label="Main">
+                    <nav aria-label={t('main-menu')}>
                         <ul>
                             {nav.map((item, index) => (
                                 <li key={index}>

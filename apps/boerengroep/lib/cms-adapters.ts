@@ -154,6 +154,7 @@ export function toPastEventNode(p: PastEvent) {
     blocks: p.blocks ?? [],
     body: p.body ?? undefined,
     photos: toPhotos(p.photos),
+    videos: (p.videos ?? []).map((row) => ({ url: row.url, caption: row.caption ?? null })),
     relatedEvent: relatedEvent(p.relatedEvent),
     _sys: { breadcrumbs: [p.slug], filename: p.slug },
   }
@@ -184,6 +185,7 @@ export function toGlobalSettings(s: SiteSetting | null) {
     name: general?.name ?? '',
     tagline: general?.tagline ?? undefined,
     logo: mediaUrl(general?.logo),
+    logoOnDark: mediaUrl(general?.logoOnDark),
     contact: {
       addressLines: (general?.contact?.address ?? '')
         .split('\n')

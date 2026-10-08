@@ -12,7 +12,7 @@ function ctx(): Ctx {
     ids: new Map(),
     pageByEnPath: new Map(),
     reservedPaths: new Set(),
-    fixups: { removePages: [], pageOverrides: {}, redirects: [] },
+    fixups: { removePages: [], pageOverrides: {}, redirects: [], removeFiles: [], clearPageBodies: [] },
     messages: {},
     toLexical: async (md) => (typeof md === 'string' && md.trim() ? { lexicalOf: md.trim() } : undefined),
   }

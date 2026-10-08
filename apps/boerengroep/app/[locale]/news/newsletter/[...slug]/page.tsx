@@ -1,8 +1,12 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout';
 import { cms, type Locale } from '@/lib/cms';
-import { toNewsletterNode } from '@/lib/cms-adapters';
+import { mediaUrl, toNewsletterNode } from '@/lib/cms-adapters';
+import { firstParagraph } from '@/lib/page-meta';
+import { siteMeta } from '@/lib/site-meta';
+import { newsItemPath } from '@/lib/sitemap';
 import NewsletterClientPage from './client-page';
 
 export const revalidate = 3600;
@@ -10,6 +14,20 @@ export const revalidate = 3600;
 // Kept from the previous implementation, including the 'Inspiratietheater' spelling.
 const isMainOrganization = (organization: string) =>
     organization === 'Boerengroep' || organization === 'Inspiratietheater';
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale; slug: string[] }> }): Promise<Metadata> {
+    const { locale, slug } = await params;
+    setRequestLocale(locale);
+    const item = await cms.getNewsletter(decodeURIComponent(slug[slug.length - 1]!), locale);
+    if (!item) return {};
+    return siteMeta(locale, {
+        title: item.title,
+        description: firstParagraph(item.excerpt) ?? item.linkDescription,
+        path: newsItemPath(item),
+        picture: mediaUrl(item.featuredImage, 'og'),
+        type: 'article',
+    });
+}
 
 export default async function NewsletterDetailPage({
     params,

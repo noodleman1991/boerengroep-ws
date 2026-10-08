@@ -109,3 +109,16 @@ export const legacyIdField: Field = {
   index: true,
   admin: { readOnly: true, position: 'sidebar', hidden: true },
 }
+
+/** One video by its link, with a line of text. Used where videos sit among photos. */
+export const videoFields: Field[] = [
+  {
+    name: 'url',
+    type: 'text',
+    required: true,
+    label: 'Video link',
+    admin: { description: 'For example https://www.youtube.com/watch?v=... or https://vimeo.com/...' },
+  },
+  { name: 'caption', type: 'text', label: 'Caption', admin: { description: 'Optional. Shown on the video in the mosaic and under it when it plays.' } },
+]
+

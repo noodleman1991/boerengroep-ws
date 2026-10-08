@@ -36,7 +36,10 @@
       "contact": "Contact",
       "vacancies": "Vacatures",
       "open-pot-student-kitchen": "Open Pot"
-    }
+    },
+    "skip": "Ga naar de inhoud",
+    "main-menu": "Hoofdmenu",
+    "menu-of": "Pagina's onder {name}"
   },
   "newsletter": {
     "title": "Nieuwsbrief",
@@ -47,7 +50,7 @@
     "back_to_newsletter": "Terug naar Nieuwsbrief",
     "signup": {
       "title": "Blijf op de hoogte",
-      "description": "Onze nieuwsbrief brengt nieuws over landbouw, voedsel en wat we organiseren. Ongeveer één keer per maand.",
+      "description": "Nieuws over landbouw, voedsel en wat we organiseren, in je inbox.",
       "email_label": "E-mailadres",
       "email_placeholder": "Je e-mailadres",
       "consent_statement": "Door je aan te melden, geef je toestemming om onze nieuwsbrief te ontvangen en ga je akkoord met ons <privacyPolicy>privacybeleid</privacyPolicy>.",
@@ -149,7 +152,7 @@
   },
   "calendar": {
     "title": "Agenda",
-    "description": "Lezingen, workshops, excursies en samen eten. Iedereen is welkom.",
+    "description": "Lezingen, workshops, excursies en samen eten.",
     "views": {
       "label": "Wat je ziet",
       "upcoming": "Binnenkort",
@@ -306,7 +309,8 @@
   },
   "language-switcher": {
     "toggle-language-menu": "Wissel van taal",
-    "help-translate": "Help ons vertalen"
+    "help-translate": "Help ons vertalen",
+    "label": "Taal"
   },
   "common": {
     "read-more": "Lees meer",
@@ -456,14 +460,28 @@
     "video_open": "Open de video",
     "download": "Download",
     "downloads": "Downloads",
-    "previous_picture": "Vorige afbeelding",
-    "next_picture": "Volgende afbeelding",
     "picture": "Afbeelding {n} van {total}",
-    "order": "Bestellen",
-    "order_close": "Sluit het formulier",
+    "order": "Krijg er een voor een donatie",
     "podcast_title": "Luister naar onze podcast",
     "podcast_all": "Alle afleveringen",
     "podcast_listen": "Luister naar {title}",
-    "pictures": "Afbeeldingen"
+    "pictures": "Afbeeldingen",
+    "suggested_donation": "Voorgestelde donatie",
+    "donation_note": "Dit is een donatie aan {name}, geen aankoop.",
+    "open_video": "Speel video {n} van {total} af",
+    "all_items": "Alle foto's en video's",
+    "show_picture": "Toon afbeelding {n}"
+  },
+  "notFound": {
+    "title": "Deze pagina bestaat niet",
+    "text": "Misschien is ze verplaatst of verwijderd. Via het menu bovenaan kom je overal, of begin opnieuw op de startpagina.",
+    "home": "Naar de startpagina",
+    "calendar": "Bekijk de agenda"
+  },
+  "pageError": {
+    "title": "Er ging iets mis",
+    "text": "Deze pagina kon niet worden getoond. Probeer het opnieuw, of begin op de startpagina.",
+    "retry": "Opnieuw proberen",
+    "home": "Naar de startpagina"
   }
 }
