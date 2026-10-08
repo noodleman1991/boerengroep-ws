@@ -33,6 +33,17 @@ type FindOptions = {
   hasDrafts: boolean
 }
 
+/**
+ * What each kind of content can show from other collections. A cached answer is dropped when
+ * any of these change, so a page never keeps showing an old form, old photos or an old name.
+ * Pictures and files are added for every query in `run`.
+ */
+const BLOCKS_SHOW = ['forms', 'past-events']
+const PAGE_SHOWS = ['pages', ...BLOCKS_SHOW]
+const EVENT_SHOWS = ['events', 'speakers']
+const STORY_SHOWS = ['past-events', 'events', 'authors', 'tags', 'forms']
+const NEWSLETTER_SHOWS = ['newsletters', 'authors', 'tags', ...BLOCKS_SHOW]
+
 export function createQueries(deps: QueryDeps) {
   const tag = (collection: string) => `${deps.tenantSlug}:${collection}`
 
@@ -158,7 +169,7 @@ export function createQueries(deps: QueryDeps) {
      *    and the caller redirects to the page's path in this locale.
      */
     resolvePage(locale: Locale, path: string): Promise<{ page?: Page; redirectTo?: string } | null> {
-      return run('resolvePage', [locale, path], ['pages'], async (draft) => {
+      return run('resolvePage', [locale, path], PAGE_SHOWS, async (draft) => {
         const direct = await pageByPath(draft, locale, path)
         if (direct) return { page: direct }
         for (const other of LOCALES.filter((l) => l !== locale)) {
@@ -180,7 +191,7 @@ export function createQueries(deps: QueryDeps) {
     },
 
     getPageByEnglishPath(path: string, locale: Locale): Promise<Page | null> {
-      return run('getPageByEnglishPath', [path, locale], ['pages'], async (draft) => {
+      return run('getPageByEnglishPath', [path, locale], PAGE_SHOWS, async (draft) => {
         const match = await pageByPath(draft, 'en', path)
         return match ? pageById(draft, locale, match.id) : null
       })
@@ -216,14 +227,14 @@ export function createQueries(deps: QueryDeps) {
     },
 
     listEvents(): Promise<Event[]> {
-      return run('listEvents', [], ['events'], (draft) =>
+      return run('listEvents', [], EVENT_SHOWS, (draft) =>
         find<Event>('events', draft, { hasDrafts: false, sort: 'startDate' }),
       )
     },
 
     /** One event by the last part of its address. */
     getEvent(slug: string): Promise<Event | null> {
-      return run('getEvent', [slug], ['events'], async (draft) => {
+      return run('getEvent', [slug], EVENT_SHOWS, async (draft) => {
         const docs = await find<Event>('events', draft, { hasDrafts: false, limit: 1, where: [{ slug: { equals: slug } }] })
         return docs[0] ?? null
       })
@@ -231,7 +242,7 @@ export function createQueries(deps: QueryDeps) {
 
     /** The story written afterwards about an event, in the reader's language when there is one. */
     getRecapOfEvent(eventId: number | string, locale: Locale): Promise<PastEvent | null> {
-      return run('getRecapOfEvent', [String(eventId), locale], ['past-events'], async (draft) => {
+      return run('getRecapOfEvent', [String(eventId), locale], STORY_SHOWS, async (draft) => {
         const docs = await find<PastEvent>('past-events', draft, {
           hasDrafts: true,
           depth: 1,
@@ -242,14 +253,14 @@ export function createQueries(deps: QueryDeps) {
     },
 
     listNewsletters(): Promise<Newsletter[]> {
-      return run('listNewsletters', [], ['newsletters'], (draft) =>
+      return run('listNewsletters', [], NEWSLETTER_SHOWS, (draft) =>
         find<Newsletter>('newsletters', draft, { hasDrafts: true, sort: '-publishDate' }),
       )
     },
 
     /** Prefers the issue written in the requested language when two share a slug. */
     getNewsletter(slug: string, locale: Locale): Promise<Newsletter | null> {
-      return run('getNewsletter', [slug, locale], ['newsletters'], async (draft) => {
+      return run('getNewsletter', [slug, locale], NEWSLETTER_SHOWS, async (draft) => {
         const docs = await find<Newsletter>('newsletters', draft, {
           hasDrafts: true,
           where: [{ slug: { equals: slug } }],
@@ -259,7 +270,7 @@ export function createQueries(deps: QueryDeps) {
     },
 
     listPastEvents(locale: Locale): Promise<PastEvent[]> {
-      return run('listPastEvents', [locale], ['past-events'], (draft) =>
+      return run('listPastEvents', [locale], STORY_SHOWS, (draft) =>
         find<PastEvent>('past-events', draft, {
           hasDrafts: true,
           sort: '-date',
@@ -269,7 +280,7 @@ export function createQueries(deps: QueryDeps) {
     },
 
     getPastEvent(slug: string): Promise<PastEvent | null> {
-      return run('getPastEvent', [slug], ['past-events'], async (draft) => {
+      return run('getPastEvent', [slug], STORY_SHOWS, async (draft) => {
         const docs = await find<PastEvent>('past-events', draft, {
           hasDrafts: true,
           limit: 1,

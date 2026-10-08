@@ -255,8 +255,37 @@ describe('queries', () => {
       },
     })
     await q.listEvents()
-    expect(seen[0]!.tags).toEqual(['boerengroep:events', 'boerengroep:media'])
+    expect(seen[0]!.tags).toEqual(['boerengroep:events', 'boerengroep:speakers', 'boerengroep:media'])
     expect(seen[0]!.key.slice(0, 2)).toEqual(['boerengroep', 'listEvents'])
+  })
+
+  it('refreshes a page when something shown on it changes, not only the page itself', async () => {
+    const seen = new Map<string, string[]>()
+    const q = createQueries({
+      getPayload: async () => payload,
+      tenantSlug: 'boerengroep',
+      isDraft: async () => false,
+      cache: (fn, key, tags) => {
+        seen.set(key[1]!, tags.map((tag) => tag.replace('boerengroep:', '')))
+        return fn
+      },
+    })
+    await q.resolvePage('en', '/about-us')
+    await q.getPageByEnglishPath('/about-us', 'nl')
+    await q.listEvents()
+    await q.getPastEvent('Recap')
+    await q.listPastEvents('en')
+    await q.getNewsletter('Issue-1', 'en')
+    // A page can show a form, the photos of a past event, and people.
+    for (const name of ['resolvePage', 'getPageByEnglishPath']) {
+      expect(seen.get(name), name).toEqual(expect.arrayContaining(['pages', 'forms', 'past-events', 'media']))
+    }
+    // An event shows its speakers. A story shows its author, its tags, its event and forms in its blocks.
+    expect(seen.get('listEvents')).toEqual(expect.arrayContaining(['events', 'speakers']))
+    for (const name of ['getPastEvent', 'listPastEvents']) {
+      expect(seen.get(name), name).toEqual(expect.arrayContaining(['past-events', 'events', 'authors', 'tags', 'forms']))
+    }
+    expect(seen.get('getNewsletter')).toEqual(expect.arrayContaining(['newsletters', 'authors', 'tags', 'forms', 'past-events']))
   })
 
   it('bypasses the cache in draft mode', async () => {

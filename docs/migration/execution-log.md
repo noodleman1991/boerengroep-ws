@@ -254,3 +254,21 @@ What was wrong, by evidence: production reported `BREVO_LIST_ID: not set`, so co
 - The regular activities under the calendar (Breaks, Open Pot, Open Meetings) are three short columns. Their anchors are unchanged.
 - Not covered by a browser test: the Full badge, because the content has no full event. Checked by hand by setting one local event to Full and one to Cancelled, looking at the list, the event page and the feed, and putting them back.
 - Tests: app 152 unit (68 new for events), CMS 45 unit and 88 with a database (2 new), 30 browser tests (6 new). Parity: 238 checked, 0 failed.
+
+### Phase 6 (blocks)
+
+- New blocks, all usable on any page and in past event stories: Photo gallery, Video, Documents, Podcast episodes, Form, Item. Newsletter sign-up and Events came in earlier phases.
+- Gallery: a mosaic on square cells (seven photos fill three even rows on a wide screen, five fill four rows on a phone), captions on the tiles, and a large view with arrows, swipe and keyboard. It shows chosen photos or the photos of a past event with a link to its story. Past event pages show their photos the same way and link to their calendar event.
+- Video: YouTube and Vimeo links in every common form (`parseVideo`, 6 unit tests). Nothing is requested from the video site until the visitor presses play. The cover of a YouTube video is fetched by the site's own server. A browser test proves that no request leaves for YouTube before play. Editors can also place a video inside any text.
+- Documents: download cards with name, kind and size (`fileInfo`, 4 unit tests). A file placed in a text becomes the same card, a picture in a text gets its caption. Vacancies show their document as a card.
+- Podcast: the feed reading moved into one tested module (`lib/podcast.ts`, 6 unit tests). Fixed along the way: the podcast page asked its own web address for the feed, which fails while the site is being built. It now reads the feed directly.
+- Forms: built in the admin with the official form builder, per site. Answers go through `/api/form-submit`, which checks the site, every field (`validateSubmission`, 7 unit tests), a hidden trap field, a minimum time and a rate limit of ten per ten minutes per sender. The open API accepts no answers. Emails are sent only when an editor adds one on the form.
+- Item (the T-shirt case): pictures to flip through, details, price text and one button that opens a link or a form on the page. No payment.
+- Ruling: the eight older blocks (opening, callout, items side by side, figures, quotes, invitation, text, picture with text) were rewritten in the same design language instead of patched. Headings are left-aligned everywhere, sections share one width, figures use the logo lettering. Animation on every block is gone.
+- Ruling, design: one typeface (Public Sans) for all running text and controls, the slab for headlines, the condensed heavy face only for dates and figures. Before, body text used a third family.
+- The Invitation block gets a background choice like the others (additive migration `20261008_102426_cta_background`). The video in text adds no database change.
+- Ruling: block symbols are a fixed list of thirty names. The old component bundled a whole icon library. Removed with it: `react-icons`, `react-player` and the components only the old blocks used.
+- Found by looking at the result: a page kept showing old photos, forms or names after they changed, because its cached answer was only dropped when the page itself changed. Queries now also drop their answer when a form, past event, speaker, author or tag they show changes (database test RED then GREEN).
+- "Block examples": `pnpm --filter @sites/cms seed:demo` makes a draft page with every block filled in, for editors to look at and copy from.
+- Tests: app 185 unit, CMS 45 unit and 89 with a database, 34 browser tests (5 new: gallery keys, video privacy, form errors and thanks, item, refused answers). Parity: 238 checked, 0 failed. Every block was looked at in a browser at desktop width and the main ones at phone width.
+- Machine note: the laptop ran out of disk during this phase (about 200 MB free, 12 GB of swap). Builds here now run with the compiler's disk cache off.
