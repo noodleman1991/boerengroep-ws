@@ -18,7 +18,7 @@
       "breaks": "Pauzes",
       "reclaim-the-seeds": "Reclaim the Seeds",
       "open-meetings": "Open Vergaderingen",
-      "soup-kitchen": "Soepkeuken",
+      "soup-kitchen": "Open Pot",
       "internships": "Stages",
       "coordinator": "Coördinator",
       "board": "Bestuur",
@@ -34,7 +34,8 @@
       "archive": "Archief",
       "agroecologie-netwerk": "Agroecologie Netwerk",
       "contact": "Contact",
-      "vacancies": "Vacatures"
+      "vacancies": "Vacatures",
+      "open-pot-student-kitchen": "Open Pot"
     }
   },
   "events": {
@@ -216,7 +217,7 @@
       "lecture": "College",
       "meeting": "Vergadering",
       "board-meeting": "Bestuursvergadering",
-      "soup-kitchen": "Soepkeuken",
+      "soup-kitchen": "Open Pot",
       "csa": "Community Supported Agriculture",
       "excursion": "Excursie"
     },
@@ -279,7 +280,7 @@
         "title": "Activiteiten",
         "links": {
           "calendar": "Agenda",
-          "soup-kitchen": "Soepkeuken",
+          "soup-kitchen": "Open Pot",
           "breaks": "Pauzes",
           "open-meetings": "Open Vergaderingen",
           "reclaim-the-seeds": "Reclaim the Seeds",

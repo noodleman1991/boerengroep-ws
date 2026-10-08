@@ -1,4 +1,5 @@
 import type { Payload } from 'payload'
+import type { Fixups } from './fixups'
 import type { Report } from './report'
 
 export type Id = number | string
@@ -16,6 +17,8 @@ export type Ctx = {
   pageByEnPath: Map<string, Id>
   /** Addresses served by a built-in route of the app. Menu items keep their plain href for these. */
   reservedPaths: Set<string>
+  /** Hand-written corrections for this site. */
+  fixups: Fixups
   toLexical: (markdown: unknown, legacyId: string) => Promise<Lexical | undefined>
 }
 

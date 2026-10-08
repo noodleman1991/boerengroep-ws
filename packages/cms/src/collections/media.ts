@@ -8,7 +8,23 @@ export const Media: CollectionConfig = {
   upload: {
     // Used only when no Blob token is set. MEDIA_DIR lets the app and the tools share one folder locally.
     staticDir: process.env.MEDIA_DIR || 'media',
-    mimeTypes: ['image/*', 'application/pdf', 'video/*', 'audio/*'],
+    mimeTypes: [
+      'image/*',
+      'video/*',
+      'audio/*',
+      'application/pdf',
+      // Word, Excel, PowerPoint and OpenDocument, for vacancy texts, year reports and forms.
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/vnd.oasis.opendocument.text',
+      'application/vnd.oasis.opendocument.spreadsheet',
+      'text/plain',
+      'text/csv',
+    ],
   },
   fields: [
     { name: 'alt', type: 'text' },

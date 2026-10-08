@@ -37,7 +37,7 @@ export const Events: CollectionConfig = {
         { label: 'Lecture', value: 'lecture' },
         { label: 'Meeting', value: 'meeting' },
         { label: 'Board Meeting', value: 'board-meeting' },
-        { label: 'Soup Kitchen', value: 'soup-kitchen' },
+        { label: 'Open Pot', value: 'soup-kitchen' },
         { label: 'CSA', value: 'csa' },
         { label: 'Excursion', value: 'excursion' },
       ],

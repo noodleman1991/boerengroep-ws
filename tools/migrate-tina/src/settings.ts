@@ -97,28 +97,34 @@ export async function importSettings(ctx: Ctx, contentDir: string): Promise<void
   }
 }
 
+async function upsertRedirect(ctx: Ctx, data: { from: string; to: string; permanent: boolean; note?: string }) {
+  const existing = await ctx.payload.find({
+    collection: 'redirects',
+    where: { and: [{ from: { equals: data.from } }, { tenant: { equals: ctx.tenantId } }] },
+    limit: 1,
+    overrideAccess: true,
+  })
+  if (existing.docs[0]) {
+    await ctx.payload.update({ collection: 'redirects', id: existing.docs[0].id, data: data as never, ...WRITE })
+  } else {
+    await ctx.payload.create({ collection: 'redirects', data: { ...data, tenant: ctx.tenantId } as never, ...WRITE })
+  }
+}
+
 export async function importRedirects(ctx: Ctx, contentDir: string): Promise<void> {
   for (const rel of listContent(contentDir, 'redirects')) {
     try {
       const d = readTinaFile(contentDir, rel).data
-      const existing = await ctx.payload.find({
-        collection: 'redirects',
-        where: { and: [{ from: { equals: d.from } }, { tenant: { equals: ctx.tenantId } }] },
-        limit: 1,
-        overrideAccess: true,
-      })
-      const data = { from: d.from, to: d.to, permanent: Boolean(d.permanent), note: d.note }
-      if (existing.docs[0]) {
-        await ctx.payload.update({ collection: 'redirects', id: existing.docs[0].id, data: data as never, ...WRITE })
-      } else {
-        await ctx.payload.create({
-          collection: 'redirects',
-          data: { ...data, tenant: ctx.tenantId } as never,
-          ...WRITE,
-        })
-      }
+      await upsertRedirect(ctx, { from: d.from, to: d.to, permanent: Boolean(d.permanent), note: d.note })
     } catch (err) {
       ctx.report.add('error', rel, (err as Error).message)
+    }
+  }
+  for (const rule of ctx.fixups.redirects) {
+    try {
+      await upsertRedirect(ctx, { from: rule.from, to: rule.to, permanent: true, note: 'Added by a migration fix-up' })
+    } catch (err) {
+      ctx.report.add('error', `fixups:${rule.from}`, (err as Error).message)
     }
   }
 }

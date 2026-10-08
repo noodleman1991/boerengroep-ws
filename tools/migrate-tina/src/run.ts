@@ -1,7 +1,8 @@
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { getPayload } from 'payload'
 import { listAppRoutes } from './app-routes'
+import { parseFixups } from './fixups'
 import { migrate } from './migrate'
 import config from './payload.config'
 
@@ -19,6 +20,8 @@ const report = await migrate({
   uploadsDir: path.resolve(env('UPLOADS_DIR')),
   // APP_DIR is optional. With it, menu items that point at built-in routes keep their plain href.
   reservedPaths: process.env.APP_DIR ? listAppRoutes(path.resolve(process.env.APP_DIR)) : [],
+  // FIXUPS_FILE is optional: a JSON file with editorial corrections for this site.
+  fixups: process.env.FIXUPS_FILE ? parseFixups(readFileSync(path.resolve(process.env.FIXUPS_FILE), 'utf8')) : undefined,
 })
 
 const reportPath = path.resolve(process.env.REPORT_PATH ?? 'migration-report.md')

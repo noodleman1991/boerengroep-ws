@@ -18,7 +18,7 @@
       "breaks": "Breaks",
       "reclaim-the-seeds": "Reclaim the Seeds",
       "open-meetings": "Open Meetings",
-      "soup-kitchen": "Soup Kitchen",
+      "soup-kitchen": "Open Pot",
       "internships": "Internships",
       "coordinator": "Coordinator",
       "board": "Board",
@@ -34,7 +34,8 @@
       "archive": "Archive",
       "agroecologie-netwerk": "Agroecology Network",
       "contact": "Contact",
-      "vacancies": "Vacancies"
+      "vacancies": "Vacancies",
+      "open-pot-student-kitchen": "Open Pot"
     }
   },
   "events": {
@@ -216,7 +217,7 @@
       "lecture": "Lecture",
       "meeting": "Meeting",
       "board-meeting": "Board Meeting",
-      "soup-kitchen": "Soup Kitchen",
+      "soup-kitchen": "Open Pot",
       "csa": "Community Supported Agriculture",
       "excursion": "Excursion"
     },
@@ -279,7 +280,7 @@
         "title": "Activities",
         "links": {
           "calendar": "Calendar",
-          "soup-kitchen": "Soup Kitchen",
+          "soup-kitchen": "Open Pot",
           "breaks": "Breaks",
           "open-meetings": "Open Meetings",
           "reclaim-the-seeds": "Reclaim the Seeds",

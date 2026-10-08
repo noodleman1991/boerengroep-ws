@@ -32,6 +32,8 @@ export const SEGMENT_NL: Record<string, string> = {
   'delete-data': 'verwijder-gegevens',
   // Not in the old route table. Found in the content folders.
   breaks: 'pauzes',
+  // Editors renamed the English page in 2026. The Dutch file kept its old name.
+  'open-pot-student-kitchen': 'soepkeuken',
   'open-meetings': 'open-vergaderingen',
 }
 
@@ -160,7 +162,7 @@ export function planPages(files: string[], report: Report): PagePlan[] {
     }
     plans.set(parentKey, placeholder)
     queue.push(placeholder)
-    report.add('placeholder-parent', plan.enFile ?? plan.nlFile!, `created a draft page for /${parentKey}`)
+    report.add('placeholder-parent', plan.enFile ?? plan.nlFile ?? `pages/${plan.key}`, `created a draft page for /${parentKey}`)
   }
 
   // A placeholder created from an English-only child may still lack Dutch segments

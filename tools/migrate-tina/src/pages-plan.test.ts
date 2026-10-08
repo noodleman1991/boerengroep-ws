@@ -87,6 +87,21 @@ describe('planPages', () => {
     expect(report.count('unpaired-locale')).toBe(0)
   })
 
+  it('pairs the renamed Open Pot page with the Dutch page that kept its old name', () => {
+    const report = new Report()
+    const plans = byKey(
+      planPages(
+        ['pages/en/activities/open-pot-student-kitchen.mdx', 'pages/nl/activiteiten/soepkeuken.mdx'],
+        report,
+      ),
+    )
+    expect(plans['activities/open-pot-student-kitchen']).toMatchObject({
+      nlFile: 'pages/nl/activiteiten/soepkeuken.mdx',
+      nlSegments: ['activiteiten', 'soepkeuken'],
+    })
+    expect(report.count('unpaired-locale')).toBe(0)
+  })
+
   it('does not let a stray Dutch copy overwrite a paired page', () => {
     const report = new Report()
     const plans = byKey(
@@ -165,6 +180,14 @@ describe('planPages', () => {
     })
     expect(map['activities/calendar-sections/breaks']?.parentKey).toBe('activities/calendar-sections')
     expect(report.count('placeholder-parent')).toBe(1)
+  })
+
+  it('names a source for every placeholder, also when one placeholder needs another', () => {
+    const report = new Report()
+    planPages(['pages/en/a/b/c.mdx'], report)
+    const entries = report.entries.filter((e) => e.kind === 'placeholder-parent')
+    expect(entries).toHaveLength(2)
+    expect(entries.every((e) => typeof e.legacyId === 'string' && e.legacyId.length > 0)).toBe(true)
   })
 
   it('orders parents before children', () => {

@@ -1,6 +1,6 @@
 # Migration report
 
-## missing-media (10)
+## missing-media (11)
 
 - `speakers/dr-maria-van-der-meer.md`: /uploads/speakers/dr-maria-van-der-meer.jpg is not in the uploads folder
 - `speakers/lisa-vermeulen.md`: /uploads/speakers/lisa-vermeulen.jpg is not in the uploads folder
@@ -12,12 +12,7 @@
 - `pages/en/news/friends-news.mdx`: /uploads/WhatsApp Image 2025-07-31 at 18.31.55.jpeg is not in the uploads folder
 - `pages/nl/nieuws/friends-news.mdx`: /uploads/WhatsApp Image 2025-07-31 at 18.31.55.jpeg is not in the uploads folder
 - `global/index.json`: /uploads/logo.png is not in the uploads folder
-
-## inline-image (3)
-
-- `vacancies/en/Nice-position.mdx`: inline image /uploads/1.png must be re-inserted by hand
-- `vacancies/en/Nice-position.mdx`: inline image /uploads/2.png must be re-inserted by hand
-- `vacancies/en/Volunteer-with-us.mdx`: inline image /uploads/bg_chair.jpg must be re-inserted by hand
+- `global/index.json`: /uploads/logo.png is not in the uploads folder
 
 ## unpaired-locale (1)
 
@@ -36,7 +31,11 @@
 - `pages/nl/index.mdx`: not imported: pages/nl/home.mdx is the home page
 - `pages/nl/library/agroecologie-netwerk.mdx`: not imported: same page as pages/nl/bibliotheek/agroecologie-netwerk.mdx
 
-## skipped (2)
+## skipped (6)
 
 - `pages/about.mdx`: outside a locale folder
 - `pages/test-page.en.mdx`: outside a locale folder
+- `pages/en/cookies.mdx`: removed by a fix-up
+- `pages/nl/cookies.mdx`: removed by a fix-up
+- `pages/en/terms-conditions.mdx`: removed by a fix-up
+- `pages/nl/algemene-voorwaarden.mdx`: removed by a fix-up

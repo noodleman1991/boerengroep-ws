@@ -38,9 +38,37 @@ describe('media', () => {
     expect(existsSync(path.join(process.env.MEDIA_DIR!, res.docs[0]!.filename!))).toBe(true)
   })
 
+  it('accepts a Word document, for example a vacancy text', async () => {
+    const body = Buffer.from('not a real docx, the type is what matters here')
+    const doc = await payload.create({
+      collection: 'media',
+      data: { alt: 'Vacancy text', tenant: tenantId } as never,
+      file: {
+        data: body,
+        mimetype: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        name: 'vacancy.docx',
+        size: body.length,
+      },
+      overrideAccess: true,
+    })
+    expect(doc.filename).toBe('vacancy.docx')
+  })
+
+  it('refuses a file type that is not on the list', async () => {
+    const body = Buffer.from('#!/bin/sh')
+    await expect(
+      payload.create({
+        collection: 'media',
+        data: { alt: 'x', tenant: tenantId } as never,
+        file: { data: body, mimetype: 'application/x-sh', name: 'run.sh', size: body.length },
+        overrideAccess: true,
+      }),
+    ).rejects.toThrow()
+  })
+
   it('is readable without logging in', async () => {
     const res = await payload.find({ collection: 'media', overrideAccess: false })
-    expect(res.totalDocs).toBe(1)
+    expect(res.totalDocs).toBe(2)
   })
 
   it('refuses an anonymous upload', async () => {

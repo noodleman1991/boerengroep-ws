@@ -180,11 +180,20 @@ describe('migrate', () => {
     ])
   })
 
+  it('turns an inline image in the text into an image node that points at the media file', async () => {
+    const page = await pageByLegacy(payload, 'activities/calendar-sections/breaks', 'en')
+    const nodes = page.body.root.children
+    const upload = nodes.find((n: any) => n.type === 'upload')
+    expect(upload.value.legacyPath).toBe('/uploads/hero.png')
+    expect(JSON.stringify(nodes)).toContain('Body with')
+    expect(JSON.stringify(nodes)).not.toContain('TINAIMAGE')
+  })
+
   it('reports what needs a human', () => {
     const kinds = (k: string) => report.entries.filter((e) => e.kind === k).map((e) => e.legacyId)
     expect(kinds('missing-media')).toEqual(['pages/en/about-us/history.mdx'])
     expect(kinds('unresolved-reference')).toEqual(['events/en/Boerengroep-Weekend.mdx'])
-    expect(kinds('inline-image')).toEqual(['pages/en/activities/calendar-sections/breaks.mdx'])
+    expect(kinds('inline-image')).toEqual([])
     expect(kinds('unpaired-locale')).toEqual(['pages/en/accessibility.mdx'])
     expect(kinds('placeholder-parent')).toHaveLength(2)
     expect(report.failed).toBe(false)

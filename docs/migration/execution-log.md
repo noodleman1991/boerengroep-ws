@@ -191,3 +191,15 @@ Final: evidence on the last commit: lint clean; typecheck 3/3; unit tests app 47
 ## Round 2: site improvements (plan `docs/superpowers/plans/2026-10-08-site-improvements.md`)
 
 Started 2026-10-08. Decisions from the owner: admin inside the Boerengroep site; Brevo code fixed now, key and list added later; defaults accepted for the remaining questions; extra page-building blocks and a clearly explained admin added to scope.
+
+### Phase 0 and 1 (fresh baseline, quick fixes)
+
+- Migration rerun on `origin/main` content (42 events, 8 vacancies, 6 newsletters, 3 past events, 140 uploads, 33 pages): counts equal the source, 0 errors.
+- Ruling: editors now use inline images in text a lot (18, including the whole media page). The migration converts them into image nodes that point at the migrated file (`extractInlineImages`, `placeUploads`, 8 unit tests and 1 integration test RED→GREEN) instead of reporting them for manual work. Cost if wrong: an image lands on its own line where it used to sit inside a sentence.
+- Ruling: added a fix-ups file per site (`docs/migration/boerengroep-fixups.json`, `FIXUPS_FILE`) for editorial corrections the old content cannot express: remove pages, override title or slug per language, add redirects (5 integration tests RED→GREEN). The tool may now delete a page, but only one it imported itself for the same site and only when a fix-up names it.
+- Open Pot: English and Dutch pages paired (`open-pot-student-kitchen` with `soepkeuken`), Dutch page renamed to "Open Pot" at `/nl/activiteiten/open-pot`, old addresses redirect, event type shown as "Open Pot".
+- Cookies and Terms pages removed. `/cookies`, `/terms-conditions` and `/algemene-voorwaarden` redirect to the Privacy policy.
+- Uploads accept Word, Excel, PowerPoint, OpenDocument, text and CSV (2 tests).
+- Fixed: a placeholder created from another placeholder had no source name in the report (test RED→GREEN).
+- Ruling: plan item 1.4 (calendar text alignment and top gap) moves into Phase 5, which rebuilds those views. Cost if wrong: none, the fix ships with the new views.
+- Parity list refreshed from the live site: 238 working addresses. Result on the new build: 238 checked, 0 failed. Playwright 18/18.

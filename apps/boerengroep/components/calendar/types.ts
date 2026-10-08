@@ -45,7 +45,7 @@ export const EVENT_TYPE_LABELS: Record<TEventType, string> = {
     lecture: "Lecture",
     meeting: "Meeting",
     "board-meeting": "Board Meeting",
-    "soup-kitchen": "Soup Kitchen",
+    "soup-kitchen": "Open Pot",
     csa: "Community Supported Agriculture",
     excursion: "Excursion",
 };

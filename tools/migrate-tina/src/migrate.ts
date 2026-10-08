@@ -7,6 +7,7 @@ import {
   importVacancies,
 } from './collections'
 import type { Ctx } from './context'
+import { emptyFixups, type Fixups } from './fixups'
 import { uploadAll } from './media'
 import { importPages } from './pages'
 import { Report } from './report'
@@ -20,6 +21,8 @@ export type MigrateInput = {
   uploadsDir: string
   /** Addresses served by built-in routes of the app, for example `/vacancies`. */
   reservedPaths?: string[]
+  /** Hand-written corrections for this site. */
+  fixups?: Fixups
 }
 
 export async function migrate(input: MigrateInput): Promise<Report> {
@@ -34,15 +37,17 @@ export async function migrate(input: MigrateInput): Promise<Report> {
   if (!tenant) throw new Error(`Tenant "${tenantSlug}" not found. Run the seed first.`)
 
   const report = new Report()
+  const media = await uploadAll({ payload, tenantId: tenant.id, report }, uploadsDir)
   const ctx: Ctx = {
     payload,
     tenantId: tenant.id,
     report,
-    media: await uploadAll({ payload, tenantId: tenant.id, report }, uploadsDir),
+    media,
     ids: new Map(),
     pageByEnPath: new Map(),
     reservedPaths: new Set(input.reservedPaths ?? []),
-    toLexical: await makeToLexical(payload, report),
+    fixups: input.fixups ?? emptyFixups,
+    toLexical: await makeToLexical(payload, report, media),
   }
 
   // Order matters: referenced collections first, pages before settings.

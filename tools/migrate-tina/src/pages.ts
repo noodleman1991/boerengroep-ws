@@ -2,6 +2,7 @@ import { transformBlocks } from './blocks'
 import { type Ctx, upsert } from './context'
 import { planPages, type PagePlan } from './pages-plan'
 import { listContent, readTinaFile } from './read'
+import { Report } from './report'
 
 async function localeData(ctx: Ctx, contentDir: string, file: string, slug: string) {
   const f = readTinaFile(contentDir, file)
@@ -26,6 +27,7 @@ async function importOne(ctx: Ctx, contentDir: string, plan: PagePlan): Promise<
   const parent = plan.parentKey ? ctx.ids.get(`pages/${plan.parentKey}`) : undefined
   const last = (segments: string[]) => segments[segments.length - 1]!
   const oldUrls: string[] = []
+  const override = ctx.fixups.pageOverrides[plan.key]
 
   if (plan.placeholder) {
     const title = last(plan.enSegments ?? plan.nlSegments!)
@@ -39,12 +41,12 @@ async function importOne(ctx: Ctx, contentDir: string, plan: PagePlan): Promise<
     if (plan.enFile) {
       const en = await localeData(ctx, contentDir, plan.enFile, last(plan.enSegments!))
       oldUrls.push(...en.previousUrls)
-      await upsert(ctx, 'pages', legacyId, { ...en.data, parent, _status: 'published' }, 'en')
+      await upsert(ctx, 'pages', legacyId, { ...en.data, ...override?.en, parent, _status: 'published' }, 'en')
     }
     if (plan.nlFile) {
       const nl = await localeData(ctx, contentDir, plan.nlFile, last(plan.nlSegments!))
       oldUrls.push(...nl.previousUrls)
-      await upsert(ctx, 'pages', legacyId, { ...nl.data, parent, _status: 'published' }, 'nl')
+      await upsert(ctx, 'pages', legacyId, { ...nl.data, ...override?.nl, parent, _status: 'published' }, 'nl')
     }
   }
 
@@ -72,8 +74,45 @@ async function importOne(ctx: Ctx, contentDir: string, plan: PagePlan): Promise<
   }
 }
 
+/** Deletes a page that an earlier run imported and a fix-up now removes. */
+async function removeImported(ctx: Ctx, key: string): Promise<void> {
+  const existing = await ctx.payload.find({
+    collection: 'pages',
+    where: { and: [{ legacyId: { equals: `pages/${key}` } }, { tenant: { equals: ctx.tenantId } }] },
+    limit: 1,
+    depth: 0,
+    draft: true,
+    overrideAccess: true,
+  })
+  const doc = existing.docs[0]
+  if (!doc) return
+  await ctx.payload.delete({
+    collection: 'pages',
+    id: doc.id,
+    overrideAccess: true,
+    context: { disableRevalidate: true, skipResave: true },
+  })
+}
+
 export async function importPages(ctx: Ctx, contentDir: string): Promise<void> {
-  const plans = planPages(listContent(contentDir, 'pages'), ctx.report)
+  // Plan into a scratch report first, so entries about removed pages can be replaced.
+  const scratch = new Report()
+  const all = planPages(listContent(contentDir, 'pages'), scratch)
+  const removed = all.filter((plan) => ctx.fixups.removePages.includes(plan.key))
+  const removedFiles = new Set(removed.flatMap((plan) => [plan.enFile, plan.nlFile].filter((f): f is string => Boolean(f))))
+  for (const entry of scratch.entries) {
+    if (!removedFiles.has(entry.legacyId)) ctx.report.add(entry.kind, entry.legacyId, entry.message)
+  }
+  for (const file of removedFiles) ctx.report.add('skipped', file, 'removed by a fix-up')
+  for (const plan of removed) {
+    try {
+      await removeImported(ctx, plan.key)
+    } catch (err) {
+      ctx.report.add('error', `pages/${plan.key}`, `could not remove: ${(err as Error).message}`)
+    }
+  }
+
+  const plans = all.filter((plan) => !ctx.fixups.removePages.includes(plan.key))
   for (const plan of plans) {
     try {
       await importOne(ctx, contentDir, plan)
