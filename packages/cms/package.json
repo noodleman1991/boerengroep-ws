@@ -8,7 +8,11 @@
     "./types": "./src/payload-types.ts",
     "./queries": "./src/queries/index.ts",
     "./testing": "./test/helpers.ts",
-    "./access": "./src/access/roles.ts"
+    "./access": "./src/access/roles.ts",
+    "./links": "./src/fields/link.ts",
+    "./event-slug": "./src/fields/event-slug.ts",
+    "./admin/*": "./src/admin/*.tsx",
+    "./newsletter-status": "./src/admin/newsletter-status-text.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -16,19 +20,24 @@
     "test:int": "docker compose up -d --wait && vitest run --project int",
     "generate:types": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload generate:types",
     "migrate:create": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload migrate:create",
-    "seed": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload run src/bin/seed.ts"
+    "seed": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload run src/bin/seed.ts",
+    "db:reset": "docker compose exec -T postgres psql -U payload -d postgres -q -c 'DROP DATABASE IF EXISTS payload_test WITH (FORCE);' -c 'CREATE DATABASE payload_test;'"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "catalog:",
     "@payloadcms/email-resend": "catalog:",
+    "@payloadcms/plugin-form-builder": "catalog:",
     "@payloadcms/plugin-multi-tenant": "catalog:",
     "@payloadcms/richtext-lexical": "catalog:",
     "@payloadcms/storage-vercel-blob": "catalog:",
+    "@payloadcms/ui": "catalog:",
     "payload": "catalog:",
+    "react": "catalog:",
     "sharp": "^0.34.0"
   },
   "devDependencies": {
     "@types/node": "^22.16.0",
+    "@types/react": "^19.1.0",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

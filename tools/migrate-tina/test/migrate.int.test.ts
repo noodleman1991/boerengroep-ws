@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createTenant, resetDb, testPayload } from '@sites/cms/testing'
@@ -14,6 +15,10 @@ const input = (payload: Payload) => ({
   uploadsDir: path.join(site, 'uploads'),
   // Addresses served by a built-in route of the app, not by a CMS page.
   reservedPaths: ['/vacancies', '/activities/calendar'],
+  messages: {
+    en: JSON.parse(readFileSync(path.join(site, 'messages/en.json'), 'utf8')),
+    nl: JSON.parse(readFileSync(path.join(site, 'messages/nl.json'), 'utf8')),
+  },
 })
 
 const COLLECTIONS = [
@@ -125,7 +130,7 @@ describe('migrate', () => {
   it('resolves references between collections', async () => {
     const events = await payload.find({
       collection: 'events',
-      where: { slug: { equals: 'Boerengroep-Weekend' } },
+      where: { slug: { equals: 'boerengroep-weekend-2025-09-01' } },
       depth: 1,
     })
     const event = events.docs[0] as any
@@ -135,7 +140,7 @@ describe('migrate', () => {
 
     const recap = (await payload.find({ collection: 'past-events', depth: 1 })).docs[0] as any
     expect(recap.author.name).toBe('Cami')
-    expect(recap.relatedEvent.slug).toBe('Boerengroep-Weekend')
+    expect(recap.relatedEvent.slug).toBe('boerengroep-weekend-2025-09-01')
     expect(recap.tags[0].name).toBe('weekend')
     expect(recap.language).toBeFalsy()
     expect(JSON.stringify(recap.body)).toContain('great')
@@ -147,29 +152,58 @@ describe('migrate', () => {
     expect((res.docs[0] as any).body[0].blockType).toBe('callout')
   })
 
-  it('links navigation items to pages when the href is a page path', async () => {
-    const settings = (await payload.find({ collection: 'site-settings', depth: 1 })).docs[0] as any
-    const about = settings.header.nav[0]
-    expect(about.page.path).toBe('/about-us')
-    expect(about.submenu[0].page.path).toBe('/about-us/history')
-    expect(about.submenu[1].page).toBeFalsy()
-    expect(about.submenu[1].href).toBe('/activities/calendar')
-    expect(settings.header.logo.legacyPath).toBe('/uploads/branding/logo.png')
-    expect(settings.theme.font).toBe('lato')
+  const settingsIn = async (locale: 'en' | 'nl') =>
+    (await payload.find({ collection: 'site-settings', depth: 1, locale })).docs[0] as any
+
+  it('gives every menu item a label per language, taken from the old translation files', async () => {
+    const en = await settingsIn('en')
+    const nl = await settingsIn('nl')
+    expect(en.header.nav.map((n: any) => n.label)).toEqual(['About us', 'Vacancies', 'Activities'])
+    expect(nl.header.nav.map((n: any) => n.label)).toEqual(['Over ons', 'Vacatures', 'Activiteiten'])
+    expect(en.header.nav[0].children.map((c: any) => c.label)).toEqual(['History', 'Calendar'])
+    expect(nl.header.nav[0].children.map((c: any) => c.label)).toEqual(['Geschiedenis', 'Agenda'])
   })
 
-  it('keeps the plain href for an address that belongs to a built-in route', async () => {
-    const settings = (await payload.find({ collection: 'site-settings', depth: 1 })).docs[0] as any
-    const vacancies = settings.header.nav[1]
-    expect(vacancies.href).toBe('/vacancies')
-    expect(vacancies.page).toBeFalsy()
+  it('links menu items to pages, so they follow the page when it moves', async () => {
+    const en = await settingsIn('en')
+    const nl = await settingsIn('nl')
+    expect(en.header.nav[0]).toMatchObject({ linkType: 'page' })
+    expect(en.header.nav[0].page.path).toBe('/about-us')
+    expect(nl.header.nav[0].page.path).toBe('/over-ons')
+    expect(nl.header.nav[0].children[0].page.path).toBe('/over-ons/geschiedenis')
   })
 
-  it('keeps the plain href when the page is only a draft placeholder', async () => {
-    const settings = (await payload.find({ collection: 'site-settings', depth: 1 })).docs[0] as any
-    const activities = settings.header.nav[2]
-    expect(activities.href).toBe('/activities')
-    expect(activities.page).toBeFalsy()
+  it('turns addresses of built-in parts of the site into section links', async () => {
+    const en = await settingsIn('en')
+    expect(en.header.nav[0].children[1]).toMatchObject({ linkType: 'section', section: 'calendar' })
+    expect(en.header.nav[1]).toMatchObject({ linkType: 'section', section: 'vacancies' })
+    expect(en.header.nav[1].page).toBeFalsy()
+  })
+
+  it('keeps a plain address when the page is only a draft placeholder', async () => {
+    const en = await settingsIn('en')
+    expect(en.header.nav[2]).toMatchObject({ linkType: 'custom', url: '/activities' })
+  })
+
+  it('fills in name, logo, contact details and social links', async () => {
+    const en = await settingsIn('en')
+    expect(en.general.name).toBe('Stichting Boerengroep')
+    expect(en.general.logo.legacyPath).toBe('/uploads/branding/logo.png')
+    expect(en.general.contact).toMatchObject({
+      address: 'Generaal Foulkesweg 37\n6703 BL Wageningen',
+      email: 'st.boerengroep@wur.nl',
+      phone: '+31 (0)657 23 00 65',
+    })
+    expect(en.general.social).toMatchObject([{ platform: 'instagram', url: 'https://instagram.com/x' }])
+  })
+
+  it('builds footer columns with titles and labels per language', async () => {
+    const en = await settingsIn('en')
+    const nl = await settingsIn('nl')
+    expect(en.footer.columns[0].title).toBe('About us')
+    expect(nl.footer.columns[0].title).toBe('Over ons')
+    expect(nl.footer.columns[0].links[0]).toMatchObject({ label: 'Geschiedenis', linkType: 'page' })
+    expect(nl.footer.columns[0].links[0].page.path).toBe('/over-ons/geschiedenis')
   })
 
   it('creates redirects from the redirects folder and from previous page URLs', async () => {

@@ -19,6 +19,8 @@ export type Ctx = {
   reservedPaths: Set<string>
   /** Hand-written corrections for this site. */
   fixups: Fixups
+  /** The old site's translation files. Menu labels used to live there. */
+  messages: { en?: unknown; nl?: unknown }
   toLexical: (markdown: unknown, legacyId: string) => Promise<Lexical | undefined>
 }
 

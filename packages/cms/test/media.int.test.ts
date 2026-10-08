@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import type { Payload } from 'payload'
+import sharp from 'sharp'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createTenant, resetDb, testPayload } from './helpers'
 
@@ -38,6 +39,22 @@ describe('media', () => {
     expect(existsSync(path.join(process.env.MEDIA_DIR!, res.docs[0]!.filename!))).toBe(true)
   })
 
+  it('cuts a photo into the sizes the site uses', async () => {
+    const photo = await sharp({ create: { width: 2000, height: 1500, channels: 3, background: '#44AD39' } })
+      .jpeg()
+      .toBuffer()
+    const doc = (await payload.create({
+      collection: 'media',
+      data: { alt: 'Field', tenant: tenantId } as never,
+      file: { data: photo, mimetype: 'image/jpeg', name: 'field.jpg', size: photo.length },
+      overrideAccess: true,
+    })) as any
+    expect(Object.keys(doc.sizes).sort()).toEqual(['card', 'og', 'square', 'thumbnail', 'wide'])
+    expect([doc.sizes.card.width, doc.sizes.card.height]).toEqual([800, 600])
+    expect([doc.sizes.og.width, doc.sizes.og.height]).toEqual([1200, 630])
+    expect(doc.sizes.wide.url).toBeTruthy()
+  })
+
   it('accepts a Word document, for example a vacancy text', async () => {
     const body = Buffer.from('not a real docx, the type is what matters here')
     const doc = await payload.create({
@@ -68,7 +85,7 @@ describe('media', () => {
 
   it('is readable without logging in', async () => {
     const res = await payload.find({ collection: 'media', overrideAccess: false })
-    expect(res.totalDocs).toBe(2)
+    expect(res.totalDocs).toBe(3)
   })
 
   it('refuses an anonymous upload', async () => {

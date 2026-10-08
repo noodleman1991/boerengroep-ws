@@ -1,207 +1,187 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
-import { HeaderLogo } from "../../logo";
+import { Link, usePathname } from '@/i18n/navigation';
+import { LogoImage } from "../../logo";
 import { useLayout } from "../layout-context";
 import { LanguageSwitcher } from "../language-switcher";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { SiteLink } from "../site-link";
+
+/** True when the page being viewed is this link or sits below it. */
+function isCurrent(pathname: string, href: string): boolean {
+    const base = href.split('#')[0] || '/';
+    if (base === '/') return pathname === '/';
+    return pathname === base || pathname.startsWith(`${base}/`);
+}
 
 export const Header = () => {
     const { globalSettings } = useLayout();
-    const header = globalSettings!.header!;
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const nav = globalSettings?.nav ?? [];
     const t = useTranslations('navigation');
+    const pathname = usePathname();
+    const [open, setOpen] = useState<number | null>(null);
+    const [sheetOpen, setSheetOpen] = useState(false);
+    const [sheetItem, setSheetItem] = useState<number | null>(null);
+    const [compact, setCompact] = useState(false);
+    const navRef = useRef<HTMLElement>(null);
 
-    const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
-    const handleMenuClick = (menuLabel: string) => {
-        setActiveMenu(activeMenu === menuLabel ? null : menuLabel);
-    };
+    // Slimmer bar once the visitor has scrolled past the top.
+    useEffect(() => {
+        const onScroll = () => setCompact(window.scrollY > 24);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
+    // Close menus when the page changes, on Escape, and on a click elsewhere.
+    useEffect(() => {
+        setOpen(null);
+        setSheetOpen(false);
+    }, [pathname]);
+    useEffect(() => {
+        const onKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setOpen(null);
+                setSheetOpen(false);
+            }
+        };
+        const onClick = (event: MouseEvent) => {
+            if (navRef.current && !navRef.current.contains(event.target as Node)) setOpen(null);
+        };
+        document.addEventListener('keydown', onKey);
+        document.addEventListener('mousedown', onClick);
+        return () => {
+            document.removeEventListener('keydown', onKey);
+            document.removeEventListener('mousedown', onClick);
+        };
+    }, []);
+    useEffect(() => {
+        document.body.style.overflow = sheetOpen ? 'hidden' : '';
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [sheetOpen]);
 
     return (
-        <header className="fixed top-0 left-0 right-0 z-50">
-            {/* Main header */}
-            <nav className="bg-white/95 backdrop-blur-sm border-b border-neutral">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                    <div className="flex items-center justify-between h-16 sm:h-20">
-                        {/* Logo */}
-                        <div className="flex-shrink-0">
-                            <HeaderLogo globalData={globalSettings} />
-                        </div>
+        <>
+        <header className={`site-header${compact ? ' site-header--compact' : ''}`}>
+            <div className="page-width site-header__bar">
+                <Link href="/" className="site-header__logo" aria-label={t('home')}>
+                    <LogoImage src={globalSettings?.logo} name={globalSettings?.name || 'Home'} />
+                </Link>
 
-                        {/* Desktop Navigation */}
-                        <div className="hidden lg:flex items-center gap-1">
-                            {header.nav?.map((item, index) => {
-                                if (!item || !item.href || !item.label) return null;
-                                const isActive = activeMenu === item.label;
-
+                <nav className="site-nav" aria-label="Main" ref={navRef}>
+                    <ul className="site-nav__list">
+                        {nav.map((item, index) => {
+                            const current = !item.external && isCurrent(pathname, item.href);
+                            if (item.children.length > 0) {
+                                const expanded = open === index;
                                 return (
-                                    <div key={index} className="relative">
-                                        {item.submenu && item.submenu.length > 0 ? (
-                                            <>
-                                                <button
-                                                    className={`
-                                                        px-3 py-2 text-sm font-medium rounded-[var(--radius-md)]
-                                                        text-gray-700 hover:text-gray-900 hover:bg-gray-50
-                                                        transition-colors duration-150
-                                                        ${isActive ? 'text-gray-900 bg-gray-50' : ''}
-                                                    `}
-                                                    onClick={() => handleMenuClick(item.label!)}
-                                                    onMouseEnter={() => activeMenu && setActiveMenu(item.label!)}
-                                                >
-                                                    {item.labelText || t(`items.${item.label}`)}
-                                                </button>
-                                                {/* Dropdown submenu */}
-                                                <AnimatePresence>
-                                                    {activeMenu === item.label && (
-                                                        <motion.div
-                                                            initial={{ opacity: 0, y: -8 }}
-                                                            animate={{ opacity: 1, y: 0 }}
-                                                            exit={{ opacity: 0, y: -8 }}
-                                                            transition={{ duration: 0.15 }}
-                                                            className="absolute top-full left-0 mt-1 bg-white rounded-[var(--radius-lg)] py-2 px-1.5 min-w-[180px] z-50"
-                                                            style={{ boxShadow: 'var(--shadow-dropdown)' }}
-                                                        >
-                                                            <div className="flex flex-col gap-0.5">
-                                                                {item.submenu.map((subItem, subIndex) => {
-                                                                    if (!subItem || !subItem.href || !subItem.label) return null;
-                                                                    return (
-                                                                        <Link
-                                                                            key={subIndex}
-                                                                            href={subItem.href as any}
-                                                                            className="text-gray-600 hover:text-gray-900 hover:bg-gray-50 text-sm font-medium px-3 py-2.5 rounded-[var(--radius-md)] whitespace-nowrap transition-colors duration-150"
-                                                                            onClick={() => setActiveMenu(null)}
-                                                                        >
-                                                                            {subItem.labelText || t(`items.${subItem.label}`)}
-                                                                        </Link>
-                                                                    );
-                                                                })}
-                                                            </div>
-                                                        </motion.div>
-                                                    )}
-                                                </AnimatePresence>
-                                            </>
-                                        ) : (
-                                            <Link
-                                                href={item.href as any}
-                                                className="px-3 py-2 text-sm font-medium rounded-[var(--radius-md)] text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors duration-150"
-                                            >
-                                                {item.labelText || t(`items.${item.label}`)}
-                                            </Link>
+                                    <li key={index}>
+                                        <button
+                                            type="button"
+                                            className="site-nav__item"
+                                            aria-expanded={expanded}
+                                            aria-controls={`nav-panel-${index}`}
+                                            data-current={current}
+                                            onClick={() => setOpen(expanded ? null : index)}
+                                        >
+                                            {item.label}
+                                            <ChevronDown className="site-nav__chevron" aria-hidden="true" />
+                                        </button>
+                                        {expanded && (
+                                            <ul className="site-nav__panel" id={`nav-panel-${index}`}>
+                                                <li>
+                                                    <SiteLink link={item}>{item.label}</SiteLink>
+                                                </li>
+                                                {item.children.map((child, childIndex) => (
+                                                    <li key={childIndex}>
+                                                        <SiteLink link={child}>{child.label}</SiteLink>
+                                                    </li>
+                                                ))}
+                                            </ul>
                                         )}
-                                    </div>
+                                    </li>
                                 );
-                            })}
-                        </div>
+                            }
+                            return (
+                                <li key={index}>
+                                    <SiteLink
+                                        link={item}
+                                        className={item.highlight ? 'btn-leaf' : 'site-nav__item'}
+                                        aria-current={current ? 'page' : undefined}
+                                    >
+                                        {item.label}
+                                    </SiteLink>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </nav>
 
-                        {/* Right side */}
-                        <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="hidden lg:block">
-                                <LanguageSwitcher />
-                            </div>
-                            {/* Mobile menu button - 44px touch target */}
-                            <button
-                                onClick={toggleMobileMenu}
-                                className="lg:hidden flex items-center justify-center w-11 h-11 rounded-[var(--radius-md)] text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors"
-                                aria-label={mobileMenuOpen ? t('close-menu') : t('open-menu')}
-                                aria-expanded={mobileMenuOpen}
-                            >
-                                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            {/* Mobile menu */}
-            <AnimatePresence>
-                {mobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.15 }}
-                        className="lg:hidden bg-white border-b border-neutral"
+                <div className="site-header__tools">
+                    <LanguageSwitcher />
+                    <button
+                        type="button"
+                        className="site-header__burger"
+                        aria-label={sheetOpen ? t('close-menu') : t('open-menu')}
+                        aria-expanded={sheetOpen}
+                        onClick={() => setSheetOpen(!sheetOpen)}
                     >
-                        <div className="px-4 sm:px-6 py-3 space-y-1">
-                            {header.nav?.map((item, index) => {
-                                if (!item || !item.href || !item.label) return null;
-
-                                return (
-                                    <div key={index}>
-                                        {item.submenu && item.submenu.length > 0 ? (
-                                            <div>
-                                                {/* Mobile menu parent item - 44px minimum height */}
-                                                <button
-                                                    className="flex items-center w-full min-h-[44px] px-3 py-2.5 text-base font-medium text-gray-900 rounded-[var(--radius-md)] hover:bg-gray-50 transition-colors"
-                                                    onClick={() => handleMenuClick(item.label!)}
-                                                    aria-expanded={activeMenu === item.label}
-                                                >
-                                                    {item.labelText || t(`items.${item.label}`)}
-                                                </button>
-                                                <AnimatePresence>
-                                                    {activeMenu === item.label && (
-                                                        <motion.div
-                                                            initial={{ height: 0, opacity: 0 }}
-                                                            animate={{ height: "auto", opacity: 1 }}
-                                                            exit={{ height: 0, opacity: 0 }}
-                                                            transition={{ duration: 0.15 }}
-                                                            className="ml-3 pl-3 border-l-2 border-gray-100 space-y-0.5 overflow-hidden"
-                                                        >
-                                                            {item.submenu.map((subItem, subIndex) => {
-                                                                if (!subItem || !subItem.href || !subItem.label) return null;
-
-                                                                return (
-                                                                    <Link
-                                                                        key={subIndex}
-                                                                        href={subItem.href as any}
-                                                                        className="flex items-center min-h-[44px] px-3 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-[var(--radius-md)] hover:bg-gray-50 transition-colors"
-                                                                        onClick={() => {
-                                                                            setMobileMenuOpen(false);
-                                                                            setActiveMenu(null);
-                                                                        }}
-                                                                    >
-                                                                        {subItem.labelText || t(`items.${subItem.label}`)}
-                                                                    </Link>
-                                                                );
-                                                            })}
-                                                        </motion.div>
-                                                    )}
-                                                </AnimatePresence>
-                                            </div>
-                                        ) : (
-                                            <Link
-                                                href={item.href as any}
-                                                className="flex items-center min-h-[44px] px-3 py-2.5 text-base font-medium text-gray-900 rounded-[var(--radius-md)] hover:bg-gray-50 transition-colors"
-                                                onClick={() => setMobileMenuOpen(false)}
-                                            >
-                                                {item.labelText || t(`items.${item.label}`)}
-                                            </Link>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                            <div className="pt-3 mt-2 border-t border-gray-100">
-                                <LanguageSwitcher />
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* Click outside to close */}
-            {(activeMenu || mobileMenuOpen) && (
-                <div 
-                    className="fixed inset-0 z-[-1]"
-                    onClick={() => {
-                        setActiveMenu(null);
-                        setMobileMenuOpen(false);
-                    }}
-                />
-            )}
+                        {sheetOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+                    </button>
+                </div>
+            </div>
         </header>
+
+            {/* Outside the header: its blur effect would otherwise trap this full-screen sheet inside the bar. */}
+            {sheetOpen && (
+                <div className="site-sheet">
+                    <nav aria-label="Main">
+                        <ul>
+                            {nav.map((item, index) => (
+                                <li key={index}>
+                                    {item.children.length > 0 ? (
+                                        <>
+                                            <button
+                                                type="button"
+                                                className="site-sheet__item"
+                                                aria-expanded={sheetItem === index}
+                                                onClick={() => setSheetItem(sheetItem === index ? null : index)}
+                                            >
+                                                {item.label}
+                                                <ChevronDown
+                                                    className="site-nav__chevron"
+                                                    style={{ transform: sheetItem === index ? 'rotate(180deg)' : undefined }}
+                                                    aria-hidden="true"
+                                                />
+                                            </button>
+                                            {sheetItem === index && (
+                                                <ul className="site-sheet__children">
+                                                    <li>
+                                                        <SiteLink link={item}>{item.label}</SiteLink>
+                                                    </li>
+                                                    {item.children.map((child, childIndex) => (
+                                                        <li key={childIndex}>
+                                                            <SiteLink link={child}>{child.label}</SiteLink>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <SiteLink link={item} className="site-sheet__item">
+                                            {item.label}
+                                        </SiteLink>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
+                </div>
+            )}
+        </>
     );
 };

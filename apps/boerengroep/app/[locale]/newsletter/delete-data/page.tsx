@@ -5,6 +5,7 @@ import Layout from '@/components/layout/layout';
 
 interface DeleteDataPageProps {
     params: Promise<{ locale: string }>;
+    searchParams: Promise<{ token?: string }>;
 }
 
 export async function generateMetadata({ params }: DeleteDataPageProps): Promise<Metadata> {
@@ -18,9 +19,10 @@ export async function generateMetadata({ params }: DeleteDataPageProps): Promise
     };
 }
 
-export default async function DeleteDataRoute({ params }: DeleteDataPageProps) {
+export default async function DeleteDataRoute({ params, searchParams }: DeleteDataPageProps) {
     const { locale } = await params;
     setRequestLocale(locale);
+    const { token } = await searchParams;
 
     const mockLayoutData = {
         data: {
@@ -30,7 +32,7 @@ export default async function DeleteDataRoute({ params }: DeleteDataPageProps) {
 
     return (
         <Layout rawPageData={mockLayoutData}>
-            <DeleteDataPage locale={locale} />
+            <DeleteDataPage locale={locale} token={token} />
         </Layout>
     );
 }

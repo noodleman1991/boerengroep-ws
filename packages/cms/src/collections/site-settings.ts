@@ -1,26 +1,19 @@
-import type { CollectionConfig, Field } from 'payload'
+import type { CollectionConfig } from 'payload'
 import { anyone, tenantAdminsOnly } from '../access'
+import { linkFields } from '../fields/link'
 
-const linkFields: Field[] = [
-  {
-    name: 'page',
-    type: 'relationship',
-    relationTo: 'pages',
-    admin: { description: 'Preferred. The link follows the page when its URL changes.' },
-  },
-  { name: 'href', type: 'text', label: 'Manual URL or external link' },
-  { name: 'label', type: 'text', label: 'Translation key (legacy)' },
-]
-
-const navFields: Field[] = [
-  ...linkFields,
-  { name: 'labelText', type: 'text', localized: true, label: 'Label' },
-]
-
+/**
+ * One document per site. Each tab holds the things that appear on every page.
+ * The descriptions are written for editors: plain words, no system terms.
+ */
 export const SiteSettings: CollectionConfig = {
   slug: 'site-settings',
   labels: { singular: 'Site settings', plural: 'Site settings' },
-  admin: { group: 'Settings' },
+  admin: {
+    group: 'Site settings',
+    description:
+      'The parts of the site that show on every page: name and logo, the menu, the footer, the newsletter box and the calendar options.',
+  },
   access: {
     read: anyone,
     create: tenantAdminsOnly,
@@ -29,76 +22,214 @@ export const SiteSettings: CollectionConfig = {
   },
   fields: [
     {
-      name: 'header',
-      type: 'group',
-      fields: [
-        { name: 'logo', type: 'upload', relationTo: 'media', label: 'Organization logo' },
-        { name: 'logoAlt', type: 'text', required: true },
-        { name: 'name', type: 'text', required: true, label: 'Organization name' },
+      type: 'tabs',
+      tabs: [
         {
-          name: 'color',
-          type: 'select',
-          options: [
-            { label: 'Default', value: 'default' },
-            { label: 'Primary brand color', value: 'primary' },
-          ],
-        },
-        {
-          name: 'nav',
-          type: 'array',
-          label: 'Navigation menu',
-          fields: [...navFields, { name: 'submenu', type: 'array', fields: navFields }],
-        },
-      ],
-    },
-    {
-      name: 'homepage',
-      type: 'group',
-      fields: [{ name: 'showCalendarWidget', type: 'checkbox' }],
-    },
-    {
-      name: 'footer',
-      type: 'group',
-      fields: [
-        {
-          name: 'social',
-          type: 'array',
+          name: 'general',
+          label: 'General',
+          description: 'Who you are and how to reach you. Shown in the header, the footer and when a page is shared.',
           fields: [
-            { name: 'platform', type: 'text', required: true },
-            { name: 'url', type: 'text', required: true },
+            { name: 'name', type: 'text', required: true, label: 'Name of the organisation' },
+            {
+              name: 'tagline',
+              type: 'text',
+              localized: true,
+              label: 'One-line introduction',
+              admin: { description: 'A short sentence about what you do. Shown next to the logo in the footer.' },
+            },
+            {
+              name: 'logo',
+              type: 'upload',
+              relationTo: 'media',
+              admin: {
+                description: 'Shown in the header and the footer. A wide image with a transparent background works best.',
+              },
+            },
+            {
+              name: 'contact',
+              type: 'group',
+              label: 'Contact details',
+              admin: { description: 'Shown in the footer. Leave a field empty to hide it.' },
+              fields: [
+                { name: 'address', type: 'textarea', admin: { description: 'One line per row, for example street, then postcode and town.' } },
+                { name: 'email', type: 'email' },
+                { name: 'phone', type: 'text' },
+              ],
+            },
+            {
+              name: 'social',
+              type: 'array',
+              label: 'Social media',
+              labels: { singular: 'Account', plural: 'Accounts' },
+              admin: { description: 'Shown as small links in the footer, in this order.' },
+              fields: [
+                {
+                  name: 'platform',
+                  type: 'select',
+                  required: true,
+                  options: [
+                    { label: 'Instagram', value: 'instagram' },
+                    { label: 'Facebook', value: 'facebook' },
+                    { label: 'LinkedIn', value: 'linkedin' },
+                    { label: 'YouTube', value: 'youtube' },
+                    { label: 'Mastodon', value: 'mastodon' },
+                    { label: 'Bluesky', value: 'bluesky' },
+                    { label: 'X (Twitter)', value: 'x' },
+                    { label: 'Signal or WhatsApp group', value: 'chat' },
+                    { label: 'Something else', value: 'other' },
+                  ],
+                },
+                { name: 'url', type: 'text', required: true, label: 'Address' },
+              ],
+            },
           ],
         },
         {
-          name: 'quickLinks',
-          type: 'array',
+          name: 'header',
+          label: 'Menu',
+          description:
+            'The menu at the top of every page. Drag items to change their order. An item can have a dropdown with more links.',
           fields: [
-            { name: 'title', type: 'text', required: true, label: 'Section title key' },
-            { name: 'links', type: 'array', fields: linkFields },
+            {
+              name: 'nav',
+              type: 'array',
+              label: 'Menu items',
+              labels: { singular: 'Menu item', plural: 'Menu items' },
+              fields: [
+                ...linkFields(),
+                {
+                  name: 'highlight',
+                  type: 'checkbox',
+                  label: 'Show as a button',
+                  admin: { description: 'Use this for the one thing you most want visitors to do. One button is enough.' },
+                },
+                {
+                  name: 'children',
+                  type: 'array',
+                  label: 'Dropdown',
+                  labels: { singular: 'Dropdown link', plural: 'Dropdown links' },
+                  admin: { description: 'Optional. Links that appear when someone opens this menu item.' },
+                  fields: linkFields(),
+                },
+              ],
+            },
           ],
         },
-      ],
-    },
-    {
-      name: 'theme',
-      type: 'group',
-      fields: [
-        { name: 'color', type: 'text', label: 'Primary brand color' },
         {
-          name: 'font',
-          type: 'select',
-          options: [
-            { label: 'System sans-serif', value: 'sans' },
-            { label: 'Nunito (rounded)', value: 'nunito' },
-            { label: 'Lato (clean)', value: 'lato' },
+          name: 'footer',
+          label: 'Footer',
+          description: 'The bottom of every page. Contact details and social media come from the General tab.',
+          fields: [
+            {
+              name: 'columns',
+              type: 'array',
+              label: 'Link columns',
+              labels: { singular: 'Column', plural: 'Columns' },
+              admin: { description: 'Two or three short columns read best.' },
+              fields: [
+                { name: 'title', type: 'text', localized: true },
+                { name: 'links', type: 'array', labels: { singular: 'Link', plural: 'Links' }, fields: linkFields() },
+              ],
+            },
+            {
+              name: 'legalLinks',
+              type: 'array',
+              label: 'Small links at the very bottom',
+              labels: { singular: 'Link', plural: 'Links' },
+              admin: { description: 'For example the privacy policy.' },
+              fields: linkFields(),
+            },
+            {
+              name: 'showNewsletter',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Show the newsletter box in the footer',
+            },
           ],
         },
         {
-          name: 'darkMode',
-          type: 'select',
-          options: [
-            { label: 'Follow system preference', value: 'system' },
-            { label: 'Always light mode', value: 'light' },
-            { label: 'Always dark mode', value: 'dark' },
+          name: 'newsletter',
+          label: 'Newsletter',
+          description:
+            'The sign-up box and what people read after signing up. Leave a text empty to use the standard wording.',
+          fields: [
+            {
+              // A live check, not a stored value: do sign-ups arrive on the Brevo list?
+              name: 'brevoStatus',
+              type: 'ui',
+              admin: { components: { Field: '@sites/cms/admin/newsletter-status#NewsletterStatus' } },
+            },
+            {
+              name: 'brevoListId',
+              type: 'number',
+              label: 'Brevo list number',
+              admin: {
+                description:
+                  'People who confirm their email are added to this list in Brevo. You find the number in Brevo under Contacts, Lists, in the column "ID".',
+              },
+            },
+            { name: 'heading', type: 'text', localized: true, label: 'Heading above the box' },
+            { name: 'intro', type: 'textarea', localized: true, label: 'Short introduction' },
+            { name: 'placeholder', type: 'text', localized: true, label: 'Hint inside the email field' },
+            { name: 'buttonLabel', type: 'text', localized: true, label: 'Text on the button' },
+            {
+              name: 'consentText',
+              type: 'textarea',
+              localized: true,
+              label: 'Small print under the box',
+              admin: { description: 'A link to the privacy policy is added after this text automatically.' },
+            },
+            {
+              name: 'thanksTitle',
+              type: 'text',
+              localized: true,
+              label: 'Thank-you heading',
+              admin: { description: 'Shown right after someone signs up, in place of the box.' },
+            },
+            {
+              name: 'thanksMessage',
+              type: 'richText',
+              localized: true,
+              label: 'Thank-you message',
+              admin: { description: 'Tell people to look in their inbox for the confirmation email.' },
+            },
+            {
+              name: 'confirmedTitle',
+              type: 'text',
+              localized: true,
+              label: 'Heading after confirming',
+              admin: { description: 'Shown on the page people land on when they click the link in the email.' },
+            },
+            { name: 'confirmedMessage', type: 'richText', localized: true, label: 'Message after confirming' },
+          ],
+        },
+        {
+          name: 'calendar',
+          label: 'Calendar',
+          description: 'How the calendar page looks and what visitors can do with it.',
+          fields: [
+            { name: 'intro', type: 'textarea', localized: true, label: 'Text above the calendar' },
+            {
+              name: 'defaultView',
+              type: 'select',
+              defaultValue: 'list',
+              label: 'First view',
+              options: [
+                { label: 'Upcoming events as a list', value: 'list' },
+                { label: 'Month grid', value: 'month' },
+              ],
+              admin: { description: 'Visitors can always switch. The list reads best on a phone.' },
+            },
+            {
+              name: 'showSubscribe',
+              type: 'checkbox',
+              defaultValue: true,
+              label: 'Let visitors subscribe to the calendar',
+              admin: {
+                description:
+                  'Shows a button that adds all your events to their own Google, Apple or Outlook calendar and keeps them up to date.',
+              },
+            },
           ],
         },
       ],

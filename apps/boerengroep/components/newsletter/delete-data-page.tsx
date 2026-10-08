@@ -1,224 +1,165 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Section } from '@/components/layout/section';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { CheckCircle, AlertCircle, Loader2, Trash2, AlertTriangle } from 'lucide-react';
-
-const deleteSchema = z.object({
-    email: z.string().email('Invalid email address'),
-    confirmation: z.boolean().refine(val => val === true, 'You must confirm deletion'),
-    reason: z.string().max(1000).optional(),
-});
-
-type DeleteFormData = z.infer<typeof deleteSchema>;
+import { Link } from '@/i18n/navigation';
+import { OverprintMark } from '@/components/overprint-mark';
 
 interface DeleteDataPageProps {
     locale: string;
+    /** The personal link from the email. With it the deletion can happen. */
+    token?: string;
 }
 
-type DeleteState = 'idle' | 'loading' | 'success' | 'error';
+type State = 'idle' | 'sending' | 'email-sent' | 'deleted' | 'invalid' | 'error';
 
-export const DeleteDataPage = ({ locale }: DeleteDataPageProps) => {
+/**
+ * Deleting takes two steps. First someone gives their address and gets a link by email.
+ * Only that link deletes, so nobody can remove someone else from the list.
+ */
+export const DeleteDataPage = ({ locale, token }: DeleteDataPageProps) => {
     const t = useTranslations('newsletter.deleteData');
-    const [state, setState] = useState<DeleteState>('idle');
-    const [message, setMessage] = useState<string>('');
+    const [state, setState] = useState<State>('idle');
+    const [email, setEmail] = useState('');
+    const [reason, setReason] = useState('');
+    const [understood, setUnderstood] = useState(false);
+    const emailId = useId();
+    const reasonId = useId();
+    const understoodId = useId();
 
-    const form = useForm<DeleteFormData>({
-        resolver: zodResolver(deleteSchema),
-        defaultValues: {
-            email: '',
-            confirmation: false,
-            reason: '',
-        },
-    });
-
-    const onSubmit = async (data: DeleteFormData) => {
-        setState('loading');
-
+    const send = async (body: Record<string, unknown>) => {
+        setState('sending');
         try {
             const response = await fetch('/api/newsletter/delete-data', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: data.email,
-                    language: locale,
-                    confirmation: data.confirmation,
-                    reason: data.reason,
-                }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...body, language: locale, reason: reason || undefined }),
             });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                setState('success');
-                setMessage(result.message);
-                form.reset();
-            } else {
-                setState('error');
-                setMessage(result.error);
-            }
-        } catch (error) {
+            const result = await response.json().catch(() => null);
+            if (response.ok) setState(result?.status === 'deleted' ? 'deleted' : 'email-sent');
+            else setState(response.status === 400 && token ? 'invalid' : 'error');
+        } catch {
             setState('error');
-            setMessage(t('error_message'));
         }
     };
 
-    if (state === 'success') {
+    const whatGoes = (
+        <ul className="notice__list" aria-label={t('what_deleted')}>
+            <li>{t('deleted_subscription')}</li>
+            <li>{t('deleted_consent')}</li>
+            <li>{t('deleted_preferences')}</li>
+            <li>{t('deleted_communications')}</li>
+        </ul>
+    );
+
+    if (state === 'deleted' || state === 'email-sent' || state === 'invalid') {
+        const copy = {
+            deleted: [t('success_title'), t('success_message')],
+            'email-sent': [t('check_email_title'), t('check_email_message')],
+            invalid: [t('confirm_title'), t('invalid_link')],
+        }[state];
         return (
-            <Section>
-                <div className="max-w-2xl mx-auto text-center space-y-8">
-                    <div className="space-y-4">
-                        <CheckCircle className="h-16 w-16 mx-auto text-green-600" />
-                        <h1 className="text-3xl font-bold tracking-tight">
-                            {t('success_title')}
-                        </h1>
-                        <Alert className="border-green-200 bg-green-50">
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                            <AlertDescription className="text-green-800">
-                                {message}
-                            </AlertDescription>
-                        </Alert>
+            <div className="page-width">
+                <div className="notice" role="status">
+                    <OverprintMark className="notice__mark" />
+                    <h1>{copy[0]}</h1>
+                    <p className="notice__text">{copy[1]}</p>
+                    <div className="notice__actions">
+                        <Link href="/" className="btn-quiet">
+                            {t('back_home')}
+                        </Link>
                     </div>
                 </div>
-            </Section>
+            </div>
+        );
+    }
+
+    if (token) {
+        return (
+            <div className="page-width">
+                <div className="notice">
+                    <OverprintMark className="notice__mark" />
+                    <h1>{t('confirm_title')}</h1>
+                    <p className="notice__text">{t('confirm_description')}</p>
+                    {whatGoes}
+                    <p className="notice__text" style={{ marginTop: '1.25rem' }}>
+                        {t('warning_message')}
+                    </p>
+                    {state === 'error' && (
+                        <p className="notice__problem" role="alert">
+                            {t('error_message')}
+                        </p>
+                    )}
+                    <div className="notice__actions">
+                        <button type="button" className="btn-ink" disabled={state === 'sending'} onClick={() => send({ token })}>
+                            {t('confirm_button')}
+                        </button>
+                        <Link href="/" className="btn-quiet">
+                            {t('back_home')}
+                        </Link>
+                    </div>
+                </div>
+            </div>
         );
     }
 
     return (
-        <Section>
-            <div className="max-w-2xl mx-auto space-y-8">
-                <div className="text-center space-y-4">
-                    <Trash2 className="h-16 w-16 mx-auto text-destructive" />
-                    <h1 className="text-3xl font-bold tracking-tight">
-                        {t('title')}
-                    </h1>
-                    <p className="text-lg text-muted-foreground">
-                        {t('description')}
-                    </p>
-                </div>
-
-                <Alert className="border-amber-200 bg-amber-50">
-                    <AlertTriangle className="h-4 w-4 text-amber-600" />
-                    <AlertDescription className="text-amber-800">
-                        {t('warning_message')}
-                    </AlertDescription>
-                </Alert>
-
-                <div className="bg-muted/50 rounded-lg p-6 space-y-4">
-                    <h2 className="font-semibold">{t('what_deleted')}</h2>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                        <li>• {t('deleted_subscription')}</li>
-                        <li>• {t('deleted_consent')}</li>
-                        <li>• {t('deleted_preferences')}</li>
-                        <li>• {t('deleted_communications')}</li>
-                    </ul>
-                </div>
-
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        {t('email_label')}
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            type="email"
-                                            placeholder={t('email_placeholder')}
-                                            disabled={state === 'loading'}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+        <div className="page-width">
+            <div className="notice">
+                <OverprintMark className="notice__mark" />
+                <h1>{t('title')}</h1>
+                <p className="notice__text">{t('description')}</p>
+                {whatGoes}
+                <form
+                    className="notice-form"
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        send({ email, confirmation: understood });
+                    }}
+                >
+                    <label htmlFor={emailId}>{t('email_label')}</label>
+                    <input
+                        id={emailId}
+                        type="email"
+                        autoComplete="email"
+                        required
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        placeholder={t('email_placeholder')}
+                    />
+                    <label htmlFor={reasonId}>{t('reason_label')}</label>
+                    <textarea
+                        id={reasonId}
+                        rows={3}
+                        maxLength={1000}
+                        value={reason}
+                        onChange={(event) => setReason(event.target.value)}
+                        placeholder={t('reason_placeholder')}
+                    />
+                    <div className="notice-form__check">
+                        <input
+                            id={understoodId}
+                            type="checkbox"
+                            required
+                            checked={understood}
+                            onChange={(event) => setUnderstood(event.target.checked)}
                         />
-
-                        <FormField
-                            control={form.control}
-                            name="reason"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        {t('reason_label')}
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder={t('reason_placeholder')}
-                                            className="min-h-[100px]"
-                                            disabled={state === 'loading'}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <FormField
-                            control={form.control}
-                            name="confirmation"
-                            render={({ field }) => (
-                                <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                                    <FormControl>
-                                        <Checkbox
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                            disabled={state === 'loading'}
-                                        />
-                                    </FormControl>
-                                    <div className="space-y-1 leading-none">
-                                        <FormLabel className="text-sm font-normal cursor-pointer">
-                                            {t('confirmation_text')}
-                                        </FormLabel>
-                                        <FormMessage />
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-
-                        {state === 'error' && (
-                            <Alert className="border-red-200 bg-red-50">
-                                <AlertCircle className="h-4 w-4 text-red-600" />
-                                <AlertDescription className="text-red-800">
-                                    {message}
-                                </AlertDescription>
-                            </Alert>
-                        )}
-
-                        <Button
-                            type="submit"
-                            disabled={state === 'loading'}
-                            variant="destructive"
-                            className="w-full"
-                        >
-                            {state === 'loading' && (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            )}
-                            <Trash2 className="mr-2 h-4 w-4" />
+                        <label htmlFor={understoodId}>{t('confirmation_text')}</label>
+                    </div>
+                    {state === 'error' && (
+                        <p className="notice__problem" role="alert">
+                            {t('error_message')}
+                        </p>
+                    )}
+                    <div className="notice__actions">
+                        <button type="submit" className="btn-ink" disabled={state === 'sending'}>
                             {t('confirm_delete')}
-                        </Button>
-                    </form>
-                </Form>
-
-                <div className="text-sm text-muted-foreground">
-                    <p>{t('gdpr_notice')}</p>
-                </div>
+                        </button>
+                    </div>
+                </form>
+                <p className="notice__text" style={{ marginTop: '2rem', fontSize: '0.875rem' }}>
+                    {t('gdpr_notice')}
+                </p>
             </div>
-        </Section>
+        </div>
     );
 };

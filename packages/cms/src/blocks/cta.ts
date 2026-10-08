@@ -4,5 +4,10 @@ import { actionsField } from '../fields/shared'
 export const Cta: Block = {
   slug: 'cta',
   interfaceName: 'CtaBlock',
-  fields: [{ name: 'title', type: 'text' }, { name: 'description', type: 'textarea' }, actionsField],
+  labels: { singular: 'Invitation', plural: 'Invitations' },
+  admin: {
+    group: 'Text and pictures',
+    custom: { description: 'A short invitation with one or two buttons, usually near the end of a page.' },
+  },
+  fields: [{ name: 'title', type: 'text' }, { name: 'description', type: 'textarea', label: 'Text' }, actionsField],
 }

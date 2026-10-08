@@ -1,19 +1,45 @@
 {
-  "removePages": ["cookies", "terms-conditions"],
+  "removePages": [
+    "cookies",
+    "terms-conditions"
+  ],
   "pageOverrides": {
     "activities/open-pot-student-kitchen": {
-      "nl": { "title": "Open Pot", "slug": "open-pot" }
+      "nl": {
+        "title": "Open Pot",
+        "slug": "open-pot"
+      }
     },
     "activities/calendar-sections/soup-kitchen": {
-      "en": { "title": "Open Pot" },
-      "nl": { "title": "Open Pot" }
+      "en": {
+        "title": "Open Pot"
+      },
+      "nl": {
+        "title": "Open Pot"
+      }
     }
   },
   "redirects": [
-    { "from": "/cookies", "to": "/privacy-policy" },
-    { "from": "/terms-conditions", "to": "/privacy-policy" },
-    { "from": "/algemene-voorwaarden", "to": "/privacy-policy" },
-    { "from": "/activiteiten/soepkeuken", "to": "/activities/open-pot-student-kitchen" },
-    { "from": "/activities/soup-kitchen", "to": "/activities/open-pot-student-kitchen" }
-  ]
+    {
+      "from": "/cookies",
+      "to": "/privacy-policy"
+    },
+    {
+      "from": "/terms-conditions",
+      "to": "/privacy-policy"
+    },
+    {
+      "from": "/algemene-voorwaarden",
+      "to": "/privacy-policy"
+    },
+    {
+      "from": "/activiteiten/soepkeuken",
+      "to": "/activities/open-pot-student-kitchen"
+    },
+    {
+      "from": "/activities/soup-kitchen",
+      "to": "/activities/open-pot-student-kitchen"
+    }
+  ],
+  "logo": "/uploads/branding/boerengroep-logo-zwart.png"
 }

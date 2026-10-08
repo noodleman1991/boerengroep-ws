@@ -195,6 +195,44 @@ export async function sendDataExportEmail(
     }
 }
 
+// Ask someone to confirm that they want their data erased
+export async function sendDeleteConfirmationEmail(
+    email: string,
+    language: SupportedLanguage,
+    unsubscribeToken: string
+): Promise<boolean> {
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    const confirmUrl = `${baseUrl}/${language}/newsletter/delete-data?token=${unsubscribeToken}`;
+    const text = language === 'nl'
+        ? {
+            subject: 'Bevestig het verwijderen van je gegevens',
+            intro: 'Iemand heeft gevraagd om de gegevens bij dit e-mailadres te verwijderen uit onze nieuwsbrieflijst.',
+            action: 'Ja, verwijder mijn gegevens',
+            ignore: 'Was jij dat niet? Dan hoef je niets te doen. Er verandert niets.',
+        }
+        : {
+            subject: 'Confirm deleting your data',
+            intro: 'Someone asked to delete the data for this email address from our newsletter list.',
+            action: 'Yes, delete my data',
+            ignore: 'Was that not you? Then you can ignore this email. Nothing changes.',
+        };
+
+    const htmlContent = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #111111;">
+            <h1 style="font-size: 22px; margin: 0 0 16px;">${text.subject}</h1>
+            <p style="line-height: 1.5;">${text.intro}</p>
+            <p style="margin: 28px 0;">
+                <a href="${confirmUrl}" style="background-color: #44ad39; color: #111111; padding: 12px 22px; border-radius: 999px; text-decoration: none; font-weight: bold;">${text.action}</a>
+            </p>
+            <p style="line-height: 1.5; color: #555555;">${text.ignore}</p>
+            <p style="font-size: 12px; color: #777777; margin-top: 32px;">${emailConfig.from.name}</p>
+        </div>
+    `;
+    const textContent = `${text.subject}\n\n${text.intro}\n\n${text.action}: ${confirmUrl}\n\n${text.ignore}\n\n${emailConfig.from.name}`;
+
+    return await sendEmail(email, text.subject, htmlContent, textContent);
+}
+
 // Send newsletter email
 export async function sendNewsletterEmail(
     email: string,

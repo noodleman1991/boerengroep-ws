@@ -203,3 +203,33 @@ Started 2026-10-08. Decisions from the owner: admin inside the Boerengroep site;
 - Fixed: a placeholder created from another placeholder had no source name in the report (test RED→GREEN).
 - Ruling: plan item 1.4 (calendar text alignment and top gap) moves into Phase 5, which rebuilds those views. Cost if wrong: none, the fix ships with the new views.
 - Parity list refreshed from the live site: 238 working addresses. Result on the new build: 238 checked, 0 failed. Playwright 18/18.
+
+### Phase 2 and 3 (design layer, settings, navigation)
+
+- Design direction: white field, ink, the logo's green and orange, deep green for text links, a dark green footer that rises as a field horizon with the orange sun behind it. The logo's two overlapping circles return as a small sign. Slab headlines (Enriqueta), Public Sans for everything else. All of it is variables in `app/[locale]/site.css`, so the second site changes values, not rules. Rejected on purpose: cream paper background and blob shapes.
+- Ruling: buttons are green with black text (7:1). White on this green fails contrast. Text links use the deeper green.
+- Site settings are one document with five tabs: General, Menu, Footer, Newsletter, Calendar. The Theme tab is gone; a site's look lives in code.
+- Menu and footer links use one link picker: a page of the site, a built-in section (calendar, news and so on) or any address. A link to a page follows the page when its address changes. `resolveLink`, 7 unit tests.
+- Ruling: the migration writes the menu labels in both languages from the old translation files, so the Dutch menu is complete on day one.
+- Header: larger logo (56px, 42px after scrolling), dropdowns as real buttons with open state, one language switch. Phone menu is a full sheet. Fixed: the sheet was clipped because the header's blur traps fixed children; the sheet now sits outside the header.
+- Footer: logo with address, email, phone and social links on the left, link columns in the middle, newsletter card on the right. Between 768 and 1180 wide the newsletter card runs under the other two.
+- Ruling: the initial database migration was regenerated as one file (`20261008_060100_initial`). No environment has the older one. `pnpm --filter @sites/cms db:reset` resets the test database when the schema changes in a way that is not purely additive.
+- Events get their address from title and date (`eventSlug`, 6 unit tests), filled in automatically in the admin and numbered on a repeat. Found when three real events collided.
+
+### Phase 4 (newsletter and Brevo)
+
+What was wrong, by evidence: production reported `BREVO_LIST_ID: not set`, so contacts landed in no list; Brevo rejects the local key with `401 API Key is not enabled`; failures were only logged; people were sent to Brevo before they confirmed their address; unsubscribing and deleting never reached Brevo; and `GET /api/newsletter/subscribe` told any visitor which secrets were set.
+
+- New Brevo client (`lib/email/brevo.ts`, 15 unit tests with an injected `fetch`): add to list, remove from list, delete contact, bulk add, bulk remove, read a list, list the lists, check the key. It never throws. A refusal comes back as a reason.
+- Lifecycle (`lib/newsletter/brevo-sync.ts`, 12 unit tests): added to the list on confirming, taken off on unsubscribing, deleted on erasure. The site's own table stays the record of consent.
+- The list number comes from Site settings, Newsletter. `BREVO_LIST_ID` is the fallback (`listIdFrom`, 3 unit tests).
+- Ruling, deviation from the plan: no `brevo_synced_at` and `brevo_error` columns. Instead the status compares the confirmed people on the site with the people on the Brevo list, and "Bring the Brevo list up to date" adds who is missing and removes who left. Reason: this needs no migration on the live subscriber database and it also repairs everyone who confirmed while the link was broken. Cost if wrong: there is no per-person error history; problems are in the server log and in the status.
+- Admin: Site settings, Newsletter starts with a live check, "Does the sign-up reach Brevo?". It says in sentences what works, what does not and what to do, lists the lists of the account when none is chosen, and offers the repair button. `GET /api/newsletter/status` and `POST /api/newsletter/sync` answer only for admins of this site (`canManageTenant`, 3 unit tests) and only about this site's newsletter.
+- Removed: the public health report on `GET /api/newsletter/subscribe`.
+- Ruling, security: deleting your data now takes two steps. The form sends a personal link by email and only that link deletes. Before, anyone could delete any subscriber by typing their address, and with Brevo connected that would also have removed them from the mailing list. The form answers the same whether or not the address is known. New email `sendDeleteConfirmationEmail` in both languages.
+- If the Brevo account has no `LANGUAGE` contact attribute, the client retries without it, so people are still added (unit test). Not verified against the live account: no working key was available.
+- Sign-up box rebuilt (`components/newsletter-signup.tsx`): one rounded field with the button inside, wrapping to two rows in a narrow place. After signing up the box is replaced by the thank-you. Every text is editable per language in Site settings, Newsletter, and falls back to the standard wording. Someone already on the list is told so instead of seeing an error.
+- New block "Newsletter sign-up" for pages, words left and field right on a wide screen.
+- Confirm page and delete page redesigned as short message pages. The confirm page shows the editable "after confirming" title and message.
+- Dutch newsletter wording moved from formal to informal, matching the rest of the site.
+- Tests: app 86 unit, CMS 45 unit and 86 with a database, 24 browser tests (6 new for the newsletter, all answering the site's endpoints themselves so no test writes to the subscriber list or sends mail). Parity: 238 checked, 0 failed.

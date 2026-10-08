@@ -2,6 +2,7 @@ import { Metadata, Viewport } from "next";
 import { Enriqueta, Public_Sans, Roboto_Flex } from "next/font/google";
 import { cn } from "@/lib/utils";
 import "./globals.css";
+import "./site.css";
 import { TailwindIndicator } from "@/components/ui/breakpoint-indicator";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';

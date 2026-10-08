@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { getSubscriberByToken, updateSubscriberStatus, logConsent } from '@/lib/db/queries';
 import { getClientIP, getUserAgent } from '@/lib/newsletter/utils';
 import type { SupportedLanguage } from '@/lib/db/schema';
+import { newsletterSync } from '@/lib/newsletter/sync';
 
 export async function POST(request: NextRequest) {
   try {
@@ -49,6 +50,10 @@ export async function POST(request: NextRequest) {
         language: language as SupportedLanguage,
         details: JSON.stringify({ action: 'email_verified' }),
       });
+
+      // The address is confirmed, so now it goes on the mailing list.
+      // A problem at Brevo is logged and can be repaired later from the admin panel.
+      await newsletterSync.confirmed(subscriber.email, subscriber.preferredLanguage);
 
       return NextResponse.json({
         message: 'Email verified successfully! You are now subscribed to our newsletter.',

@@ -71,7 +71,7 @@ describe('queries', () => {
       })
       await payload.create({
         collection: 'site-settings',
-        data: { header: { logoAlt: 'x', name: `${title} site` }, tenant } as never,
+        data: { general: { name: `${title} site` }, tenant } as never,
       })
       await payload.create({
         collection: 'newsletters',
@@ -195,7 +195,7 @@ describe('queries', () => {
     expect((await q.getNewsletter('Issue-1', 'en'))?.title).toBe('BG event news')
     expect((await q.getPastEvent('Recap'))?.title).toBe('BG event recap')
     expect((await q.findRedirect('/old'))?.to).toBe('/bg-new')
-    expect((await q.getSiteSettings('en'))?.header?.name).toBe('BG event site')
+    expect((await q.getSiteSettings('en'))?.general?.name).toBe('BG event site')
   })
 
   it('hides an unpublished newsletter from lists and lookups', async () => {

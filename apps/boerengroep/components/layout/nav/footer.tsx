@@ -3,159 +3,103 @@
 import React from "react";
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { FooterLogo, useOrgName } from "../../logo";
+import { LogoImage } from "../../logo";
 import { useLayout } from "../layout-context";
+import { SiteLink } from "../site-link";
 import { NewsletterSignup } from "../../newsletter-signup";
+
+const SOCIAL_NAMES: Record<string, string> = {
+    instagram: 'Instagram',
+    facebook: 'Facebook',
+    linkedin: 'LinkedIn',
+    youtube: 'YouTube',
+    mastodon: 'Mastodon',
+    bluesky: 'Bluesky',
+    x: 'X',
+    chat: 'Chat group',
+};
 
 export const Footer = () => {
     const { globalSettings } = useLayout();
-    const { footer } = globalSettings!;
-    const orgName = useOrgName(globalSettings);
     const t = useTranslations('footer');
     const tNav = useTranslations('navigation');
+    if (!globalSettings) return null;
+    const { name, tagline, logo, contact, social, footer } = globalSettings;
+    const hasContact = contact.addressLines.length > 0 || contact.email || contact.phone;
 
     return (
-        <footer className="border-t bg-white pt-20 dark:bg-transparent">
-            <div className="mx-auto max-w-6xl px-6">
+        <div className="site-footer-wrap">
+            <div className="site-footer__sun" aria-hidden="true" />
+            <footer className="site-footer">
+                <div className="page-width">
+                    <div className="site-footer__grid">
+                        <div className="site-footer__brand">
+                            <Link href="/" aria-label={tNav('home')}>
+                                <LogoImage src={logo} name={name || 'Home'} />
+                            </Link>
+                            {tagline && <p className="site-footer__tagline">{tagline}</p>}
+                            {hasContact && (
+                                <address className="site-footer__contact">
+                                    {contact.addressLines.map((line, index) => (
+                                        <span key={index}>{line}</span>
+                                    ))}
+                                    {contact.email && <a href={`mailto:${contact.email}`}>{contact.email}</a>}
+                                    {contact.phone && (
+                                        <a href={`tel:${contact.phone.replace(/[^+\d]/g, '')}`}>{contact.phone}</a>
+                                    )}
+                                </address>
+                            )}
+                            {social.length > 0 && (
+                                <ul className="site-footer__social">
+                                    {social.map((account, index) => (
+                                        <li key={index}>
+                                            <a href={account.url} rel="noopener noreferrer">
+                                                {SOCIAL_NAMES[account.platform] ?? new URL(account.url).hostname.replace(/^www\./, '')}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
 
-                {/* Quick Links Section */}
-                {footer?.quickLinks && footer.quickLinks.length > 0 && (
-                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mb-12">
-                        {footer.quickLinks.map((section, index) => {
-                            if (!section || !section.title) return null;
-
-                            return (
-                                <div key={index} className="space-y-4">
-                                    <h3 className="font-semibold text-foreground text-lg">
-                                        {t(`quick-links.${section.title}.title`)}
-                                    </h3>
-                                    <ul className="space-y-3">
-                                        {section.links?.map((link, linkIndex) => {
-                                            if (!link || !link.href || !link.label) return null;
-
-                                            return (
-                                                <li key={linkIndex}>
-                                                    <Link
-                                                        href={link.href as any}
-                                                        className="text-muted-foreground hover:text-accent-foreground transition-colors duration-150 text-sm"
-                                                    >
-                                                        {t(`quick-links.${section.title}.links.${link.label}`)}
-                                                    </Link>
-                                                </li>
-                                            );
-                                        })}
+                        <div className="site-footer__columns">
+                            {footer.columns.map((column, index) => (
+                                <div key={index}>
+                                    {column.title && <h2 className="site-footer__heading">{column.title}</h2>}
+                                    <ul className="site-footer__links">
+                                        {column.links.map((link, linkIndex) => (
+                                            <li key={linkIndex}>
+                                                <SiteLink link={link}>{link.label}</SiteLink>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {/* Newsletter Signup Section */}
-                <div className="border-t border-border pt-8 mb-8">
-                    <div className="grid gap-8 md:grid-cols-2">
-                        <div className="space-y-4">
-                            <h3 className="font-semibold text-foreground text-lg">
-                                {t('newsletter.title')}
-                            </h3>
-                            <p className="text-muted-foreground text-sm">
-                                {t('newsletter.description')}
-                            </p>
-                            <NewsletterSignup
-                                variant="compact"
-                                source="footer"
-                                className="max-w-sm"
-                            />
+                            ))}
                         </div>
 
-                        <div className="space-y-4">
-                            <h3 className="font-semibold text-foreground text-lg">
-                                {t('contact.title')}
-                            </h3>
-                            <div className="space-y-2 text-sm text-muted-foreground">
-                                <p>{t('contact.organization')}</p>
-                                <p>{t('contact.address.street')}</p>
-                                <p>{t('contact.address.city')}</p>
-                                <p>{t('contact.address.country')}</p>
-                                <p className="pt-2">
-                                    <a href={`mailto:${t('contact.email')}`} className="hover:text-accent-foreground transition-colors duration-150">
-                                        {t('contact.email')}
-                                    </a>
-                                </p>
-                                <p>
-                                    <a href={`tel:${t('contact.phone.raw')}`} className="hover:text-accent-foreground transition-colors duration-150">
-                                        {t('contact.phone.display')}
-                                    </a>
-                                </p>
+                        {footer.showNewsletter && (
+                            <div className="site-footer__news">
+                                <NewsletterSignup source="footer" />
                             </div>
-                        </div>
+                        )}
+                    </div>
+
+                    <div className="site-footer__base">
+                        <p>
+                            {t('copyright', { year: new Date().getFullYear(), organization: name })}
+                        </p>
+                        {footer.legalLinks.length > 0 && (
+                            <ul className="site-footer__legal">
+                                {footer.legalLinks.map((link, index) => (
+                                    <li key={index}>
+                                        <SiteLink link={link}>{link.label}</SiteLink>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                 </div>
-
-                {/* Bottom Footer */}
-                <div className="flex flex-wrap items-center gap-6 border-t border-border py-6 flex-col md:flex-row md:justify-between">
-
-                    <div className="order-last flex justify-center md:order-first md:justify-start">
-                        <Link
-                            href="/"
-                            aria-label={tNav('home')}
-                            className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-150"
-                        >
-                            <FooterLogo globalData={globalSettings} />
-                            <span className="self-center text-muted-foreground text-sm">
-                                {t('copyright', {
-                                    year: new Date().getFullYear().toString(),
-                                    organization: orgName
-                                })}
-                            </span>
-                        </Link>
-                    </div>
-
-                    {/* Social Media Links */}
-                    <div className="order-first flex justify-center gap-6 text-sm md:order-last md:justify-end">
-                        {footer?.social?.map((link, index) => {
-                            if (!link || !link.url || !link.platform) return null;
-
-                            const socialName = link.platform.toLowerCase();
-
-                            return (
-                                <a
-                                    key={`${link.platform}-${index}`}
-                                    href={link.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group text-muted-foreground hover:text-primary transition-colors duration-150"
-                                    aria-label={t(`social.${socialName}`)}
-                                >
-                                    <span className="text-sm font-medium capitalize group-hover:scale-110 transition-transform duration-150">
-                                        {link.platform}
-                                    </span>
-                                </a>
-                            );
-                        })}
-                    </div>
-
-                </div>
-
-                {/* Legal Links */}
-                <div className="border-t border-border py-4">
-                    <div className="flex flex-wrap justify-center gap-6 text-xs text-muted-foreground md:justify-start">
-                        <Link href="/privacy-policy" className="hover:text-accent-foreground transition-colors duration-150">
-                            {t('legal.privacy')}
-                        </Link>
-                        {/*<Link href="/cookies" className="hover:text-accent-foreground transition-colors duration-150">*/}
-                        {/*    {t('legal.cookies')}*/}
-                        {/*</Link>*/}
-                        {/*<Link href="/terms-conditions" className="hover:text-accent-foreground transition-colors duration-150">*/}
-                        {/*    {t('legal.terms')}*/}
-                        {/*</Link>*/}
-                        {/*<Link href="/accessibility" className="hover:text-accent-foreground transition-colors duration-150">*/}
-                        {/*    {t('legal.accessibility')}*/}
-                        {/*</Link>*/}
-                    </div>
-                </div>
-
-            </div>
-        </footer>
+            </footer>
+        </div>
     );
 };

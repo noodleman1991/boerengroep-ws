@@ -25,28 +25,85 @@ describe('site settings and redirects', () => {
   })
   afterAll(async () => resetDb(payload))
 
-  it('stores localized navigation labels', async () => {
+  it('stores a menu with labels per language and links to a page, a section and another address', async () => {
+    const about = await payload.create({
+      collection: 'pages',
+      locale: 'en',
+      data: { title: 'About us', slug: 'about-us', tenant: bg, _status: 'published' } as never,
+    })
+    await payload.update({ collection: 'pages', id: about.id, locale: 'nl', data: { title: 'Over ons', slug: 'over-ons' } as never })
+
     const settings = await payload.create({
       collection: 'site-settings',
       locale: 'en',
       data: {
         tenant: bg,
+        general: { name: 'Stichting Boerengroep', tagline: 'Since 1971' },
         header: {
-          logoAlt: 'Boerengroep',
-          name: 'Stichting Boerengroep',
-          nav: [{ href: '/about-us', label: 'about-us', labelText: 'About us' }],
+          nav: [
+            {
+              label: 'About us',
+              linkType: 'page',
+              page: about.id,
+              children: [{ label: 'Calendar', linkType: 'section', section: 'calendar', anchor: 'open-meetings' }],
+            },
+            { label: 'WUR', linkType: 'custom', url: 'https://wur.nl', highlight: true },
+          ],
         },
       } as never,
     })
-    const navId = settings.header!.nav![0]!.id
+    const nav = settings.header!.nav!
     await payload.update({
       collection: 'site-settings',
       id: settings.id,
       locale: 'nl',
-      data: { header: { nav: [{ id: navId, href: '/about-us', label: 'about-us', labelText: 'Over ons' }] } } as never,
+      data: {
+        general: { tagline: 'Sinds 1971' },
+        header: {
+          nav: [
+            { id: nav[0]!.id, label: 'Over ons', linkType: 'page', page: about.id, children: [{ id: nav[0]!.children![0]!.id, label: 'Agenda', linkType: 'section', section: 'calendar', anchor: 'open-meetings' }] },
+            { id: nav[1]!.id, label: 'WUR', linkType: 'custom', url: 'https://wur.nl', highlight: true },
+          ],
+        },
+      } as never,
     })
-    const nl = await payload.findByID({ collection: 'site-settings', id: settings.id, locale: 'nl' })
-    expect(nl.header?.nav?.[0]?.labelText).toBe('Over ons')
+
+    const nl = (await payload.findByID({ collection: 'site-settings', id: settings.id, locale: 'nl', depth: 1 })) as any
+    expect(nl.general.tagline).toBe('Sinds 1971')
+    expect(nl.header.nav[0].label).toBe('Over ons')
+    expect(nl.header.nav[0].page.path).toBe('/over-ons')
+    expect(nl.header.nav[0].children[0]).toMatchObject({ label: 'Agenda', section: 'calendar', anchor: 'open-meetings' })
+    expect(nl.header.nav[1]).toMatchObject({ url: 'https://wur.nl', highlight: true })
+    const en = (await payload.findByID({ collection: 'site-settings', id: settings.id, locale: 'en', depth: 1 })) as any
+    expect(en.header.nav[0].label).toBe('About us')
+    expect(en.header.nav[0].page.path).toBe('/about-us')
+  })
+
+  it('falls back to the English label when the Dutch one is not filled in', async () => {
+    const found = await payload.find({ collection: 'site-settings', where: { tenant: { equals: bg } } })
+    await payload.update({
+      collection: 'site-settings',
+      id: found.docs[0]!.id,
+      locale: 'en',
+      data: { footer: { columns: [{ title: 'Get involved', links: [{ label: 'Vacancies', linkType: 'section', section: 'vacancies' }] }] } } as never,
+    })
+    const nl = (await payload.findByID({ collection: 'site-settings', id: found.docs[0]!.id, locale: 'nl' })) as any
+    expect(nl.footer.columns[0].title).toBe('Get involved')
+    expect(nl.footer.columns[0].links[0].label).toBe('Vacancies')
+  })
+
+  it('keeps newsletter texts per language and the Brevo list for the site', async () => {
+    const found = await payload.find({ collection: 'site-settings', where: { tenant: { equals: bg } } })
+    const id = found.docs[0]!.id
+    await payload.update({
+      collection: 'site-settings',
+      id,
+      locale: 'en',
+      data: { newsletter: { brevoListId: 7, heading: 'Stay in the loop', thanksTitle: 'Almost there' } } as never,
+    })
+    await payload.update({ collection: 'site-settings', id, locale: 'nl', data: { newsletter: { heading: 'Blijf op de hoogte' } } as never })
+    const nl = (await payload.findByID({ collection: 'site-settings', id, locale: 'nl' })) as any
+    expect(nl.newsletter).toMatchObject({ brevoListId: 7, heading: 'Blijf op de hoogte', thanksTitle: 'Almost there' })
   })
 
   it('lets a tenant admin change settings but not an editor', async () => {
@@ -56,19 +113,19 @@ describe('site settings and redirects', () => {
       payload.update({
         collection: 'site-settings',
         id,
-        data: { theme: { font: 'lato' } } as never,
+        data: { calendar: { defaultView: 'month' } } as never,
         user: bgEditor,
         overrideAccess: false,
       }),
     ).rejects.toThrow(/not allowed/)
-    const updated = await payload.update({
+    const updated = (await payload.update({
       collection: 'site-settings',
       id,
-      data: { theme: { font: 'lato' } } as never,
+      data: { calendar: { defaultView: 'month' } } as never,
       user: bgAdmin,
       overrideAccess: false,
-    })
-    expect(updated.theme?.font).toBe('lato')
+    })) as any
+    expect(updated.calendar.defaultView).toBe('month')
   })
 
   it('rejects a redirect that does not start with a slash', async () => {

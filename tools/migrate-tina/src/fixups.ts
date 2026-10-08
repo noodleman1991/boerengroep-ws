@@ -9,6 +9,8 @@ export type Fixups = {
   pageOverrides: Record<string, Partial<Record<'en' | 'nl', { title?: string; slug?: string }>>>
   /** Permanent redirects to add, for addresses that stop existing. */
   redirects: { from: string; to: string }[]
+  /** Upload path of the logo to use when the old settings point at a file that does not exist. */
+  logo?: string
 }
 
 export const emptyFixups: Fixups = { removePages: [], pageOverrides: {}, redirects: [] }
@@ -20,5 +22,6 @@ export function parseFixups(json: string): Fixups {
     removePages: raw.removePages ?? [],
     pageOverrides: raw.pageOverrides ?? {},
     redirects: raw.redirects ?? [],
+    logo: raw.logo,
   }
 }

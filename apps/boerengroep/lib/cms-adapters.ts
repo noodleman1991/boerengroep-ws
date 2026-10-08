@@ -10,6 +10,7 @@ import type {
   Tag,
   Vacancy,
 } from '@sites/cms/types'
+import { type LinkValue, resolveLink } from '@sites/cms/links'
 
 type Rel<T> = number | string | T | null | undefined
 
@@ -18,8 +19,17 @@ function populated<T>(value: Rel<T>): T | undefined {
   return value && typeof value === 'object' ? (value as T) : undefined
 }
 
-export function mediaUrl(value: Rel<Media>): string | undefined {
-  return populated(value)?.url ?? undefined
+export type MediaSize = 'thumbnail' | 'card' | 'square' | 'wide' | 'og'
+
+/**
+ * Address of a picture or file. With a size, the cut made for that use is preferred
+ * and the original is the fallback, for files that have no cuts such as PDFs.
+ */
+export function mediaUrl(value: Rel<Media>, size?: MediaSize): string | undefined {
+  const doc = populated(value)
+  if (!doc) return undefined
+  const sized = size ? (doc.sizes as Record<string, { url?: string | null } | undefined> | null | undefined)?.[size]?.url : undefined
+  return sized ?? doc.url ?? undefined
 }
 
 export function asConnection<T>(nodes: T[]): { edges: { node: T }[] } {
@@ -60,8 +70,12 @@ export function toCalendarEvent(e: Event) {
         },
       ]
     }),
-    image: mediaUrl(e.image),
-    coverImage: mediaUrl(e.coverImage),
+    image: mediaUrl(e.image, 'card'),
+    // Kept under the old name too, for components that still read it.
+    coverImage: mediaUrl(e.image, 'card'),
+    slug: e.slug,
+    status: e.status ?? 'scheduled',
+    statusNote: e.statusNote ?? undefined,
     featured: Boolean(e.featured),
     registrationLink: e.registrationLink ?? undefined,
   }
@@ -111,45 +125,69 @@ export function toPastEventNode(p: PastEvent) {
   }
 }
 
-type LinkRow = { page?: Rel<Page>; href?: string | null; label?: string | null }
+export type SiteLink = { label: string; href: string; external: boolean }
 
-function linkHref(row: LinkRow): string | undefined {
-  return populated(row.page)?.path ?? row.href ?? undefined
+/** A link from the admin, ready to render. Links without a label or a target are left out. */
+function siteLink(row: (LinkValue & { label?: string | null }) | null | undefined): SiteLink | undefined {
+  const href = resolveLink(row)
+  const label = row?.label?.trim()
+  if (!href || !label) return undefined
+  return { label, href, external: /^https?:\/\//.test(href) }
 }
 
-/** Shape consumed by the layout context, header and footer. */
-export function toGlobalSettings(s: SiteSetting | null) {
-  const nav = (rows: NonNullable<NonNullable<SiteSetting['header']>['nav']> | null | undefined) =>
-    (rows ?? []).map((item) => ({
-      href: linkHref(item),
-      label: item.label ?? undefined,
-      labelText: item.labelText ?? undefined,
-      submenu: ((item as { submenu?: (LinkRow & { labelText?: string | null })[] | null }).submenu ?? []).map(
-        (sub) => ({ href: linkHref(sub), label: sub.label ?? undefined, labelText: sub.labelText ?? undefined }),
-      ),
-    }))
+function siteLinks(rows: unknown): SiteLink[] {
+  return (Array.isArray(rows) ? rows : []).flatMap((row) => {
+    const link = siteLink(row as LinkValue)
+    return link ? [link] : []
+  })
+}
 
+/** Everything the layout needs from Site settings, in the language of the page. */
+export function toGlobalSettings(s: SiteSetting | null) {
+  const general = s?.general
+  const newsletter = s?.newsletter
   return {
-    header: {
-      logo: mediaUrl(s?.header?.logo),
-      logoAlt: s?.header?.logoAlt ?? '',
-      name: s?.header?.name ?? '',
-      color: s?.header?.color ?? 'default',
-      nav: nav(s?.header?.nav),
+    name: general?.name ?? '',
+    tagline: general?.tagline ?? undefined,
+    logo: mediaUrl(general?.logo),
+    contact: {
+      addressLines: (general?.contact?.address ?? '')
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean),
+      email: general?.contact?.email ?? undefined,
+      phone: general?.contact?.phone ?? undefined,
     },
-    homepage: { showCalendarWidget: Boolean(s?.homepage?.showCalendarWidget) },
+    social: (general?.social ?? []).map((row) => ({ platform: row.platform, url: row.url })),
+    nav: (s?.header?.nav ?? []).flatMap((item) => {
+      const link = siteLink(item)
+      return link ? [{ ...link, highlight: Boolean(item.highlight), children: siteLinks(item.children) }] : []
+    }),
     footer: {
-      social: (s?.footer?.social ?? []).map((row) => ({ platform: row.platform, url: row.url })),
-      quickLinks: (s?.footer?.quickLinks ?? []).map((section) => ({
-        title: section.title,
-        links: (section.links ?? []).map((l) => ({ href: linkHref(l), label: l.label ?? undefined })),
-      })),
+      columns: (s?.footer?.columns ?? [])
+        .map((column) => ({ title: column.title ?? '', links: siteLinks(column.links) }))
+        .filter((column) => column.links.length > 0),
+      legalLinks: siteLinks(s?.footer?.legalLinks),
+      showNewsletter: s?.footer?.showNewsletter ?? true,
     },
-    theme: {
-      color: s?.theme?.color ?? 'blue',
-      font: s?.theme?.font ?? undefined,
-      darkMode: s?.theme?.darkMode ?? 'system',
+    newsletter: {
+      heading: newsletter?.heading ?? undefined,
+      intro: newsletter?.intro ?? undefined,
+      placeholder: newsletter?.placeholder ?? undefined,
+      buttonLabel: newsletter?.buttonLabel ?? undefined,
+      consentText: newsletter?.consentText ?? undefined,
+      thanksTitle: newsletter?.thanksTitle ?? undefined,
+      thanksMessage: newsletter?.thanksMessage ?? undefined,
+      confirmedTitle: newsletter?.confirmedTitle ?? undefined,
+      confirmedMessage: newsletter?.confirmedMessage ?? undefined,
     },
+    calendar: {
+      intro: s?.calendar?.intro ?? undefined,
+      defaultView: (s?.calendar?.defaultView ?? 'list') as 'list' | 'month',
+      showSubscribe: s?.calendar?.showSubscribe ?? true,
+    },
+    // Older components pick colours by this name. The look now comes from the stylesheet.
+    theme: { color: 'green', font: undefined as string | undefined, darkMode: 'light' },
   }
 }
 

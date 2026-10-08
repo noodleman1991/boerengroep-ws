@@ -82,7 +82,7 @@ export const EventsCalendarPreview = ({ data, events = [], globalData }: EventsC
     const displayEvents = getEventsForDisplay(events);
 
     // Check if calendar widget should be shown
-    const showCalendarWidget = globalData?.homepage?.showCalendarWidget !== false; // Default to true
+    const showCalendarWidget = data.showMiniCalendar !== false; // Shown unless the editor switched it off
 
     const formatEventDate = (dateString: string) => {
         try {

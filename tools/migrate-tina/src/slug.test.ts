@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fileSlug, pageSlug } from './slug'
+import { fileSlug, pageSlug, uniqueSlug } from './slug'
 
 describe('fileSlug', () => {
   it('uses the file name without folder or extension and keeps capitals', () => {
@@ -24,5 +24,22 @@ describe('pageSlug', () => {
   })
   it('keeps digits', () => {
     expect(pageSlug('50-years-bg')).toBe('50-years-bg')
+  })
+})
+
+describe('uniqueSlug', () => {
+  it('uses the address as it is when it is free', () => {
+    const used = new Set<string>()
+    expect(uniqueSlug('boerengroep-break-2025-10-30', 'en', used)).toBe('boerengroep-break-2025-10-30')
+    expect(used.has('boerengroep-break-2025-10-30')).toBe(true)
+  })
+  it('adds the language when the same event exists in both', () => {
+    const used = new Set(['boerengroep-break-2025-10-30'])
+    expect(uniqueSlug('boerengroep-break-2025-10-30', 'nl', used)).toBe('boerengroep-break-2025-10-30-nl')
+  })
+  it('counts up when the language does not help', () => {
+    const used = new Set(['x', 'x-en'])
+    expect(uniqueSlug('x', 'en', used)).toBe('x-2')
+    expect(uniqueSlug('x', undefined, used)).toBe('x-3')
   })
 })

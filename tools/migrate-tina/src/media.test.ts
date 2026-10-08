@@ -19,6 +19,7 @@ function ctx(): Ctx {
     pageByEnPath: new Map(),
     reservedPaths: new Set(),
     fixups: { removePages: [], pageOverrides: {}, redirects: [] },
+    messages: {},
     toLexical: async () => undefined,
   }
 }

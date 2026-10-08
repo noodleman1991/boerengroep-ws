@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { getPayload } from 'payload'
 import { listAppRoutes } from './app-routes'
@@ -12,6 +12,16 @@ function env(name: string): string {
   return value
 }
 
+/** Menu labels of the old site lived in its translation files. */
+function readMessages(appDir: string | undefined) {
+  const read = (locale: string) => {
+    if (!appDir) return undefined
+    const file = path.resolve(appDir, 'messages', `${locale}.json`)
+    return existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as unknown) : undefined
+  }
+  return { en: read('en'), nl: read('nl') }
+}
+
 const payload = await getPayload({ config })
 const report = await migrate({
   payload,
@@ -21,6 +31,7 @@ const report = await migrate({
   // APP_DIR is optional. With it, menu items that point at built-in routes keep their plain href.
   reservedPaths: process.env.APP_DIR ? listAppRoutes(path.resolve(process.env.APP_DIR)) : [],
   // FIXUPS_FILE is optional: a JSON file with editorial corrections for this site.
+  messages: readMessages(process.env.APP_DIR),
   fixups: process.env.FIXUPS_FILE ? parseFixups(readFileSync(path.resolve(process.env.FIXUPS_FILE), 'utf8')) : undefined,
 })
 

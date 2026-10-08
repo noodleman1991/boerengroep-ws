@@ -80,6 +80,8 @@ export interface Config {
     'site-settings': SiteSetting;
     users: User;
     tenants: Tenant;
+    forms: Form;
+    'form-submissions': FormSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -100,6 +102,8 @@ export interface Config {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
+    forms: FormsSelect<false> | FormsSelect<true>;
+    'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -183,6 +187,12 @@ export interface Page {
         | TestimonialBlock
         | VideoBlock
         | ImageTextBlock
+        | GalleryBlock
+        | DocumentsBlock
+        | PodcastBlock
+        | NewsletterSignupBlock
+        | FormBlock
+        | ItemBlock
       )[]
     | null;
   legacyId?: string | null;
@@ -215,32 +225,48 @@ export interface Tenant {
  */
 export interface HeroBlock {
   /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
    */
-  background?: string | null;
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  layout?: ('split' | 'centered') | null;
   headline?: string | null;
   tagline?: string | null;
+  /**
+   * One or two buttons are enough. The first one stands out most.
+   */
   actions?:
     | {
+        /**
+         * Say what happens, for example "See the calendar".
+         */
         label?: string | null;
         type?: ('button' | 'link') | null;
+        /**
+         * Optional small symbol.
+         */
         icon?: {
           /**
-           * Lucide icon name, for example ArrowRight.
+           * Name of a Lucide icon, for example ArrowRight. See lucide.dev/icons.
            */
           name?: string | null;
           color?: string | null;
           style?: string | null;
         };
+        /**
+         * Starts with / for this site, or https:// for another one.
+         */
         link?: string | null;
         id?: string | null;
       }[]
     | null;
   image?: {
     src?: (number | null) | Media;
+    /**
+     * For people who cannot see it.
+     */
     alt?: string | null;
     /**
-     * For YouTube, use the embed version of the URL.
+     * Optional. A YouTube or Vimeo link. The picture is then used as the cover.
      */
     videoUrl?: string | null;
   };
@@ -249,16 +275,22 @@ export interface HeroBlock {
   blockType: 'hero';
 }
 /**
+ * Every picture and document on the site. Upload here or straight from the page you are editing. Open a picture to cut it or to choose which part must stay visible.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
   id: number;
   tenant?: (number | null) | Tenant;
+  /**
+   * One sentence for people who cannot see it, and for search engines.
+   */
   alt?: string | null;
   /**
-   * Original /uploads path. Old links redirect from here.
+   * Optional. Shown under the picture in galleries. Who, what, where, or who took it.
    */
+  caption?: string | null;
   legacyPath?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -271,6 +303,48 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+  sizes?: {
+    thumbnail?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    card?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    square?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    wide?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    og?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -278,231 +352,27 @@ export interface Media {
  */
 export interface EventsCalendarPreviewBlock {
   /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
    */
-  background?: string | null;
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
   /**
-   * Optional. Defaults to the translated title.
+   * Optional. Without it the heading is "What's on".
    */
   title?: string | null;
   description?: string | null;
+  mode?: ('upcoming' | 'type' | 'picked') | null;
+  eventType?:
+    ('talk' | 'workshop' | 'lecture' | 'meeting' | 'board-meeting' | 'soup-kitchen' | 'csa' | 'excursion') | null;
+  events?: (number | Event)[] | null;
+  count?: number | null;
+  showMiniCalendar?: boolean | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'eventsCalendarPreview';
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CalloutBlock".
- */
-export interface CalloutBlock {
-  /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
-   */
-  background?: string | null;
-  text?: string | null;
-  url?: string | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'callout';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "FeaturesBlock".
- */
-export interface FeaturesBlock {
-  /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
-   */
-  background?: string | null;
-  title?: string | null;
-  description?: string | null;
-  items?:
-    | {
-        icon?: {
-          /**
-           * Lucide icon name, for example ArrowRight.
-           */
-          name?: string | null;
-          color?: string | null;
-          style?: string | null;
-        };
-        title?: string | null;
-        text?: {
-          root: {
-            type: string;
-            children: {
-              type: any;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'features';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "StatsBlock".
- */
-export interface StatsBlock {
-  /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
-   */
-  background?: string | null;
-  title?: string | null;
-  description?: string | null;
-  stats?:
-    | {
-        stat?: string | null;
-        type?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'stats';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CtaBlock".
- */
-export interface CtaBlock {
-  title?: string | null;
-  description?: string | null;
-  actions?:
-    | {
-        label?: string | null;
-        type?: ('button' | 'link') | null;
-        icon?: {
-          /**
-           * Lucide icon name, for example ArrowRight.
-           */
-          name?: string | null;
-          color?: string | null;
-          style?: string | null;
-        };
-        link?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'cta';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ContentBlock".
- */
-export interface ContentBlock {
-  /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
-   */
-  background?: string | null;
-  body?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'content';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "TestimonialBlock".
- */
-export interface TestimonialBlock {
-  /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
-   */
-  background?: string | null;
-  title?: string | null;
-  description?: string | null;
-  testimonials?:
-    | {
-        quote?: string | null;
-        author?: string | null;
-        role?: string | null;
-        avatar?: (number | null) | Media;
-        id?: string | null;
-      }[]
-    | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'testimonial';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "VideoBlock".
- */
-export interface VideoBlock {
-  /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
-   */
-  background?: string | null;
-  color?: ('default' | 'tint' | 'primary') | null;
-  url?: string | null;
-  autoPlay?: boolean | null;
-  loop?: boolean | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'video';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "ImageTextBlock".
- */
-export interface ImageTextBlock {
-  /**
-   * Tailwind background class, for example bg-background or bg-[#44AD39]/10.
-   */
-  background?: string | null;
-  image?: {
-    src?: (number | null) | Media;
-    alt?: string | null;
-  };
-  content?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  layout?: ('image-left' | 'image-right' | 'image-center' | 'text-above-center' | 'text-below-center') | null;
-  imageSize?: ('small' | 'medium' | 'large') | null;
-  verticalAlignment?: ('top' | 'center' | 'bottom') | null;
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'imageText';
-}
-/**
+ * Everything on the calendar. Each event gets its own page that people can share and add to their own calendar.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
  */
@@ -510,32 +380,68 @@ export interface Event {
   id: number;
   tenant?: (number | null) | Tenant;
   title: string;
-  slug: string;
   /**
-   * Leave empty to show in both languages.
+   * The last part of the event's web address. It is made for you from the title and the date. Do not change it after sharing the link.
+   */
+  slug?: string | null;
+  /**
+   * The language this is written in. Leave empty to show it to everyone.
    */
   language?: ('en' | 'nl') | null;
+  /**
+   * Set to Full when there are no places left. The sign-up button is then replaced by a "Fully booked" note. Cancelled events stay visible, crossed out, so people who saved them find out.
+   */
+  status: 'scheduled' | 'full' | 'cancelled' | 'postponed';
+  /**
+   * Optional. For example "Waiting list: mail us" or the new date.
+   */
+  statusNote?: string | null;
+  /**
+   * What happens, who it is for, what to bring. A new line starts a new paragraph.
+   */
   description?: string | null;
+  /**
+   * Dutch time.
+   */
+  startDate: string;
+  /**
+   * Optional. Without it the event is shown as two hours long in people's calendars.
+   */
+  endDate?: string | null;
+  /**
+   * Sets the colour on the calendar and lets visitors filter.
+   */
+  eventType: 'talk' | 'workshop' | 'lecture' | 'meeting' | 'board-meeting' | 'soup-kitchen' | 'csa' | 'excursion';
   location?: {
+    /**
+     * Name and address, as you would say it to a friend.
+     */
     address?: string | null;
+    /**
+     * Optional. Without it a map link is made from the place.
+     */
     mapsLink?: string | null;
+    /**
+     * For online or hybrid events.
+     */
     callLink?: string | null;
   };
-  startDate: string;
-  endDate?: string | null;
-  eventType: 'talk' | 'workshop' | 'lecture' | 'meeting' | 'board-meeting' | 'soup-kitchen' | 'csa' | 'excursion';
+  /**
+   * A poster or photo. After uploading you can choose which part stays visible when the picture is cut to fit.
+   */
+  image?: (number | null) | Media;
   speakers?:
     | {
         speaker?: (number | null) | Speaker;
+        /**
+         * For example "host" or "speaker".
+         */
         role?: string | null;
         id?: string | null;
       }[]
     | null;
-  image?: (number | null) | Media;
-  coverImage?: (number | null) | Media;
-  featured?: boolean | null;
   /**
-   * Type the link text, select it, and add the registration URL as a link.
+   * Optional. Type what people should click, select it, and add the link to your sign-up form. Leave empty if people can just come.
    */
   registrationLink?: {
     root: {
@@ -552,6 +458,10 @@ export interface Event {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Spotlighted events are shown first and larger.
+   */
+  featured?: boolean | null;
   legacyId?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -587,15 +497,291 @@ export interface Speaker {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CalloutBlock".
+ */
+export interface CalloutBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  text?: string | null;
+  url?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'callout';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FeaturesBlock".
+ */
+export interface FeaturesBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  title?: string | null;
+  description?: string | null;
+  items?:
+    | {
+        /**
+         * Optional small symbol.
+         */
+        icon?: {
+          /**
+           * Name of a Lucide icon, for example ArrowRight. See lucide.dev/icons.
+           */
+          name?: string | null;
+          color?: string | null;
+          style?: string | null;
+        };
+        title?: string | null;
+        text?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'features';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StatsBlock".
+ */
+export interface StatsBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  title?: string | null;
+  description?: string | null;
+  stats?:
+    | {
+        /**
+         * For example 55 or 1.200.
+         */
+        stat?: string | null;
+        type?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stats';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CtaBlock".
+ */
+export interface CtaBlock {
+  title?: string | null;
+  description?: string | null;
+  /**
+   * One or two buttons are enough. The first one stands out most.
+   */
+  actions?:
+    | {
+        /**
+         * Say what happens, for example "See the calendar".
+         */
+        label?: string | null;
+        type?: ('button' | 'link') | null;
+        /**
+         * Optional small symbol.
+         */
+        icon?: {
+          /**
+           * Name of a Lucide icon, for example ArrowRight. See lucide.dev/icons.
+           */
+          name?: string | null;
+          color?: string | null;
+          style?: string | null;
+        };
+        /**
+         * Starts with / for this site, or https:// for another one.
+         */
+        link?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cta';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ContentBlock".
+ */
+export interface ContentBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  /**
+   * Reading width is the most comfortable for longer texts.
+   */
+  width?: ('narrow' | 'normal' | 'wide') | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'content';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TestimonialBlock".
+ */
+export interface TestimonialBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  title?: string | null;
+  description?: string | null;
+  testimonials?:
+    | {
+        quote?: string | null;
+        author?: string | null;
+        /**
+         * For example "farmer in Renkum".
+         */
+        role?: string | null;
+        avatar?: (number | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'testimonial';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VideoBlock".
+ */
+export interface VideoBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  color?: ('default' | 'tint' | 'primary') | null;
+  /**
+   * For example https://www.youtube.com/watch?v=... or https://vimeo.com/...
+   */
+  url?: string | null;
+  caption?: string | null;
+  /**
+   * Optional. Shown before the video plays. Without it the video's own cover is used.
+   */
+  poster?: (number | null) | Media;
+  autoPlay?: boolean | null;
+  loop?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'video';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ImageTextBlock".
+ */
+export interface ImageTextBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  image?: {
+    src?: (number | null) | Media;
+    /**
+     * For people who cannot see it.
+     */
+    alt?: string | null;
+  };
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  layout?: ('image-left' | 'image-right' | 'image-center' | 'text-above-center' | 'text-below-center') | null;
+  imageSize?: ('small' | 'medium' | 'large') | null;
+  verticalAlignment?: ('top' | 'center' | 'bottom') | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'imageText';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock".
+ */
+export interface GalleryBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  title?: string | null;
+  source?: ('pictures' | 'pastEvent') | null;
+  /**
+   * Drop several photos at once. Drag to change the order. Add a caption by opening a photo.
+   */
+  images?: (number | Media)[] | null;
+  /**
+   * The gallery links back to the story of this event.
+   */
+  pastEvent?: (number | null) | PastEvent;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'gallery';
+}
+/**
+ * Stories and photos of events that have happened. Link one to its calendar event and the two point to each other.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "past-events".
  */
 export interface PastEvent {
   id: number;
   tenant?: (number | null) | Tenant;
   title: string;
+  /**
+   * The last part of the web address. Letters, numbers and hyphens. Do not change it after sharing the link.
+   */
   slug: string;
   /**
-   * Leave empty to show in both languages.
+   * The language this is written in. Leave empty to show it to everyone.
    */
   language?: ('en' | 'nl') | null;
   heroImg?: (number | null) | Media;
@@ -618,6 +804,10 @@ export interface PastEvent {
   date: string;
   relatedEvent?: (number | null) | Event;
   tags?: (number | Tag)[] | null;
+  /**
+   * Drop all the photos of the day here at once. They show as a mosaic on the story, and can be reused in a Photo gallery block on any page.
+   */
+  photos?: (number | Media)[] | null;
   blocks?:
     | (
         | HeroBlock
@@ -629,6 +819,11 @@ export interface PastEvent {
         | TestimonialBlock
         | VideoBlock
         | ImageTextBlock
+        | GalleryBlock
+        | DocumentsBlock
+        | PodcastBlock
+        | FormBlock
+        | ItemBlock
       )[]
     | null;
   body?: {
@@ -678,15 +873,321 @@ export interface Tag {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DocumentsBlock".
+ */
+export interface DocumentsBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  title?: string | null;
+  files?:
+    | {
+        file: number | Media;
+        /**
+         * Without it the file name is shown.
+         */
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'documents';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PodcastBlock".
+ */
+export interface PodcastBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  title?: string | null;
+  mode?: ('latest' | 'picked') | null;
+  count?: number | null;
+  /**
+   * Type a few words from the title of each episode. The first episode that matches is shown.
+   */
+  episodes?:
+    | {
+        match: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'podcast';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock".
+ */
+export interface FormBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  title?: string | null;
+  intro?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Make or change forms under Forms in the menu on the left.
+   */
+  form: number | Form;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'form';
+}
+/**
+ * Forms you can place on a page with the Form block or the Item block: a contact form, a sign-up, an order. You decide the questions and the message people see afterwards.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms".
+ */
+export interface Form {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  title: string;
+  fields?:
+    | (
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            defaultValue?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'checkbox';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'email';
+          }
+        | {
+            message?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'message';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: number | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'number';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            placeholder?: string | null;
+            options?:
+              | {
+                  label: string;
+                  value: string;
+                  id?: string | null;
+                }[]
+              | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'select';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            name: string;
+            label?: string | null;
+            width?: number | null;
+            defaultValue?: string | null;
+            required?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'textarea';
+          }
+      )[]
+    | null;
+  submitButtonLabel?: string | null;
+  confirmationType?: ('message' | 'redirect') | null;
+  confirmationMessage?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  redirect?: {
+    url: string;
+  };
+  emails?:
+    | {
+        emailTo?: string | null;
+        cc?: string | null;
+        bcc?: string | null;
+        replyTo?: string | null;
+        emailFrom?: string | null;
+        subject: string;
+        message?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ItemBlock".
+ */
+export interface ItemBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  title: string;
+  /**
+   * Visitors can flip through them. Three or four is plenty.
+   */
+  images?: (number | Media)[] | null;
+  /**
+   * What it is, sizes, how people get it.
+   */
+  details?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Free text, for example "€15" or "pay what you can".
+   */
+  priceText?: string | null;
+  actionType?: ('link' | 'form') | null;
+  /**
+   * For example "Order a shirt".
+   */
+  buttonLabel?: string | null;
+  linkUrl?: string | null;
+  /**
+   * Answers arrive under Form responses.
+   */
+  form?: (number | null) | Form;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'item';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterSignupBlock".
+ */
+export interface NewsletterSignupBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
+  /**
+   * Optional. Replaces the standard heading for this page only.
+   */
+  heading?: string | null;
+  /**
+   * Optional.
+   */
+  intro?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'newsletterSignup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "newsletters".
  */
 export interface Newsletter {
   id: number;
   tenant?: (number | null) | Tenant;
   title: string;
+  /**
+   * The last part of the web address. Letters, numbers and hyphens. Do not change it after sharing the link.
+   */
   slug: string;
   /**
-   * Leave empty to show in both languages.
+   * The language this is written in. Leave empty to show it to everyone.
    */
   language?: ('en' | 'nl') | null;
   type: 'article' | 'link' | 'event' | 'update';
@@ -723,6 +1224,11 @@ export interface Newsletter {
         | TestimonialBlock
         | VideoBlock
         | ImageTextBlock
+        | GalleryBlock
+        | DocumentsBlock
+        | PodcastBlock
+        | FormBlock
+        | ItemBlock
       )[]
     | null;
   featured?: boolean | null;
@@ -739,9 +1245,12 @@ export interface Vacancy {
   id: number;
   tenant?: (number | null) | Tenant;
   title: string;
+  /**
+   * The last part of the web address. Letters, numbers and hyphens. Do not change it after sharing the link.
+   */
   slug: string;
   /**
-   * Leave empty to show in both languages.
+   * The language this is written in. Leave empty to show it to everyone.
    */
   language?: ('en' | 'nl') | null;
   opportunityType: 'volunteer' | 'internship' | 'coordinator' | 'board' | 'other';
@@ -860,64 +1369,113 @@ export interface Redirect {
   createdAt: string;
 }
 /**
+ * The parts of the site that show on every page: name and logo, the menu, the footer, the newsletter box and the calendar options.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
 export interface SiteSetting {
   id: number;
   tenant?: (number | null) | Tenant;
-  header: {
-    logo?: (number | null) | Media;
-    logoAlt: string;
+  general: {
     name: string;
-    color?: ('default' | 'primary') | null;
-    nav?:
-      | {
-          /**
-           * Preferred. The link follows the page when its URL changes.
-           */
-          page?: (number | null) | Page;
-          href?: string | null;
-          label?: string | null;
-          labelText?: string | null;
-          submenu?:
-            | {
-                /**
-                 * Preferred. The link follows the page when its URL changes.
-                 */
-                page?: (number | null) | Page;
-                href?: string | null;
-                label?: string | null;
-                labelText?: string | null;
-                id?: string | null;
-              }[]
-            | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  homepage?: {
-    showCalendarWidget?: boolean | null;
-  };
-  footer?: {
+    /**
+     * A short sentence about what you do. Shown next to the logo in the footer.
+     */
+    tagline?: string | null;
+    /**
+     * Shown in the header and the footer. A wide image with a transparent background works best.
+     */
+    logo?: (number | null) | Media;
+    /**
+     * Shown in the footer. Leave a field empty to hide it.
+     */
+    contact?: {
+      /**
+       * One line per row, for example street, then postcode and town.
+       */
+      address?: string | null;
+      email?: string | null;
+      phone?: string | null;
+    };
+    /**
+     * Shown as small links in the footer, in this order.
+     */
     social?:
       | {
-          platform: string;
+          platform: 'instagram' | 'facebook' | 'linkedin' | 'youtube' | 'mastodon' | 'bluesky' | 'x' | 'chat' | 'other';
           url: string;
           id?: string | null;
         }[]
       | null;
-    quickLinks?:
+  };
+  header?: {
+    nav?:
       | {
-          title: string;
-          links?:
+          /**
+           * The words people click on. Switch language at the top to fill in the other one.
+           */
+          label?: string | null;
+          linkType?: ('page' | 'section' | 'custom') | null;
+          /**
+           * The link keeps working when this page is renamed or moved.
+           */
+          page?: (number | null) | Page;
+          /**
+           * Parts of the site that are always there, such as the calendar.
+           */
+          section?:
+            | ('home' | 'calendar' | 'past-events' | 'news' | 'newsletter' | 'friends-news' | 'podcast' | 'vacancies')
+            | null;
+          /**
+           * Starts with https:// for another website, or with / for an address on this site.
+           */
+          url?: string | null;
+          /**
+           * Optional. Jumps to one part of the page, for example "volunteers" on the vacancies page.
+           */
+          anchor?: string | null;
+          /**
+           * Use this for the one thing you most want visitors to do. One button is enough.
+           */
+          highlight?: boolean | null;
+          /**
+           * Optional. Links that appear when someone opens this menu item.
+           */
+          children?:
             | {
                 /**
-                 * Preferred. The link follows the page when its URL changes.
+                 * The words people click on. Switch language at the top to fill in the other one.
+                 */
+                label?: string | null;
+                linkType?: ('page' | 'section' | 'custom') | null;
+                /**
+                 * The link keeps working when this page is renamed or moved.
                  */
                 page?: (number | null) | Page;
-                href?: string | null;
-                label?: string | null;
+                /**
+                 * Parts of the site that are always there, such as the calendar.
+                 */
+                section?:
+                  | (
+                      | 'home'
+                      | 'calendar'
+                      | 'past-events'
+                      | 'news'
+                      | 'newsletter'
+                      | 'friends-news'
+                      | 'podcast'
+                      | 'vacancies'
+                    )
+                  | null;
+                /**
+                 * Starts with https:// for another website, or with / for an address on this site.
+                 */
+                url?: string | null;
+                /**
+                 * Optional. Jumps to one part of the page, for example "volunteers" on the vacancies page.
+                 */
+                anchor?: string | null;
                 id?: string | null;
               }[]
             | null;
@@ -925,10 +1483,151 @@ export interface SiteSetting {
         }[]
       | null;
   };
-  theme?: {
-    color?: string | null;
-    font?: ('sans' | 'nunito' | 'lato') | null;
-    darkMode?: ('system' | 'light' | 'dark') | null;
+  footer?: {
+    /**
+     * Two or three short columns read best.
+     */
+    columns?:
+      | {
+          title?: string | null;
+          links?:
+            | {
+                /**
+                 * The words people click on. Switch language at the top to fill in the other one.
+                 */
+                label?: string | null;
+                linkType?: ('page' | 'section' | 'custom') | null;
+                /**
+                 * The link keeps working when this page is renamed or moved.
+                 */
+                page?: (number | null) | Page;
+                /**
+                 * Parts of the site that are always there, such as the calendar.
+                 */
+                section?:
+                  | (
+                      | 'home'
+                      | 'calendar'
+                      | 'past-events'
+                      | 'news'
+                      | 'newsletter'
+                      | 'friends-news'
+                      | 'podcast'
+                      | 'vacancies'
+                    )
+                  | null;
+                /**
+                 * Starts with https:// for another website, or with / for an address on this site.
+                 */
+                url?: string | null;
+                /**
+                 * Optional. Jumps to one part of the page, for example "volunteers" on the vacancies page.
+                 */
+                anchor?: string | null;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * For example the privacy policy.
+     */
+    legalLinks?:
+      | {
+          /**
+           * The words people click on. Switch language at the top to fill in the other one.
+           */
+          label?: string | null;
+          linkType?: ('page' | 'section' | 'custom') | null;
+          /**
+           * The link keeps working when this page is renamed or moved.
+           */
+          page?: (number | null) | Page;
+          /**
+           * Parts of the site that are always there, such as the calendar.
+           */
+          section?:
+            | ('home' | 'calendar' | 'past-events' | 'news' | 'newsletter' | 'friends-news' | 'podcast' | 'vacancies')
+            | null;
+          /**
+           * Starts with https:// for another website, or with / for an address on this site.
+           */
+          url?: string | null;
+          /**
+           * Optional. Jumps to one part of the page, for example "volunteers" on the vacancies page.
+           */
+          anchor?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    showNewsletter?: boolean | null;
+  };
+  newsletter?: {
+    /**
+     * People who confirm their email are added to this list in Brevo. You find the number in Brevo under Contacts, Lists, in the column "ID".
+     */
+    brevoListId?: number | null;
+    heading?: string | null;
+    intro?: string | null;
+    placeholder?: string | null;
+    buttonLabel?: string | null;
+    /**
+     * A link to the privacy policy is added after this text automatically.
+     */
+    consentText?: string | null;
+    /**
+     * Shown right after someone signs up, in place of the box.
+     */
+    thanksTitle?: string | null;
+    /**
+     * Tell people to look in their inbox for the confirmation email.
+     */
+    thanksMessage?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Shown on the page people land on when they click the link in the email.
+     */
+    confirmedTitle?: string | null;
+    confirmedMessage?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  calendar?: {
+    intro?: string | null;
+    /**
+     * Visitors can always switch. The list reads best on a phone.
+     */
+    defaultView?: ('list' | 'month') | null;
+    /**
+     * Shows a button that adds all your events to their own Google, Apple or Outlook calendar and keeps them up to date.
+     */
+    showSubscribe?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -967,6 +1666,26 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * What people filled in. Only people who work on this site can read them.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions".
+ */
+export interface FormSubmission {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  form: number | Form;
+  submissionData?:
+    | {
+        field: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1043,6 +1762,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tenants';
         value: number | Tenant;
+      } | null)
+    | ({
+        relationTo: 'forms';
+        value: number | Form;
+      } | null)
+    | ({
+        relationTo: 'form-submissions';
+        value: number | FormSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1110,6 +1837,12 @@ export interface PagesSelect<T extends boolean = true> {
         testimonial?: T | TestimonialBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
         imageText?: T | ImageTextBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
+        documents?: T | DocumentsBlockSelect<T>;
+        podcast?: T | PodcastBlockSelect<T>;
+        newsletterSignup?: T | NewsletterSignupBlockSelect<T>;
+        form?: T | FormBlockSelect<T>;
+        item?: T | ItemBlockSelect<T>;
       };
   legacyId?: T;
   updatedAt?: T;
@@ -1122,6 +1855,7 @@ export interface PagesSelect<T extends boolean = true> {
  */
 export interface HeroBlockSelect<T extends boolean = true> {
   background?: T;
+  layout?: T;
   headline?: T;
   tagline?: T;
   actions?:
@@ -1157,6 +1891,11 @@ export interface EventsCalendarPreviewBlockSelect<T extends boolean = true> {
   background?: T;
   title?: T;
   description?: T;
+  mode?: T;
+  eventType?: T;
+  events?: T;
+  count?: T;
+  showMiniCalendar?: T;
   id?: T;
   blockName?: T;
 }
@@ -1245,6 +1984,7 @@ export interface CtaBlockSelect<T extends boolean = true> {
  */
 export interface ContentBlockSelect<T extends boolean = true> {
   background?: T;
+  width?: T;
   body?: T;
   id?: T;
   blockName?: T;
@@ -1277,6 +2017,8 @@ export interface VideoBlockSelect<T extends boolean = true> {
   background?: T;
   color?: T;
   url?: T;
+  caption?: T;
+  poster?: T;
   autoPlay?: T;
   loop?: T;
   id?: T;
@@ -1303,6 +2045,94 @@ export interface ImageTextBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "GalleryBlock_select".
+ */
+export interface GalleryBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  source?: T;
+  images?: T;
+  pastEvent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "DocumentsBlock_select".
+ */
+export interface DocumentsBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  files?:
+    | T
+    | {
+        file?: T;
+        label?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PodcastBlock_select".
+ */
+export interface PodcastBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  mode?: T;
+  count?: T;
+  episodes?:
+    | T
+    | {
+        match?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NewsletterSignupBlock_select".
+ */
+export interface NewsletterSignupBlockSelect<T extends boolean = true> {
+  background?: T;
+  heading?: T;
+  intro?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormBlock_select".
+ */
+export interface FormBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  intro?: T;
+  form?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ItemBlock_select".
+ */
+export interface ItemBlockSelect<T extends boolean = true> {
+  background?: T;
+  title?: T;
+  images?: T;
+  details?: T;
+  priceText?: T;
+  actionType?: T;
+  buttonLabel?: T;
+  linkUrl?: T;
+  form?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events_select".
  */
 export interface EventsSelect<T extends boolean = true> {
@@ -1310,7 +2140,12 @@ export interface EventsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   language?: T;
+  status?: T;
+  statusNote?: T;
   description?: T;
+  startDate?: T;
+  endDate?: T;
+  eventType?: T;
   location?:
     | T
     | {
@@ -1318,9 +2153,7 @@ export interface EventsSelect<T extends boolean = true> {
         mapsLink?: T;
         callLink?: T;
       };
-  startDate?: T;
-  endDate?: T;
-  eventType?: T;
+  image?: T;
   speakers?:
     | T
     | {
@@ -1328,10 +2161,8 @@ export interface EventsSelect<T extends boolean = true> {
         role?: T;
         id?: T;
       };
-  image?: T;
-  coverImage?: T;
-  featured?: T;
   registrationLink?: T;
+  featured?: T;
   legacyId?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1351,6 +2182,7 @@ export interface PastEventsSelect<T extends boolean = true> {
   date?: T;
   relatedEvent?: T;
   tags?: T;
+  photos?: T;
   blocks?:
     | T
     | {
@@ -1363,6 +2195,11 @@ export interface PastEventsSelect<T extends boolean = true> {
         testimonial?: T | TestimonialBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
         imageText?: T | ImageTextBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
+        documents?: T | DocumentsBlockSelect<T>;
+        podcast?: T | PodcastBlockSelect<T>;
+        form?: T | FormBlockSelect<T>;
+        item?: T | ItemBlockSelect<T>;
       };
   body?: T;
   legacyId?: T;
@@ -1400,6 +2237,11 @@ export interface NewslettersSelect<T extends boolean = true> {
         testimonial?: T | TestimonialBlockSelect<T>;
         video?: T | VideoBlockSelect<T>;
         imageText?: T | ImageTextBlockSelect<T>;
+        gallery?: T | GalleryBlockSelect<T>;
+        documents?: T | DocumentsBlockSelect<T>;
+        podcast?: T | PodcastBlockSelect<T>;
+        form?: T | FormBlockSelect<T>;
+        item?: T | ItemBlockSelect<T>;
       };
   featured?: T;
   legacyId?: T;
@@ -1497,6 +2339,7 @@ export interface TagsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   tenant?: T;
   alt?: T;
+  caption?: T;
   legacyPath?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1509,6 +2352,60 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumbnail?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        card?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        square?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        wide?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        og?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1529,40 +2426,19 @@ export interface RedirectsSelect<T extends boolean = true> {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   tenant?: T;
-  header?:
+  general?:
     | T
     | {
-        logo?: T;
-        logoAlt?: T;
         name?: T;
-        color?: T;
-        nav?:
+        tagline?: T;
+        logo?: T;
+        contact?:
           | T
           | {
-              page?: T;
-              href?: T;
-              label?: T;
-              labelText?: T;
-              submenu?:
-                | T
-                | {
-                    page?: T;
-                    href?: T;
-                    label?: T;
-                    labelText?: T;
-                    id?: T;
-                  };
-              id?: T;
+              address?: T;
+              email?: T;
+              phone?: T;
             };
-      };
-  homepage?:
-    | T
-    | {
-        showCalendarWidget?: T;
-      };
-  footer?:
-    | T
-    | {
         social?:
           | T
           | {
@@ -1570,27 +2446,87 @@ export interface SiteSettingsSelect<T extends boolean = true> {
               url?: T;
               id?: T;
             };
-        quickLinks?:
+      };
+  header?:
+    | T
+    | {
+        nav?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              page?: T;
+              section?: T;
+              url?: T;
+              anchor?: T;
+              highlight?: T;
+              children?:
+                | T
+                | {
+                    label?: T;
+                    linkType?: T;
+                    page?: T;
+                    section?: T;
+                    url?: T;
+                    anchor?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  footer?:
+    | T
+    | {
+        columns?:
           | T
           | {
               title?: T;
               links?:
                 | T
                 | {
-                    page?: T;
-                    href?: T;
                     label?: T;
+                    linkType?: T;
+                    page?: T;
+                    section?: T;
+                    url?: T;
+                    anchor?: T;
                     id?: T;
                   };
               id?: T;
             };
+        legalLinks?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              page?: T;
+              section?: T;
+              url?: T;
+              anchor?: T;
+              id?: T;
+            };
+        showNewsletter?: T;
       };
-  theme?:
+  newsletter?:
     | T
     | {
-        color?: T;
-        font?: T;
-        darkMode?: T;
+        brevoListId?: T;
+        heading?: T;
+        intro?: T;
+        placeholder?: T;
+        buttonLabel?: T;
+        consentText?: T;
+        thanksTitle?: T;
+        thanksMessage?: T;
+        confirmedTitle?: T;
+        confirmedMessage?: T;
+      };
+  calendar?:
+    | T
+    | {
+        intro?: T;
+        defaultView?: T;
+        showSubscribe?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -1636,6 +2572,137 @@ export interface TenantsSelect<T extends boolean = true> {
   slug?: T;
   siteUrl?: T;
   revalidateSecret?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "forms_select".
+ */
+export interface FormsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  fields?:
+    | T
+    | {
+        checkbox?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              defaultValue?: T;
+              id?: T;
+              blockName?: T;
+            };
+        email?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        message?:
+          | T
+          | {
+              message?: T;
+              id?: T;
+              blockName?: T;
+            };
+        number?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        select?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              placeholder?: T;
+              options?:
+                | T
+                | {
+                    label?: T;
+                    value?: T;
+                    id?: T;
+                  };
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+        textarea?:
+          | T
+          | {
+              name?: T;
+              label?: T;
+              width?: T;
+              defaultValue?: T;
+              required?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  submitButtonLabel?: T;
+  confirmationType?: T;
+  confirmationMessage?: T;
+  redirect?:
+    | T
+    | {
+        url?: T;
+      };
+  emails?:
+    | T
+    | {
+        emailTo?: T;
+        cc?: T;
+        bcc?: T;
+        replyTo?: T;
+        emailFrom?: T;
+        subject?: T;
+        message?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "form-submissions_select".
+ */
+export interface FormSubmissionsSelect<T extends boolean = true> {
+  tenant?: T;
+  form?: T;
+  submissionData?:
+    | T
+    | {
+        field?: T;
+        value?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

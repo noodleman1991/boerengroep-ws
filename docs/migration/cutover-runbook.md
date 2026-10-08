@@ -30,6 +30,26 @@
    `REPLY_TO_EMAIL`, `NEWSLETTER_SECRET`, `BASE_URL`, `BASE_PATH`, `PODCAST_RSS_URL`,
    `NEXT_PUBLIC_BASE_URL`, `BREVO_API_KEY`, `BREVO_LIST_ID`. Do not copy the four `TINA` variables.
 
+## Newsletter and Brevo (owner)
+
+The site adds people to a Brevo list when they confirm their email, takes them off when they
+unsubscribe and deletes them when they ask for their data to be erased. Two things are needed, in
+this order. Until both are there the site keeps collecting sign-ups in its own table and nothing is lost.
+
+1. A working key. In Brevo: your name at the top right, "SMTP & API", "API keys", create a key.
+   The current local key is refused by Brevo with "API Key is not enabled". Save the new key as
+   `BREVO_API_KEY` in Vercel for Production and Preview, then redeploy.
+2. The list. In the admin panel open Site settings, Newsletter. The box "Does the sign-up reach
+   Brevo?" shows whether the key works and names the lists of the account with their numbers. Fill
+   in "Brevo list number" and save. `BREVO_LIST_ID` in Vercel is only a fallback and can stay empty.
+3. In the same box press "Bring the Brevo list up to date". Everyone who confirmed while the link
+   was broken is added, and everyone who unsubscribed is taken off. It is safe to press again.
+
+If the list should record the language, create a text contact attribute named `LANGUAGE` in Brevo
+(Contacts, Settings, Contact attributes). Without it people are still added, only without a language.
+
+The subscriber database needs no change for this.
+
 ## Staging rehearsal
 
 1. Push `payload-migration`. The preview deployment runs the migrations against Neon `staging`.

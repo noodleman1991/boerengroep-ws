@@ -116,3 +116,70 @@ test('content pages are served from the prerender cache', async ({ request }) =>
   const res = await request.get('/en/about-us/history')
   expect(['HIT', 'PRERENDER', 'STALE']).toContain(res.headers()['x-nextjs-cache'])
 })
+
+// The newsletter tests answer the site's own endpoints themselves, so a test run
+// never writes to the subscriber list and never sends an email.
+test('signing up shows the thank-you in place of the box', async ({ page }) => {
+  let sent: unknown
+  await page.route('**/api/newsletter/subscribe', async (route) => {
+    sent = route.request().postDataJSON()
+    await route.fulfill({ json: { status: 'pending' } })
+  })
+  await page.goto('/nl')
+  const box = page.locator('.site-footer__news')
+  await box.locator('input[type="email"]').fill('anna@example.org')
+  await box.getByRole('button').click()
+  await expect(box.getByRole('status')).toContainText('Bijna klaar')
+  await expect(box.locator('input[type="email"]')).toHaveCount(0)
+  expect(sent).toEqual({ email: 'anna@example.org', language: 'nl', source: 'footer' })
+})
+
+test('a mistyped address is caught before anything is sent', async ({ page }) => {
+  let calls = 0
+  await page.route('**/api/newsletter/subscribe', async (route) => {
+    calls++
+    await route.fulfill({ json: { status: 'pending' } })
+  })
+  await page.goto('/en')
+  const box = page.locator('.site-footer__news')
+  await box.locator('input[type="email"]').fill('anna-at-example')
+  await box.getByRole('button').click()
+  await expect(box.getByRole('alert')).toContainText('does not look like an email address')
+  expect(calls).toBe(0)
+})
+
+test('someone already on the list is told so, not shown an error', async ({ page }) => {
+  await page.route('**/api/newsletter/subscribe', (route) => route.fulfill({ json: { status: 'already' } }))
+  await page.goto('/en')
+  const box = page.locator('.site-footer__news')
+  await box.locator('input[type="email"]').fill('anna@example.org')
+  await box.getByRole('button').click()
+  await expect(box.getByRole('status')).toContainText('already on the list')
+})
+
+test('the confirmation link lands on a page that says you are on the list', async ({ page }) => {
+  await page.route('**/api/newsletter/verify', (route) => route.fulfill({ json: { message: 'ok' } }))
+  await page.goto('/en/newsletter/verify?token=11111111-1111-4111-8111-111111111111')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('You are on the list')
+})
+
+test('deleting your data starts with a link by email', async ({ page }) => {
+  let sent: Record<string, unknown> = {}
+  await page.route('**/api/newsletter/delete-data', async (route) => {
+    sent = route.request().postDataJSON()
+    await route.fulfill({ json: { status: 'email-sent' } })
+  })
+  await page.goto('/en/newsletter/delete-data')
+  await page.locator('main input[type="email"]').fill('anna@example.org')
+  await page.locator('main input[type="checkbox"]').check()
+  await page.getByRole('button', { name: 'Send me the link' }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Look in your inbox')
+  expect(sent.email).toBe('anna@example.org')
+  expect(sent.token).toBeUndefined()
+})
+
+test('the newsletter endpoints do not report on the server setup to visitors', async ({ request }) => {
+  expect((await request.get('/api/newsletter/subscribe')).status()).toBe(405)
+  expect((await request.get('/api/newsletter/status')).status()).toBe(401)
+  expect((await request.post('/api/newsletter/sync')).status()).toBe(401)
+})

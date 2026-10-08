@@ -1,0 +1,36 @@
+{
+  "navigation": {
+    "items": {
+      "about-us": "About us",
+      "history": "History",
+      "calendar": "Calendar",
+      "vacancies": "Vacancies",
+      "activities": "Activities"
+    }
+  },
+  "footer": {
+    "contact": {
+      "address": {
+        "street": "Generaal Foulkesweg 37",
+        "city": "6703 BL Wageningen",
+        "country": "Netherlands"
+      },
+      "email": "st.boerengroep@wur.nl",
+      "phone": {
+        "raw": "+31657230065",
+        "display": "+31 (0)657 23 00 65"
+      }
+    },
+    "quick-links": {
+      "about-us": {
+        "title": "About us",
+        "links": {
+          "history": "History"
+        }
+      }
+    },
+    "legal": {
+      "privacy": "Privacy Policy"
+    }
+  }
+}

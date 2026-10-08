@@ -1,196 +1,144 @@
 'use client';
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useTranslations, useLocale } from 'next-intl';
+import React, { useEffect, useId, useRef, useState } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, CheckCircle, AlertCircle, Mail } from 'lucide-react';
-
-const newsletterSchema = z.object({
-    email: z.string().email('Invalid email address'),
-});
-
-type NewsletterFormData = z.infer<typeof newsletterSchema>;
+import { useLayout } from '@/components/layout/layout-context';
+import { OverprintMark } from '@/components/overprint-mark';
+import { RichText } from '@/components/rich-text';
+import { outcomeOf, type SignupOutcome } from '@/lib/newsletter/signup-state';
+import { hasRichText } from '@/lib/rich-text-utils';
 
 interface NewsletterSignupProps {
-    variant?: 'card' | 'inline' | 'compact';
+    /** Where the box sits, kept with the sign-up for the consent record. */
     source?: string;
+    /** Overrides the heading and introduction from Site settings, for a box placed on a page. */
+    heading?: string | null;
+    intro?: string | null;
+    headingLevel?: 'h2' | 'h3';
+    /** `band` puts the words and the field side by side on a wide screen. */
+    layout?: 'stack' | 'band';
     className?: string;
 }
 
-type SubmissionState = 'idle' | 'loading' | 'success' | 'error';
+type State = 'idle' | 'sending' | SignupOutcome;
 
+/**
+ * The newsletter box. Editors set every text in Site settings, Newsletter.
+ * A text they leave empty falls back to the standard wording.
+ */
 export function NewsletterSignup({
-    variant = 'card',
     source = 'website',
-    className = ''
+    heading,
+    intro,
+    headingLevel: Heading = 'h2',
+    layout = 'stack',
+    className = '',
 }: NewsletterSignupProps) {
     const t = useTranslations('newsletter.signup');
     const locale = useLocale();
-    const [submissionState, setSubmissionState] = useState<SubmissionState>('idle');
-    const [errorMessage, setErrorMessage] = useState<string>('');
+    const { globalSettings } = useLayout();
+    const texts = globalSettings?.newsletter;
+    const [state, setState] = useState<State>('idle');
+    const [email, setEmail] = useState('');
+    const fieldId = useId();
+    const errorId = useId();
+    const doneRef = useRef<HTMLDivElement>(null);
 
-    const form = useForm<NewsletterFormData>({
-        resolver: zodResolver(newsletterSchema),
-        defaultValues: {
-            email: '',
-        },
-    });
+    const done = state === 'thanks' || state === 'already';
+    useEffect(() => {
+        // Move the reading position to the result, so a screen reader announces it.
+        if (done) doneRef.current?.focus();
+    }, [done]);
 
-    const onSubmit = async (data: NewsletterFormData) => {
-        setSubmissionState('loading');
-        setErrorMessage('');
-
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        if (!event.currentTarget.checkValidity()) {
+            setState('invalid');
+            return;
+        }
+        setState('sending');
         try {
-            const response = await fetch(`/api/newsletter/subscribe`, {
+            const response = await fetch('/api/newsletter/subscribe', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: data.email,
-                    language: locale,
-                    source,
-                }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, language: locale, source }),
             });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || 'Subscription failed');
-            }
-
-            setSubmissionState('success');
-            form.reset();
-        } catch (error) {
-            console.error('Newsletter subscription error:', error);
-            setSubmissionState('error');
-            setErrorMessage(error instanceof Error ? error.message : t('error_message'));
+            setState(outcomeOf(response.status, await response.json().catch(() => null)));
+        } catch {
+            setState('error');
         }
     };
 
-    const renderConsentStatement = () => (
-        <p className="text-xs text-muted-foreground">
-            {t.rich('consent_statement', {
-                privacyPolicy: (chunks) => (
-                    <Link
-                        href="/privacy-policy"
-                        className="underline hover:text-primary"
-                    >
-                        {chunks}
-                    </Link>
-                ),
-            })}
-        </p>
-    );
-
-    const renderForm = () => (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel className={variant === 'compact' ? 'sr-only' : undefined}>
-                                {t('email_label')}
-                            </FormLabel>
-                            <FormControl>
-                                <Input
-                                    type="email"
-                                    placeholder={t('email_placeholder')}
-                                    disabled={submissionState === 'loading'}
-                                    {...field}
-                                />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                {renderConsentStatement()}
-
-                <Button
-                    type="submit"
-                    disabled={submissionState === 'loading'}
-                    className="w-full"
-                >
-                    {submissionState === 'loading' && (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    {t('submit_button')}
-                </Button>
-            </form>
-        </Form>
-    );
-
-    const renderContent = () => {
-        if (submissionState === 'success') {
-            return (
-                <Alert className="border-green-200 bg-green-50">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-green-800">
-                        {t('success_message')}
-                    </AlertDescription>
-                </Alert>
-            );
-        }
-
+    if (done) {
+        const custom = state === 'thanks' && hasRichText(texts?.thanksMessage);
         return (
-            <>
-                {renderForm()}
-                {submissionState === 'error' && (
-                    <Alert className="border-red-200 bg-red-50 mt-4">
-                        <AlertCircle className="h-4 w-4 text-red-600" />
-                        <AlertDescription className="text-red-800">
-                            {errorMessage}
-                        </AlertDescription>
-                    </Alert>
+            <div className={`signup signup--done ${className}`} ref={doneRef} tabIndex={-1} role="status">
+                <OverprintMark className="signup__mark" />
+                <Heading className="signup__heading">
+                    {state === 'already' ? t('already_title') : texts?.thanksTitle || t('thanks_title')}
+                </Heading>
+                {custom ? (
+                    <RichText data={texts?.thanksMessage} className="signup__message" />
+                ) : (
+                    <p className="signup__message">{state === 'already' ? t('already_message') : t('thanks_message')}</p>
                 )}
-            </>
-        );
-    };
-
-    if (variant === 'compact') {
-        return (
-            <div className={`space-y-4 ${className}`}>
-                {renderContent()}
             </div>
         );
     }
 
-    if (variant === 'inline') {
-        return (
-            <div className={`bg-muted/50 rounded-lg p-6 ${className}`}>
-                <div className="mb-4">
-                    <h3 className="text-lg font-semibold">{t('title')}</h3>
-                    <p className="text-sm text-muted-foreground">{t('description')}</p>
-                </div>
-                {renderContent()}
-            </div>
-        );
-    }
+    const problem = state === 'invalid' ? t('invalid_email') : state === 'error' ? t('error_message') : null;
 
     return (
-        <Card className={className}>
-            <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                    <Mail className="h-5 w-5 text-primary" />
-                    {t('title')}
-                </CardTitle>
-                <CardDescription>
-                    {t('description')}
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                {renderContent()}
-            </CardContent>
-        </Card>
+        <div className={`signup signup--${layout} ${className}`}>
+            <div className="signup__words">
+                <Heading className="signup__heading">{heading || texts?.heading || t('title')}</Heading>
+                <p className="signup__intro">{intro || texts?.intro || t('description')}</p>
+            </div>
+
+            <form onSubmit={onSubmit} noValidate className="signup__form">
+                <label htmlFor={fieldId} className="sr-only">
+                    {t('email_label')}
+                </label>
+                <div className="signup__pill">
+                    <input
+                        id={fieldId}
+                        className="signup__input"
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                        inputMode="email"
+                        required
+                        value={email}
+                        onChange={(event) => {
+                            setEmail(event.target.value);
+                            if (problem) setState('idle');
+                        }}
+                        placeholder={texts?.placeholder || t('email_placeholder')}
+                        aria-invalid={state === 'invalid'}
+                        aria-describedby={problem ? errorId : undefined}
+                        disabled={state === 'sending'}
+                    />
+                    <button type="submit" className="btn-leaf signup__send" disabled={state === 'sending'}>
+                        {state === 'sending' ? t('sending') : texts?.buttonLabel || t('submit_button')}
+                    </button>
+                </div>
+                {problem && (
+                    <p id={errorId} className="signup__problem" role="alert">
+                        {problem}
+                    </p>
+                )}
+                <p className="signup__small">
+                    {texts?.consentText ? (
+                        <>
+                            {texts.consentText} <Link href="/privacy-policy">{t('privacy_policy')}</Link>
+                        </>
+                    ) : (
+                        t.rich('consent_statement', {
+                            privacyPolicy: (chunks) => <Link href="/privacy-policy">{chunks}</Link>,
+                        })
+                    )}
+                </p>
+            </form>
+        </div>
     );
 }

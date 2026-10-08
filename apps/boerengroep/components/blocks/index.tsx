@@ -9,6 +9,7 @@ import { EventsCalendarPreview } from './events-calendar-preview'
 import { Features } from './features'
 import { Hero } from './hero'
 import { ImageText } from './image-text'
+import { NewsletterSignupBlock } from './newsletter-signup-block'
 import { Stats } from './stats'
 import { Testimonial } from './testimonial'
 import { Video } from './video'
@@ -62,6 +63,8 @@ const Block = ({
       return <CallToAction data={block} />
     case 'imageText':
       return <ImageText data={block} />
+    case 'newsletterSignup':
+      return <NewsletterSignupBlock data={block} />
     case 'eventsCalendarPreview':
       return <EventsCalendarPreview data={block} events={events} globalData={globalData} />
     default:

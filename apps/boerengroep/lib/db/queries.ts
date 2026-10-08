@@ -104,6 +104,25 @@ export async function getActiveSubscribers(language?: SupportedLanguage): Promis
     }
 }
 
+/**
+ * Who should be on the mailing list, and who should not.
+ * Throws when the database cannot be read, so a failed read is never mistaken for an empty list.
+ */
+export async function getSubscribersForSync(): Promise<{
+    confirmed: { email: string; language: SupportedLanguage }[];
+    left: string[];
+    waiting: number;
+}> {
+    const rows = await db
+        .select({ email: subscribers.email, language: subscribers.preferredLanguage, status: subscribers.status })
+        .from(subscribers);
+    return {
+        confirmed: rows.filter(r => r.status === 'active').map(({ email, language }) => ({ email, language })),
+        left: rows.filter(r => r.status === 'unsubscribed').map(r => r.email),
+        waiting: rows.filter(r => r.status === 'pending').length,
+    };
+}
+
 // Consent log queries
 export async function logConsent(data: NewConsentLog): Promise<boolean> {
     try {

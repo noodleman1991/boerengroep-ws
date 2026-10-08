@@ -3,6 +3,20 @@ import { resolveMedia } from './media'
 
 type Raw = Record<string, any>
 
+const PRESETS = ['white', 'mist', 'leaf', 'harvest', 'sky', 'dark']
+
+/** Old sections had a typed Tailwind class as background. New ones choose a preset. */
+export function mapBackground(value: unknown): string {
+  if (typeof value !== 'string' || value.trim() === '') return 'white'
+  if (PRESETS.includes(value)) return value
+  const v = value.toUpperCase()
+  if (v.includes('#44AD39')) return Number(/\/(\d+)$/.exec(value)?.[1] ?? 100) >= 30 ? 'leaf' : 'mist'
+  if (v.includes('#F28F07')) return 'harvest'
+  if (v.includes('#4169E1')) return 'sky'
+  if (v.includes('#F5F5F0')) return 'mist'
+  return 'white'
+}
+
 function icon(raw: Raw | undefined) {
   return raw ? { name: raw.name, color: raw.color, style: raw.style } : undefined
 }
@@ -16,7 +30,9 @@ async function transformBlock(ctx: Ctx, b: Raw, legacyId: string): Promise<Recor
     case 'hero':
       return {
         blockType: 'hero',
-        background: b.background,
+        background: mapBackground(b.background),
+        // Heroes made in the old editor were centred. New ones default to text beside the picture.
+        layout: 'centered',
         headline: b.headline,
         tagline: b.tagline,
         actions: actions(b.actions),
@@ -27,20 +43,20 @@ async function transformBlock(ctx: Ctx, b: Raw, legacyId: string): Promise<Recor
         },
       }
     case 'content':
-      return { blockType: 'content', background: b.background, body: await ctx.toLexical(b.body, legacyId) }
+      return { blockType: 'content', background: mapBackground(b.background), body: await ctx.toLexical(b.body, legacyId) }
     case 'callout':
-      return { blockType: 'callout', background: b.background, text: b.text, url: b.url }
+      return { blockType: 'callout', background: mapBackground(b.background), text: b.text, url: b.url }
     case 'features': {
       const items = []
       for (const item of (b.items ?? []) as Raw[]) {
         items.push({ icon: icon(item.icon), title: item.title, text: await ctx.toLexical(item.text, legacyId) })
       }
-      return { blockType: 'features', background: b.background, title: b.title, description: b.description, items }
+      return { blockType: 'features', background: mapBackground(b.background), title: b.title, description: b.description, items }
     }
     case 'stats':
       return {
         blockType: 'stats',
-        background: b.background,
+        background: mapBackground(b.background),
         title: b.title,
         description: b.description,
         stats: ((b.stats ?? []) as Raw[]).map((s) => ({ stat: s.stat, type: s.type })),
@@ -50,7 +66,7 @@ async function transformBlock(ctx: Ctx, b: Raw, legacyId: string): Promise<Recor
     case 'testimonial':
       return {
         blockType: 'testimonial',
-        background: b.background,
+        background: mapBackground(b.background),
         title: b.title,
         description: b.description,
         testimonials: ((b.testimonials ?? []) as Raw[]).map((t) => ({
@@ -63,7 +79,7 @@ async function transformBlock(ctx: Ctx, b: Raw, legacyId: string): Promise<Recor
     case 'video':
       return {
         blockType: 'video',
-        background: b.background,
+        background: mapBackground(b.background),
         color: b.color,
         url: b.url,
         autoPlay: b.autoPlay,
@@ -72,7 +88,7 @@ async function transformBlock(ctx: Ctx, b: Raw, legacyId: string): Promise<Recor
     case 'imageText':
       return {
         blockType: 'imageText',
-        background: b.background,
+        background: mapBackground(b.background),
         image: { src: resolveMedia(ctx, b.image?.src, legacyId), alt: b.image?.alt },
         content: await ctx.toLexical(b.content, legacyId),
         layout: b.layout,
@@ -82,7 +98,7 @@ async function transformBlock(ctx: Ctx, b: Raw, legacyId: string): Promise<Recor
     case 'eventsCalendarPreview':
       return {
         blockType: 'eventsCalendarPreview',
-        background: b.background,
+        background: mapBackground(b.background),
         title: b.title,
         description: b.description,
       }

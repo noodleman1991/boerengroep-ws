@@ -4,6 +4,7 @@ import { getSubscriberByToken, updateSubscriberStatus, logConsent } from '@/lib/
 import { sendUnsubscribeConfirmation } from '@/lib/email';
 import { getClientIP, getUserAgent } from '@/lib/newsletter/utils';
 import type { SupportedLanguage } from '@/lib/db/schema';
+import { newsletterSync } from '@/lib/newsletter/sync';
 
 export async function POST(request: NextRequest) {
   try {
@@ -51,6 +52,8 @@ export async function POST(request: NextRequest) {
         language: language as SupportedLanguage,
         details: JSON.stringify({ reason, feedback }),
       });
+
+      await newsletterSync.unsubscribed(subscriber.email);
 
       await sendUnsubscribeConfirmation(
         subscriber.email,

@@ -69,26 +69,36 @@ export async function revalidateTenant(args: {
   }
 }
 
+/** The two hooks that refresh a site's cache when one of its documents changes or is removed. */
+export function revalidationHooks(slug: string): {
+  afterChange: CollectionAfterChangeHook
+  afterDelete: CollectionAfterDeleteHook
+} {
+  return {
+    afterChange: async ({ doc, req }) => {
+      if (!req.context?.disableRevalidate) {
+        await revalidateTenant({ payload: req.payload as never, tenant: doc.tenant, collection: slug })
+      }
+      return doc
+    },
+    afterDelete: async ({ doc, req }) => {
+      if (!req.context?.disableRevalidate) {
+        await revalidateTenant({ payload: req.payload as never, tenant: doc.tenant, collection: slug })
+      }
+      return doc
+    },
+  }
+}
+
 /** Adds cache-refresh hooks to a tenant-scoped collection. */
 export function withRevalidation(collection: CollectionConfig): CollectionConfig {
-  const afterChange: CollectionAfterChangeHook = async ({ doc, req }) => {
-    if (!req.context?.disableRevalidate) {
-      await revalidateTenant({ payload: req.payload as never, tenant: doc.tenant, collection: collection.slug })
-    }
-    return doc
-  }
-  const afterDelete: CollectionAfterDeleteHook = async ({ doc, req }) => {
-    if (!req.context?.disableRevalidate) {
-      await revalidateTenant({ payload: req.payload as never, tenant: doc.tenant, collection: collection.slug })
-    }
-    return doc
-  }
+  const hooks = revalidationHooks(collection.slug)
   return {
     ...collection,
     hooks: {
       ...collection.hooks,
-      afterChange: [...(collection.hooks?.afterChange ?? []), afterChange],
-      afterDelete: [...(collection.hooks?.afterDelete ?? []), afterDelete],
+      afterChange: [...(collection.hooks?.afterChange ?? []), hooks.afterChange],
+      afterDelete: [...(collection.hooks?.afterDelete ?? []), hooks.afterDelete],
     },
   }
 }

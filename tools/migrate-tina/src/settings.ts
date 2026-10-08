@@ -1,6 +1,7 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import type { Ctx } from './context'
+import { labelFrom, parseHref } from './links'
 import { resolveMedia } from './media'
 import { listContent, readTinaFile } from './read'
 
@@ -8,19 +9,92 @@ type Raw = Record<string, any>
 const WRITE = { overrideAccess: true, context: { disableRevalidate: true } } as const
 const SETTINGS_FILE = 'global/index.json'
 
-/** Links to a page when the href is exactly a known English page path. */
-function link(ctx: Ctx, item: Raw) {
-  return { page: ctx.pageByEnPath.get(item.href), href: item.href, label: item.label }
+type Locale = 'en' | 'nl'
+
+const PLATFORMS: Record<string, string> = {
+  instagram: 'instagram',
+  facebook: 'facebook',
+  linkedin: 'linkedin',
+  youtube: 'youtube',
+  mastodon: 'mastodon',
+  bluesky: 'bluesky',
+  twitter: 'x',
+  xtwitter: 'x',
+  x: 'x',
 }
 
-function navItem(ctx: Ctx, item: Raw, locale: 'en' | 'nl'): Raw {
+/** One link in the new shape: where it goes, and what it says in this language. */
+function link(ctx: Ctx, href: unknown, label: string | undefined): Raw {
+  const target = parseHref(typeof href === 'string' ? href : undefined, ctx.pageByEnPath)
+  return { ...(target ?? { linkType: 'custom', url: '' }), label }
+}
+
+function navLabel(ctx: Ctx, item: Raw, locale: Locale): string | undefined {
+  const own = locale === 'en' ? item.labelEn : item.labelNl
+  // An editor-written label wins. Otherwise the label comes from the old translation file.
+  return own || labelFrom(ctx.messages[locale], ['navigation', 'items', item.label]) || item.labelEn || item.labelNl || item.label
+}
+
+function buildSettings(ctx: Ctx, d: Raw, locale: Locale): Raw {
+  const m = ctx.messages[locale]
+  const contact = (key: string[]) => labelFrom(m, ['footer', 'contact', ...key])
+  const address = [contact(['address', 'street']), contact(['address', 'city'])].filter(Boolean).join('\n')
+  const legacyLogo = resolveMedia(ctx, d.header?.logo, SETTINGS_FILE)
+  const privacy = ctx.pageByEnPath.get('/privacy-policy')
+
   return {
-    ...link(ctx, item),
-    labelText: locale === 'en' ? item.labelEn : item.labelNl,
-    submenu: ((item.submenu ?? []) as Raw[]).map((sub) => ({
-      ...link(ctx, sub),
-      labelText: locale === 'en' ? sub.labelEn : sub.labelNl,
-    })),
+    general: {
+      name: d.header?.name || 'Site',
+      logo: legacyLogo ?? (ctx.fixups.logo ? ctx.media.get(ctx.fixups.logo) : undefined),
+      contact: { address: address || undefined, email: contact(['email']), phone: contact(['phone', 'display']) },
+      social: ((d.footer?.social ?? []) as Raw[])
+        .filter((s) => s?.url)
+        .map((s) => ({ platform: PLATFORMS[String(s.platform ?? '').toLowerCase()] ?? 'other', url: s.url })),
+    },
+    header: {
+      nav: ((d.header?.nav ?? []) as Raw[]).map((item) => ({
+        ...link(ctx, item.href, navLabel(ctx, item, locale)),
+        children: ((item.submenu ?? []) as Raw[]).map((sub) => link(ctx, sub.href, navLabel(ctx, sub, locale))),
+      })),
+    },
+    footer: {
+      columns: ((d.footer?.quickLinks ?? []) as Raw[]).map((column) => ({
+        title: labelFrom(m, ['footer', 'quick-links', column.title, 'title']) ?? column.title,
+        links: ((column.links ?? []) as Raw[]).map((l) =>
+          link(
+            ctx,
+            l.href,
+            labelFrom(m, ['footer', 'quick-links', column.title, 'links', l.label]) ??
+              labelFrom(m, ['navigation', 'items', l.label]) ??
+              l.label,
+          ),
+        ),
+      })),
+      legalLinks: privacy
+        ? [{ linkType: 'page', page: privacy, label: labelFrom(m, ['footer', 'legal', 'privacy']) ?? 'Privacy' }]
+        : [],
+      showNewsletter: true,
+    },
+  }
+}
+
+/** Copies row ids from a saved document onto the same rows in another language. */
+function withRowIds(next: Raw, saved: Raw): Raw {
+  const zip = (rows: Raw[] | undefined, savedRows: Raw[] | undefined, child?: string) =>
+    (rows ?? []).map((row, i) => {
+      const out: Raw = { ...row, id: savedRows?.[i]?.id }
+      if (child) out[child] = zip(row[child], savedRows?.[i]?.[child])
+      return out
+    })
+  return {
+    ...next,
+    general: { ...next.general, social: zip(next.general.social, saved.general?.social) },
+    header: { nav: zip(next.header.nav, saved.header?.nav, 'children') },
+    footer: {
+      ...next.footer,
+      columns: zip(next.footer.columns, saved.footer?.columns, 'links'),
+      legalLinks: zip(next.footer.legalLinks, saved.footer?.legalLinks),
+    },
   }
 }
 
@@ -31,25 +105,6 @@ export async function importSettings(ctx: Ctx, contentDir: string): Promise<void
   }
   try {
     const d = readTinaFile(contentDir, SETTINGS_FILE).data
-    const base = (locale: 'en' | 'nl') => ({
-      header: {
-        logo: resolveMedia(ctx, d.header?.logo, SETTINGS_FILE),
-        logoAlt: d.header?.logoAlt ?? d.header?.name ?? 'Logo',
-        name: d.header?.name ?? '',
-        color: d.header?.color,
-        nav: ((d.header?.nav ?? []) as Raw[]).map((item) => navItem(ctx, item, locale)),
-      },
-      homepage: { showCalendarWidget: Boolean(d.homepage?.showCalendarWidget) },
-      footer: {
-        social: ((d.footer?.social ?? []) as Raw[]).map((s) => ({ platform: s.platform, url: s.url })),
-        quickLinks: ((d.footer?.quickLinks ?? []) as Raw[]).map((q) => ({
-          title: q.title,
-          links: ((q.links ?? []) as Raw[]).map((l) => link(ctx, l)),
-        })),
-      },
-      theme: { color: d.theme?.color, font: d.theme?.font, darkMode: d.theme?.darkMode },
-    })
-
     const existing = await ctx.payload.find({
       collection: 'site-settings',
       where: { tenant: { equals: ctx.tenantId } },
@@ -58,40 +113,25 @@ export async function importSettings(ctx: Ctx, contentDir: string): Promise<void
       overrideAccess: true,
     })
     const found = existing.docs[0] as { id: number | string } | undefined
-    const saved = found
-      ? await ctx.payload.update({
-          collection: 'site-settings',
-          id: found.id,
-          locale: 'en',
-          data: base('en') as never,
-          ...WRITE,
-        })
+    const english = buildSettings(ctx, d, 'en')
+    const saved = (found
+      ? await ctx.payload.update({ collection: 'site-settings', id: found.id, locale: 'en', data: english as never, depth: 0, ...WRITE })
       : await ctx.payload.create({
           collection: 'site-settings',
           locale: 'en',
-          data: { ...base('en'), tenant: ctx.tenantId } as never,
+          data: { ...english, tenant: ctx.tenantId } as never,
+          depth: 0,
           ...WRITE,
-        })
+        })) as Raw
 
-    // Dutch labels live on the same array rows, so the rows are addressed by id.
-    const hasDutch = ((d.header?.nav ?? []) as Raw[]).some(
-      (item) => item.labelNl || ((item.submenu ?? []) as Raw[]).some((s) => s.labelNl),
-    )
-    if (hasDutch) {
-      const savedNav = ((saved as Raw).header?.nav ?? []) as Raw[]
-      const nlNav = base('nl').header.nav.map((item, i) => ({
-        ...item,
-        id: savedNav[i]?.id,
-        submenu: (item.submenu as Raw[]).map((sub, j) => ({ ...sub, id: savedNav[i]?.submenu?.[j]?.id })),
-      }))
-      await ctx.payload.update({
-        collection: 'site-settings',
-        id: (saved as { id: number | string }).id,
-        locale: 'nl',
-        data: { header: { nav: nlNav } } as never,
-        ...WRITE,
-      })
-    }
+    // Labels are per language but live on the same rows, so the Dutch pass addresses rows by id.
+    await ctx.payload.update({
+      collection: 'site-settings',
+      id: saved.id,
+      locale: 'nl',
+      data: withRowIds(buildSettings(ctx, d, 'nl'), saved) as never,
+      ...WRITE,
+    })
   } catch (err) {
     ctx.report.add('error', SETTINGS_FILE, (err as Error).message)
   }

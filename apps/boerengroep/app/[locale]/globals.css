@@ -263,7 +263,6 @@ p, li, blockquote, .prose {
 
 /* ===== REFINED LINK STYLING (NO HOVER) ===== */
 a {
-    color: hsl(var(--primary));
     text-decoration: none;
     border-radius: 2px;
 }
@@ -578,7 +577,4 @@ button, [role="button"] {
     border-color: hsl(var(--border)) !important;
 }
 
-/* Account for fixed header */
-body {
-    padding-top: 80px; /* 20 * 4 = 80px header height */
-}
+/* The offset for the fixed header is set in site.css, next to the header height. */

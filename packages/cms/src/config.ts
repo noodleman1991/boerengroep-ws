@@ -2,12 +2,13 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { resendAdapter } from '@payloadcms/email-resend'
+import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { buildConfig, type CollectionConfig } from 'payload'
 import sharp from 'sharp'
-import { canAssignTenants } from './access'
+import { anyone, authenticated, canAssignTenants } from './access'
 import { type AccessUser, isSuperAdmin } from './access/roles'
 import { Authors } from './collections/authors'
 import { Events } from './collections/events'
@@ -23,7 +24,7 @@ import { Tenants } from './collections/tenants'
 import { Users } from './collections/users'
 import { Vacancies } from './collections/vacancies'
 import { requireEnv } from './env'
-import { withRevalidation } from './hooks/revalidate'
+import { revalidationHooks, withRevalidation } from './hooks/revalidate'
 
 export type CreateConfigOptions = {
   /** The tenant this app serves. */
@@ -58,9 +59,13 @@ export const tenantScoped: CollectionConfig[] = [
 export const onePerTenant: string[] = ['site-settings']
 
 export function createPayloadConfig(opts: CreateConfigOptions) {
-  const scoped = Object.fromEntries(
-    tenantScoped.map((c) => [c.slug, onePerTenant.includes(c.slug) ? { isGlobal: true } : {}]),
-  )
+  const scoped = Object.fromEntries([
+    ...tenantScoped.map((c) => [c.slug, onePerTenant.includes(c.slug) ? { isGlobal: true } : {}]),
+    // Collections that the form builder adds. Each site has its own forms and responses.
+    ['forms', {}],
+    ['form-submissions', {}],
+  ])
+  const formHooks = revalidationHooks('forms')
 
   return buildConfig({
     secret: requireEnv('PAYLOAD_SECRET'),
@@ -90,6 +95,29 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
       fallback: true,
     },
     plugins: [
+      // Must come before the multi-tenant plugin, which adds the site field to its collections.
+      formBuilderPlugin({
+        fields: { payment: false, state: false, country: false },
+        formOverrides: {
+          labels: { singular: 'Form', plural: 'Forms' },
+          admin: {
+            group: 'Forms',
+            description:
+              'Forms you can place on a page with the Form block or the Item block: a contact form, a sign-up, an order. You decide the questions and the message people see afterwards.',
+          },
+          access: { read: anyone, create: authenticated, update: authenticated, delete: authenticated },
+          hooks: { afterChange: [formHooks.afterChange], afterDelete: [formHooks.afterDelete] },
+        },
+        formSubmissionOverrides: {
+          labels: { singular: 'Form response', plural: 'Form responses' },
+          admin: {
+            group: 'Forms',
+            description: 'What people filled in. Only people who work on this site can read them.',
+          },
+          // The site saves responses itself after its own checks. Nothing comes in through the open API.
+          access: { create: () => false, read: authenticated, update: () => false, delete: authenticated },
+        },
+      }),
       multiTenantPlugin({
         tenantsSlug: Tenants.slug,
         collections: scoped,

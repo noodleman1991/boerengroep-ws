@@ -13,3 +13,15 @@ export function pageSlug(segment: string): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 }
+
+/**
+ * Makes an address unique within one run. The same event often exists once per
+ * language, so the language is tried first, then a number.
+ */
+export function uniqueSlug(base: string, language: string | undefined, used: Set<string>): string {
+  let slug = base
+  if (used.has(slug) && language) slug = `${base}-${language}`
+  for (let n = 2; used.has(slug); n++) slug = `${base}-${n}`
+  used.add(slug)
+  return slug
+}

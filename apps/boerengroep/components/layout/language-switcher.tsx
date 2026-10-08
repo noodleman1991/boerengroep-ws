@@ -3,24 +3,36 @@
 import React from "react";
 import { useLocale } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
-// import { Globe } from "lucide-react";
 
+const LANGUAGES = [
+    { code: 'en', short: 'EN', label: 'English' },
+    { code: 'nl', short: 'NL', label: 'Nederlands' },
+] as const;
+
+/** Two small buttons. The page stays the same, the site finds its address in the other language. */
 export const LanguageSwitcher = () => {
     const locale = useLocale();
     const pathname = usePathname();
 
-    // Determine the target locale and display text
-    const targetLocale = locale === 'en' ? 'nl' : 'en';
-    const displayText = locale === 'en' ? 'Nederlands' : 'English';
-
     return (
-        <Link
-            href={pathname}
-            locale={targetLocale}
-            className="text-black hover:text-gray-600 text-sm font-medium transition-colors duration-200"
-            aria-label={`Switch to ${targetLocale === 'nl' ? 'Dutch' : 'English'}`}
-        >
-            <span>{displayText}</span>
-        </Link>
+        <div className="lang-switch" role="group" aria-label="Language">
+            {LANGUAGES.map((language) =>
+                language.code === locale ? (
+                    <span key={language.code} aria-current="true" lang={language.code}>
+                        {language.short}
+                    </span>
+                ) : (
+                    <Link
+                        key={language.code}
+                        href={pathname as never}
+                        locale={language.code}
+                        lang={language.code}
+                        aria-label={`Switch to ${language.code === 'nl' ? 'Dutch' : 'English'}`}
+                    >
+                        {language.short}
+                    </Link>
+                ),
+            )}
+        </div>
     );
 };

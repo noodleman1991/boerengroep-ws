@@ -4,7 +4,7 @@ import { articleBlocks, pageBlocks } from './index'
 const names = (b: { fields: { name?: string }[] }) => b.fields.map((f) => f.name)
 
 describe('blocks', () => {
-  it('exposes the ten page blocks with their Tina slugs', () => {
+  it('offers every page-building block, the migrated ones first', () => {
     expect(pageBlocks.map((b) => b.slug)).toEqual([
       'hero',
       'eventsCalendarPreview',
@@ -16,17 +16,41 @@ describe('blocks', () => {
       'testimonial',
       'video',
       'imageText',
+      'gallery',
+      'documents',
+      'podcast',
+      'newsletterSignup',
+      'form',
+      'item',
     ])
   })
 
-  it('leaves the calendar preview out of article blocks', () => {
-    expect(articleBlocks.map((b) => b.slug)).not.toContain('eventsCalendarPreview')
-    expect(articleBlocks).toHaveLength(9)
+  it('leaves blocks that only make sense on a page out of articles', () => {
+    const slugs = articleBlocks.map((b) => b.slug)
+    expect(slugs).not.toContain('eventsCalendarPreview')
+    expect(slugs).not.toContain('newsletterSignup')
+    expect(slugs).toContain('gallery')
+    expect(slugs).toContain('documents')
+  })
+
+  it('gives every block a name and an explanation an editor can read', () => {
+    for (const block of pageBlocks) {
+      const labels = block.labels as { singular?: string } | undefined
+      expect(labels?.singular, block.slug).toBeTruthy()
+      expect(block.admin?.custom?.description ?? '', block.slug).toMatch(/\w{3,}/)
+    }
+  })
+
+  it('offers background presets instead of typed colour codes', () => {
+    const hero = pageBlocks.find((b) => b.slug === 'hero')!
+    const background = (hero.fields as any[]).find((f) => f.name === 'background')
+    expect(background.type).toBe('select')
+    expect(background.options.map((o: any) => o.value)).toEqual(['white', 'mist', 'leaf', 'harvest', 'sky', 'dark'])
   })
 
   it('keeps Tina field names on the hero block', () => {
     const hero = pageBlocks.find((b) => b.slug === 'hero')!
-    expect(names(hero as never)).toEqual(['background', 'headline', 'tagline', 'actions', 'image'])
+    expect(names(hero as never)).toEqual(['background', 'layout', 'headline', 'tagline', 'actions', 'image'])
   })
 
   it('keeps Tina field names on the image and text block', () => {

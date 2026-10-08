@@ -2,7 +2,8 @@ import { type Ctx, refId, upsert } from './context'
 import { transformBlocks } from './blocks'
 import { resolveMedia } from './media'
 import { listContent, readTinaFile, type TinaFile } from './read'
-import { fileSlug } from './slug'
+import { eventSlug } from '@sites/cms/event-slug'
+import { fileSlug, uniqueSlug } from './slug'
 
 /** `events/en/x.mdx` gives `en`. A file outside a locale folder gives undefined. */
 function languageOf(legacyId: string): 'en' | 'nl' | undefined {
@@ -46,11 +47,13 @@ export async function importPeople(ctx: Ctx, contentDir: string): Promise<void> 
 }
 
 export async function importEvents(ctx: Ctx, contentDir: string): Promise<void> {
+  // Events had no address of their own on the old site, so they get a readable one: title and date.
+  const used = new Set<string>()
   await each(ctx, contentDir, 'events', async (f) => {
     const d = f.data
     await upsert(ctx, 'events', f.legacyId, {
       title: d.title,
-      slug: fileSlug(f.legacyId),
+      slug: uniqueSlug(eventSlug(d.title, d.startDate), languageOf(f.legacyId), used),
       language: languageOf(f.legacyId),
       description: d.description,
       location: {
@@ -65,8 +68,9 @@ export async function importEvents(ctx: Ctx, contentDir: string): Promise<void> 
         speaker: refId(ctx, s.speaker, f.legacyId),
         role: s.role,
       })),
-      image: resolveMedia(ctx, d.image, f.legacyId),
-      coverImage: resolveMedia(ctx, d.coverImage, f.legacyId),
+      // The old editor had two picture fields. The cover was the one shown large.
+      image: resolveMedia(ctx, d.coverImage || d.image, f.legacyId),
+      status: 'scheduled',
       featured: Boolean(d.featured),
       registrationLink: await ctx.toLexical(d.registrationLink, f.legacyId),
     })

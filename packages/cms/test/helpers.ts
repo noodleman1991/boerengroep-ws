@@ -11,8 +11,14 @@ export async function testPayload(): Promise<Payload> {
 /** Deletes every document. Content collections go first, tenants and users last. */
 export async function resetDb(payload: Payload): Promise<void> {
   const slugs: string[] = payload.config.collections.map((c) => c.slug)
+  // Responses point at their form, so they go first. Users and sites are referenced by everything, so they go last.
+  const first = ['form-submissions']
   const last = ['users', 'tenants']
-  const ordered = [...slugs.filter((s) => !last.includes(s)), ...last.filter((s) => slugs.includes(s))]
+  const ordered = [
+    ...first.filter((s) => slugs.includes(s)),
+    ...slugs.filter((s) => !first.includes(s) && !last.includes(s)),
+    ...last.filter((s) => slugs.includes(s)),
+  ]
   for (const slug of ordered) {
     await payload.delete({
       collection: slug as never,

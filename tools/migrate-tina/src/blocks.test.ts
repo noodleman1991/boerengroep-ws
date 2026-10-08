@@ -13,6 +13,7 @@ function ctx(): Ctx {
     pageByEnPath: new Map(),
     reservedPaths: new Set(),
     fixups: { removePages: [], pageOverrides: {}, redirects: [] },
+    messages: {},
     toLexical: async (md) => (typeof md === 'string' && md.trim() ? { lexicalOf: md.trim() } : undefined),
   }
 }
@@ -40,7 +41,8 @@ describe('transformBlocks', () => {
     expect(out).toEqual([
       {
         blockType: 'hero',
-        background: 'bg-[#F28F07]/20',
+        background: 'harvest',
+        layout: 'centered',
         headline: 'Our History',
         tagline: 'Since 1971',
         actions: [

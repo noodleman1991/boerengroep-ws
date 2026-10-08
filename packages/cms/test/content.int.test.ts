@@ -35,6 +35,75 @@ describe('content collections', () => {
     expect(event.slug).toBe('Boerengroep-Break-Samhain')
   })
 
+  it('marks a new event as scheduled and lets an editor mark it full', async () => {
+    const event = await payload.create({
+      collection: 'events',
+      data: { title: 'Seed swap', slug: 'seed-swap', startDate: '2026-11-01T10:00:00.000Z', eventType: 'workshop', tenant } as never,
+    })
+    expect(event.status).toBe('scheduled')
+    const full = await payload.update({
+      collection: 'events',
+      id: event.id,
+      data: { status: 'full', statusNote: 'Waiting list via email' } as never,
+    })
+    expect(full.status).toBe('full')
+  })
+
+  it('makes the address of an event from its title and date when none is given', async () => {
+    const make = () =>
+      payload.create({
+        collection: 'events',
+        data: { title: 'Boerengroep Break', startDate: '2026-12-03T18:30:00.000Z', eventType: 'meeting', tenant } as never,
+      })
+    const first = await make()
+    const second = await make()
+    expect(first.slug).toBe('boerengroep-break-2026-12-03')
+    expect(second.slug).toBe('boerengroep-break-2026-12-03-2')
+  })
+
+  it('keeps the address when the title of an event changes later', async () => {
+    const event = await payload.create({
+      collection: 'events',
+      data: { title: 'Farm walk', startDate: '2026-12-10T09:00:00.000Z', eventType: 'excursion', tenant } as never,
+    })
+    const renamed = await payload.update({ collection: 'events', id: event.id, data: { title: 'Winter farm walk' } as never })
+    expect(renamed.slug).toBe('farm-walk-2026-12-10')
+  })
+
+  it('refuses a second event with the same address on one site', async () => {
+    const error = await payload
+      .create({
+        collection: 'events',
+        data: { title: 'Seed swap again', slug: 'seed-swap', startDate: '2026-11-02T10:00:00.000Z', eventType: 'workshop', tenant } as never,
+      })
+      .catch((e) => e)
+    expect(error?.data?.errors?.[0]).toMatchObject({ path: 'slug' })
+    expect(error.data.errors[0].message).toMatch(/already used/)
+  })
+
+  it('keeps photos on a past event in the order they were added', async () => {
+    const png = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
+      'base64',
+    )
+    const ids: (number | string)[] = []
+    for (const name of ['b.png', 'a.png']) {
+      const m = await payload.create({
+        collection: 'media',
+        data: { alt: name, caption: `Caption ${name}`, tenant } as never,
+        file: { data: png, mimetype: 'image/png', name, size: png.length },
+      })
+      ids.push(m.id)
+    }
+    const recap = await payload.create({
+      collection: 'past-events',
+      data: { title: 'With photos', slug: 'With-photos', date: '2026-01-01T10:00:00.000Z', photos: ids, tenant, _status: 'published' } as never,
+      depth: 1,
+    })
+    expect((recap.photos as any[]).map((p) => p.filename)).toEqual(['b.png', 'a.png'])
+    expect((recap.photos as any[])[0].caption).toBe('Caption b.png')
+  })
+
   it('rejects an event type that is not in the list', async () => {
     await expect(
       payload.create({
@@ -47,7 +116,7 @@ describe('content collections', () => {
           tenant,
         } as never,
       }),
-    ).rejects.toThrow(/Event Type/)
+    ).rejects.toThrow(/Kind of event/)
   })
 
   it('keeps an unpublished newsletter away from visitors', async () => {

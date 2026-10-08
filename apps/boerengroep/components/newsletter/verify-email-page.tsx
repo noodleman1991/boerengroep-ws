@@ -1,117 +1,76 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { Section } from '@/components/layout/section';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { CheckCircle, AlertCircle, Loader2, Mail } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
+import { useLayout } from '@/components/layout/layout-context';
+import { OverprintMark } from '@/components/overprint-mark';
+import { RichText } from '@/components/rich-text';
+import { hasRichText } from '@/lib/rich-text-utils';
 
 interface VerifyEmailPageProps {
     locale: string;
     token?: string;
 }
 
-type VerificationState = 'idle' | 'loading' | 'success' | 'error';
+type State = 'missing' | 'confirming' | 'confirmed' | 'invalid' | 'error';
 
+/** Where the link in the confirmation email lands. Editors set the texts shown after confirming. */
 export const VerifyEmailPage = ({ locale, token }: VerifyEmailPageProps) => {
     const t = useTranslations('newsletter.verify');
-    const router = useRouter();
-    const [state, setState] = useState<VerificationState>('idle');
-    const [message, setMessage] = useState<string>('');
+    const texts = useLayout().globalSettings?.newsletter;
+    const [state, setState] = useState<State>(token ? 'confirming' : 'missing');
 
     useEffect(() => {
-        if (token) {
-            verifyEmail(token);
-        }
-    }, [token]);
-
-    const verifyEmail = async (verificationToken: string) => {
-        setState('loading');
-
-        try {
-            const response = await fetch('/api/newsletter/verify', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    token: verificationToken,
-                    language: locale,
-                }),
+        if (!token) return;
+        let cancelled = false;
+        fetch('/api/newsletter/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token, language: locale }),
+        })
+            .then((response) => {
+                if (cancelled) return;
+                setState(response.ok ? 'confirmed' : response.status === 400 ? 'invalid' : 'error');
+            })
+            .catch(() => {
+                if (!cancelled) setState('error');
             });
+        return () => {
+            cancelled = true;
+        };
+    }, [token, locale]);
 
-            const result = await response.json();
-
-            if (response.ok) {
-                setState('success');
-                setMessage(result.message);
-            } else {
-                setState('error');
-                setMessage(result.error);
-            }
-        } catch (error) {
-            setState('error');
-            setMessage(t('error_message'));
-        }
-    };
+    const title =
+        state === 'confirmed'
+            ? texts?.confirmedTitle || t('confirmed_title')
+            : state === 'invalid'
+              ? t('invalid_title')
+              : t('title');
 
     return (
-        <Section>
-            <div className="max-w-2xl mx-auto text-center space-y-8">
-                <div className="space-y-4">
-                    <Mail className="h-16 w-16 mx-auto text-primary" />
-                    <h1 className="text-3xl font-bold tracking-tight">
-                        {t('title')}
-                    </h1>
-                    <p className="text-lg text-muted-foreground">
-                        {t('description')}
+        <div className="page-width">
+            <div className="notice" aria-live="polite" aria-busy={state === 'confirming'}>
+                <OverprintMark className="notice__mark" />
+                <h1>{title}</h1>
+                {state === 'confirmed' && hasRichText(texts?.confirmedMessage) ? (
+                    <RichText data={texts?.confirmedMessage} className="notice__text" />
+                ) : (
+                    <p className="notice__text">
+                        {state === 'confirmed' && t('confirmed_message')}
+                        {state === 'confirming' && t('verifying')}
+                        {state === 'missing' && t('no_token')}
+                        {state === 'invalid' && t('invalid_message')}
+                        {state === 'error' && t('error_message')}
                     </p>
-                </div>
-
-                {!token && (
-                    <Alert>
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertDescription>
-                            {t('no_token')}
-                        </AlertDescription>
-                    </Alert>
                 )}
-
-                {state === 'loading' && (
-                    <div className="flex items-center justify-center space-x-2">
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        <span>{t('verifying')}</span>
+                {state !== 'confirming' && (
+                    <div className="notice__actions">
+                        <Link href="/" className={state === 'confirmed' ? 'btn-leaf' : 'btn-quiet'}>
+                            {t('back_home')}
+                        </Link>
                     </div>
                 )}
-
-                {state === 'success' && (
-                    <Alert className="border-green-200 bg-green-50">
-                        <CheckCircle className="h-4 w-4 text-green-600" />
-                        <AlertDescription className="text-green-800">
-                            {message}
-                        </AlertDescription>
-                    </Alert>
-                )}
-
-                {state === 'error' && (
-                    <Alert className="border-red-200 bg-red-50">
-                        <AlertCircle className="h-4 w-4 text-red-600" />
-                        <AlertDescription className="text-red-800">
-                            {message}
-                        </AlertDescription>
-                    </Alert>
-                )}
-
-                <div className="flex justify-center">
-                    <Button
-                        onClick={() => router.push(`/${locale}`)}
-                        variant="outline"
-                    >
-                        {t('back_home')}
-                    </Button>
-                </div>
             </div>
-        </Section>
+        </div>
     );
 };

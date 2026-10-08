@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createBrevoContact, isBrevoConfigured } from '@/lib/email/brevo';
 import {
   generateSecureToken,
   getClientIP,
@@ -68,10 +67,10 @@ export async function POST(request: NextRequest) {
     if (existingSubscriber) {
       // Handle existing subscriber
       if (existingSubscriber.status === 'active') {
-        return NextResponse.json(
-          { error: 'This email is already subscribed to our newsletter' },
-          { status: 400 }
-        );
+        return NextResponse.json({
+          message: 'This email is already subscribed to our newsletter',
+          status: 'already',
+        });
       }
 
       if (existingSubscriber.status === 'pending') {
@@ -120,14 +119,6 @@ export async function POST(request: NextRequest) {
         console.error('Failed to send welcome email:', emailError);
       }
 
-      // Sync with Brevo (if configured)
-      if (isBrevoConfigured()) {
-        await createBrevoContact({
-          email: normalizedEmail,
-          attributes: { LANGUAGE: language.toUpperCase() },
-          updateEnabled: true,
-        });
-      }
 
       return NextResponse.json({
         message: 'Please check your email to verify your subscription.',
@@ -176,20 +167,7 @@ export async function POST(request: NextRequest) {
       // Continue - subscription is created, email can be resent
     }
 
-    // Sync with Brevo (if configured)
-    if (isBrevoConfigured()) {
-      const brevoResult = await createBrevoContact({
-        email: normalizedEmail,
-        attributes: { LANGUAGE: language.toUpperCase() },
-        updateEnabled: true,
-      });
-
-      if (!brevoResult.success && !brevoResult.skipped) {
-        console.error('Brevo sync failed:', brevoResult.error);
-        // Continue - local subscription is created, Brevo sync can retry later
-      }
-    }
-
+    // Brevo only hears about people after they confirm their address. See the verify route.
     return NextResponse.json({
       message: 'Please check your email to verify your subscription.',
       status: 'pending',
@@ -202,24 +180,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
-
-export async function GET() {
-  const brevoConfigured = isBrevoConfigured();
-
-  const health = {
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    brevo: brevoConfigured ? 'configured' : 'not configured',
-    environment: {
-      NODE_ENV: process.env.NODE_ENV,
-      DATABASE_URL: process.env.DATABASE_URL ? 'set' : 'missing',
-      RESEND_BOERENGROEP: process.env.RESEND_BOERENGROEP ? 'set' : 'missing',
-      FROM_EMAIL: process.env.FROM_EMAIL ? 'set' : 'missing',
-      BREVO_API_KEY: brevoConfigured ? 'set' : 'not set (optional)',
-      BREVO_LIST_ID: process.env.BREVO_LIST_ID ? 'set' : 'not set (optional)',
-    },
-  };
-
-  return NextResponse.json(health);
 }
