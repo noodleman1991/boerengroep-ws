@@ -382,3 +382,17 @@ Asked for: "examine the truncated text in the calendar and calendar widget", and
 - Kept, because the owner said so earlier: the hill with the sun as footer, the swirl of the logo, the parcels set in from the edges of the window, the announcement as a low strip of its own. The two round things left are the sun and the swirl.
 - It is one set of variables (`--corner`, `--corner-ui`, `--rule`, `--print`, `--print-shift`) and a handful of rules in `site.css`, so Inspringtheater has it too, in its own colours, and it can be tuned or turned back in one place. The login page of the admin follows it.
 - Tests: browser, Boerengroep 127 and Inspringtheater 58 with 2 skipped, including accessibility and twelve screen widths on the new look. App 287 unit. Parity unchanged.
+
+### Round 7, second attempt at the look (same evening)
+
+- The square, printed look described above was shown to the owner and rejected in four words: "not good at all". It is gone. Asked which way to go instead, the owner chose "organic, from the swirl" out of four directions.
+- Kept from the first attempt: everything about cut-off text (the site shortens at a sentence or a word, the month is as wide as the page and shows every name in full, two browser tests guard it).
+- The look now starts from the earlier rounded one, which the owner liked, and takes its shapes from the logo, which is drawn by hand: two balls, each with a brush stroke around it.
+  - A plot and a picture have an uneven outline, every corner its own curve, as if cut out by hand. Three such outlines, so neighbours differ. Smaller on a small screen.
+  - A date stands on a ball. In a list the ball has the soft colour of the kind of event. On the large event of "What's on" it is a ball of the second colour on the corner of the picture, as one ball lies over the other in the logo.
+  - The picture of an opening has a ball of the second colour behind it.
+  - A heading above a part of a page is underlined with a brush stroke, drawn as a mask so it takes each site's own leading colour.
+- Unchanged: pills for buttons, filters and tabs, the hill with the sun, the announcement strip, the swirl in an opening without a picture.
+- It is a set of variables (`--blob-a`, `--blob-b`, `--blob-c`, `--k`, `--ball`, `--ground`) and one closing section in `site.css`, shared by both sites.
+- Tests on this look: browser, Boerengroep 127 and Inspringtheater 58 with 2 skipped, with accessibility and twelve screen widths. App 287 unit.
+- Lesson for the next change of look: show a direction and let the owner choose before building it. One question with four options took a minute. The rejected attempt took an hour.

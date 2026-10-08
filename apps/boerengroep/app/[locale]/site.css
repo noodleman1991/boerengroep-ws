@@ -2,13 +2,14 @@
  * Site design layer, shared by both sites.
  *
  * Logic: the header and the footer are the frame and run the full width, the footer as a hill
- * on the horizon. Between them lies open white ground with parcels on it: a part of a page with
- * a colour is a field cut square, set in from the window's edges, as on a land map.
+ * on the horizon. Between them lies open white ground with plots on it: a part of a page with
+ * a colour is a soft panel set in from the window's edges.
  *
- * The parts of a page look like printed matter of a group that makes its own posters: square
- * corners, a hatched edge on every parcel, a block of the second colour shifted behind a
- * picture as when two colours are printed off-register, dates as leaves of a tear-off calendar,
- * buttons like stamps. The two round things are the sun behind the hill and the swirl of the logo.
+ * The shapes come from the logo, which is drawn by hand: two balls, each with a brush stroke
+ * around it. So nothing is a neat rounded box. A plot and a picture have an uneven outline, as
+ * if cut out by hand. A date stands on a ball. A large picture has a ball of the second colour
+ * behind it, as the orange ball lies behind the green one. A section heading is underlined
+ * with a brush stroke.
  *
  * Everything a site may change (colours, shapes, sizes) is a variable here. The Inspringtheater
  * app lays its own colours over these in its theme.css.
@@ -41,21 +42,26 @@
     /* A part of a page with a colour is a plot: a rounded panel set in from the window's edges. */
     --plot-gutter: clamp(0.5rem, 1.5vw, 1.25rem);
     --plot-max: 92rem;
-    /* Shapes are cut square. Small things one presses get the slightest ease. */
-    --corner: 0px;
-    --corner-ui: 2px;
-    --rule: 2px;
-    /* The block of colour behind a picture, and how far it is shifted. */
-    --print: var(--harvest);
-    --print-shift: clamp(0.4rem, 0.9vw, 0.7rem);
-    --band-radius: var(--corner);
+    --band-radius: clamp(1.4rem, 3vw, 2.5rem);
+    /*
+     * Uneven outlines, as if cut out by hand: every corner has its own curve. Three of them, so
+     * things that stand together do not look stamped from one mould. --k makes them smaller on
+     * a small screen.
+     */
+    --k: 1;
+    --blob-a: calc(2.9rem * var(--k)) calc(1.6rem * var(--k)) calc(3.3rem * var(--k)) calc(1.9rem * var(--k)) / calc(1.8rem * var(--k)) calc(3.1rem * var(--k)) calc(1.9rem * var(--k)) calc(2.8rem * var(--k));
+    --blob-b: calc(1.7rem * var(--k)) calc(3.2rem * var(--k)) calc(1.9rem * var(--k)) calc(2.9rem * var(--k)) / calc(2.9rem * var(--k)) calc(1.8rem * var(--k)) calc(3.2rem * var(--k)) calc(1.7rem * var(--k));
+    --blob-c: calc(3.3rem * var(--k)) calc(2.3rem * var(--k)) calc(1.6rem * var(--k)) calc(2.7rem * var(--k)) / calc(2.2rem * var(--k)) calc(1.6rem * var(--k)) calc(3rem * var(--k)) calc(2rem * var(--k));
+    /* The ball behind a large picture, and the ground a thing stands on (for a ring around a ball). */
+    --ball: var(--harvest);
+    --ground: var(--field);
 
     --header-h: 88px;
     --header-h-compact: 68px;
     /* The logo in the header: 15% larger than first drawn (56, 42 and 46px). */
     --logo-h: 64px;
     --logo-h-compact: 48px;
-    --plot-radius: var(--corner);
+    --plot-radius: var(--blob-a);
     --measure: 68ch;
     --page-max: 78rem;
     --page-pad: clamp(1rem, 4vw, 2.5rem);
@@ -109,7 +115,7 @@ main:focus {
     left: 0.5rem;
     z-index: 200;
     padding: 0.7rem 1.1rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: var(--ink);
     color: var(--field);
     font-weight: 600;
@@ -149,26 +155,16 @@ a {
     justify-content: center;
     gap: 0.5rem;
     min-height: 44px;
-    padding: 0.55rem 1.15rem;
-    border: var(--rule) solid var(--ink);
-    border-radius: var(--corner-ui);
-    box-shadow: 3px 3px 0 var(--ink);
+    padding: 0.6rem 1.25rem;
+    border: 0;
+    border-radius: 999px;
     font-family: var(--font-family-public-sans);
-    font-weight: 700;
+    font-weight: 600;
     font-size: 0.975rem;
     line-height: 1.2;
     text-decoration: none;
     cursor: pointer;
-    transition: transform 0.08s ease, box-shadow 0.08s ease, background-color 0.15s ease, color 0.15s ease;
-}
-/* Pressed in: the button moves onto its own shadow. */
-:is(.btn-leaf, .btn-ink, .btn-quiet):hover {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 var(--ink);
-}
-:is(.btn-leaf, .btn-ink, .btn-quiet):active {
-    transform: translate(3px, 3px);
-    box-shadow: 0 0 0 var(--ink);
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 /* Black on green reads at 7:1. White on this green does not pass. */
@@ -182,27 +178,18 @@ a {
 .btn-ink {
     background: var(--ink);
     color: var(--field);
-    box-shadow: 3px 3px 0 var(--leaf);
 }
 .btn-ink:hover {
-    box-shadow: 1px 1px 0 var(--leaf);
+    background: #2b2b2b;
 }
-/* The second button: paper, without a shadow, so the first one leads. */
 .btn-quiet {
-    background: var(--field);
+    background: transparent;
     color: var(--ink);
-    box-shadow: none;
+    box-shadow: inset 0 0 0 1.5px var(--ink);
 }
 .btn-quiet:hover {
-    transform: none;
-    box-shadow: none;
     background: var(--ink);
     color: var(--field);
-}
-@media (prefers-reduced-motion: reduce) {
-    :is(.btn-leaf, .btn-ink, .btn-quiet) {
-        transition: none;
-    }
 }
 
 /* ---------- Parts of a page ---------- */
@@ -221,7 +208,11 @@ a {
 .band--plot {
     width: min(100% - 2 * var(--plot-gutter), var(--plot-max));
     margin: var(--plot-gutter) auto;
-    border-radius: var(--band-radius);
+    border-radius: var(--blob-a);
+}
+/* The next plot is cut differently. */
+.band--plot:nth-child(even) {
+    border-radius: var(--blob-b);
 }
 /* Open ground after open ground needs its spacing once, not twice. */
 .section-white + .section-white > .band__inner {
@@ -231,21 +222,29 @@ a {
 /* ---------- Section backgrounds chosen in the admin ---------- */
 
 .section-white {
+    --ground: var(--field);
     background: var(--field);
 }
 .section-mist {
+    --ground: var(--mist);
     background: var(--mist);
 }
 .section-leaf {
+    --ground: var(--leaf-tint);
     background: var(--leaf-tint);
 }
 .section-harvest {
+    --ground: var(--harvest-soft);
+    /* On orange ground the ball behind a picture is green. */
+    --ball: var(--leaf);
     background: var(--harvest-soft);
 }
 .section-sky {
+    --ground: var(--sky-soft);
     background: var(--sky-soft);
 }
 .section-dark {
+    --ground: var(--furrow);
     background: var(--furrow);
     color: var(--furrow-text);
 }
@@ -316,7 +315,7 @@ a {
     gap: 0.3rem;
     min-height: 44px;
     padding: 0.5rem 0.8rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: none;
     border: 0;
     font-family: var(--font-family-public-sans);
@@ -356,7 +355,7 @@ a {
     padding: 0.5rem;
     list-style: none;
     background: var(--field);
-    border-radius: var(--corner);
+    border-radius: 20px;
     box-shadow: 0 0 0 1px var(--line), 0 18px 40px -18px rgb(23 58 18 / 0.35);
 }
 .site-nav__panel li {
@@ -365,7 +364,7 @@ a {
 .site-nav__panel a {
     display: block;
     padding: 0.6rem 0.85rem;
-    border-radius: var(--corner);
+    border-radius: 12px;
     font-family: var(--font-family-public-sans);
     font-weight: 500;
     color: var(--ink);
@@ -385,7 +384,7 @@ a {
 .lang-switch {
     display: inline-flex;
     padding: 3px;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     box-shadow: inset 0 0 0 1.5px var(--line);
 }
 .lang-switch > a,
@@ -396,7 +395,7 @@ a {
     min-width: 2.4rem;
     min-height: 2.1rem;
     padding: 0 0.6rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     font-family: var(--font-family-public-sans);
     font-size: 0.85rem;
     font-weight: 600;
@@ -417,9 +416,9 @@ a {
     justify-content: center;
     width: 44px;
     height: 44px;
-    border: var(--rule) solid var(--ink);
-    border-radius: var(--corner-ui);
-    background: var(--field);
+    border: 0;
+    border-radius: 50%;
+    background: var(--mist);
     color: var(--ink);
     cursor: pointer;
 }
@@ -705,7 +704,7 @@ a {
     flex-wrap: wrap;
     gap: 0.3rem;
     padding: 0.3rem;
-    border-radius: var(--corner);
+    border-radius: 28px;
     background: var(--field);
     box-shadow: inset 0 0 0 1.5px var(--ink);
 }
@@ -719,7 +718,7 @@ a {
     min-height: 44px;
     padding: 0 0.9rem;
     border: 0;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: transparent;
     color: var(--ink);
     font: inherit;
@@ -877,7 +876,7 @@ a {
     width: 100%;
     padding: 0.7rem 0.9rem;
     border: 1.5px solid var(--ink);
-    border-radius: var(--corner);
+    border-radius: 14px;
     background: var(--field);
     color: var(--ink);
     font: inherit;
@@ -964,7 +963,7 @@ a {
     display: inline-flex;
     align-items: center;
     padding: 0.15rem 0.6rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     font-size: 0.8125rem;
     font-weight: 700;
     line-height: 1.4;
@@ -983,51 +982,49 @@ a {
 }
 
 /*
- * A date is a leaf of a tear-off calendar: the weekday on a black band, the day large under
- * it, the month below. In a list the leaf has the soft colour of the event's kind.
+ * A date stands on a ball, like the two balls of the logo. In a list the ball has the soft
+ * colour of the event's kind.
  */
 .date-block {
     display: grid;
+    place-content: center;
     justify-items: center;
-    align-content: start;
-    min-width: 4.5rem;
-    padding: 0 0 0.5rem;
-    border: var(--rule) solid var(--ink);
-    background: var(--kind-soft, var(--field));
+    gap: 0.1rem;
+    width: 4.75rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--kind-soft, var(--mist));
     line-height: 1;
     text-align: center;
     color: var(--ink);
 }
 .date-block__weekday {
-    justify-self: stretch;
-    padding: 0.3rem 0.4rem 0.28rem;
-    background: var(--ink);
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--field);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--ink-soft);
 }
 /* The day number borrows the tall, narrow, heavy lettering of the logo. */
 .date-block__day {
-    margin: 0.3rem 0.5rem 0.1rem;
     font-family: var(--font-roboto-flex, 'Roboto Flex'), var(--font-family-public-sans), sans-serif;
     font-variation-settings: 'wdth' 62, 'wght' 800;
-    font-size: 3.2rem;
+    font-size: 2.3rem;
     letter-spacing: -0.01em;
-    line-height: 0.95;
+    line-height: 0.88;
 }
 .date-block__month {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     font-weight: 700;
 }
 .date-block--large {
-    min-width: 6.5rem;
+    width: clamp(7.5rem, 17vw, 10rem);
+    gap: 0.25rem;
 }
 .date-block--large .date-block__day {
-    font-size: clamp(4.2rem, 11vw, 6rem);
+    font-size: clamp(3.6rem, 8.5vw, 5rem);
 }
 .date-block--large .date-block__weekday,
 .date-block--large .date-block__month {
-    font-size: 1.0625rem;
+    font-size: 1rem;
 }
 
 .event-facts {
@@ -1064,10 +1061,9 @@ a {
     padding: 1.4rem 0;
     border-top: 1.5px solid var(--ink);
 }
-/* In a row the leaf is as wide as its column. */
+/* In a row the ball is as wide as its column. */
 .event-row > .date-block {
-    min-width: 0;
-    text-align: center;
+    width: 100%;
 }
 .event-row__tags {
     display: flex;
@@ -1102,7 +1098,7 @@ a {
 .event-row:has(a:focus-visible) {
     outline: 3px solid var(--ink);
     outline-offset: 4px;
-    border-radius: var(--corner);
+    border-radius: 6px;
 }
 /* The opening of the description, cut at a sentence or a word by the site, never by this box. */
 .event-row__text {
@@ -1116,7 +1112,7 @@ a {
     height: auto;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-    border-radius: var(--corner);
+    border-radius: 18px;
 }
 .event-row--off .event-row__title a {
     text-decoration: line-through;
@@ -1128,11 +1124,15 @@ a {
     opacity: 0.55;
 }
 .event-row--compact {
-    grid-template-columns: 3.6rem minmax(0, 1fr);
+    grid-template-columns: 4.2rem minmax(0, 1fr);
     padding: 1rem 0;
 }
 .event-row--compact .date-block__day {
-    font-size: 2.6rem;
+    font-size: 1.95rem;
+}
+.event-row--compact .date-block__weekday,
+.event-row--compact .date-block__month {
+    font-size: 0.6875rem;
 }
 .event-row--compact .event-row__title {
     font-size: 1.2rem;
@@ -1142,11 +1142,15 @@ a {
 }
 @media (max-width: 640px) {
     .event-row {
-        grid-template-columns: 3.6rem minmax(0, 1fr);
+        grid-template-columns: 4.2rem minmax(0, 1fr);
         gap: 0.5rem 1rem;
     }
     .event-row .date-block__day {
-        font-size: 2.6rem;
+        font-size: 1.95rem;
+    }
+    .event-row .date-block__weekday,
+    .event-row .date-block__month {
+        font-size: 0.6875rem;
     }
     .event-row__title {
         font-size: 1.25rem;
@@ -1194,14 +1198,14 @@ a {
 .segmented {
     display: inline-flex;
     padding: 0.25rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: var(--mist);
 }
 .segmented button {
     min-height: 40px;
     padding: 0.4rem 1.05rem;
     border: 0;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: transparent;
     color: var(--ink);
     font: inherit;
@@ -1224,7 +1228,7 @@ a {
     min-height: 38px;
     padding: 0.3rem 0.45rem 0.3rem 0.85rem;
     border: 0;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: transparent;
     box-shadow: inset 0 0 0 1.5px var(--line);
     color: var(--ink);
@@ -1245,7 +1249,7 @@ a {
 .chip__count {
     min-width: 1.5rem;
     padding: 0.1rem 0.4rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: var(--mist);
     font-size: 0.78rem;
     font-weight: 700;
@@ -1349,9 +1353,9 @@ a {
     place-items: center;
     width: 44px;
     height: 44px;
-    border: var(--rule) solid var(--ink);
-    border-radius: var(--corner-ui);
-    background: var(--field);
+    border: 0;
+    border-radius: 50%;
+    background: var(--mist);
     color: var(--ink);
     cursor: pointer;
 }
@@ -1366,29 +1370,24 @@ a {
 .month__layout {
     display: grid;
     gap: 1.5rem;
-    /* Room for the outer lines of the sheet, which lie half outside the table. */
-    padding: 1px 1px 2px;
 }
 /*
- * The month is a calendar sheet: ruled lines, a square for every day, as wide as the page so
- * the name of an event fits its day. The chosen day opens under the sheet.
+ * The month as a field: every day a tile, with a little ground between them. It is as wide as
+ * the page, so the name of an event fits its day, and the chosen day opens under it.
  */
 .month__table {
-    width: 100%;
-    margin: 0;
+    width: calc(100% + 0.6rem);
+    margin: -0.3rem;
     overflow: visible;
     border: 0;
     border-radius: 0;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0.3rem;
     table-layout: fixed;
 }
-/* The site's general table look (grey heads) does not apply to the month. */
-.month__table th {
+/* The site's general table look (lines, grey heads) does not apply to the month. */
+.month__table :is(th, td) {
     border: 0;
-    background: none;
-}
-.month__table td {
-    border: 1.5px solid var(--ink);
     background: none;
 }
 .month__table th {
@@ -1413,7 +1412,7 @@ a {
     min-height: clamp(3.2rem, 8.4vw, 6.6rem);
     padding: 0.5rem 0.55rem;
     border: 0;
-    border-radius: var(--corner);
+    border-radius: 14px;
     background: var(--kind-soft);
     color: var(--ink);
     font: inherit;
@@ -1428,9 +1427,9 @@ button.month__tile:hover {
 button.month__tile[aria-pressed='true'] {
     box-shadow: inset 0 0 0 2.5px var(--ink);
 }
-/* A day with nothing on: bare paper. */
+/* A day with nothing on: quiet ground. */
 .month__tile--free {
-    background: var(--field);
+    background: #f4f6f1;
 }
 /* Days of the month before or after are paler, without becoming hard to read. */
 .month__tile--outside {
@@ -1458,11 +1457,11 @@ button.month__tile[aria-pressed='true'] {
     align-self: flex-start;
     margin: -0.15rem 0 0 -0.2rem;
     padding: 0.15rem 0.45rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: var(--ink);
     color: var(--field);
 }
-/* Titles are set in the narrow face of the dates and are shown in full, on as many lines as they need. */
+/* Titles are set in the narrow face of the dates and shown in full, on as many lines as they need. */
 .month__titles {
     display: grid;
     gap: 0.2rem;
@@ -1521,7 +1520,7 @@ button.month__tile[aria-pressed='true'] {
         align-items: center;
         min-height: 3.2rem;
         padding: 0.45rem 0.1rem;
-        border-radius: var(--corner);
+        border-radius: 12px;
     }
     .month__tile--today .month__number {
         align-self: center;
@@ -1540,7 +1539,7 @@ button.month__tile[aria-pressed='true'] {
 /* The chosen day: what is on, in full. */
 .month__day {
     padding: 1.3rem 1.3rem 0.4rem;
-    border-top: var(--rule) solid var(--ink);
+    border-radius: var(--plot-radius);
     background: var(--mist);
 }
 .month__day-title {
@@ -1569,7 +1568,7 @@ button.month__tile[aria-pressed='true'] {
     width: min(21rem, calc(100vw - 2rem));
     padding: 0.45rem;
     border: 0;
-    border-radius: var(--corner);
+    border-radius: 20px;
     background: var(--field);
     box-shadow: 0 0 0 1.5px var(--ink), 0 14px 34px rgb(17 17 17 / 0.14);
     color: var(--ink);
@@ -1591,7 +1590,7 @@ button.month__tile[aria-pressed='true'] {
     min-height: 44px;
     padding: 0.65rem 0.7rem;
     border: 0;
-    border-radius: var(--corner);
+    border-radius: 14px;
     background: none;
     color: var(--ink);
     font: inherit;
@@ -1669,7 +1668,7 @@ button.month__tile[aria-pressed='true'] {
     max-width: 44rem;
     margin: 0 0 1.5rem;
     padding: 0.9rem 1.2rem;
-    border-radius: var(--corner);
+    border-radius: 18px;
     background: var(--mist);
 }
 .event-page__state--full {
@@ -1741,7 +1740,7 @@ button.month__tile[aria-pressed='true'] {
     min-height: 44px;
     margin: 0.3rem 0.4rem 0 0;
     padding: 0.55rem 1.25rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: var(--leaf);
     color: var(--ink);
     font-weight: 700;
@@ -1869,31 +1868,42 @@ button.month__tile[aria-pressed='true'] {
     margin: 6% auto 0;
     object-fit: contain;
 }
-/* The date is a calendar leaf that hangs under the picture, at the start of the words. */
-/* No picture and no symbol: the leaf stands by itself above the words. */
+/* The date is a ball of the second colour on the corner of the picture, as in the logo one ball lies over the other. */
+/* No picture and no symbol: the ball stands by itself above the event. */
 .whats-on__lead--plain .whats-on__lead-date {
     position: static;
     display: inline-block;
     margin-bottom: 1rem;
 }
+.whats-on__lead--plain .whats-on__lead-date .date-block {
+    box-shadow: none;
+}
 .whats-on__lead--plain .whats-on__lead-body {
-    min-height: 0;
-    margin-top: 0;
-    padding-left: 0;
+    padding-top: 0;
 }
 .whats-on__lead-date {
     position: absolute;
-    left: 0;
-    top: calc(100% + var(--print-shift) + 1.1rem);
+    left: -0.5rem;
+    bottom: -2.6rem;
 }
 .whats-on__lead-date .date-block {
-    min-width: 5.6rem;
+    width: 6.8rem;
+    background: var(--harvest);
+    /* A ring of the ground it stands on sets the ball apart from the picture. */
+    box-shadow: 0 0 0 0.4rem var(--ground);
 }
-/* The words stand beside the leaf and are at least as tall, so nothing runs under it. */
+.whats-on__lead-date .date-block__weekday {
+    color: var(--ink);
+}
+.whats-on__lead-date .date-block__day {
+    font-size: 3rem;
+}
+.whats-on__lead-date .date-block__weekday,
+.whats-on__lead-date .date-block__month {
+    font-size: 0.8125rem;
+}
 .whats-on__lead-body {
-    min-height: 8.6rem;
-    margin-top: calc(var(--print-shift) + 1.1rem);
-    padding-left: 7rem;
+    padding-top: 3.3rem;
 }
 .whats-on__lead-title {
     margin: 0.35rem 0 0.5rem;
@@ -2117,7 +2127,7 @@ a.mini-month__day:hover {
     padding: 0;
     overflow: hidden;
     border: 0;
-    border-radius: var(--corner);
+    border-radius: 18px;
     background: var(--mist);
     cursor: zoom-in;
 }
@@ -2345,7 +2355,7 @@ video.video__frame {
     gap: 1rem;
     min-height: 4.5rem;
     padding: 0.8rem 1.1rem 0.8rem 0.8rem;
-    border-radius: var(--corner);
+    border-radius: 20px;
     background: var(--field);
     box-shadow: inset 0 0 0 1.5px var(--ink);
     color: var(--ink);
@@ -2362,7 +2372,7 @@ video.video__frame {
     min-width: 3.4rem;
     height: 3rem;
     padding-inline: 0.4rem;
-    border-radius: var(--corner);
+    border-radius: 12px;
     background: var(--harvest-soft);
     font-size: 0.75rem;
     font-weight: 700;
@@ -2408,7 +2418,7 @@ video.video__frame {
 .episode__cover {
     width: 6.5rem;
     height: 6.5rem;
-    border-radius: var(--corner);
+    border-radius: 18px;
     object-fit: cover;
 }
 .episode__meta {
@@ -2490,7 +2500,7 @@ video.video__frame {
     min-height: 48px;
     padding: 0.65rem 0.9rem;
     border: 1.5px solid var(--ink);
-    border-radius: var(--corner);
+    border-radius: 14px;
     background: var(--field);
     color: var(--ink);
     font: inherit;
@@ -2531,7 +2541,7 @@ video.video__frame {
 .site-form__notice {
     margin: 0 0 1.1rem;
     padding: 0.8rem 1.1rem;
-    border-radius: var(--corner);
+    border-radius: 14px;
     background: #fbe9e6;
     font-weight: 600;
     color: #7c1d14;
@@ -2622,7 +2632,7 @@ video.video__frame {
     padding: 0;
     overflow: hidden;
     border: 0;
-    border-radius: var(--corner);
+    border-radius: 14px;
     background: var(--mist);
     opacity: 0.6;
     cursor: pointer;
@@ -2649,7 +2659,7 @@ video.video__frame {
     display: inline-grid;
     margin: 0 0 1.25rem;
     padding: 0.7rem 1.1rem 0.6rem;
-    border-radius: var(--corner);
+    border-radius: 18px;
     background: var(--harvest-soft);
 }
 .item__donation-label {
@@ -2696,7 +2706,7 @@ video.video__frame {
     display: block;
     max-width: 100%;
     height: auto;
-    border-radius: var(--corner);
+    border-radius: 18px;
 }
 .rich-figure figcaption {
     margin-top: 0.5rem;
@@ -2887,17 +2897,9 @@ video.video__frame {
     background: var(--field);
     color: var(--ink);
 }
-.section-dark :is(.btn-leaf, .btn-ink, .btn-quiet) {
-    border-color: var(--field);
-    box-shadow: 3px 3px 0 var(--field);
-}
-.section-dark :is(.btn-leaf, .btn-ink, .btn-quiet):hover {
-    box-shadow: 1px 1px 0 var(--field);
-}
 .section-dark .btn-quiet {
-    background: transparent;
     color: var(--field);
-    box-shadow: none;
+    box-shadow: inset 0 0 0 1.5px var(--field);
 }
 .section-dark .btn-quiet:hover {
     background: var(--field);
@@ -3028,14 +3030,14 @@ video.video__frame {
 .section-dark > .callout {
     color: var(--field);
 }
-/* The arrow stands in a dark square: this is what tells a visitor the line can be pressed. */
+/* The arrow stands in a dark disc: this is what tells a visitor the line can be pressed. */
 .callout svg {
     flex: none;
     box-sizing: content-box;
     width: 1.25rem;
     height: 1.25rem;
     padding: 0.65rem;
-    border-radius: var(--corner-ui);
+    border-radius: 50%;
     background: var(--ink);
     color: var(--field);
     transition: translate 0.15s ease;
@@ -3267,7 +3269,7 @@ a.callout:focus-visible {
     align-items: center;
     min-height: 4.5rem;
     padding: 1rem 1.4rem;
-    border-radius: var(--corner);
+    border-radius: 20px;
     background: var(--mist);
     color: var(--ink);
     font-family: var(--font-family-enriqueta);
@@ -3344,7 +3346,7 @@ a.callout:focus-visible {
     padding: 0;
     overflow: hidden;
     border: 0;
-    border-radius: var(--corner);
+    border-radius: 10px;
     background: var(--furrow-raised);
     color: #ffffff;
     opacity: 0.55;
@@ -3455,7 +3457,7 @@ a.callout:focus-visible {
 }
 /* One vacancy: a plot that opens. */
 .vacancy {
-    border-radius: var(--corner);
+    border-radius: 22px;
     background: var(--mist);
     scroll-margin-top: calc(var(--header-h) + 1rem);
 }
@@ -3464,7 +3466,7 @@ a.callout:focus-visible {
     display: grid;
     gap: 0.35rem;
     padding: 1.1rem 3.6rem 1.1rem 1.4rem;
-    border-radius: var(--corner);
+    border-radius: 22px;
     list-style: none;
     cursor: pointer;
 }
@@ -3506,7 +3508,7 @@ a.callout:focus-visible {
 }
 .vacancy__state {
     padding: 0.15rem 0.7rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     font-size: 0.8125rem;
     font-weight: 700;
     line-height: 1.45;
@@ -3561,7 +3563,7 @@ a.callout:focus-visible {
     gap: 0.8rem 1.5rem;
     margin: 0;
     padding: 1rem 1.2rem;
-    border-radius: var(--corner);
+    border-radius: 16px;
     background: var(--field);
 }
 .vacancy__facts dt {
@@ -3584,7 +3586,7 @@ a.callout:focus-visible {
 .vacancy__words li {
     margin: 0;
     padding: 0.25rem 0.75rem;
-    border-radius: var(--corner-ui);
+    border-radius: 999px;
     background: var(--field);
     font-size: 0.9375rem;
     font-weight: 500;
@@ -3597,7 +3599,7 @@ a.callout:focus-visible {
 /* How to apply is the point of the whole vacancy, so it stands out. */
 .vacancy__apply {
     padding: 1.2rem 1.3rem 1.3rem;
-    border-radius: var(--corner);
+    border-radius: 18px;
     background: var(--furrow);
     color: var(--furrow-text);
 }
@@ -3760,7 +3762,7 @@ a.callout:focus-visible {
     display: none;
 }
 .mosaic--small .mosaic__tile button {
-    border-radius: var(--corner);
+    border-radius: 12px;
 }
 
 /* ---------- Short lists on a page: news and open positions ---------- */
@@ -3800,7 +3802,7 @@ a.callout:focus-visible {
 .brief__picture {
     overflow: hidden;
     aspect-ratio: 4 / 3;
-    border-radius: var(--corner);
+    border-radius: 14px;
     background: var(--mist);
 }
 .brief__picture img {
@@ -3973,56 +3975,61 @@ a.callout:focus-visible {
     color: var(--furrow-text);
 }
 
-/* ---------- Parcels and prints ---------- */
+/* ---------- Shapes from the logo ---------- */
+
+/* On a small screen the hand-cut corners are smaller, so they do not eat into the words. */
+@media (max-width: 700px) {
+    :root {
+        --k: 0.62;
+    }
+}
+
+/* Pictures that stand together are cut differently from each other. */
+.pair__picture,
+.spot:nth-child(even) .spot__picture {
+    border-radius: var(--blob-b);
+}
+.spot__picture,
+.brief--lead .brief__picture {
+    border-radius: var(--blob-c);
+}
+.rich-figure img {
+    border-radius: calc(1.5rem * var(--k)) calc(0.9rem * var(--k)) calc(1.7rem * var(--k)) calc(1rem * var(--k)) / calc(1rem * var(--k)) calc(1.6rem * var(--k)) calc(1rem * var(--k)) calc(1.5rem * var(--k));
+}
 
 /*
- * A parcel has a hatched edge along its top, the way a land map marks a field. The lines take
- * the colour of the text of the parcel, so they show on every ground.
+ * A large picture at the top of a page has a ball of the second colour behind it, as the
+ * orange ball lies behind the green one in the logo.
  */
-.band--plot:not(.band--callout)::before {
+.hero--split .hero__visual,
+.hero--centered .hero__visual {
+    isolation: isolate;
+}
+.hero--split .hero__visual::before {
     content: '';
     position: absolute;
-    inset: 0 0 auto 0;
-    height: 0.6rem;
-    background: repeating-linear-gradient(135deg, currentColor 0 1.5px, transparent 1.5px 7px);
-    opacity: 0.28;
-    pointer-events: none;
-}
-
-/* The colour that is printed behind pictures, per ground. */
-.section-mist,
-.section-leaf {
-    --print: var(--leaf);
-}
-.section-harvest,
-.section-sky {
-    --print: var(--ink);
-}
-.section-dark {
-    --print: var(--harvest);
+    z-index: -1;
+    left: -0.9rem;
+    bottom: -1.3rem;
+    width: 44%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--ball);
 }
 
 /*
- * A large picture has a block of the second colour shifted behind it, as when two colours are
- * printed off-register. Small pictures in lists stay plain.
+ * A heading above a part of a page is underlined with a brush stroke: thick in the middle,
+ * thin at both ends, like the strokes of the logo. Drawn as a mask, so it takes the leading
+ * colour of the site it is on.
  */
-.hero__visual > img:not(.hero__symbol),
-.hero__visual > .video,
-.pair__picture,
-.whats-on__lead-picture,
-.spot__picture,
-.brief--lead .brief__picture {
-    box-shadow: var(--print-shift) var(--print-shift) 0 var(--print);
-}
-/* Room for the shifted block, so it never runs into what stands beside or under the picture. */
-.hero--split .hero__visual,
-.hero--centered .hero__visual,
-.whats-on__lead-frame,
-.spot__picture,
-.brief--lead .brief__picture {
-    margin: 0 var(--print-shift) var(--print-shift) 0;
-}
-.pair__picture {
-    width: calc(100% - var(--print-shift));
-    margin-bottom: var(--print-shift);
+.block-head h2::after,
+.whats-on__head h2::after {
+    content: '';
+    display: block;
+    width: 6.5rem;
+    height: 0.62rem;
+    margin-top: 0.55rem;
+    background: var(--leaf);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 12' preserveAspectRatio='none'%3E%3Cpath d='M1 8.6C22 3.2 58 .8 96 2.1c14 .5 26 1.8 33 3.9-17-.9-43-1-69 .2C38 7.2 18 8.7 1 8.6Z'/%3E%3C/svg%3E") no-repeat left center / 100% 100%;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 12' preserveAspectRatio='none'%3E%3Cpath d='M1 8.6C22 3.2 58 .8 96 2.1c14 .5 26 1.8 33 3.9-17-.9-43-1-69 .2C38 7.2 18 8.7 1 8.6Z'/%3E%3C/svg%3E") no-repeat left center / 100% 100%;
 }
