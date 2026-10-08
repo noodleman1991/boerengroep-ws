@@ -131,7 +131,7 @@ describe('site settings and redirects', () => {
   it('rejects a redirect that does not start with a slash', async () => {
     await expect(
       payload.create({ collection: 'redirects', data: { from: 'old', to: '/new', tenant: bg } as never }),
-    ).rejects.toThrow(/From URL/)
+    ).rejects.toThrow(/Old address/)
   })
 
   it('rejects a duplicate source within a tenant and allows it across tenants', async () => {

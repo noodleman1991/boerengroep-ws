@@ -5,7 +5,7 @@ import { resendAdapter } from '@payloadcms/email-resend'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
-import { buildConfig, type CollectionConfig } from 'payload'
+import { buildConfig, type CollectionConfig, type Config } from 'payload'
 import sharp from 'sharp'
 import { anyone, authenticated, canAssignTenants } from './access'
 import { type AccessUser, isSuperAdmin } from './access/roles'
@@ -47,13 +47,44 @@ export const tenantScoped: CollectionConfig[] = [
   PastEvents,
   Newsletters,
   Vacancies,
+  Media,
   Speakers,
   Authors,
   Tags,
-  Media,
-  Redirects,
   SiteSettings,
+  Redirects,
 ]
+
+/**
+ * The order of the menu in the admin panel, by what editors come to do: pages, calendar,
+ * news, library, forms, settings, and last the people and the sites.
+ */
+const MENU_ORDER = [
+  'pages',
+  'events',
+  'past-events',
+  'newsletters',
+  'vacancies',
+  'media',
+  'speakers',
+  'authors',
+  'tags',
+  'forms',
+  'form-submissions',
+  'site-settings',
+  'redirects',
+  'users',
+  'tenants',
+]
+
+/** Sorts the collections for the menu. Plugins add theirs at the end, which would put Forms last. */
+const inMenuOrder = (config: Config): Config => {
+  const rank = (slug: string) => {
+    const index = MENU_ORDER.indexOf(slug)
+    return index === -1 ? MENU_ORDER.length : index
+  }
+  return { ...config, collections: [...(config.collections ?? [])].sort((a, b) => rank(a.slug) - rank(b.slug)) }
+}
 
 /** Slugs of tenant-scoped collections that hold exactly one document per tenant. */
 export const onePerTenant: string[] = ['site-settings']
@@ -79,7 +110,17 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
           }),
         }
       : {}),
-    admin: { user: Users.slug },
+    admin: {
+      user: Users.slug,
+      // The components live in the app that serves the admin panel (the Boerengroep site),
+      // because they must share one copy of the admin library with it.
+      components: {
+        // Which site am I changing? Shown as tabs to people who work on both.
+        beforeNavLinks: ['@/components/admin/site-tabs#SiteTabs'],
+        // A welcome with the things people come here to do.
+        beforeDashboard: ['@/components/admin/dashboard-intro#DashboardIntro'],
+      },
+    },
     collections: [...tenantScoped.map(withRevalidation), Users, Tenants],
     editor: siteEditor,
     db: postgresAdapter({
@@ -148,6 +189,8 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
           media: { disablePayloadAccessControl: true },
         },
       }),
+      // Last, so it also places the collections that the plugins above add.
+      inMenuOrder,
     ],
     typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
     sharp,

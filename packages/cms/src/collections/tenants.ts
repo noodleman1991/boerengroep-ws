@@ -3,7 +3,12 @@ import { superAdminField, superAdminOnly, tenantsRead } from '../access'
 
 export const Tenants: CollectionConfig = {
   slug: 'tenants',
-  admin: { useAsTitle: 'name', group: 'Platform' },
+  labels: { singular: 'Site', plural: 'Sites' },
+  admin: {
+    useAsTitle: 'name',
+    group: 'People and sites',
+    description: 'The websites that share this admin panel. Only super admins can change these.',
+  },
   access: {
     read: tenantsRead,
     create: superAdminOnly,
@@ -11,20 +16,30 @@ export const Tenants: CollectionConfig = {
     delete: superAdminOnly,
   },
   fields: [
-    { name: 'name', type: 'text', required: true },
-    { name: 'slug', type: 'text', required: true, unique: true, index: true },
+    { name: 'name', type: 'text', required: true, label: 'Name of the site' },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,
+      label: 'Short name',
+      admin: { description: 'Used by the system to tell the sites apart. Do not change it once the site is live.' },
+    },
     {
       name: 'siteUrl',
       type: 'text',
       required: true,
-      admin: { description: 'Public origin of this site, for example https://www.example.org' },
+      label: 'Web address',
+      admin: { description: 'Where visitors find this site, for example https://www.example.org' },
     },
     {
       name: 'revalidateSecret',
       type: 'text',
       required: true,
       access: { read: superAdminField, update: superAdminField },
-      admin: { description: 'Shared secret the other site sends when it asks this site to refresh its cache.' },
+      label: 'Refresh key',
+      admin: { description: 'A password between the admin panel and this site, used to tell the site that something changed. Only change it together with the hosting settings.' },
     },
   ],
 }

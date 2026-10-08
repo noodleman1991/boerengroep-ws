@@ -1,5 +1,6 @@
 import type { Block } from 'payload'
 import { backgroundField } from '../fields/shared'
+import { rowLabel } from '../fields/row-label'
 
 type Sibling = { mode?: string } | undefined
 
@@ -43,6 +44,7 @@ export const Podcast: Block = {
       label: 'Chosen episodes',
       labels: { singular: 'Episode', plural: 'Episodes' },
       admin: {
+        components: rowLabel('match', 'Episode').components,
         condition: (_d, s: Sibling) => s?.mode === 'picked',
         description: 'Type a few words from the title of each episode. The first episode that matches is shown.',
       },

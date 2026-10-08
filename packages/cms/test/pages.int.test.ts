@@ -114,7 +114,7 @@ describe('pages', () => {
   })
 
   it('rejects a slug with capitals or spaces', async () => {
-    await expect(page(bg, 'Bad', 'Bad Slug')).rejects.toThrow(/Slug/)
+    await expect(page(bg, 'Bad', 'Bad Slug')).rejects.toThrow(/Address/)
   })
 
   it('hides drafts from anonymous readers', async () => {

@@ -1,5 +1,6 @@
 import type { Block } from 'payload'
 import { backgroundField } from '../fields/shared'
+import { rowLabel } from '../fields/row-label'
 
 export const Testimonial: Block = {
   slug: 'testimonial',
@@ -18,6 +19,7 @@ export const Testimonial: Block = {
       type: 'array',
       label: 'Quotes',
       labels: { singular: 'Quote', plural: 'Quotes' },
+      admin: rowLabel('author', 'Quote'),
       fields: [
         { name: 'quote', type: 'textarea' },
         { name: 'author', type: 'text', label: 'Who said it' },

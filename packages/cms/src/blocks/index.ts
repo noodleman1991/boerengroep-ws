@@ -16,6 +16,23 @@ import { Stats } from './stats'
 import { Testimonial } from './testimonial'
 import { Video } from './video'
 
+/** Puts the block's own explanation as the first thing an editor sees when opening it. */
+function withHelp(block: Block): Block {
+  const text = (block.admin?.custom as { description?: string } | undefined)?.description
+  if (!text) return block
+  return {
+    ...block,
+    fields: [
+      {
+        name: 'help',
+        type: 'ui',
+        admin: { components: { Field: { path: '@/components/admin/block-help#BlockHelp', clientProps: { text } } } },
+      },
+      ...block.fields,
+    ],
+  }
+}
+
 /** Every block an editor can add to a page. The first ten existed before the migration. */
 export const pageBlocks: Block[] = [
   Hero,
@@ -34,7 +51,7 @@ export const pageBlocks: Block[] = [
   NewsletterSignup,
   FormBlock,
   Item,
-]
+].map(withHelp)
 
 const PAGE_ONLY = ['eventsCalendarPreview', 'newsletterSignup']
 

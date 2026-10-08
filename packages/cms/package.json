@@ -11,7 +11,6 @@
     "./access": "./src/access/roles.ts",
     "./links": "./src/fields/link.ts",
     "./event-slug": "./src/fields/event-slug.ts",
-    "./admin/*": "./src/admin/*.tsx",
     "./newsletter-status": "./src/admin/newsletter-status-text.ts"
   },
   "scripts": {
@@ -31,14 +30,11 @@
     "@payloadcms/plugin-multi-tenant": "catalog:",
     "@payloadcms/richtext-lexical": "catalog:",
     "@payloadcms/storage-vercel-blob": "catalog:",
-    "@payloadcms/ui": "catalog:",
     "payload": "catalog:",
-    "react": "catalog:",
     "sharp": "^0.34.0"
   },
   "devDependencies": {
     "@types/node": "^22.16.0",
-    "@types/react": "^19.1.0",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

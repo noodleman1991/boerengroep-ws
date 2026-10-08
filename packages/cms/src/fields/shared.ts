@@ -1,4 +1,5 @@
 import type { Field } from 'payload'
+import { rowLabel } from './row-label'
 
 /** Kinds of events. The value is stored, the label is what editors and visitors read. */
 export const EVENT_TYPE_OPTIONS = [
@@ -53,7 +54,7 @@ export const actionsField: Field = {
   type: 'array',
   label: 'Buttons',
   labels: { singular: 'Button', plural: 'Buttons' },
-  admin: { description: 'One or two buttons are enough. The first one stands out most.' },
+  admin: { description: 'One or two buttons are enough. The first one stands out most.', components: rowLabel('label', 'Button').components },
   fields: [
     { name: 'label', type: 'text', admin: { description: 'Say what happens, for example "See the calendar".' } },
     {

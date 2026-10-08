@@ -1,5 +1,6 @@
 import type { Block } from 'payload'
 import { backgroundField } from '../fields/shared'
+import { rowLabel } from '../fields/row-label'
 
 export const Stats: Block = {
   slug: 'stats',
@@ -18,6 +19,7 @@ export const Stats: Block = {
       type: 'array',
       label: 'Numbers',
       labels: { singular: 'Number', plural: 'Numbers' },
+      admin: rowLabel('type', 'Number'),
       fields: [
         { name: 'stat', type: 'text', label: 'Number', admin: { description: 'For example 55 or 1.200.' } },
         { name: 'type', type: 'text', label: 'What it counts' },

@@ -30,7 +30,14 @@ const uniqueFromPerTenant: CollectionBeforeChangeHook = async ({ data, originalD
 
 export const Redirects: CollectionConfig = {
   slug: 'redirects',
-  admin: { useAsTitle: 'from', defaultColumns: ['from', 'to', 'permanent'], group: 'Settings' },
+  labels: { singular: 'Forwarding address', plural: 'Forwarding addresses' },
+  admin: {
+    useAsTitle: 'from',
+    defaultColumns: ['from', 'to', 'permanent'],
+    group: 'Site settings',
+    description:
+      'When a page moves or disappears, send visitors from the old address to a new one. Old links, bookmarks and search results then keep working.',
+  },
   access: {
     read: anyone,
     create: tenantAdminsOnly,
@@ -44,20 +51,27 @@ export const Redirects: CollectionConfig = {
       type: 'text',
       required: true,
       index: true,
-      label: 'From URL',
-      validate: (v: unknown) => (typeof v === 'string' && v.startsWith('/') ? true : 'URL must start with /'),
+      label: 'Old address',
+      admin: { description: 'The part after the site name, starting with /. For example /old-page.' },
+      validate: (v: unknown) => (typeof v === 'string' && v.startsWith('/') ? true : 'Start the address with /'),
     },
     {
       name: 'to',
       type: 'text',
       required: true,
-      label: 'To URL',
+      label: 'New address',
+      admin: { description: 'Starts with / for a page on this site, or with https:// for another website.' },
       validate: (v: unknown) =>
         typeof v === 'string' && (v.startsWith('/') || v.startsWith('http'))
           ? true
-          : 'URL must start with / or http(s)://',
+          : 'Start the address with / or with https://',
     },
-    { name: 'permanent', type: 'checkbox', label: 'Permanent redirect (301)' },
-    { name: 'note', type: 'text' },
+    {
+      name: 'permanent',
+      type: 'checkbox',
+      label: 'This move is for good',
+      admin: { description: 'Tick this for pages that moved for good. Leave it off for a temporary detour.' },
+    },
+    { name: 'note', type: 'text', label: 'Note for yourself', admin: { description: 'Why this forwarding exists. Visitors never see it.' } },
   ],
 }

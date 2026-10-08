@@ -2,7 +2,7 @@
 
 import { Button, useFormFields } from '@payloadcms/ui'
 import { useCallback, useEffect, useState } from 'react'
-import { describeStatus, type NewsletterStatusData, type StatusLine } from './newsletter-status-text'
+import { describeStatus, type NewsletterStatusData, type StatusLine } from '@sites/cms/newsletter-status'
 
 type Loaded =
   | { state: 'checking' }

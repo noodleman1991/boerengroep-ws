@@ -272,3 +272,14 @@ What was wrong, by evidence: production reported `BREVO_LIST_ID: not set`, so co
 - "Block examples": `pnpm --filter @sites/cms seed:demo` makes a draft page with every block filled in, for editors to look at and copy from.
 - Tests: app 185 unit, CMS 45 unit and 89 with a database, 34 browser tests (5 new: gallery keys, video privacy, form errors and thanks, item, refused answers). Parity: 238 checked, 0 failed. Every block was looked at in a browser at desktop width and the main ones at phone width.
 - Machine note: the laptop ran out of disk during this phase (about 200 MB free, 12 GB of swap). Builds here now run with the compiler's disk cache off.
+
+### Phase 7 (a clearer admin panel)
+
+- One admin panel for both sites, inside the Boerengroep site. People who work on both sites see the sites as two tabs, on the welcome screen and at the top of the menu. The plugin's dropdown is hidden. With an item open the other tab is switched off, because switching would move that item to the other site.
+- The menu is grouped by what editors come to do, in this order: Pages, Calendar, News and vacancies, Library, Forms, Site settings, People and sites. Collections have everyday names ("Pictures and files", "Speakers and hosts", "Forwarding addresses", "People", "Sites").
+- A welcome on the first screen with seven shortcuts (add an event, change a page, upload pictures, write a news item, tell how an event went, menu footer and newsletter, read form answers) and one sentence on what is live when.
+- Every collection, tab and field that was still bare has a label and an explanation in plain words. Error messages follow the labels ("Address", "Old address").
+- Every block starts with one line that says what it is for. Rows in lists carry what the editor typed as their title ("About Us" instead of "Menu item 01").
+- Site settings show their name at the top instead of "ID: 1" (hidden title field, additive migration `20261008_104251_settings_title` with a backfill for existing settings).
+- Found by logging in: the first version crashed the welcome screen. The shared package and the app each loaded their own copy of the admin library, so the components could not see the admin's state. The earlier Brevo panel had the same flaw without showing it: it could not read which site the settings belong to. Ruling: components that use the admin library live in the app that serves the admin (`apps/boerengroep/components/admin`), and the shared settings point at them. The wording logic stays in the shared package. Cost if wrong: a second app that wants its own admin needs its own copies, which the one-admin decision rules out.
+- Tests: CMS 46 unit and 89 with a database, tool 78 and 25, app 185 unit, 35 browser tests (1 new: welcome, shortcuts and menu order after logging in, skipped where no admin account is given). Parity: 238 checked, 0 failed. Looked at in a browser with a second site added locally and removed afterwards.

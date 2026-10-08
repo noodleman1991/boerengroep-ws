@@ -13,10 +13,13 @@ export function pagePreviewUrl(path: unknown, localeCode: string | undefined): s
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
+  labels: { singular: 'Page', plural: 'Pages' },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'path', '_status'],
-    group: 'Content',
+    group: 'Pages',
+    description:
+      'The pages of the site. A page is built from blocks: text, pictures, events, a form. Every page exists in English and in Dutch. Switch language at the top right.',
     livePreview: {
       url: ({ data, locale }) => pagePreviewUrl(data?.path, locale?.code),
     },
@@ -30,15 +33,22 @@ export const Pages: CollectionConfig = {
   versions: { drafts: true },
   hooks: { beforeChange: [computePath], afterChange: [resaveChildren] },
   fields: [
-    { name: 'title', type: 'text', required: true, localized: true },
+    {
+      name: 'title',
+      type: 'text',
+      required: true,
+      localized: true,
+      admin: { description: 'The name of the page. Shown in the browser tab and in search results.' },
+    },
     {
       name: 'slug',
       type: 'text',
       required: true,
       localized: true,
+      label: 'Address',
       admin: {
         position: 'sidebar',
-        description: 'Last part of the URL in this language. The home page uses "home".',
+        description: 'The last part of the web address in this language, for example "history". The home page uses "home".',
       },
       validate: (value: unknown) =>
         typeof value === 'string' && /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value)
@@ -49,7 +59,11 @@ export const Pages: CollectionConfig = {
       name: 'parent',
       type: 'relationship',
       relationTo: 'pages',
-      admin: { position: 'sidebar' },
+      label: 'Sits under',
+      admin: {
+        position: 'sidebar',
+        description: 'Choose a page to make this one a sub-page, for example History under About us. The address follows by itself.',
+      },
       filterOptions: ({ id }) => (id ? { id: { not_equals: id } } : true),
     },
     {
@@ -57,10 +71,24 @@ export const Pages: CollectionConfig = {
       type: 'text',
       localized: true,
       index: true,
-      admin: { readOnly: true, position: 'sidebar', description: 'Full URL path. Set automatically.' },
+      label: 'Full address',
+      admin: { readOnly: true, position: 'sidebar', description: 'Made for you from the address and the page it sits under.' },
     },
-    { name: 'body', type: 'richText', localized: true },
-    { name: 'blocks', type: 'blocks', localized: true, blocks: pageBlocks },
+    {
+      name: 'body',
+      type: 'richText',
+      localized: true,
+      label: 'Text',
+      admin: { description: 'Optional. Plain text for a simple page. For anything more, use the blocks below.' },
+    },
+    {
+      name: 'blocks',
+      type: 'blocks',
+      localized: true,
+      labels: { singular: 'Block', plural: 'Blocks' },
+      blocks: pageBlocks,
+      admin: { description: 'The building blocks of the page, from top to bottom. Drag a block to move it.' },
+    },
     legacyIdField,
   ],
 }

@@ -1,5 +1,6 @@
 import type { Block } from 'payload'
 import { backgroundField } from '../fields/shared'
+import { rowLabel } from '../fields/row-label'
 
 export const Documents: Block = {
   slug: 'documents',
@@ -18,6 +19,7 @@ export const Documents: Block = {
       name: 'files',
       type: 'array',
       labels: { singular: 'File', plural: 'Files' },
+      admin: rowLabel('label', 'File'),
       fields: [
         { name: 'file', type: 'upload', relationTo: 'media', required: true },
         { name: 'label', type: 'text', localized: true, label: 'Name shown to visitors', admin: { description: 'Without it the file name is shown.' } },

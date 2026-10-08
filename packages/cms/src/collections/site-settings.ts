@@ -1,6 +1,15 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionBeforeValidateHook, CollectionConfig } from 'payload'
 import { anyone, tenantAdminsOnly } from '../access'
 import { linkFields } from '../fields/link'
+import { rowLabel } from '../fields/row-label'
+
+/** Keeps the hidden title equal to the name of the organisation. */
+const nameAsTitle: CollectionBeforeValidateHook = ({ data, originalDoc }) => {
+  if (!data) return data
+  const name = data.general?.name ?? originalDoc?.general?.name
+  data.title = name ? `Settings of ${name}` : 'Site settings'
+  return data
+}
 
 /**
  * One document per site. Each tab holds the things that appear on every page.
@@ -10,6 +19,7 @@ export const SiteSettings: CollectionConfig = {
   slug: 'site-settings',
   labels: { singular: 'Site settings', plural: 'Site settings' },
   admin: {
+    useAsTitle: 'title',
     group: 'Site settings',
     description:
       'The parts of the site that show on every page: name and logo, the menu, the footer, the newsletter box and the calendar options.',
@@ -20,7 +30,10 @@ export const SiteSettings: CollectionConfig = {
     update: tenantAdminsOnly,
     delete: tenantAdminsOnly,
   },
+  hooks: { beforeValidate: [nameAsTitle] },
   fields: [
+    // Only there so the admin panel can show a name instead of "ID: 1" at the top.
+    { name: 'title', type: 'text', admin: { hidden: true } },
     {
       type: 'tabs',
       tabs: [
@@ -61,7 +74,7 @@ export const SiteSettings: CollectionConfig = {
               type: 'array',
               label: 'Social media',
               labels: { singular: 'Account', plural: 'Accounts' },
-              admin: { description: 'Shown as small links in the footer, in this order.' },
+              admin: { description: 'Shown as small links in the footer, in this order.', components: rowLabel('platform', 'Account').components },
               fields: [
                 {
                   name: 'platform',
@@ -95,6 +108,7 @@ export const SiteSettings: CollectionConfig = {
               type: 'array',
               label: 'Menu items',
               labels: { singular: 'Menu item', plural: 'Menu items' },
+              admin: rowLabel('label', 'Menu item'),
               fields: [
                 ...linkFields(),
                 {
@@ -108,7 +122,10 @@ export const SiteSettings: CollectionConfig = {
                   type: 'array',
                   label: 'Dropdown',
                   labels: { singular: 'Dropdown link', plural: 'Dropdown links' },
-                  admin: { description: 'Optional. Links that appear when someone opens this menu item.' },
+                  admin: {
+                    description: 'Optional. Links that appear when someone opens this menu item.',
+                    components: rowLabel('label', 'Link').components,
+                  },
                   fields: linkFields(),
                 },
               ],
@@ -125,10 +142,16 @@ export const SiteSettings: CollectionConfig = {
               type: 'array',
               label: 'Link columns',
               labels: { singular: 'Column', plural: 'Columns' },
-              admin: { description: 'Two or three short columns read best.' },
+              admin: { description: 'Two or three short columns read best.', components: rowLabel('title', 'Column').components },
               fields: [
                 { name: 'title', type: 'text', localized: true },
-                { name: 'links', type: 'array', labels: { singular: 'Link', plural: 'Links' }, fields: linkFields() },
+                {
+                  name: 'links',
+                  type: 'array',
+                  labels: { singular: 'Link', plural: 'Links' },
+                  admin: rowLabel('label', 'Link'),
+                  fields: linkFields(),
+                },
               ],
             },
             {
@@ -136,7 +159,7 @@ export const SiteSettings: CollectionConfig = {
               type: 'array',
               label: 'Small links at the very bottom',
               labels: { singular: 'Link', plural: 'Links' },
-              admin: { description: 'For example the privacy policy.' },
+              admin: { description: 'For example the privacy policy.', components: rowLabel('label', 'Link').components },
               fields: linkFields(),
             },
             {
@@ -157,7 +180,7 @@ export const SiteSettings: CollectionConfig = {
               // A live check, not a stored value: do sign-ups arrive on the Brevo list?
               name: 'brevoStatus',
               type: 'ui',
-              admin: { components: { Field: '@sites/cms/admin/newsletter-status#NewsletterStatus' } },
+              admin: { components: { Field: '@/components/admin/newsletter-status#NewsletterStatus' } },
             },
             {
               name: 'brevoListId',

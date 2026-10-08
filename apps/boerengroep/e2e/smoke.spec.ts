@@ -312,3 +312,20 @@ test('form answers cannot be sent for a form of another site or with made-up fie
   const invalid = await request.post('/api/form-submit', { data: { form: 1 } })
   expect(invalid.status()).toBe(400)
 })
+
+test('after logging in, the admin greets with shortcuts and a menu grouped by task', async ({ page }) => {
+  const email = process.env.SEED_ADMIN_EMAIL
+  const password = process.env.SEED_ADMIN_PASSWORD
+  test.skip(!email || !password, 'no admin account is given to this test run')
+  await page.goto('/admin/login')
+  await page.locator('input[name="email"]').fill(email!)
+  await page.locator('input[name="password"]').fill(password!)
+  await page.locator('button[type="submit"]').click()
+  await page.waitForURL(/\/admin\/?$/)
+  const welcome = page.locator('.dashboard-intro')
+  await expect(welcome.getByRole('link', { name: /Add an event/ })).toHaveAttribute('href', '/admin/collections/events/create')
+  await expect(welcome.getByRole('link', { name: /Menu, footer and newsletter/ })).toBeVisible()
+  // The groups, in the order editors work: pages, calendar, news, library, forms, settings, people.
+  const headings = (await page.getByRole('heading', { level: 2 }).allTextContents()).map((text) => text.trim())
+  expect(headings.filter((text) => !text.startsWith('Hello'))).toEqual(['Pages', 'Calendar', 'News and vacancies', 'Library', 'Forms', 'Site settings', 'People and sites'])
+})

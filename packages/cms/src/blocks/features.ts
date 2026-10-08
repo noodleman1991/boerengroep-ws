@@ -1,5 +1,6 @@
 import type { Block } from 'payload'
 import { backgroundField, iconField } from '../fields/shared'
+import { rowLabel } from '../fields/row-label'
 
 export const Features: Block = {
   slug: 'features',
@@ -17,6 +18,7 @@ export const Features: Block = {
       name: 'items',
       type: 'array',
       labels: { singular: 'Item', plural: 'Items' },
+      admin: rowLabel('title', 'Item'),
       fields: [iconField, { name: 'title', type: 'text' }, { name: 'text', type: 'richText' }],
     },
   ],

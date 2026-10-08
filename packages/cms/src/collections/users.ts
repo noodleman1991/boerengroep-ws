@@ -77,7 +77,13 @@ const guardProtectedUserDelete: CollectionBeforeDeleteHook = async ({ id, req })
 export const Users: CollectionConfig = {
   slug: 'users',
   auth: true,
-  admin: { useAsTitle: 'email', group: 'Platform' },
+  labels: { singular: 'Person', plural: 'People' },
+  admin: {
+    useAsTitle: 'email',
+    group: 'People and sites',
+    description:
+      'Everyone who can log in here. Each person works on one site or on both. Per site they are an editor, who writes and publishes, or an admin, who can also change the site settings and add people.',
+  },
   access: {
     admin: ({ req }) => Boolean(req.user),
     read: usersReadUpdate,
@@ -98,6 +104,8 @@ export const Users: CollectionConfig = {
       required: true,
       defaultValue: ['user'],
       saveToJWT: true,
+      label: 'Role on the platform',
+      admin: { description: 'Super admins manage both sites and all people. Everyone else gets their rights per site, below.' },
       access: { create: superAdminField, update: superAdminField },
       options: [
         { label: 'Super admin', value: 'super-admin' },

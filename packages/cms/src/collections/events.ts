@@ -4,6 +4,7 @@ import { relId } from '../access/roles'
 import { eventSlug } from '../fields/event-slug'
 import { EVENT_TYPE_OPTIONS, languageField, legacyIdField } from '../fields/shared'
 import { uniquePerTenant } from '../hooks/unique-per-tenant'
+import { rowLabel } from '../fields/row-label'
 
 export const EVENT_STATUS_OPTIONS = [
   { label: 'Going ahead', value: 'scheduled' },
@@ -143,6 +144,7 @@ export const Events: CollectionConfig = {
       type: 'array',
       label: 'Speakers and hosts',
       labels: { singular: 'Person', plural: 'People' },
+      admin: rowLabel('role', 'Person'),
       fields: [
         { name: 'speaker', type: 'relationship', relationTo: 'speakers', label: 'Person' },
         { name: 'role', type: 'text', admin: { description: 'For example "host" or "speaker".' } },

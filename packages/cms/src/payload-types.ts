@@ -72,16 +72,16 @@ export interface Config {
     'past-events': PastEvent;
     newsletters: Newsletter;
     vacancies: Vacancy;
+    media: Media;
     speakers: Speaker;
     authors: Author;
     tags: Tag;
-    media: Media;
-    redirects: Redirect;
-    'site-settings': SiteSetting;
-    users: User;
-    tenants: Tenant;
     forms: Form;
     'form-submissions': FormSubmission;
+    'site-settings': SiteSetting;
+    redirects: Redirect;
+    users: User;
+    tenants: Tenant;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,16 +94,16 @@ export interface Config {
     'past-events': PastEventsSelect<false> | PastEventsSelect<true>;
     newsletters: NewslettersSelect<false> | NewslettersSelect<true>;
     vacancies: VacanciesSelect<false> | VacanciesSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
     speakers: SpeakersSelect<false> | SpeakersSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
-    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
-    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
-    users: UsersSelect<false> | UsersSelect<true>;
-    tenants: TenantsSelect<false> | TenantsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    tenants: TenantsSelect<false> | TenantsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -144,22 +144,33 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * The pages of the site. A page is built from blocks: text, pictures, events, a form. Every page exists in English and in Dutch. Switch language at the top right.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
  */
 export interface Page {
   id: number;
   tenant?: (number | null) | Tenant;
+  /**
+   * The name of the page. Shown in the browser tab and in search results.
+   */
   title: string;
   /**
-   * Last part of the URL in this language. The home page uses "home".
+   * The last part of the web address in this language, for example "history". The home page uses "home".
    */
   slug: string;
+  /**
+   * Choose a page to make this one a sub-page, for example History under About us. The address follows by itself.
+   */
   parent?: (number | null) | Page;
   /**
-   * Full URL path. Set automatically.
+   * Made for you from the address and the page it sits under.
    */
   path?: string | null;
+  /**
+   * Optional. Plain text for a simple page. For anything more, use the blocks below.
+   */
   body?: {
     root: {
       type: string;
@@ -175,6 +186,9 @@ export interface Page {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * The building blocks of the page, from top to bottom. Drag a block to move it.
+   */
   blocks?:
     | (
         | HeroBlock
@@ -201,19 +215,24 @@ export interface Page {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * The websites that share this admin panel. Only super admins can change these.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tenants".
  */
 export interface Tenant {
   id: number;
   name: string;
+  /**
+   * Used by the system to tell the sites apart. Do not change it once the site is live.
+   */
   slug: string;
   /**
-   * Public origin of this site, for example https://www.example.org
+   * Where visitors find this site, for example https://www.example.org
    */
   siteUrl: string;
   /**
-   * Shared secret the other site sends when it asks this site to refresh its cache.
+   * A password between the admin panel and this site, used to tell the site that something changed. Only change it together with the hosting settings.
    */
   revalidateSecret: string;
   updatedAt: string;
@@ -467,6 +486,8 @@ export interface Event {
   createdAt: string;
 }
 /**
+ * People who speak at or host events. Add someone once and choose them on any event.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "speakers".
  */
@@ -475,6 +496,9 @@ export interface Speaker {
   tenant?: (number | null) | Tenant;
   name: string;
   avatar?: (number | null) | Media;
+  /**
+   * For example "Wageningen University" or "farmer in Renkum". Shown next to the name.
+   */
   affiliation?: string | null;
   bio?: {
     root: {
@@ -788,7 +812,13 @@ export interface PastEvent {
    * The language this is written in. Leave empty to show it to everyone.
    */
   language?: ('en' | 'nl') | null;
+  /**
+   * Shown large at the top of the story and small in the list.
+   */
   heroImg?: (number | null) | Media;
+  /**
+   * Two or three sentences. Shown in the list and at the top of the story.
+   */
   excerpt?: {
     root: {
       type: string;
@@ -806,12 +836,18 @@ export interface PastEvent {
   } | null;
   author?: (number | null) | Author;
   date: string;
+  /**
+   * Optional. Choose the event this story is about. The event page then links to this story, and this story to the event.
+   */
   relatedEvent?: (number | null) | Event;
   tags?: (number | Tag)[] | null;
   /**
    * Drop all the photos of the day here at once. They show as a mosaic on the story, and can be reused in a Photo gallery block on any page.
    */
   photos?: (number | Media)[] | null;
+  /**
+   * Optional extras under the text: a video, a quote, files.
+   */
   blocks?:
     | (
         | HeroBlock
@@ -851,6 +887,8 @@ export interface PastEvent {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * People who write the stories of past events. Add someone once and choose them on any story.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "authors".
  */
@@ -864,6 +902,8 @@ export interface Author {
   createdAt: string;
 }
 /**
+ * Short labels for stories of past events, so readers can find stories that belong together.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tags".
  */
@@ -1179,6 +1219,8 @@ export interface NewsletterSignupBlock {
   blockType: 'newsletterSignup';
 }
 /**
+ * News items and newsletter issues. An item can be an article written here, or a link to something elsewhere. News from friends gets its own page on the site.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "newsletters".
  */
@@ -1195,13 +1237,28 @@ export interface Newsletter {
    */
   language?: ('en' | 'nl') | null;
   type: 'article' | 'link' | 'event' | 'update';
+  /**
+   * News from friends shows on its own page. The rest shows on the News page.
+   */
   organization: 'Boerengroep' | 'Inspringtheater' | 'friends';
+  /**
+   * The newest items come first.
+   */
   publishDate: string;
+  /**
+   * Optional words to group items. Press Enter after each one.
+   */
   tags?: string[] | null;
+  /**
+   * For a link to another website: the full address, starting with https://.
+   */
   externalLink?: string | null;
   linkDescription?: string | null;
   author?: (number | null) | Speaker;
   featuredImage?: (number | null) | Media;
+  /**
+   * Shown in the list of news.
+   */
   excerpt?: {
     root: {
       type: string;
@@ -1217,6 +1274,9 @@ export interface Newsletter {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * The item itself, built from blocks from top to bottom.
+   */
   body?:
     | (
         | HeroBlock
@@ -1242,6 +1302,8 @@ export interface Newsletter {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Ways to join in: volunteering, internships, coordinator and board positions. Each one shows on the Vacancies page under its kind. Fill in what you know and leave the rest empty.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "vacancies".
  */
@@ -1257,14 +1319,23 @@ export interface Vacancy {
    * The language this is written in. Leave empty to show it to everyone.
    */
   language?: ('en' | 'nl') | null;
+  /**
+   * Decides under which heading the vacancy shows.
+   */
   opportunityType: 'volunteer' | 'internship' | 'coordinator' | 'board' | 'other';
   location?: {
     type?: ('remote' | 'in-person' | 'hybrid') | null;
     cityRegion?: string | null;
   };
   startDate?: string | null;
+  /**
+   * For example "6 months" or "one evening a week".
+   */
   duration?: string | null;
   openApplication?: boolean | null;
+  /**
+   * After this date the vacancy shows as closed.
+   */
   applicationDeadline?: string | null;
   description?: {
     root: {
@@ -1296,6 +1367,9 @@ export interface Vacancy {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Press Enter after each one.
+   */
   requiredSkills?: string[] | null;
   preferredQualities?: {
     root: {
@@ -1312,10 +1386,19 @@ export interface Vacancy {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Press Enter after each one.
+   */
   languagesRequired?: string[] | null;
   compensation?: {
+    /**
+     * For example an allowance, travel costs, meals.
+     */
     details?: string | null;
   };
+  /**
+   * Anything people should know about the place or the work, for example stairs or physical work.
+   */
   accessibilityNotes?: string | null;
   howToApply?: {
     root: {
@@ -1337,6 +1420,9 @@ export interface Vacancy {
     email?: string | null;
     phone?: string | null;
   };
+  /**
+   * Optional file, for example a PDF. Shown as a download with its name and size.
+   */
   supportingDocument?: (number | null) | Media;
   valuesStatement?: {
     root: {
@@ -1359,16 +1445,22 @@ export interface Vacancy {
   createdAt: string;
 }
 /**
+ * What people filled in. Only people who work on this site can read them.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects".
+ * via the `definition` "form-submissions".
  */
-export interface Redirect {
+export interface FormSubmission {
   id: number;
   tenant?: (number | null) | Tenant;
-  from: string;
-  to: string;
-  permanent?: boolean | null;
-  note?: string | null;
+  form: number | Form;
+  submissionData?:
+    | {
+        field: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1381,6 +1473,7 @@ export interface Redirect {
 export interface SiteSetting {
   id: number;
   tenant?: (number | null) | Tenant;
+  title?: string | null;
   general: {
     name: string;
     /**
@@ -1637,12 +1730,45 @@ export interface SiteSetting {
   createdAt: string;
 }
 /**
+ * When a page moves or disappears, send visitors from the old address to a new one. Old links, bookmarks and search results then keep working.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: number;
+  tenant?: (number | null) | Tenant;
+  /**
+   * The part after the site name, starting with /. For example /old-page.
+   */
+  from: string;
+  /**
+   * Starts with / for a page on this site, or with https:// for another website.
+   */
+  to: string;
+  /**
+   * Tick this for pages that moved for good. Leave it off for a temporary detour.
+   */
+  permanent?: boolean | null;
+  /**
+   * Why this forwarding exists. Visitors never see it.
+   */
+  note?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Everyone who can log in here. Each person works on one site or on both. Per site they are an editor, who writes and publishes, or an admin, who can also change the site settings and add people.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
   name?: string | null;
+  /**
+   * Super admins manage both sites and all people. Everyone else gets their rights per site, below.
+   */
   roles: ('super-admin' | 'user')[];
   tenants?:
     | {
@@ -1670,26 +1796,6 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
-}
-/**
- * What people filled in. Only people who work on this site can read them.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "form-submissions".
- */
-export interface FormSubmission {
-  id: number;
-  tenant?: (number | null) | Tenant;
-  form: number | Form;
-  submissionData?:
-    | {
-        field: string;
-        value: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1736,6 +1842,10 @@ export interface PayloadLockedDocument {
         value: number | Vacancy;
       } | null)
     | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
         relationTo: 'speakers';
         value: number | Speaker;
       } | null)
@@ -1748,16 +1858,20 @@ export interface PayloadLockedDocument {
         value: number | Tag;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'forms';
+        value: number | Form;
       } | null)
     | ({
-        relationTo: 'redirects';
-        value: number | Redirect;
+        relationTo: 'form-submissions';
+        value: number | FormSubmission;
       } | null)
     | ({
         relationTo: 'site-settings';
         value: number | SiteSetting;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
       } | null)
     | ({
         relationTo: 'users';
@@ -1766,14 +1880,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tenants';
         value: number | Tenant;
-      } | null)
-    | ({
-        relationTo: 'forms';
-        value: number | Form;
-      } | null)
-    | ({
-        relationTo: 'form-submissions';
-        value: number | FormSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2302,43 +2408,6 @@ export interface VacanciesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "speakers_select".
- */
-export interface SpeakersSelect<T extends boolean = true> {
-  tenant?: T;
-  name?: T;
-  avatar?: T;
-  affiliation?: T;
-  bio?: T;
-  legacyId?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors_select".
- */
-export interface AuthorsSelect<T extends boolean = true> {
-  tenant?: T;
-  name?: T;
-  avatar?: T;
-  legacyId?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags_select".
- */
-export interface TagsSelect<T extends boolean = true> {
-  tenant?: T;
-  name?: T;
-  legacyId?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -2414,169 +2483,38 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects_select".
+ * via the `definition` "speakers_select".
  */
-export interface RedirectsSelect<T extends boolean = true> {
+export interface SpeakersSelect<T extends boolean = true> {
   tenant?: T;
-  from?: T;
-  to?: T;
-  permanent?: T;
-  note?: T;
+  name?: T;
+  avatar?: T;
+  affiliation?: T;
+  bio?: T;
+  legacyId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "site-settings_select".
+ * via the `definition` "authors_select".
  */
-export interface SiteSettingsSelect<T extends boolean = true> {
+export interface AuthorsSelect<T extends boolean = true> {
   tenant?: T;
-  general?:
-    | T
-    | {
-        name?: T;
-        tagline?: T;
-        logo?: T;
-        contact?:
-          | T
-          | {
-              address?: T;
-              email?: T;
-              phone?: T;
-            };
-        social?:
-          | T
-          | {
-              platform?: T;
-              url?: T;
-              id?: T;
-            };
-      };
-  header?:
-    | T
-    | {
-        nav?:
-          | T
-          | {
-              label?: T;
-              linkType?: T;
-              page?: T;
-              section?: T;
-              url?: T;
-              anchor?: T;
-              highlight?: T;
-              children?:
-                | T
-                | {
-                    label?: T;
-                    linkType?: T;
-                    page?: T;
-                    section?: T;
-                    url?: T;
-                    anchor?: T;
-                    id?: T;
-                  };
-              id?: T;
-            };
-      };
-  footer?:
-    | T
-    | {
-        columns?:
-          | T
-          | {
-              title?: T;
-              links?:
-                | T
-                | {
-                    label?: T;
-                    linkType?: T;
-                    page?: T;
-                    section?: T;
-                    url?: T;
-                    anchor?: T;
-                    id?: T;
-                  };
-              id?: T;
-            };
-        legalLinks?:
-          | T
-          | {
-              label?: T;
-              linkType?: T;
-              page?: T;
-              section?: T;
-              url?: T;
-              anchor?: T;
-              id?: T;
-            };
-        showNewsletter?: T;
-      };
-  newsletter?:
-    | T
-    | {
-        brevoListId?: T;
-        heading?: T;
-        intro?: T;
-        placeholder?: T;
-        buttonLabel?: T;
-        consentText?: T;
-        thanksTitle?: T;
-        thanksMessage?: T;
-        confirmedTitle?: T;
-        confirmedMessage?: T;
-      };
-  calendar?:
-    | T
-    | {
-        intro?: T;
-        defaultView?: T;
-        showSubscribe?: T;
-      };
+  name?: T;
+  avatar?: T;
+  legacyId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "tags_select".
  */
-export interface UsersSelect<T extends boolean = true> {
+export interface TagsSelect<T extends boolean = true> {
+  tenant?: T;
   name?: T;
-  roles?: T;
-  tenants?:
-    | T
-    | {
-        tenant?: T;
-        roles?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  resetPasswordRequestedAt?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
-    | T
-    | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
-      };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tenants_select".
- */
-export interface TenantsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  siteUrl?: T;
-  revalidateSecret?: T;
+  legacyId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2708,6 +2646,175 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
         value?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  tenant?: T;
+  title?: T;
+  general?:
+    | T
+    | {
+        name?: T;
+        tagline?: T;
+        logo?: T;
+        contact?:
+          | T
+          | {
+              address?: T;
+              email?: T;
+              phone?: T;
+            };
+        social?:
+          | T
+          | {
+              platform?: T;
+              url?: T;
+              id?: T;
+            };
+      };
+  header?:
+    | T
+    | {
+        nav?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              page?: T;
+              section?: T;
+              url?: T;
+              anchor?: T;
+              highlight?: T;
+              children?:
+                | T
+                | {
+                    label?: T;
+                    linkType?: T;
+                    page?: T;
+                    section?: T;
+                    url?: T;
+                    anchor?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+      };
+  footer?:
+    | T
+    | {
+        columns?:
+          | T
+          | {
+              title?: T;
+              links?:
+                | T
+                | {
+                    label?: T;
+                    linkType?: T;
+                    page?: T;
+                    section?: T;
+                    url?: T;
+                    anchor?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        legalLinks?:
+          | T
+          | {
+              label?: T;
+              linkType?: T;
+              page?: T;
+              section?: T;
+              url?: T;
+              anchor?: T;
+              id?: T;
+            };
+        showNewsletter?: T;
+      };
+  newsletter?:
+    | T
+    | {
+        brevoListId?: T;
+        heading?: T;
+        intro?: T;
+        placeholder?: T;
+        buttonLabel?: T;
+        consentText?: T;
+        thanksTitle?: T;
+        thanksMessage?: T;
+        confirmedTitle?: T;
+        confirmedMessage?: T;
+      };
+  calendar?:
+    | T
+    | {
+        intro?: T;
+        defaultView?: T;
+        showSubscribe?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  tenant?: T;
+  from?: T;
+  to?: T;
+  permanent?: T;
+  note?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  roles?: T;
+  tenants?:
+    | T
+    | {
+        tenant?: T;
+        roles?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  resetPasswordRequestedAt?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tenants_select".
+ */
+export interface TenantsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  siteUrl?: T;
+  revalidateSecret?: T;
   updatedAt?: T;
   createdAt?: T;
 }

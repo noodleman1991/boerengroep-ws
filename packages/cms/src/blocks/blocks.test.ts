@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { articleBlocks, pageBlocks } from './index'
 
-const names = (b: { fields: { name?: string }[] }) => b.fields.map((f) => f.name)
+/** The fields that hold content. The help line at the top of a block stores nothing. */
+const names = (b: { fields: { name?: string; type?: string }[] }) => b.fields.filter((f) => f.type !== 'ui').map((f) => f.name)
 
 describe('blocks', () => {
   it('offers every page-building block, the migrated ones first', () => {
@@ -46,6 +47,14 @@ describe('blocks', () => {
     const background = (hero.fields as any[]).find((f) => f.name === 'background')
     expect(background.type).toBe('select')
     expect(background.options.map((o: any) => o.value)).toEqual(['white', 'mist', 'leaf', 'harvest', 'sky', 'dark'])
+  })
+
+  it('starts every block with a line that says what it is for', () => {
+    for (const block of pageBlocks) {
+      const first = block.fields[0] as { type?: string; admin?: { components?: { Field?: { clientProps?: { text?: string } } } } }
+      expect(first.type, block.slug).toBe('ui')
+      expect(first.admin?.components?.Field?.clientProps?.text?.length ?? 0, block.slug).toBeGreaterThan(20)
+    }
   })
 
   it('keeps Tina field names on the hero block', () => {
