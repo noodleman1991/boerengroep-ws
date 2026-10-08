@@ -11,6 +11,8 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { FileCard } from '@/components/media/file-card';
+import type { FileInfo } from '@/lib/files';
 import {
     CalendarDays,
     MapPin,
@@ -48,6 +50,7 @@ interface VacancyNode {
         phone?: string | null;
     } | null;
     supportingDocument?: string | null;
+    document?: FileInfo | null;
     valuesStatement?: any;
     openToNontraditional?: boolean | null;
 }
@@ -406,20 +409,14 @@ export const VacanciesPage = ({
                                     )}
 
                                     {/* Supporting Document */}
-                                    {vacancy.supportingDocument && vacancy.supportingDocument.trim() && (
+                                    {vacancy.document && (
                                         <div>
                                             <h4 className="font-medium mb-2">
                                                 {t('fields.supportingDocument')}
                                             </h4>
-                                            <a
-                                                href={vacancy.supportingDocument}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="inline-flex items-center gap-2 text-primary hover:underline"
-                                            >
-                                                <FileText className="h-4 w-4" />
-                                                Download - {vacancy.supportingDocument.split('/').pop()?.split('?')[0] || t('downloadDocument')}
-                                            </a>
+                                            <div className="rich-file">
+                                                <FileCard file={vacancy.document} downloadLabel={t('downloadDocument')} />
+                                            </div>
                                         </div>
                                     )}
 

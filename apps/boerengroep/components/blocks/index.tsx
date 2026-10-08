@@ -6,11 +6,16 @@ import { BlockDataProvider } from './block-data-context'
 import { CallToAction } from './call-to-action'
 import { Callout } from './callout'
 import { Content } from './content'
+import { DocumentsBlock } from './documents'
 import { EventsCalendarPreview } from './events-calendar-preview'
 import { Features } from './features'
+import { FormBlock } from './form'
+import { GalleryBlock } from './gallery'
 import { Hero } from './hero'
 import { ImageText } from './image-text'
+import { ItemBlock } from './item'
 import { NewsletterSignupBlock } from './newsletter-signup-block'
+import { PodcastBlock } from './podcast'
 import { Stats } from './stats'
 import { Testimonial } from './testimonial'
 import { Video } from './video'
@@ -54,6 +59,16 @@ const Block = ({ block }: { block: AnyBlock }) => {
       return <CallToAction data={block} />
     case 'imageText':
       return <ImageText data={block} />
+    case 'gallery':
+      return <GalleryBlock data={block} />
+    case 'documents':
+      return <DocumentsBlock data={block} />
+    case 'podcast':
+      return <PodcastBlock data={block} />
+    case 'form':
+      return <FormBlock data={block} />
+    case 'item':
+      return <ItemBlock data={block} />
     case 'newsletterSignup':
       return <NewsletterSignupBlock data={block} />
     case 'eventsCalendarPreview':

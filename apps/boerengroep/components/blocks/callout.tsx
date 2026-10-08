@@ -1,56 +1,31 @@
-import React from 'react';
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { AnimatedGroup } from '../motion-primitives/animated-group';
-import { Section } from '../layout/section';
-import type { Transition } from 'motion/react';
 import type { CalloutBlock } from '@sites/cms/types';
+import { ArrowRight } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
+import { Section } from '../layout/section';
 
-const transitionVariants = {
-    item: {
-        hidden: {
-            opacity: 0,
-            filter: 'blur(12px)',
-            y: 12,
-        },
-        visible: {
-            opacity: 1,
-            filter: 'blur(0px)',
-            y: 0,
-            transition: {
-                type: 'spring',
-                bounce: 0.3,
-                duration: 1.5,
-            } as Transition,
-        },
-    },
-};
-
+/** One line that links somewhere, as a slim band. */
 export const Callout = ({ data }: { data: CalloutBlock }) => {
+    const href = data.url?.trim();
+    if (!data.text) return null;
+    const inner = (
+        <>
+            <span>{data.text}</span>
+            {href && <ArrowRight aria-hidden="true" />}
+        </>
+    );
     return (
-        <Section background={data.background!} className='py-6'>
-            <AnimatedGroup variants={transitionVariants}>
-                <Link
-                    href={data.url!}
-                    className='hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-zinc-950/5 transition-colors duration-300 dark:border-t-white/5 dark:shadow-zinc-950'
-                >
-                    <span className='text-foreground text-sm'>
-                        {data.text}
-                    </span>
-                    <span className='dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700'></span>
-
-                    <div className='bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500'>
-                        <div className='flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0'>
-                            <span className='flex size-6'>
-                                <ArrowRight className='m-auto size-3' />
-                            </span>
-                            <span className='flex size-6'>
-                                <ArrowRight className='m-auto size-3' />
-                            </span>
-                        </div>
-                    </div>
+        <Section background={data.background} className="callout-band">
+            {!href ? (
+                <p className="callout">{inner}</p>
+            ) : /^https?:/i.test(href) ? (
+                <a className="callout" href={href} target="_blank" rel="noopener noreferrer">
+                    {inner}
+                </a>
+            ) : (
+                <Link className="callout" href={href.startsWith('/') ? href : `/${href}`}>
+                    {inner}
                 </Link>
-            </AnimatedGroup>
+            )}
         </Section>
     );
 };

@@ -1,18 +1,16 @@
 'use client';
-import * as React from 'react';
-import dynamic from 'next/dynamic';
-import { Section } from '../layout/section';
 import type { VideoBlock } from '@sites/cms/types';
-
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
+import { VideoEmbed } from '@/components/media/video-embed';
+import { mediaUrl } from '@/lib/cms-adapters';
+import { Section } from '../layout/section';
 
 export const Video = ({ data }: { data: VideoBlock }) => {
-  if (!data.url) {
-    return null;
-  }
-  return (
-    <Section background={data.background!} className={`aspect-video ${data.color}`}>
-      <ReactPlayer width='100%' height='100%' style={{ margin: 'auto' }} playing={!!data.autoPlay} loop={!!data.loop} controls={true} url={data.url} />
-    </Section>
-  );
+    if (!data.url) return null;
+    return (
+        <Section background={data.background}>
+            <div className="block-narrow">
+                <VideoEmbed url={data.url} poster={mediaUrl(data.poster, 'wide')} caption={data.caption} />
+            </div>
+        </Section>
+    );
 };

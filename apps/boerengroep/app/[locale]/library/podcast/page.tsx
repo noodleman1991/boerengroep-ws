@@ -2,6 +2,8 @@ import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout';
 import { Section } from '@/components/layout/section';
+import { loadPodcast } from '@/lib/podcast';
+import { podcastPage } from '@/lib/podcast-page';
 import { PodcastClientPage } from './client-page';
 
 interface PodcastPageProps {
@@ -19,42 +21,11 @@ export async function generateMetadata({ params }: PodcastPageProps): Promise<Me
     };
 }
 
-async function fetchPodcastData(limit = 6, offset = 0) {
-    try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        const url = new URL('/api/podcast', baseUrl);
-        url.searchParams.set('limit', limit.toString());
-        url.searchParams.set('offset', offset.toString());
-
-        const response = await fetch(url.toString(), {
-            next: { revalidate: 3600 } // Cache for 1 hour
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch podcast data');
-        }
-
-        return response.json();
-    } catch (error) {
-        console.error('Error fetching podcast data:', error);
-        return {
-            title: 'Podcast',
-            description: 'Welcome to our podcast',
-            image: '',
-            author: '',
-            link: '',
-            language: 'en',
-            totalEpisodes: 0,
-            hasMore: false,
-            episodes: []
-        };
-    }
-}
-
 export default async function PodcastPage({ params }: PodcastPageProps) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const podcast = await fetchPodcastData(6);
+    // Read straight from the feed. Asking this site's own address would fail while the site is being built.
+    const podcast = podcastPage(await loadPodcast(), 6, 0);
 
     // Mock layout data for the Layout component
     const mockLayoutData = {

@@ -9,26 +9,10 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, Calendar } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { enUS, nl } from 'date-fns/locale';
+import type { Episode } from '@/lib/podcast';
 
 const dateLocales = { en: enUS, nl: nl };
 
-interface Episode {
-  id: string;
-  title: string;
-  description: string;
-  audioUrl: string;
-  audioType: string;
-  audioLength: number;
-  duration: string;
-  pubDate: Date;
-  image: string;
-  episodeNumber: string;
-  seasonNumber: string;
-  episodeType: string;
-  explicit: boolean;
-  spotifyUrl: string;
-  applePodcastsUrl: string;
-}
 
 interface PodcastPlayerProps {
   episodes: Episode[];

@@ -417,6 +417,52 @@
     "relatedEvent": "Gerelateerd Agenda-evenement",
     "backToPastEvents": "Terug naar Terugblik",
     "noPastEvents": "Geen eerdere evenementen gevonden.",
-    "eventSummary": "Evenementoverzicht"
+    "eventSummary": "Evenementoverzicht",
+    "by": "door {name}",
+    "back": "Alle verhalen",
+    "photos": "Foto's",
+    "event": "Bekijk deze activiteit in de agenda"
+  },
+  "forms": {
+    "optional": "optioneel",
+    "send": "Verstuur",
+    "sending": "Bezig",
+    "choose": "Kies",
+    "sent_title": "Bedankt",
+    "sent_text": "We hebben je antwoord ontvangen.",
+    "fix": "Een paar antwoorden vragen nog aandacht. Ze zijn hieronder gemarkeerd.",
+    "error": "Versturen lukte niet. Probeer het zo nog eens.",
+    "too_many": "Je hebt in korte tijd veel verstuurd. Wacht een paar minuten en probeer het opnieuw.",
+    "trap": "Laat dit veld leeg",
+    "problems": {
+      "required": "Vul dit in.",
+      "email": "Dit lijkt geen e-mailadres.",
+      "number": "Gebruik hier een getal.",
+      "choice": "Kies een van de opties.",
+      "too-long": "Dit is te lang. Maak het iets korter."
+    }
+  },
+  "media": {
+    "photos": "Foto's",
+    "open_photo": "Open foto {n} van {total}",
+    "previous": "Vorige foto",
+    "next": "Volgende foto",
+    "close": "Sluiten",
+    "counter": "{n} van {total}",
+    "story": "Lees het verhaal van deze activiteit",
+    "play": "Speel video af",
+    "video_from": "Speelt af via {provider}. Als je op afspelen drukt, wordt de video daar geladen.",
+    "video_unavailable": "Deze video kan hier niet worden afgespeeld.",
+    "video_open": "Open de video",
+    "download": "Download",
+    "downloads": "Downloads",
+    "previous_picture": "Vorige afbeelding",
+    "next_picture": "Volgende afbeelding",
+    "picture": "Afbeelding {n} van {total}",
+    "order": "Bestellen",
+    "order_close": "Sluit het formulier",
+    "podcast_title": "Luister naar onze podcast",
+    "podcast_all": "Alle afleveringen",
+    "podcast_listen": "Luister naar {title}"
   }
 }

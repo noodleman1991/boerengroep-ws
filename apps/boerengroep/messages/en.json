@@ -417,6 +417,52 @@
     "relatedEvent": "Related Calendar Event",
     "backToPastEvents": "Back to Past Events",
     "noPastEvents": "No past events found.",
-    "eventSummary": "Event Summary"
+    "eventSummary": "Event Summary",
+    "by": "by {name}",
+    "back": "All stories",
+    "photos": "Photos",
+    "event": "See this event on the calendar"
+  },
+  "forms": {
+    "optional": "optional",
+    "send": "Send",
+    "sending": "Sending",
+    "choose": "Choose",
+    "sent_title": "Thank you",
+    "sent_text": "We received your answer.",
+    "fix": "Some answers need another look. They are marked below.",
+    "error": "Sending did not work. Try again in a moment.",
+    "too_many": "You sent a lot in a short time. Wait a few minutes and try again.",
+    "trap": "Leave this field empty",
+    "problems": {
+      "required": "Fill this in.",
+      "email": "This does not look like an email address.",
+      "number": "Use a number here.",
+      "choice": "Choose one of the options.",
+      "too-long": "This is too long. Shorten it a little."
+    }
+  },
+  "media": {
+    "photos": "Photos",
+    "open_photo": "Open photo {n} of {total}",
+    "previous": "Previous photo",
+    "next": "Next photo",
+    "close": "Close",
+    "counter": "{n} of {total}",
+    "story": "Read the story of this event",
+    "play": "Play video",
+    "video_from": "Plays from {provider}. Pressing play loads the video from there.",
+    "video_unavailable": "This video cannot be played here.",
+    "video_open": "Open the video",
+    "download": "Download",
+    "downloads": "Downloads",
+    "previous_picture": "Previous picture",
+    "next_picture": "Next picture",
+    "picture": "Picture {n} of {total}",
+    "order": "Order",
+    "order_close": "Close the form",
+    "podcast_title": "Listen to our podcast",
+    "podcast_all": "All episodes",
+    "podcast_listen": "Listen to {title}"
   }
 }

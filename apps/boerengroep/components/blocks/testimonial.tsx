@@ -1,49 +1,33 @@
-import React from "react";
-import { Section } from "../layout/section";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Card, CardContent } from "../ui/card";
 import type { TestimonialBlock } from '@sites/cms/types';
+import Image from 'next/image';
 import { mediaUrl } from '@/lib/cms-adapters';
+import { Section } from '../layout/section';
 
-export const Testimonial = ({ data }: { data: TestimonialBlock }) => {
-  return (
-    <Section background={data.background!}>
-      <div className="text-center">
-        <h2 className="text-title text-3xl font-semibold">{data.title}</h2>
-        <p className="text-body mt-6">{data.description}</p>
-      </div>
-      <div className="mt-8 [column-width:300px] [column-gap:1.5rem] md:mt-12">
-        {data.testimonials?.map((testimonial, index) => (
-          <TestimonialCard key={index} testimonial={testimonial!} />
-        ))}
-      </div>
-    </Section>
-  );
-};
-
-type TestimonialItem = NonNullable<TestimonialBlock['testimonials']>[number];
-
-const TestimonialCard = ({ testimonial }: { testimonial: TestimonialItem }) => {
-  return (
-    <Card className="mb-6 break-inside-avoid">
-      <CardContent className="grid grid-cols-[auto_1fr] gap-3 pt-6">
-        <Avatar className="size-9">
-          {mediaUrl(testimonial.avatar) && (
-            <AvatarImage alt={testimonial.author!} src={mediaUrl(testimonial.avatar)} loading="lazy" width="120" height="120" />
-          )}
-          <AvatarFallback>{testimonial.author!.split(" ").map((word) => word[0]).join("")}</AvatarFallback>
-        </Avatar>
-
-        <div>
-          <h3 className="font-medium">{testimonial.author}</h3>
-
-          <span className="text-muted-foreground block text-sm tracking-wide">{testimonial.role}</span>
-
-          <blockquote className="mt-3">
-            <p className="text-gray-700 dark:text-gray-300">{testimonial.quote}</p>
-          </blockquote>
+/** What people say, in their own words. */
+export const Testimonial = ({ data }: { data: TestimonialBlock }) => (
+    <Section background={data.background}>
+        {(data.title || data.description) && (
+            <div className="block-head block-head--stacked">
+                {data.title && <h2>{data.title}</h2>}
+                {data.description && <p>{data.description}</p>}
+            </div>
+        )}
+        <div className="quotes">
+            {(data.testimonials ?? []).map((item, index) => {
+                const portrait = mediaUrl(item.avatar, 'thumbnail');
+                return (
+                    <figure key={item.id ?? index} className="quote">
+                        <blockquote>{item.quote}</blockquote>
+                        <figcaption>
+                            {portrait && <Image src={portrait} alt="" width={96} height={96} />}
+                            <span>
+                                <strong>{item.author}</strong>
+                                {item.role}
+                            </span>
+                        </figcaption>
+                    </figure>
+                );
+            })}
         </div>
-      </CardContent>
-    </Card>
-  );
-};
+    </Section>
+);

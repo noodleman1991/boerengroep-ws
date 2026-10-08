@@ -12,6 +12,8 @@ import type {
 } from '@sites/cms/types'
 import { type LinkValue, resolveLink } from '@sites/cms/links'
 import type { EventStatus, SiteEvent } from './events/types'
+import { fileInfo } from './files'
+import { toPhotos } from './photos'
 
 type Rel<T> = number | string | T | null | undefined
 
@@ -120,7 +122,19 @@ export function toNewsletterNode(n: Newsletter) {
 }
 
 export function toVacancyNode(v: Vacancy) {
-  return { ...v, id: String(v.id), supportingDocument: mediaUrl(v.supportingDocument) }
+  return {
+    ...v,
+    id: String(v.id),
+    supportingDocument: mediaUrl(v.supportingDocument),
+    /** The job description as a download card. */
+    document: fileInfo(v.supportingDocument),
+  }
+}
+
+/** The calendar event a story belongs to, when it was loaded and has a page of its own. */
+function relatedEvent(value: Rel<Event>): { slug: string; title: string } | undefined {
+  const event = populated<Event>(value)
+  return event?.slug ? { slug: event.slug, title: event.title } : undefined
 }
 
 export function toPastEventNode(p: PastEvent) {
@@ -128,7 +142,9 @@ export function toPastEventNode(p: PastEvent) {
     id: String(p.id),
     title: p.title,
     date: p.date,
+    slug: p.slug,
     heroImg: mediaUrl(p.heroImg),
+    heroWide: mediaUrl(p.heroImg, 'wide'),
     excerpt: p.excerpt ?? undefined,
     author: person(p.author),
     tags: (p.tags ?? []).flatMap((t) => {
@@ -137,6 +153,8 @@ export function toPastEventNode(p: PastEvent) {
     }),
     blocks: p.blocks ?? [],
     body: p.body ?? undefined,
+    photos: toPhotos(p.photos),
+    relatedEvent: relatedEvent(p.relatedEvent),
     _sys: { breadcrumbs: [p.slug], filename: p.slug },
   }
 }

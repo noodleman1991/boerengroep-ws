@@ -10,8 +10,6 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { LivePreviewListener } from '@/components/live-preview-listener';
 import Layout from '@/components/layout/layout';
-import { VideoDialogProvider } from '@/components/ui/VideoDialogContext';
-import VideoDialog from '@/components/ui/VideoDialog';
 
 // Boerengroep Brand Fonts with optimized configurations
 const enriqueta = Enriqueta({
@@ -147,10 +145,7 @@ export default async function LocaleLayout({
         )}>
         {isPreview && <LivePreviewListener />}
         <NextIntlClientProvider messages={messages}>
-            <VideoDialogProvider>
-                {children}
-                <VideoDialog />
-            </VideoDialogProvider>
+            {children}
             <TailwindIndicator />
         </NextIntlClientProvider>
         </body>

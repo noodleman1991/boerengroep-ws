@@ -4,7 +4,6 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { resendAdapter } from '@payloadcms/email-resend'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { buildConfig, type CollectionConfig } from 'payload'
 import sharp from 'sharp'
@@ -23,6 +22,7 @@ import { Tags } from './collections/tags'
 import { Tenants } from './collections/tenants'
 import { Users } from './collections/users'
 import { Vacancies } from './collections/vacancies'
+import { siteEditor } from './editor'
 import { requireEnv } from './env'
 import { revalidationHooks, withRevalidation } from './hooks/revalidate'
 
@@ -81,7 +81,7 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
       : {}),
     admin: { user: Users.slug },
     collections: [...tenantScoped.map(withRevalidation), Users, Tenants],
-    editor: lexicalEditor(),
+    editor: siteEditor,
     db: postgresAdapter({
       pool: { connectionString: requireEnv('PAYLOAD_DATABASE_URL') },
       migrationDir: path.resolve(dirname, 'migrations'),

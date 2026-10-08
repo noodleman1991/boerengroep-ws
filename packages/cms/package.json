@@ -21,7 +21,8 @@
     "generate:types": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload generate:types",
     "migrate:create": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload migrate:create",
     "seed": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload run src/bin/seed.ts",
-    "db:reset": "docker compose exec -T postgres psql -U payload -d postgres -q -c 'DROP DATABASE IF EXISTS payload_test WITH (FORCE);' -c 'CREATE DATABASE payload_test;'"
+    "db:reset": "docker compose exec -T postgres psql -U payload -d postgres -q -c 'DROP DATABASE IF EXISTS payload_test WITH (FORCE);' -c 'CREATE DATABASE payload_test;'",
+    "seed:demo": "PAYLOAD_CONFIG_PATH=src/dev.config.ts payload run src/bin/seed-demo.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "catalog:",

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import Layout from '@/components/layout/layout';
+import { loadBlockData } from '@/lib/block-data';
 import { cms, type Locale } from '@/lib/cms';
 import { toPastEventNode } from '@/lib/cms-adapters';
 import PastEventClientPage from './client-page';
@@ -19,7 +20,7 @@ export default async function PastEventPage({
 
     return (
         <Layout rawPageData={pastEvent}>
-            <PastEventClientPage pastEvent={toPastEventNode(pastEvent)} />
+            <PastEventClientPage pastEvent={toPastEventNode(pastEvent)} data={await loadBlockData(pastEvent.blocks)} />
         </Layout>
     );
 }

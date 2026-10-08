@@ -1,134 +1,45 @@
 'use client';
-import Image from 'next/image';
-import Link from 'next/link';
-import * as React from 'react';
-import { Icon } from '../icon';
-import { Section } from '../layout/section';
-import { AnimatedGroup } from '../motion-primitives/animated-group';
-import { TextEffect } from '../motion-primitives/text-effect';
-import { Button } from '../ui/button';
-import HeroVideoDialog from '../ui/hero-video-dialog';
-import { Transition } from 'motion/react';
 import type { HeroBlock } from '@sites/cms/types';
+import Image from 'next/image';
+import { VideoEmbed } from '@/components/media/video-embed';
 import { mediaUrl } from '@/lib/cms-adapters';
-const transitionVariants = {
-  container: {
-    visible: {
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0.75,
-      },
-    },
-  },
-  item: {
-    hidden: {
-      opacity: 0,
-      filter: 'blur(12px)',
-      y: 12,
-    },
-    visible: {
-      opacity: 1,
-      filter: 'blur(0px)',
-      y: 0,
-      transition: {
-        type: 'spring',
-        bounce: 0.3,
-        duration: 1.5,
-      } as Transition,
-    },
-  },
-};
+import { Section } from '../layout/section';
+import { Actions } from './actions';
 
+/**
+ * The opening of a page. "Split" puts the words left and the picture right, with the logo's
+ * circles behind the picture. "Centred" puts the picture under the words.
+ */
 export const Hero = ({ data }: { data: HeroBlock }) => {
-  // Extract the background style logic into a more readable format
-  let gradientStyle: React.CSSProperties | undefined = undefined;
-  if (data.background) {
-    const colorName = data.background
-      .replace(/\/\d{1,2}$/, '')
-      .split('-')
-      .slice(1)
-      .join('-');
-    const opacity = data.background.match(/\/(\d{1,3})$/)?.[1] || '100';
+    const picture = mediaUrl(data.image?.src, 'wide') ?? mediaUrl(data.image?.src);
+    const video = data.image?.videoUrl?.trim();
+    const hasVisual = Boolean(picture || video);
+    const layout = data.layout === 'centered' ? 'centered' : 'split';
 
-    gradientStyle = {
-      '--tw-gradient-to': `color-mix(in oklab, var(--color-${colorName}) ${opacity}%, transparent)`,
-    } as React.CSSProperties;
-  }
-
-  return (
-    <Section background={data.background!}>
-      <div className='text-center sm:mx-auto lg:mr-auto lg:mt-0'>
-        {data.headline && (
-          <div>
-            <TextEffect preset='fade-in-blur' speedSegment={0.3} as='h1' className='mt-8 text-balance text-6xl md:text-7xl xl:text-[5.25rem]'>
-              {data.headline!}
-            </TextEffect>
-          </div>
-        )}
-        {data.tagline && (
-          <div>
-            <TextEffect per='line' preset='fade-in-blur' speedSegment={0.3} delay={0.5} as='p' className='mx-auto mt-8 max-w-2xl text-balance text-lg'>
-              {data.tagline!}
-            </TextEffect>
-          </div>
-        )}
-
-        <AnimatedGroup variants={transitionVariants} className='mt-12 flex flex-col items-center justify-center gap-2 md:flex-row'>
-          {data.actions &&
-            data.actions.map((action) => (
-              <div key={action!.label} className='bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5'>
-                <Button asChild size='lg' variant={action!.type === 'link' ? 'ghost' : 'default'} className='rounded-xl px-5 text-base'>
-                  <Link href={action!.link!}>
-                    {action?.icon && <Icon data={action?.icon} />}
-                    <span className='text-nowrap'>{action!.label}</span>
-                  </Link>
-                </Button>
-              </div>
-            ))}
-        </AnimatedGroup>
-      </div>
-
-      {data.image && (
-        <AnimatedGroup variants={transitionVariants}>
-          <div className='relative -mr-56 mt-8 overflow-hidden px-2 sm:mr-0 sm:mt-12 md:mt-20 max-w-full'>
-            <div aria-hidden className='bg-linear-to-b absolute inset-0 z-10 from-transparent from-35% pointer-events-none' style={gradientStyle} />
-            <div className='inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1'>
-              <ImageBlock image={data.image} />
-            </div>
-          </div>
-        </AnimatedGroup>
-      )}
-    </Section>
-  );
-};
-
-type HeroImage = NonNullable<HeroBlock['image']>;
-
-const ImageBlock = ({ image }: { image: HeroImage }) => {
-  const src = mediaUrl(image.src);
-  if (image.videoUrl) {
-    let videoId = '';
-    if (image.videoUrl) {
-      const embedPrefix = '/embed/';
-      const idx = image.videoUrl.indexOf(embedPrefix);
-      if (idx !== -1) {
-        videoId = image.videoUrl.substring(idx + embedPrefix.length).split('?')[0];
-      }
-    }
-    const thumbnailSrc = src ? src : videoId ? `https://i3.ytimg.com/vi/${videoId}/maxresdefault.jpg` : '';
-
-    return <HeroVideoDialog videoSrc={image.videoUrl} thumbnailSrc={thumbnailSrc} thumbnailAlt='Hero Video' />;
-  }
-
-  if (src) {
     return (
-      <Image
-        className='z-2 border-border/25 aspect-15/8 relative rounded-2xl border max-w-full h-auto'
-        alt={image!.alt || ''}
-        src={src}
-        height={4000}
-        width={3000}
-      />
+        <Section background={data.background} className={`hero hero--${layout}${hasVisual ? '' : ' hero--plain'}`}>
+            <div className="hero__words">
+                {data.headline && <h1>{data.headline}</h1>}
+                {data.tagline && <p className="hero__tagline">{data.tagline}</p>}
+                <Actions actions={data.actions} />
+            </div>
+            <div className="hero__visual">
+                <span className="overprint" aria-hidden="true" />
+                {video ? (
+                    <VideoEmbed url={video} poster={picture} title={data.headline} />
+                ) : (
+                    picture && (
+                        <Image
+                            src={picture}
+                            alt={data.image?.alt ?? ''}
+                            width={1600}
+                            height={900}
+                            sizes={layout === 'split' ? '(max-width: 900px) 100vw, 50vw' : '(max-width: 1300px) 100vw, 1250px'}
+                            priority
+                        />
+                    )
+                )}
+            </div>
+        </Section>
     );
-  }
 };

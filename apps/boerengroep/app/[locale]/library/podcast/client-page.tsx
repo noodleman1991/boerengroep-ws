@@ -4,24 +4,8 @@ import { useState } from 'react';
 import { PodcastPlayer } from '@/components/podcast/podcast-player';
 import { EpisodeList } from '@/components/podcast/episode-list';
 import { PodcastHeader } from '@/components/podcast/podcast-header';
+import type { Episode } from '@/lib/podcast';
 
-interface Episode {
-  id: string;
-  title: string;
-  description: string;
-  audioUrl: string;
-  audioType: string;
-  audioLength: number;
-  duration: string;
-  pubDate: Date;
-  image: string;
-  episodeNumber: string;
-  seasonNumber: string;
-  episodeType: string;
-  explicit: boolean;
-  spotifyUrl: string;
-  applePodcastsUrl: string;
-}
 
 interface PodcastData {
   title: string;

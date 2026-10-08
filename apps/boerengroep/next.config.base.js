@@ -5,6 +5,8 @@ const baseConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com', port: '' },
       { protocol: 'https', hostname: '*.public.blob.vercel-storage.com', port: '' },
+      // Covers of YouTube videos. The site's server fetches them, so a visitor's browser does not contact YouTube before pressing play.
+      { protocol: 'https', hostname: 'i.ytimg.com', port: '' },
     ],
     unoptimized: false,
     formats: ['image/webp', 'image/avif'],

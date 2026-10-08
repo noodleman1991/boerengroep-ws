@@ -35,7 +35,14 @@ export const iconField: Field = {
   type: 'group',
   admin: { description: 'Optional small symbol.' },
   fields: [
-    { name: 'name', type: 'text', admin: { description: 'Name of a Lucide icon, for example ArrowRight. See lucide.dev/icons.' } },
+    {
+      name: 'name',
+      type: 'text',
+      admin: {
+        description:
+          'One of: Apple, ArrowRight, Bike, BookOpen, Calendar, Camera, Clock, Download, ExternalLink, Film, Globe, GraduationCap, HandHeart, Heart, Home, Info, Leaf, Mail, MapPin, Megaphone, Mic, Music, Newspaper, Phone, Podcast, Soup, Sprout, Tractor, Users, Wheat. Anything else shows no symbol.',
+      },
+    },
     { name: 'color', type: 'text' },
     { name: 'style', type: 'text' },
   ],

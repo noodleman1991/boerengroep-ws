@@ -246,7 +246,7 @@ export interface HeroBlock {
          */
         icon?: {
           /**
-           * Name of a Lucide icon, for example ArrowRight. See lucide.dev/icons.
+           * One of: Apple, ArrowRight, Bike, BookOpen, Calendar, Camera, Clock, Download, ExternalLink, Film, Globe, GraduationCap, HandHeart, Heart, Home, Info, Leaf, Mail, MapPin, Megaphone, Mic, Music, Newspaper, Phone, Podcast, Soup, Sprout, Tractor, Users, Wheat. Anything else shows no symbol.
            */
           name?: string | null;
           color?: string | null;
@@ -528,7 +528,7 @@ export interface FeaturesBlock {
          */
         icon?: {
           /**
-           * Name of a Lucide icon, for example ArrowRight. See lucide.dev/icons.
+           * One of: Apple, ArrowRight, Bike, BookOpen, Calendar, Camera, Clock, Download, ExternalLink, Film, Globe, GraduationCap, HandHeart, Heart, Home, Info, Leaf, Mail, MapPin, Megaphone, Mic, Music, Newspaper, Phone, Podcast, Soup, Sprout, Tractor, Users, Wheat. Anything else shows no symbol.
            */
           name?: string | null;
           color?: string | null;
@@ -587,6 +587,10 @@ export interface StatsBlock {
  * via the `definition` "CtaBlock".
  */
 export interface CtaBlock {
+  /**
+   * The colour behind this section. Alternate white with a colour to give the page rhythm.
+   */
+  background?: ('white' | 'mist' | 'leaf' | 'harvest' | 'sky' | 'dark') | null;
   title?: string | null;
   description?: string | null;
   /**
@@ -604,7 +608,7 @@ export interface CtaBlock {
          */
         icon?: {
           /**
-           * Name of a Lucide icon, for example ArrowRight. See lucide.dev/icons.
+           * One of: Apple, ArrowRight, Bike, BookOpen, Calendar, Camera, Clock, Download, ExternalLink, Film, Globe, GraduationCap, HandHeart, Heart, Home, Info, Leaf, Mail, MapPin, Megaphone, Mic, Music, Newspaper, Phone, Podcast, Soup, Sprout, Tractor, Users, Wheat. Anything else shows no symbol.
            */
           name?: string | null;
           color?: string | null;
@@ -1958,6 +1962,7 @@ export interface StatsBlockSelect<T extends boolean = true> {
  * via the `definition` "CtaBlock_select".
  */
 export interface CtaBlockSelect<T extends boolean = true> {
+  background?: T;
   title?: T;
   description?: T;
   actions?:

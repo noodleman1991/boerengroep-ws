@@ -1,9 +1,10 @@
 import config from '@payload-config';
 import { getPayload } from 'payload';
-import { cms, TENANT_SLUG } from '@/lib/cms';
+import { cms } from '@/lib/cms';
 import { getSubscribersForSync } from '@/lib/db/queries';
 import { brevo } from '@/lib/email/brevo';
 import { canManageTenant } from '@/lib/site-admin-auth';
+import { thisTenantId } from '@/lib/tenant';
 import { createNewsletterSync } from './brevo-sync';
 import { listIdFrom } from './list-id';
 
@@ -24,15 +25,8 @@ export async function siteAdmin(request: Request): Promise<{ refusal: Response }
   const payload = await getPayload({ config });
   const { user } = await payload.auth({ headers: request.headers });
   if (!user) return { refusal: Response.json({ error: 'Log in to the admin panel first.' }, { status: 401 }) };
-  const tenants = await payload.find({
-    collection: 'tenants',
-    where: { slug: { equals: TENANT_SLUG } },
-    limit: 1,
-    depth: 0,
-    overrideAccess: true,
-  });
-  const tenantId = tenants.docs[0]?.id;
-  if (tenantId === undefined || !canManageTenant(user as never, tenantId)) {
+  const tenantId = await thisTenantId();
+  if (!canManageTenant(user as never, tenantId)) {
     return { refusal: Response.json({ error: 'Only admins of this site can do this.' }, { status: 403 }) };
   }
   return { tenantId };

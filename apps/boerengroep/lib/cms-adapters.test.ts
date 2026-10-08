@@ -151,6 +151,40 @@ describe('toVacancyNode', () => {
   })
 })
 
+describe('what a story about a past event carries', () => {
+  it('brings its photos, a wide hero picture and the calendar event it belongs to', () => {
+    const out = toPastEventNode({
+      id: 5,
+      title: 'Weekend',
+      slug: 'Boerengroep-Weekend',
+      date: '2025-09-01T10:00:00.000Z',
+      heroImg: { id: 1, url: 'https://blob/h.jpg', sizes: { wide: { url: 'https://blob/h-1600x900.jpg' } } },
+      photos: [{ id: 2, url: 'https://blob/p.jpg', mimeType: 'image/jpeg', caption: 'Around the fire' }, 9],
+      relatedEvent: { id: 3, slug: 'weekend-2025-09-20', title: 'Boerengroep Weekend' },
+    } as never)
+    expect(out.heroWide).toBe('https://blob/h-1600x900.jpg')
+    expect(out.photos).toMatchObject([{ id: 2, full: 'https://blob/p.jpg', caption: 'Around the fire' }])
+    expect(out.relatedEvent).toEqual({ slug: 'weekend-2025-09-20', title: 'Boerengroep Weekend' })
+  })
+
+  it('has no event link when the event was not loaded or has no address', () => {
+    expect(toPastEventNode({ id: 5, title: 'x', slug: 'x', date: 'x', relatedEvent: 3 } as never).relatedEvent).toBeUndefined()
+    expect(toPastEventNode({ id: 5, title: 'x', slug: 'x', date: 'x' } as never).photos).toEqual([])
+  })
+})
+
+describe('the document of a vacancy', () => {
+  it('comes with its name, kind and size for a download card', () => {
+    const out = toVacancyNode({
+      id: 4,
+      title: 'Board member',
+      supportingDocument: { id: 8, url: 'https://blob/Board_profile.pdf', filename: 'Board_profile.pdf', mimeType: 'application/pdf', filesize: 240_000 },
+    } as never)
+    expect(out.document).toEqual({ url: 'https://blob/Board_profile.pdf', name: 'Board profile', kind: 'PDF', size: '240 kB', filename: 'Board_profile.pdf' })
+    expect(toVacancyNode({ id: 4, title: 'x' } as never).document).toBeNull()
+  })
+})
+
 describe('toPastEventNode', () => {
   it('flattens the hero image and author', () => {
     const out = toPastEventNode({
