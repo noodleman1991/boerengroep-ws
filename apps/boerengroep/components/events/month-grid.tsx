@@ -99,8 +99,9 @@ export function MonthGrid({ events, now }: { events: SiteEvent[]; now: Date }) {
                                             </span>
                                         </button>
                                     ) : (
-                                        <span className="month__number" aria-label={formatDay(day, locale)}>
-                                            <span>{number}</span>
+                                        <span className="month__number">
+                                            <span aria-hidden="true">{number}</span>
+                                            <span className="sr-only">{formatDay(day, locale)}</span>
                                         </span>
                                     )}
                                     {list.length > 0 && (

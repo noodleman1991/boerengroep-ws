@@ -74,6 +74,7 @@ The subscriber database needs no change for this.
    BLOB_READ_WRITE_TOKEN=<blob token> \
    CONTENT_DIR=$PWD/../../../bg-main/content UPLOADS_DIR=$PWD/../../../bg-main/public/uploads \
    APP_DIR=$PWD/../../apps/boerengroep \
+   FIXUPS_FILE=$PWD/../../docs/migration/boerengroep-fixups.json \
    REPORT_PATH=$PWD/../../docs/migration/staging-report.md pnpm migrate
    ```
 
@@ -81,6 +82,9 @@ The subscriber database needs no change for this.
    - Use absolute paths. The command runs inside `tools/migrate-tina`.
    - `APP_DIR` tells the tool which addresses belong to built-in routes, so menu items for the
      calendar, news lists, podcast and vacancies keep their plain address.
+   - `FIXUPS_FILE` holds the corrections the old content cannot express: the Dutch "Open Pot"
+     page, the removed cookie and terms pages with their forwarding addresses, and the logo.
+     Without it those are not applied.
    - Use `origin/main`, not a local `main`. Editors publish through Tina Cloud straight to GitHub,
      so a local checkout can be weeks behind the live site.
    - The run is safe to repeat. A second run updates and never duplicates.
@@ -96,9 +100,16 @@ The subscriber database needs no change for this.
    the first, uncached response of each redirect. Record whether Vercel shows it too.
 7. `E2E_BASE_URL=<preview origin> pnpm --filter boerengroep e2e` must pass. Some checks name
    content from the dry run, such as the vacancy "General Board Member". Adjust them if editors
-   changed that content.
-8. Create one editor account per person in the admin under Users, with role Editor on Boerengroep.
-   Ask each editor to log in on the preview and edit a draft page.
+   changed that content. The run includes automated accessibility checks on each kind of page.
+   Two groups of tests skip themselves unless you ask for them:
+   - the block tests need the "Block examples" page. Create it as a draft, or published with
+     `DEMO_PUBLISH=1`, by running `pnpm --filter @sites/cms seed:demo` with the same variables
+     as the seed in step 2. Editors can keep it as a reference or delete it.
+   - the admin test needs `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in the environment.
+8. Open `<preview origin>/calendar.ics` and one event page. Subscribe to the calendar from a
+   phone once, and check that an event's "Add to my calendar" file opens.
+9. Create one account per person in the admin under People and sites, People, with the role
+   Editor on Boerengroep. Ask each editor to log in on the preview and edit a draft page.
 
 ## Cutover day
 
@@ -125,8 +136,13 @@ started working, list their changes from the admin's version history before deci
 
 ## After cutover
 
-- Under Site settings, choose the logo image. Until then the header shows the previous logo file
-  through its old address.
+- Under Site settings, General, check the logo. The import sets it from the fix-ups file.
+- Under Site settings, Newsletter, follow "Newsletter and Brevo" above: the check at the top of
+  that tab says what is still missing.
+- Four events in the old content end before they start, for example "Lecture series" on
+  7 October. The site shows them with their start only. Correct the end dates under Calendar, Events.
+- Tell people about the calendar address `<site>/calendar.ics`, or simply point them at the
+  "Subscribe to our calendar" button on the calendar page.
 - Fix the entries marked `fix in admin after cutover` in `2026-boerengroep-dry-run-review.md`:
   three inline images in vacancies, and the images whose files were already missing.
 - Delete the two draft placeholder pages only if their child pages move elsewhere. They keep the
@@ -141,6 +157,17 @@ started working, list their changes from the admin's version history before deci
   header twice on its first, uncached response. Browsers follow it. Some scripts and link checkers
   do not. The second request is served from cache with a single header.
 - **Pages without a Dutch version** are shown in English under their English address, as before.
+- **One admin for both sites.** The admin panel lives on the Boerengroep site at `/admin`.
+  People who work on both sites choose the site with two tabs. The Inspringtheater site will
+  forward its `/admin` there. That forwarding is built together with that site.
+- **Links that leave the site** (calendar files, the subscribe address, share links and previews)
+  are built from `NEXT_PUBLIC_SITE_URL`. A wrong value there shows up as links to the wrong domain.
+- **Emails from forms** are only sent when an editor adds one on a form, and they go out through
+  the same mail settings as password resets.
+- **The database has one migration**, `20261008_110137_initial`. From the first deployment on,
+  every later change to the content model is a new, additive migration next to it.
 - **Local development.** `pnpm --filter boerengroep dev` needs the database from
   `packages/cms/docker-compose.yml` and the variables in `apps/boerengroep/.env.local`.
   On a machine with 8 GB of memory, prefer `pnpm --filter boerengroep build` and `start`.
+  The build keeps a compiler cache of up to 1.5 GB in `apps/boerengroep/.next/cache/webpack`.
+  It is safe to delete when the disk is short.

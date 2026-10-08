@@ -37,16 +37,20 @@ export const ItemBlock = ({ data }: { data: ItemData }) => {
             <div className={`item${photos.length === 0 ? ' item--plain' : ''}`}>
                 {photos.length > 0 && (
                     <div className="item__pictures">
+                        {/* Reachable with the keyboard: arrow keys scroll through the pictures. */}
                         <div
                             className="item__strip"
                             ref={strip}
+                            role="region"
+                            aria-label={t('pictures')}
+                            tabIndex={0}
                             onScroll={(event) => {
                                 const el = event.currentTarget;
                                 setShown(Math.round(el.scrollLeft / Math.max(1, el.clientWidth)));
                             }}
                         >
                             {photos.map((photo, index) => (
-                                <div key={photo.id} className="item__slide" aria-label={t('picture', { n: index + 1, total: photos.length })}>
+                                <div key={photo.id} className="item__slide" role="group" aria-label={t('picture', { n: index + 1, total: photos.length })}>
                                     <Image src={photo.square} alt={photo.alt} width={800} height={800} sizes="(max-width: 900px) 100vw, 45vw" priority={index === 0} />
                                 </div>
                             ))}

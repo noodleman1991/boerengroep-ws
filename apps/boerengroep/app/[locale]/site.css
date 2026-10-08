@@ -1205,7 +1205,7 @@ a {
     background: rgb(17 17 17 / 0.025);
 }
 .month__day--outside .month__number {
-    color: #8b9086;
+    color: #646a5f;
 }
 .month__number {
     display: inline-flex;
@@ -2358,6 +2358,10 @@ video.video__frame {
 }
 .item__strip::-webkit-scrollbar {
     display: none;
+}
+.item__strip:focus-visible {
+    outline: 3px solid var(--harvest);
+    outline-offset: 3px;
 }
 .item__slide {
     flex: 0 0 100%;

@@ -463,6 +463,7 @@
     "order_close": "Sluit het formulier",
     "podcast_title": "Luister naar onze podcast",
     "podcast_all": "Alle afleveringen",
-    "podcast_listen": "Luister naar {title}"
+    "podcast_listen": "Luister naar {title}",
+    "pictures": "Afbeeldingen"
   }
 }

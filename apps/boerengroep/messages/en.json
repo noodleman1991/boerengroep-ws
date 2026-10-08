@@ -463,6 +463,7 @@
     "order_close": "Close the form",
     "podcast_title": "Listen to our podcast",
     "podcast_all": "All episodes",
-    "podcast_listen": "Listen to {title}"
+    "podcast_listen": "Listen to {title}",
+    "pictures": "Pictures"
   }
 }
