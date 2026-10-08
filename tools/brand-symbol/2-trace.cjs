@@ -5,7 +5,7 @@ const [, , dir, out] = process.argv
 const SCALE = Number(process.env.SCALE || 4)
 const trace = (file) =>
   new Promise((resolve, reject) =>
-    potrace.trace(file, { turdSize: 80, alphaMax: Number(process.env.ALPHA || 1.15), optCurve: true, optTolerance: Number(process.env.TOL || 0.6), threshold: 128 }, (err, svg) => (err ? reject(err) : resolve(svg))),
+    potrace.trace(file, { turdSize: Number(process.env.TURD || 80), alphaMax: Number(process.env.ALPHA || 1.15), optCurve: true, optTolerance: Number(process.env.TOL || 0.6), threshold: 128 }, (err, svg) => (err ? reject(err) : resolve(svg))),
   )
 const pathOf = (svg) => svg.match(/ d="([^"]+)"/)[1]
 const numbers = (d) => d.match(/-?\d*\.?\d+(?:e-?\d+)?/g).map(Number)
@@ -24,8 +24,8 @@ const numbers = (d) => d.match(/-?\d*\.?\d+(?:e-?\d+)?/g).map(Number)
   const w = Math.ceil(maxX - minX + PAD * 2), h = Math.ceil(maxY - minY + PAD * 2)
   const svg = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">`,
-    `  <path fill="#f28f06" fill-rule="evenodd" d="${move(shapes.orange)}"/>`,
-    `  <path fill="#42ad37" fill-rule="evenodd" d="${move(shapes.green)}"/>`,
+    `  <path fill="#${process.env.ORANGE || 'f28f06'}" fill-rule="evenodd" d="${move(shapes.orange)}"/>`,
+    `  <path fill="#${process.env.GREEN || '42ad37'}" fill-rule="evenodd" d="${move(shapes.green)}"/>`,
     `</svg>`,
     '',
   ].join('\n')

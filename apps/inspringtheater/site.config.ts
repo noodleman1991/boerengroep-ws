@@ -8,8 +8,8 @@ export const SITE: SiteConfig = {
   description: 'Forum theatre and Theatre of the Oppressed in Wageningen: courses, jump-in sessions and plays.',
   logo: '/brand/inspringtheater-logo.png',
   logoOnDark: '/brand/inspringtheater-logo-on-dark.png',
-  // The organisation has no symbol apart from its logo.
-  symbol: null,
+  // The swirl of the logo without its lettering, drawn from the logo picture. See tools/brand-symbol.
+  symbol: '/brand/inspringtheater-symbol.svg',
   themeColor: '#FF7A00',
   contactEmail: 'st.inspringtheater@wur.nl',
 };

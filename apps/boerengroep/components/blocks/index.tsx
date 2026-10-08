@@ -29,21 +29,23 @@ interface BlocksProps {
   blocks?: AnyBlock[] | null
   /** Events and other shared content the page loaded for its blocks. */
   data?: BlockData
+  /** True for the blocks a page starts with. Only there an opening shows the symbol of the logo. */
+  top?: boolean
 }
 
-export const Blocks = ({ blocks, data }: BlocksProps) => {
+export const Blocks = ({ blocks, data, top = false }: BlocksProps) => {
   if (!blocks) return null
-  const list = blocks.map((block, i) => <Block key={block.id ?? i} block={block} />)
+  const list = blocks.map((block, i) => <Block key={block.id ?? i} block={block} first={top && i === 0} />)
   // Blocks nested inside another page's blocks keep the data of the page around them.
   return data ? <BlockDataProvider value={data}>{list}</BlockDataProvider> : <>{list}</>
 }
 
-const Block = ({ block }: { block: AnyBlock }) => {
+const Block = ({ block, first }: { block: AnyBlock; first: boolean }) => {
   switch (block.blockType) {
     case 'video':
       return <Video data={block} />
     case 'hero':
-      return <Hero data={block} />
+      return <Hero data={block} first={first} />
     case 'callout':
       return <Callout data={block} />
     case 'stats':

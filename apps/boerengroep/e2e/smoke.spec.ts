@@ -531,7 +531,7 @@ test('form answers cannot be sent for a form of another site or with made-up fie
   expect(invalid.status()).toBe(400)
 })
 
-test('after logging in, the admin greets with shortcuts and a menu grouped by task', async ({ page }) => {
+async function logIn(page: import('@playwright/test').Page) {
   const email = process.env.SEED_ADMIN_EMAIL
   const password = process.env.SEED_ADMIN_PASSWORD
   test.skip(!email || !password, 'no admin account is given to this test run')
@@ -540,10 +540,101 @@ test('after logging in, the admin greets with shortcuts and a menu grouped by ta
   await page.locator('input[name="password"]').fill(password!)
   await page.locator('button[type="submit"]').click()
   await page.waitForURL(/\/admin\/?$/)
+}
+
+test('the login page carries the symbols of both websites and says what to do', async ({ page }) => {
+  await page.goto('/admin/login')
+  await expect(page.getByRole('heading', { level: 1, name: 'Log in' })).toBeVisible()
+  const symbols = page.locator('.login__brand img')
+  await expect(symbols).toHaveCount(2)
+  for (const src of await symbols.evaluateAll((list) => list.map((img) => (img as HTMLImageElement).src))) expect(src).toMatch(/\/brand\/(boerengroep|inspringtheater)-symbol\.svg$/)
+  expect(await symbols.evaluateAll((list) => list.every((img) => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0))).toBe(true)
+  await expect(page.locator('.login__brand')).toContainText('Boerengroep and Inspringtheater')
+  // On a phone the panel is a band above the form, and the form is not pushed off the screen.
+  await page.setViewportSize({ width: 390, height: 844 })
+  const field = await page.locator('input[name="email"]').boundingBox()
+  expect(field!.x).toBeGreaterThanOrEqual(0)
+  expect(field!.x + field!.width).toBeLessThanOrEqual(390)
+})
+
+test('after logging in, the first screen says which website, what to do and what there is', async ({ page }) => {
+  await logIn(page)
   const welcome = page.locator('.dashboard-intro')
+  // Boerengroep comes first and is chosen without anyone having to click.
+  const tabs = welcome.locator('.site-tabs__tab')
+  await expect(tabs).toHaveText(['Boerengroep', 'Inspringtheater'])
+  await expect(tabs.first()).toHaveAttribute('aria-pressed', 'true')
   await expect(welcome.getByRole('link', { name: /Add an event/ })).toHaveAttribute('href', '/admin/collections/events/create')
   await expect(welcome.getByRole('link', { name: /Menu, footer and newsletter/ })).toBeVisible()
-  // The groups, in the order editors work: pages, calendar, news, library, forms, settings, people.
-  const headings = (await page.getByRole('heading', { level: 2 }).allTextContents()).map((text) => text.trim())
-  expect(headings.filter((text) => !text.startsWith('Hello'))).toEqual(['Pages', 'Calendar', 'News and vacancies', 'Library', 'Forms', 'Site settings', 'People and sites'])
+  // A question opens to its answer.
+  await welcome.getByText('How do I change the order of the menu, or add something to it?').click()
+  await expect(welcome.getByText(/Drag a row by the six dots/)).toBeVisible()
+  // Every kind of content, grouped as editors work, with how much there is of each.
+  const overview = page.locator('.site-overview')
+  await expect(overview.getByRole('heading', { level: 2 })).toHaveText('Everything on Boerengroep')
+  expect((await overview.getByRole('heading', { level: 3 }).allTextContents()).map((text) => text.trim())).toEqual([
+    'Pages', 'Calendar', 'News and vacancies', 'Library', 'Forms', 'Site settings', 'People and websites',
+  ])
+  const count = async (name: string) => (await overview.locator('.site-overview__row', { has: page.getByRole('link', { name, exact: true }) }).locator('.site-overview__count').textContent())!.trim()
+  expect(Number.parseInt(await count('Events'), 10)).toBeGreaterThan(0)
+  expect(await count('News')).toMatch(/your own, \d+ from friends/)
+  expect(await count('Websites')).toBe('2')
+  // The other website has its own numbers, and says so when it has none of something.
+  await tabs.nth(1).click()
+  await expect(overview.getByRole('heading', { level: 2 })).toHaveText('Everything on Inspringtheater')
+  expect(await count('News')).toBe('Nothing yet')
+  await tabs.first().click()
+  await expect(overview.getByRole('heading', { level: 2 })).toHaveText('Everything on Boerengroep')
+})
+
+test('the lists of people and of websites show everyone, whichever website is chosen', async ({ page }) => {
+  await logIn(page)
+  await page.goto('/admin/collections/users')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('People who can log in')
+  expect(await page.locator('table tbody tr').count()).toBeGreaterThanOrEqual(1)
+  await page.goto('/admin/collections/tenants')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Websites')
+  await expect(page.locator('table tbody tr')).toHaveCount(2)
+  await expect(page.locator('table tbody tr').first()).toContainText('Boerengroep')
+})
+
+test('the menu settings read as a short list with steps on how to arrange it', async ({ page }) => {
+  await logIn(page)
+  await page.goto('/admin/collections/site-settings')
+  await page.locator('.tabs-field__tab-button', { hasText: 'Menu' }).first().click()
+  await expect(page.getByRole('heading', { name: 'How to arrange the menu' })).toBeVisible()
+  await expect(page.getByText('To change the order, drag a row up or down by the six dots on its left.')).toBeVisible()
+  // Every menu item is one closed row that carries its own words.
+  const rows = page.locator('.array-field__row:visible')
+  expect(await rows.count()).toBeGreaterThanOrEqual(5)
+  await expect(rows.first()).toContainText('About Us')
+  // The row is closed until it is clicked.
+  await expect(rows.first().locator('.collapsible').first()).toHaveClass(/collapsible--collapsed/)
+  // Closed rows keep the page short enough to see the whole menu at once.
+  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThan(2500)
+})
+
+test('the settings anyone can read hold no key of another service', async ({ request }) => {
+  const res = await request.get('/api/site-settings?depth=0&limit=5')
+  expect(res.status()).toBe(200)
+  const body = await res.text()
+  expect(body).not.toContain('sealed:v1')
+  for (const doc of JSON.parse(body).docs) {
+    expect(doc.newsletter?.brevoApiKey ?? null).toBeNull()
+    expect(doc.newsletter?.brevoApiKeyHint ?? null).toBeNull()
+    // The address that form answers are mailed to is not for visitors either.
+    expect(doc.general?.contact?.notifyEmail ?? null).toBeNull()
+  }
+})
+
+test('news from friends is one click away in the list of news', async ({ page }) => {
+  await logIn(page)
+  await page.goto('/admin/collections/newsletters')
+  const filter = page.getByRole('navigation', { name: 'Whose news to show' })
+  await expect(filter.getByRole('link')).toHaveText(['All news', 'Our own news', 'News from friends'])
+  const all = await page.locator('table tbody tr').count()
+  test.skip(all === 0, 'this content has no news')
+  await filter.getByRole('link', { name: 'News from friends' }).click()
+  await expect(filter.getByRole('link', { name: 'News from friends' })).toHaveAttribute('aria-current', 'page')
+  for (const whose of await page.locator('table tbody tr td.cell-organization').allTextContents()) expect(whose).toContain('News from friends')
 })

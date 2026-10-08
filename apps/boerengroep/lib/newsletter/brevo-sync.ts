@@ -22,7 +22,8 @@ export type SiteSubscribers = { confirmed: BrevoPerson[]; left: string[]; waitin
 export type NewsletterStatus = NewsletterStatusData;
 
 type Deps = {
-  brevo: Brevo;
+  /** The client, or a way to get it at the moment it is needed (the key can change while the site runs). */
+  brevo: Brevo | (() => Promise<Brevo>);
   /** The list this site's subscribers belong on. Null when none is chosen yet. */
   listId: () => Promise<number | null>;
   report: (problem: string) => void;
@@ -31,7 +32,23 @@ type Deps = {
 const NO_LIST = 'No list is chosen yet. Fill in the list number above and save.';
 const message = (error: unknown) => (error instanceof Error ? error.message : String(error));
 
-export function createNewsletterSync({ brevo, listId, report }: Deps) {
+export function createNewsletterSync({ brevo: given, listId, report }: Deps) {
+  const jobs = async () => withClient(typeof given === 'function' ? await given() : given, { listId, report });
+  return {
+    /** Someone clicked the link in the confirmation email. */
+    confirmed: async (email: string, language: string) => (await jobs()).confirmed(email, language),
+    /** Someone unsubscribed. They stay known to Brevo, but off the list. */
+    unsubscribed: async (email: string) => (await jobs()).unsubscribed(email),
+    /** Someone asked for their data to be erased. This does not depend on a list. */
+    deleted: async (email: string) => (await jobs()).deleted(email),
+    /** Everything an editor needs to see whether the link with Brevo works. */
+    status: async (site: SiteSubscribers) => (await jobs()).status(site),
+    /** Adds everyone who is missing from the list and removes everyone who left. Safe to run again. */
+    syncAll: async (site: SiteSubscribers) => (await jobs()).syncAll(site),
+  };
+}
+
+function withClient(brevo: Brevo, { listId, report }: Omit<Deps, 'brevo'>) {
   /** Runs one change on the list, with the checks every change needs. */
   async function onList(
     describe: (id: number) => string,

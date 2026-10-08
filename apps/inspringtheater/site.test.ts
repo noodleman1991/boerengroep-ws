@@ -18,6 +18,12 @@ describe('this app and the shared pages it runs', () => {
     expect(own.devDependencies).toEqual(other.devDependencies)
   })
 
+  it('has the same symbol as the copy the login page of the admin shows', () => {
+    // The admin panel lives in the other app and shows the symbols of both sites.
+    const file = 'public/brand/inspringtheater-symbol.svg'
+    expect(readFileSync(path.join(here, file), 'utf8')).toBe(readFileSync(path.join(shared, file), 'utf8'))
+  })
+
   it('has a route file for every shared route', () => {
     // Fails with the list of files to add, update or remove. Fix: node tools/site-routes/sync.mjs
     const run = () => execFileSync('node', [path.resolve(here, '../../tools/site-routes/sync.mjs'), '--check'], { encoding: 'utf8' })

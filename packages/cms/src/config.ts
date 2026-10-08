@@ -59,7 +59,7 @@ export const tenantScoped: CollectionConfig[] = [
 
 /**
  * The order of the menu in the admin panel, by what editors come to do: pages, calendar,
- * news, library, forms, settings, and last the people and the sites.
+ * news, library, forms, settings, and last the people and the websites.
  */
 const MENU_ORDER = [
   'pages',
@@ -88,6 +88,34 @@ const inMenuOrder = (config: Config): Config => {
   }
   return { ...config, collections: [...(config.collections ?? [])].sort((a, b) => rank(a.slug) - rank(b.slug)) }
 }
+
+type Named = { name?: string; label?: unknown; labels?: unknown; admin?: Record<string, unknown>; fields?: Named[] }
+
+/**
+ * The plugin adds the list of a person's websites without any wording of its own. This gives
+ * that list, and the box for the website inside it, names an editor understands.
+ */
+const inPlainWords = (config: Config): Config => ({
+  ...config,
+  collections: (config.collections ?? []).map((collection) => {
+    if (collection.slug !== Users.slug) return collection
+    const fields = (collection.fields as Named[]).map((field) => {
+      if (field.name !== 'tenants') return field
+      return {
+        ...field,
+        label: 'Websites this person works on',
+        labels: { singular: 'Website', plural: 'Websites' },
+        admin: {
+          ...field.admin,
+          description:
+            'Add a row for each website this person works on, and choose what they may do there. Someone who works on both websites gets two rows.',
+        },
+        fields: (field.fields ?? []).map((inner) => (inner.name === 'tenant' ? { ...inner, label: 'Website' } : inner)),
+      }
+    })
+    return { ...collection, fields: fields as typeof collection.fields }
+  }),
+})
 
 /** Slugs of tenant-scoped collections that hold exactly one document per tenant. */
 export const onePerTenant: string[] = ['site-settings']
@@ -122,6 +150,29 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
         beforeNavLinks: ['@/components/admin/site-tabs#SiteTabs'],
         // A welcome with the things people come here to do.
         beforeDashboard: ['@/components/admin/dashboard-intro#DashboardIntro'],
+        // The symbol of the logo instead of the mark of the software: on the login page and in the corner.
+        graphics: { Logo: '@/components/admin/brand#AdminLogo', Icon: '@/components/admin/brand#AdminIcon' },
+        beforeLogin: ['@/components/admin/brand#LoginWelcome'],
+      },
+      // What the first screen shows under the welcome: every kind of content of the chosen
+      // website, in plain words, with how much of it there is.
+      dashboard: {
+        widgets: [{ slug: 'site-overview', label: 'Everything on this website', Component: '@/components/admin/site-overview#SiteOverview', minWidth: 'full', maxWidth: 'full' }],
+        defaultLayout: [{ widgetSlug: 'site-overview', width: 'full' }],
+      },
+      meta: { titleSuffix: ' · Website admin', icons: [{ rel: 'icon', type: 'image/svg+xml', url: '/brand/boerengroep-symbol.svg' }] },
+    },
+    // The plugin's own words speak of "tenants". Editors know them as websites.
+    i18n: {
+      translations: {
+        en: {
+          'plugin-multi-tenant': {
+            'assign-tenant-button-label': 'Move to the other website',
+            'assign-tenant-modal-title': 'Which website does "{{title}}" belong to?',
+            'field-assignedTenant-label': 'Website',
+            'nav-tenantSelector-label': 'Website',
+          },
+        },
       },
     },
     collections: [...tenantScoped.map(withRevalidation), Users, Tenants],
@@ -175,14 +226,23 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
               hasMany: true,
               required: true,
               defaultValue: ['editor'],
+              label: 'What they may do there',
+              admin: {
+                description:
+                  'An editor writes, changes and publishes. An admin of this website can also change its menu, footer and settings, and add people.',
+              },
               options: [
-                { label: 'Tenant admin', value: 'tenant-admin' },
+                { label: 'Admin of this website', value: 'tenant-admin' },
                 { label: 'Editor', value: 'editor' },
               ],
             },
           ],
         },
         userHasAccessToAllTenants: (user) => isSuperAdmin(user as unknown as AccessUser),
+        // The lists of people and of websites show everyone and everything the reader may see,
+        // whichever website is chosen at the top. Who may see whom is decided in ../access.
+        useUsersTenantFilter: false,
+        useTenantsListFilter: false,
       }),
       vercelBlobStorage({
         enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
@@ -192,6 +252,7 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
           media: { disablePayloadAccessControl: true },
         },
       }),
+      inPlainWords,
       // Last, so it also places the collections that the plugins above add.
       inMenuOrder,
     ],

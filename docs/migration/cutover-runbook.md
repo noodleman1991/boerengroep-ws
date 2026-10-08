@@ -33,7 +33,13 @@ live after Boerengroep, because the admin panel for both lives on the Boerengroe
    `REPLY_TO_EMAIL`, `NEWSLETTER_SECRET`, `BASE_URL`, `BASE_PATH`, `PODCAST_RSS_URL`,
    `NEXT_PUBLIC_BASE_URL`, `BREVO_API_KEY`, `BREVO_LIST_ID`. Do not copy the four `TINA` variables.
    The mail key is read from `RESEND_API_KEY` first. `RESEND_BOERENGROEP` is its old name and
-   still works.
+   still works. `BREVO_API_KEY` and `BREVO_LIST_ID` are optional now: an admin can save the
+   key and the list number in the admin panel (Site settings, Newsletter), per website, and
+   what is saved there wins.
+
+   `PAYLOAD_SECRET` locks the keys that admins save in the settings. If it is ever changed,
+   the saved Brevo key can no longer be read: the admin shows that no key works, and an admin
+   pastes the key in again.
 
 ## Newsletter and Brevo (owner)
 
@@ -63,7 +69,7 @@ The subscriber database needs no change for this.
    ```bash
    cd packages/cms
    NODE_ENV=production PAYLOAD_SECRET=<preview secret> PAYLOAD_DATABASE_URL=<staging url> TENANT_SLUG=boerengroep \
-   SEED_TENANT_NAME="Stichting Boerengroep" SEED_SITE_URL=<preview origin> REVALIDATE_SECRET=<preview value> \
+   SEED_TENANT_NAME="Boerengroep" SEED_SITE_URL=<preview origin> REVALIDATE_SECRET=<preview value> \
    SEED_ADMIN_EMAIL=<owner email> SEED_ADMIN_PASSWORD=<strong password> pnpm seed
    ```
 
@@ -132,7 +138,7 @@ The subscriber database needs no change for this.
    is wrong. Vercel keeps preview deployments out of search engines by itself.
 9. Open `<preview origin>/calendar.ics` and one event page. Subscribe to the calendar from a
    phone once, and check that an event's "Add to my calendar" file opens.
-10. Create one account per person in the admin under People and sites, People, with the role
+10. Create one account per person in the admin under People and websites, People who can log in, with the role
    Editor on Boerengroep. Ask each editor to log in on the preview and edit a draft page.
 
 ## Cutover day
@@ -192,7 +198,7 @@ Do this after Boerengroep is live, or on staging at the same time as its rehears
 
    The address and the secret given here are what the admin uses to tell this site that
    something changed. If an edit in the admin does not show on the site, these two are wrong:
-   correct them under People and sites, Sites.
+   correct them under People and websites, Websites.
 4. **Import its content.** The old site lives in its own repository. Get read access to it,
    check out its `main`, and run the import with this site's fix-ups:
 
@@ -218,7 +224,7 @@ Do this after Boerengroep is live, or on staging at the same time as its rehears
    - Open a page in the admin and press the eye button: the preview opens on the
      Inspringtheater address.
 6. **Go live**: move the domain to `inspringtheater-payload` and set the site's address under
-   People and sites, Sites, to the real domain.
+   People and websites, Websites, to the real domain.
 
 Three things only the organisation can supply before this site goes live: a privacy statement
 (the old page held an unrelated text and was left out, so the newsletter box links to none), a
@@ -291,9 +297,17 @@ started working, list their changes from the admin's version history before deci
   a signed link that is valid for twelve hours.
 - **Links that leave the site** (calendar files, the subscribe address, share links and previews)
   are built from `NEXT_PUBLIC_SITE_URL`. A wrong value there shows up as links to the wrong domain.
-- **Emails from forms** are only sent when an editor adds one on a form, and they go out through
-  the same mail settings as password resets.
-- **The database has one migration**, `20261008_162747_initial`. From the first deployment on,
+- **Emails from forms.** Every answer to a form, orders through an "Item for a donation"
+  included, is mailed to the organisation: to the address under Site settings, General, "Send
+  form answers and orders to", or else to the contact address there. Editors can add more
+  emails on a form. All of it goes out through the same mail settings as password resets.
+- **A copy on a laptop must not send mail.** It holds the real addresses of the organisation
+  and of subscribers. Start it with `EMAILS_OFF=1`: emails are then written to the server's
+  log instead of sent. The browser tests fill in forms, so they start the app that way
+  themselves. When you run them against a server you started, start that server with
+  `EMAILS_OFF=1` too. Against a preview on Vercel they do send: one test answer of the form
+  on the test page arrives at the organisation's address.
+- **The database has one migration**, `20261008_181609_initial`. From the first deployment on,
   every later change to the content model is a new, additive migration next to it.
 - **Browser tests are not part of CI.** CI runs lint, typecheck, the unit tests, the database
   tests and the migration check. The browser tests (behaviour, twelve screen widths,

@@ -10,9 +10,10 @@ import { Actions } from './actions';
 /**
  * The opening of a page. "Split" puts the words left and the picture right. "Centred" puts
  * the picture under the words. An opening without a picture keeps its words on the left and
- * shows the symbol of the logo beside them.
+ * shows the symbol of the logo beside them. The symbol stands at the top of a page only: a
+ * second opening further down has its words alone.
  */
-export const Hero = ({ data }: { data: HeroBlock }) => {
+export const Hero = ({ data, first = true }: { data: HeroBlock; first?: boolean }) => {
     const picture = mediaUrl(data.image?.src, 'wide') ?? mediaUrl(data.image?.src);
     const video = data.image?.videoUrl?.trim();
     const hasVisual = Boolean(picture || video);
@@ -37,9 +38,9 @@ export const Hero = ({ data }: { data: HeroBlock }) => {
                         sizes={layout === 'split' ? '(max-width: 900px) 100vw, 50vw' : '(max-width: 1300px) 100vw, 1250px'}
                         priority
                     />
-                ) : (
+                ) : first ? (
                     <BrandSymbol className="hero__symbol" />
-                )}
+                ) : null}
             </div>
         </Section>
     );

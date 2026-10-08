@@ -8,10 +8,11 @@ export const Newsletters: CollectionConfig = {
   labels: { singular: 'News item', plural: 'News' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'organization', 'publishDate'],
+    defaultColumns: ['title', 'organization', 'type', 'publishDate'],
     group: 'News and vacancies',
     description:
-      'News items and newsletter issues. An item can be an article written here, or a link to something elsewhere. News from friends gets its own page on the site.',
+      'All news is here: your own news and news from friends. Which of the two an item is, you choose at "Whose news" on the item. The website shows them on two pages: your own under Newsletter, and news from friends under Friends News. An item is an article you write here, or a link to something elsewhere.',
+    components: { beforeListTable: ['@/components/admin/news-filter#NewsFilter'] },
   },
   access: {
     read: publishedOrAuthenticated,

@@ -5,10 +5,16 @@
 // where it shows again.
 import sharp from 'sharp'
 const [, , input, outDir] = process.argv
-const RW = 720
+// The settings below are those of the Boerengroep logo. Another logo of the same kind (two swirls,
+// green in front of orange, lettering to the right) gives its own through the environment.
+const RW = Number(process.env.RW || 720)
+const rgb = (hex) => [0, 2, 4].map((i) => Number.parseInt(hex.replace('#', '').slice(i, i + 2), 16))
+const at = (text) => text.split(',').map(Number)
 const { data, info } = await sharp(input).extract({ left: 0, top: 0, width: RW, height: (await sharp(input).metadata()).height }).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
 const W = info.width, H = info.height, N = W * H
-const G = [0x44, 0xad, 0x39], O = [0xf3, 0x92, 0x08]
+const G = rgb(process.env.GREEN || '44ad39'), O = rgb(process.env.ORANGE || 'f39208')
+// The middle of each swirl, in pixels of the logo.
+const GREEN_AT = at(process.env.GREEN_AT || '380,287'), ORANGE_AT = at(process.env.ORANGE_AT || '305,505')
 const g = new Float32Array(N), o = new Float32Array(N), k = new Float32Array(N)
 const gg = G[0] ** 2 + G[1] ** 2 + G[2] ** 2, oo = O[0] ** 2 + O[1] ** 2 + O[2] ** 2, go = G[0] * O[0] + G[1] * O[1] + G[2] * O[2], det = gg * oo - go * go
 for (let i = 0; i < N; i++) {
@@ -110,11 +116,11 @@ function complete(cx, cy, value, known) {
 // Green is in front: the logo shows it wherever there is no lettering.
 const gKnown = new Uint8Array(N), gVal = new Float32Array(N)
 for (let i = 0; i < N; i++) if (k[i] <= 0.3) { gKnown[i] = 1; gVal[i] = k[i] > 0 ? g[i] / (1 - k[i]) : g[i] }
-const green = complete(380, 287, gVal, gKnown)
+const green = complete(GREEN_AT[0], GREEN_AT[1], gVal, gKnown)
 // Orange lies behind: the logo shows it only where there is neither lettering nor green.
 const oKnown = new Uint8Array(N), oVal = new Float32Array(N)
 for (let i = 0; i < N; i++) if (k[i] <= 0.3 && green[i] <= 0.3) { oKnown[i] = 1; oVal[i] = o[i] / Math.max(0.001, 1 - k[i] - g[i]) }
-const orange = complete(305, 505, oVal, oKnown)
+const orange = complete(ORANGE_AT[0], ORANGE_AT[1], oVal, oKnown)
 
 // The box the two shapes fill, in the logo's own pixels.
 {
@@ -136,6 +142,7 @@ await write(green, 'shape-green')
 await write(orange, 'shape-orange')
 
 // A sheet to judge by: the logo, the symbol, and the symbol with the logo's lettering laid back over it.
+const VIEW = process.env.VIEW ? (([left, top, width, height]) => ({ left, top, width, height }))(at(process.env.VIEW)) : { left: 60, top: 70, width: 600, height: 670 }
 const sheet = (withLetters) => {
   const buf = Buffer.alloc(N * 3)
   for (let i = 0; i < N; i++) {
@@ -146,11 +153,11 @@ const sheet = (withLetters) => {
       buf[i * 3 + c] = Math.round(v)
     }
   }
-  return sharp(buf, { raw: { width: W, height: H, channels: 3 } }).extract({ left: 60, top: 70, width: 600, height: 670 }).png().toBuffer()
+  return sharp(buf, { raw: { width: W, height: H, channels: 3 } }).extract(VIEW).png().toBuffer()
 }
-const original = await sharp(input).extract({ left: 60, top: 70, width: 600, height: 670 }).flatten({ background: '#ffffff' }).png().toBuffer()
-await sharp({ create: { width: 1840, height: 690, channels: 3, background: '#ffffff' } })
-  .composite([{ input: original, left: 10, top: 10 }, { input: await sheet(false), left: 620, top: 10 }, { input: await sheet(true), left: 1230, top: 10 }])
+const original = await sharp(input).extract(VIEW).flatten({ background: '#ffffff' }).png().toBuffer()
+await sharp({ create: { width: VIEW.width * 3 + 40, height: VIEW.height + 20, channels: 3, background: '#ffffff' } })
+  .composite([{ input: original, left: 10, top: 10 }, { input: await sheet(false), left: VIEW.width + 20, top: 10 }, { input: await sheet(true), left: VIEW.width * 2 + 30, top: 10 }])
   .jpeg({ quality: 84 }).toFile(`${outDir}/shape-sheet.jpg`)
 await sharp(await sheet(false)).resize({ width: 1100, kernel: 'cubic' }).jpeg({ quality: 86 }).toFile(`${outDir}/shape-large.jpg`)
 console.log('done', W, H)

@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { mailKey } from '@/lib/cms-email';
 import { SITE } from '@/site.config';
 import type { SupportedLanguage } from '../db/schema';
 import { getEmailTemplate } from '../db/queries';
@@ -15,7 +16,7 @@ import {
 let client: Resend | null | undefined;
 function mailer(): Resend | null {
     if (client === undefined) {
-        const key = (process.env.RESEND_API_KEY || process.env.RESEND_BOERENGROEP)?.trim();
+        const key = mailKey(process.env);
         client = key ? new Resend(key) : null;
     }
     return client;

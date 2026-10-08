@@ -2730,8 +2730,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"general_contact_address" varchar,
   	"general_contact_email" varchar,
   	"general_contact_phone" varchar,
+  	"general_contact_notify_email" varchar,
   	"footer_show_newsletter" boolean DEFAULT true,
   	"newsletter_brevo_list_id" numeric,
+  	"newsletter_brevo_api_key_hint" varchar,
+  	"newsletter_brevo_api_key" varchar,
   	"calendar_default_view" "enum_site_settings_calendar_default_view" DEFAULT 'list',
   	"calendar_show_subscribe" boolean DEFAULT true,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
@@ -2812,6 +2815,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   
   CREATE TABLE "tenants" (
   	"id" serial PRIMARY KEY NOT NULL,
+  	"_order" varchar,
   	"name" varchar NOT NULL,
   	"slug" varchar NOT NULL,
   	"site_url" varchar NOT NULL,
@@ -3960,6 +3964,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "users_updated_at_idx" ON "users" USING btree ("updated_at");
   CREATE INDEX "users_created_at_idx" ON "users" USING btree ("created_at");
   CREATE UNIQUE INDEX "users_email_idx" ON "users" USING btree ("email");
+  CREATE INDEX "tenants__order_idx" ON "tenants" USING btree ("_order");
   CREATE UNIQUE INDEX "tenants_slug_idx" ON "tenants" USING btree ("slug");
   CREATE INDEX "tenants_updated_at_idx" ON "tenants" USING btree ("updated_at");
   CREATE INDEX "tenants_created_at_idx" ON "tenants" USING btree ("created_at");

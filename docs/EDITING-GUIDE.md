@@ -25,7 +25,9 @@ Three things make it easy:
 | Write a news item | [Write a news item](#write-a-news-item) |
 | Look for volunteers, interns or board members | [Post a vacancy](#post-a-vacancy) |
 | Put news, vacancies or something special on the home page | [What shows on the home page](#what-shows-on-the-home-page) |
-| Change the menu, the footer or the logo | [Menu, footer and other settings](#menu-footer-and-other-settings) |
+| Change the order of the menu, or add something to it | [Arrange the menu](#arrange-the-menu) |
+| Change the footer or the logo | [Footer and other settings](#footer-and-other-settings) |
+| Let a colleague log in | [People and websites](#people-and-websites) |
 | Ask visitors something with a form | [Forms](#forms) |
 | Write the Dutch version of something | [Two languages](#two-languages) |
 | Undo something | [I made a mistake](#i-made-a-mistake) |
@@ -37,12 +39,22 @@ Three things make it easy:
 3. Forgot your password? Click "Forgot password" and you get an email with a link to choose a
    new one.
 
-There is one place to log in for both websites. If you work on both, you see two tabs at the
-top: Boerengroep and Inspringtheater. Click the one you want to work on. Everything you then
-see and change belongs to that website only.
+There is one place to log in for both websites. If you work on both, the first screen asks
+which website you want to work on: Boerengroep or Inspringtheater. Boerengroep is chosen to
+begin with. Click the other name to switch. Everything you then see and change belongs to that
+website only.
 
-The first screen has big shortcuts for the things people do most, such as "Add an event". The
-menu on the left has everything else:
+**If a list looks empty**, check which website is chosen. Each website has its own pages,
+events, news and pictures. Inspringtheater has no news yet, for example, so its list of news
+is empty while Boerengroep's is not.
+
+The first screen has three parts:
+
+1. Big shortcuts for the things people do most, such as "Add an event".
+2. "How do I…?": short answers to the questions people ask most. Click a question to open it.
+3. "Everything on this website": every kind of content, what it is, and how many there are.
+
+The menu on the left (the button with three lines, at the top left) has the same things:
 
 | In the menu | What you find there |
 | --- | --- |
@@ -52,7 +64,7 @@ menu on the left has everything else:
 | Library | All pictures and files, and the people named at events and news |
 | Forms | The forms you made, and what people filled in |
 | Site settings | Logo, menu, footer, newsletter texts and calendar options |
-| People and sites | Who can log in. Only admins see this |
+| People and websites | Who can log in, and the two websites themselves. Only admins see this |
 
 ## Save, or publish?
 
@@ -89,7 +101,7 @@ its right and choose Remove.
    **Opening** (a headline) and continue with **Text**.
 6. Click **Publish changes**.
 
-A new page is not in the menu by itself. Add it there under Site settings, Menu.
+A new page is not in the menu by itself. Add it there: see [Arrange the menu](#arrange-the-menu).
 
 Changing the address of a page that people already know breaks their old links. If you must,
 ask your admin to add a forwarding address (Site settings, Forwarding addresses).
@@ -251,6 +263,9 @@ calendar as soon as one event uses it.
 
 ## Write a news item
 
+Your own news and news from friends are in one list: News and vacancies, **News**. Above the
+list are three links to show all news, only your own, or only news from friends.
+
 1. Go to News and vacancies, **News**, Create New.
 2. Fill in the **Title** and the **Date**.
 3. At **Kind of item**, choose "Article written here" if you write the text yourself, or "Link
@@ -320,19 +335,82 @@ When the month is over, open the block and choose something else, or remove the 
 
 All four blocks work on any page, not only on the home page.
 
-## Menu, footer and other settings
+## Arrange the menu
 
-Only site admins can change these. Go to **Site settings**. It has five tabs:
+The menu is the row of links at the top of every page. Only site admins can change it.
+
+1. Go to **Site settings** and click the tab **Menu**.
+2. You see one row for every item of the menu, in the order of the website from left to right.
+3. **To change the order**, drag a row up or down by the six dots on its left.
+4. **To change an item**, click its row. It opens. Change the words people click on, and
+   choose where it leads:
+   - **A page**: pick a page of the website. The link keeps working when the page moves.
+   - **A built-in section**: the calendar, the news, the vacancies and so on.
+   - **Another address**: any web address, for example of another website.
+5. **To add an item**, press "Add Menu item" under the last row.
+6. **To remove an item**, press the three dots on the right of its row and choose Remove.
+7. **To make a list that drops down** under an item, open the item and add links under "Links
+   that drop down". Drag those to order them, just like the items.
+8. Press **Save** at the top right. The website changes within seconds.
+
+Do this once in English and once in Dutch for the words: switch the language at the top right
+and fill in the Dutch words of each item. The order and the links are shared.
+
+Tick **Show as a button** on the one item you most want visitors to click.
+
+## Footer and other settings
+
+Only site admins can change these. Go to **Site settings**. Next to Menu it has four more tabs:
 
 - **General**: the name, the logo, the contact details and the social media links.
-- **Menu**: the items at the top of every page. For each item you choose a page of the site,
-  a built-in part such as the calendar, or any other web address. An item can have a list that
-  drops down. A link to a page keeps working when that page moves.
-- **Footer**: the columns of links at the bottom of every page.
+- **Footer**: the columns of links at the bottom of every page. It works like the menu: each
+  column is a row, click it to open it, drag to change the order.
 - **Newsletter**: the texts of the sign-up box, including the small print about what people
   agree to. At the top, "Does the sign-up reach Brevo?" tells you in plain words whether
-  sign-ups arrive in your mailing list.
+  sign-ups arrive in your mailing list. See "The link with Brevo" below.
 - **Calendar**: the text above the calendar, and whether it opens as a list or as a month.
+
+### The link with Brevo
+
+Brevo is the service that keeps your mailing list and sends the newsletter. The website adds
+people to your list when they confirm their email address. For that it needs two things from
+your Brevo account, and both go on the tab **Newsletter** of Site settings:
+
+1. **The key.** In Brevo, click your name at the top right, then "SMTP & API", then "API
+   keys", and make a new key. Copy it, paste it in the box **New Brevo key**, and press Save.
+2. **The list number.** In Brevo, under Contacts, Lists, each list has a number in the column
+   "ID". Fill it in at **Brevo list number** and press Save.
+
+After saving, the check at the top of the tab tells you whether it works.
+
+A key is like a password. That is why, once saved, it is never shown again: the box is empty
+when you come back, and only the last four characters of the saved key are shown next to it so
+you can tell which one it is. Leaving the box empty keeps the saved key. To replace it, paste a
+new one. To stop using it, tick **Remove the saved Brevo key** and press Save.
+
+## People and websites
+
+Only admins see this part of the menu. It has two lists.
+
+**People who can log in** is everyone with a login. To let a colleague in:
+
+1. Press **Create New**.
+2. Fill in their email address and a first password. Tell them the password yourself. They can
+   change it after logging in.
+3. Leave **Kind of account** on "Normal account".
+4. Under **Websites this person works on**, press "Add Website", choose the website, and choose
+   what they may do there:
+   - **Editor**: write, change and publish.
+   - **Admin of this website**: also change the menu, the footer and the settings, and add
+     people.
+5. Someone who works on both websites gets two rows, one per website.
+6. Press **Save**.
+
+To take someone's access away, open the person and delete them, or remove the row of the
+website they should no longer work on.
+
+**Websites** lists the two websites with their name and web address. You rarely need it. The
+order of this list is the order of the two names on the first screen.
 
 ## Forms
 
@@ -342,8 +420,16 @@ Only site admins can change these. Go to **Site settings**. It has five tabs:
 3. Write the message people see after sending.
 4. Put the form on a page with the block **Form**.
 
-The answers arrive under Forms, Form responses. To also get an email for each answer, add your
-address under "Emails" on the form.
+The answers arrive under Forms, Form responses.
+
+**You also get every answer by email.** Each time someone fills in a form, or orders something
+through an "Item for a donation", the website sends an email with everything they filled in to
+your organisation's own address. Answer that email and you write straight to the person. Which
+address it goes to is set under Site settings, General, at **Send form answers and orders
+to**. Leave it empty and the emails go to the contact email address on the same tab.
+
+To send an answer to more people, or to send the visitor a confirmation, add an email under
+"Emails" on the form itself.
 
 ## Two languages
 
@@ -370,3 +456,5 @@ between the two.
   again.
 - **Something else?** Ask your site admin. Admins can also add people and help with a
   forgotten password.
+
+The first screen after logging in has the same help in short, under "How do I…?".

@@ -29,7 +29,7 @@ export default function ClientPage({ page, data, subPages = [] }: ClientPageProp
           <h1>{page.title}</h1>
         </Section>
       )}
-      <Blocks blocks={parts.lead} data={data} />
+      <Blocks blocks={parts.lead} data={data} top />
       {parts.showBody && (
         <Section>
           {/* A page that is only a picture, such as a poster, sits in the middle of the page. */}

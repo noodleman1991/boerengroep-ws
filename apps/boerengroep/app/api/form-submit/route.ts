@@ -1,9 +1,12 @@
 import config from '@payload-config';
 import type { NextRequest } from 'next/server';
 import { getPayload } from 'payload';
+import { cms } from '@/lib/cms';
 import { createRateLimiter, type FormField, looksLikeSpam, validateSubmission } from '@/lib/forms';
+import { answerEmail, notifyAddress } from '@/lib/forms-notify';
 import { getClientIP } from '@/lib/newsletter/utils';
 import { thisTenantId } from '@/lib/tenant';
+import { SITE } from '@/site.config';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,6 +60,19 @@ export async function POST(request: NextRequest) {
       data: { form: form.id, submissionData: checked.data, tenant } as never,
       overrideAccess: true,
     });
+
+    // The organisation gets a copy by email. The answer is saved either way, so a mail
+    // problem is logged and never shown to the person who filled in the form.
+    try {
+      const [settings, contact] = await Promise.all([cms.getSiteSettings('en'), cms.getContactForServer()]);
+      const to = notifyAddress({ general: { contact } });
+      if (to) {
+        const mail = answerEmail({ site: settings?.general?.name || SITE.name, form: { title: form.title, fields: (form.fields ?? []) as FormField[] }, data: checked.data });
+        await payload.sendEmail({ to, subject: mail.subject, text: mail.text, html: mail.html, ...(mail.replyTo ? { replyTo: mail.replyTo } : {}) });
+      }
+    } catch (error) {
+      console.error('[forms] the email about an answer was not sent:', error instanceof Error ? error.message : error);
+    }
     return Response.json({ ok: true });
   } catch (error) {
     console.error('[forms] saving an answer failed:', error);

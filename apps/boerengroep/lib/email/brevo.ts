@@ -135,6 +135,3 @@ export function createBrevo({ apiKey, fetchImpl = fetch }: Options) {
 }
 
 export type Brevo = ReturnType<typeof createBrevo>;
-
-/** The client for this site, with the key from the server settings. */
-export const brevo = createBrevo({ apiKey: process.env.BREVO_API_KEY });

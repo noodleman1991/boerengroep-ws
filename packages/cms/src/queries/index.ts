@@ -9,6 +9,7 @@ import type {
   SiteSetting,
   Vacancy,
 } from '../payload-types'
+import { unseal } from '../secrets'
 
 export type Locale = 'en' | 'nl'
 const LOCALES: Locale[] = ['en', 'nl']
@@ -311,6 +312,41 @@ export function createQueries(deps: QueryDeps) {
       return run('listVacancies', [locale], ['vacancies'], (draft) =>
         find<Vacancy>('vacancies', draft, { hasDrafts: false, locale }),
       )
+    },
+
+    /**
+     * The Brevo key an admin saved under Site settings, unlocked. Not kept in any cache, and
+     * only for the server's own calls to Brevo: it must never be passed to a page.
+     */
+    async getBrevoKey(): Promise<string | undefined> {
+      const payload = await deps.getPayload()
+      const res = await payload.find({
+        collection: 'site-settings',
+        where: { tenant: { equals: await tenantId() } },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
+        context: { revealSecrets: true },
+      })
+      const saved = (res.docs[0] as { newsletter?: { brevoApiKey?: unknown } } | undefined)?.newsletter?.brevoApiKey
+      return unseal(saved, payload.secret)
+    },
+
+    /**
+     * The contact details including the internal address for form answers, which the site's
+     * pages never get. Only for the server's own code that sends those emails. Not cached.
+     */
+    async getContactForServer(): Promise<{ email?: string | null; notifyEmail?: string | null } | undefined> {
+      const payload = await deps.getPayload()
+      const res = await payload.find({
+        collection: 'site-settings',
+        where: { tenant: { equals: await tenantId() } },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
+        context: { revealSecrets: true },
+      })
+      return (res.docs[0] as { general?: { contact?: { email?: string | null; notifyEmail?: string | null } } } | undefined)?.general?.contact
     },
 
     findRedirect(from: string): Promise<Redirect | null> {

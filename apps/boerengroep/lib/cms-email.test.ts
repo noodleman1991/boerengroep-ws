@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { emailFromEnv } from './cms-email'
+import { emailFromEnv, mailKey } from './cms-email'
 
 describe('emailFromEnv', () => {
   it('returns the sender settings when the key and the address are set', () => {
@@ -17,5 +17,17 @@ describe('emailFromEnv', () => {
     expect(emailFromEnv({ FROM_EMAIL: 'info@boerengroep.nl' }, 'x')).toBeUndefined()
     expect(emailFromEnv({ RESEND_BOERENGROEP: 're_123' }, 'x')).toBeUndefined()
     expect(emailFromEnv({ RESEND_BOERENGROEP: '  ', FROM_EMAIL: 'info@boerengroep.nl' }, 'x')).toBeUndefined()
+  })
+
+  it('sends nothing when emails are switched off, whatever keys are set', () => {
+    const env = { RESEND_API_KEY: 're_real', RESEND_BOERENGROEP: 're_old', FROM_EMAIL: 'info@example.org', EMAILS_OFF: '1' }
+    expect(mailKey(env)).toBeUndefined()
+    expect(emailFromEnv(env, 'Site')).toBeUndefined()
+  })
+
+  it('prefers the new name of the key and still reads the old one', () => {
+    expect(mailKey({ RESEND_API_KEY: ' re_new ', RESEND_BOERENGROEP: 're_old' })).toBe('re_new')
+    expect(mailKey({ RESEND_BOERENGROEP: 're_old' })).toBe('re_old')
+    expect(mailKey({})).toBeUndefined()
   })
 })

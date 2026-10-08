@@ -13,5 +13,5 @@ export default defineConfig({
   ],
   webServer: process.env.E2E_BASE_URL
     ? undefined
-    : { command: 'pnpm start', url: 'http://localhost:3001/en', reuseExistingServer: true, timeout: 120_000 },
+    : { command: 'EMAILS_OFF=1 pnpm start', url: 'http://localhost:3001/en', reuseExistingServer: true, timeout: 120_000 },
 })

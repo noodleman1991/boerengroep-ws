@@ -77,12 +77,13 @@ const guardProtectedUserDelete: CollectionBeforeDeleteHook = async ({ id, req })
 export const Users: CollectionConfig = {
   slug: 'users',
   auth: true,
-  labels: { singular: 'Person', plural: 'People' },
+  labels: { singular: 'Person who can log in', plural: 'People who can log in' },
   admin: {
     useAsTitle: 'email',
-    group: 'People and sites',
+    group: 'People and websites',
+    defaultColumns: ['email', 'name', 'roles', 'tenants'],
     description:
-      'Everyone who can log in here. Each person works on one site or on both. Per site they are an editor, who writes and publishes, or an admin, who can also change the site settings and add people.',
+      'Everyone with a login. To let a colleague in: press Create New, fill in their email address and a first password, and choose under "Websites this person works on" which website they work on and what they may do there. An editor writes and publishes. An admin of a website can also change its menu, footer and settings, and add people.',
   },
   access: {
     admin: ({ req }) => Boolean(req.user),
@@ -96,7 +97,7 @@ export const Users: CollectionConfig = {
     beforeDelete: [guardProtectedUserDelete],
   },
   fields: [
-    { name: 'name', type: 'text' },
+    { name: 'name', type: 'text', admin: { description: 'Used in the greeting after logging in.' } },
     {
       name: 'roles',
       type: 'select',
@@ -104,12 +105,12 @@ export const Users: CollectionConfig = {
       required: true,
       defaultValue: ['user'],
       saveToJWT: true,
-      label: 'Role on the platform',
-      admin: { description: 'Super admins manage both sites and all people. Everyone else gets their rights per site, below.' },
+      label: 'Kind of account',
+      admin: { description: 'A normal account only reaches the websites chosen below. A main admin can do everything on both websites and manages all people: give this to one or two people at most.' },
       access: { create: superAdminField, update: superAdminField },
       options: [
-        { label: 'Super admin', value: 'super-admin' },
-        { label: 'User', value: 'user' },
+        { label: 'Main admin', value: 'super-admin' },
+        { label: 'Normal account', value: 'user' },
       ],
     },
   ],

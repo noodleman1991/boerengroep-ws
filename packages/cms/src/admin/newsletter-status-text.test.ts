@@ -42,7 +42,7 @@ describe('newsletter status in plain words', () => {
       tone: 'problem',
       text: 'This site has no Brevo key yet, so nobody is added to your list.',
       detail:
-        'In Brevo, click your name at the top right, then "SMTP & API", then "API keys", and create a key. Whoever manages the hosting saves it as BREVO_API_KEY.',
+        'In Brevo, click your name at the top right, then "SMTP & API", then "API keys", and create a key. Paste it in the box "New Brevo key" below and press Save.',
     })
     expect(lines).toHaveLength(2)
     expect(lines[1]?.tone).toBe('plain')

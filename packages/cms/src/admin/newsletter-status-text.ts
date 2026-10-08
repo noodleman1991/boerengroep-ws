@@ -25,7 +25,7 @@ export function describeStatus(status: NewsletterStatusData): { lines: StatusLin
 
   if (!status.key.ok) {
     const where =
-      'In Brevo, click your name at the top right, then "SMTP & API", then "API keys", and create a key. Whoever manages the hosting saves it as BREVO_API_KEY.'
+      'In Brevo, click your name at the top right, then "SMTP & API", then "API keys", and create a key. Paste it in the box "New Brevo key" below and press Save.'
     const noKey = /no brevo api key/i.test(status.key.error)
     return {
       lines: [

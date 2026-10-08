@@ -2,15 +2,28 @@ import config from '@payload-config';
 import { getPayload } from 'payload';
 import { cms } from '@/lib/cms';
 import { getSubscribersForSync } from '@/lib/db/queries';
-import { brevo } from '@/lib/email/brevo';
+import { createBrevo } from '@/lib/email/brevo';
 import { canManageTenant } from '@/lib/site-admin-auth';
 import { thisTenantId } from '@/lib/tenant';
 import { createNewsletterSync } from './brevo-sync';
 import { listIdFrom } from './list-id';
 
+/**
+ * The key for Brevo: the one an admin saved under Site settings, Newsletter, and otherwise the
+ * one of the hosting. Read at the moment it is needed, so a new key works without a restart.
+ */
+async function brevoKey(): Promise<string | undefined> {
+  try {
+    return (await cms.getBrevoKey()) ?? process.env.BREVO_API_KEY;
+  } catch (error) {
+    console.error('[newsletter] reading the saved Brevo key failed:', error instanceof Error ? error.message : error);
+    return process.env.BREVO_API_KEY;
+  }
+}
+
 /** This site's link with Brevo. */
 export const newsletterSync = createNewsletterSync({
-  brevo,
+  brevo: async () => createBrevo({ apiKey: await brevoKey() }),
   listId: async () => listIdFrom((await cms.getSiteSettings('en'))?.newsletter?.brevoListId, process.env.BREVO_LIST_ID),
   report: (problem) => console.error(`[newsletter] ${problem}`),
 });

@@ -119,6 +119,7 @@ export interface Config {
   globalsSelect: {};
   locale: 'en' | 'nl';
   widgets: {
+    'site-overview': SiteOverviewWidget;
     collections: CollectionsWidget;
   };
   user: User;
@@ -220,24 +221,28 @@ export interface Page {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * The websites that share this admin panel. Only super admins can change these.
+ * The websites that are kept up to date from here: their name and their web address. You rarely need this screen. The order of the list is the order of the tabs at the top, and only a main admin can change anything here. To change what is on a website, use the menu on the left instead.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "tenants".
  */
 export interface Tenant {
   id: number;
+  _order?: string | null;
+  /**
+   * Shown on the tab at the top, for people who work on more than one website.
+   */
   name: string;
   /**
-   * Used by the system to tell the sites apart. Do not change it once the site is live.
+   * Used behind the scenes to tell the websites apart. Do not change it once the website is live.
    */
   slug: string;
   /**
-   * Where visitors find this site, for example https://www.example.org
+   * Where visitors find this website, for example https://www.example.org
    */
   siteUrl: string;
   /**
-   * A password between the admin panel and this site, used to tell the site that something changed. Only change it together with the hosting settings.
+   * A password between this panel and the website, used to tell the website that something changed. Only change it together with the hosting settings.
    */
   revalidateSecret: string;
   updatedAt: string;
@@ -1394,7 +1399,7 @@ export interface SpotlightBlock {
   blockType: 'spotlight';
 }
 /**
- * News items and newsletter issues. An item can be an article written here, or a link to something elsewhere. News from friends gets its own page on the site.
+ * All news is here: your own news and news from friends. Which of the two an item is, you choose at "Whose news" on the item. The website shows them on two pages: your own under Newsletter, and news from friends under Friends News. An item is an article you write here, or a link to something elsewhere.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "newsletters".
@@ -1683,6 +1688,10 @@ export interface SiteSetting {
       address?: string | null;
       email?: string | null;
       phone?: string | null;
+      /**
+       * Every answer to a form, and every order through an "Item for a donation", is also sent to this address, with what the person filled in. Empty: the email address above. Visitors do not see this address.
+       */
+      notifyEmail?: string | null;
     };
     /**
      * Shown as small links in the footer, in this order.
@@ -1726,7 +1735,7 @@ export interface SiteSetting {
            */
           highlight?: boolean | null;
           /**
-           * Optional. Links that appear when someone opens this menu item.
+           * Optional. Links that appear under this item when someone points at it or opens it. Drag to order them.
            */
           children?:
             | {
@@ -1854,6 +1863,18 @@ export interface SiteSetting {
      * People who confirm their email are added to this list in Brevo. You find the number in Brevo under Contacts, Lists, in the column "ID".
      */
     brevoListId?: number | null;
+    /**
+     * The last four characters of the saved key, to recognise it by. Empty: no key is saved here, and the key of the hosting is used when there is one.
+     */
+    brevoApiKeyHint?: string | null;
+    /**
+     * Paste a key here and press Save to start using it. In Brevo: your name at the top right, "SMTP & API", "API keys", "Generate a new API key". The key is locked before it is saved and is never shown again: this box stays empty, and leaving it empty keeps the saved key.
+     */
+    brevoApiKey?: string | null;
+    /**
+     * Tick and press Save to stop using the saved key, for example after it was replaced in Brevo.
+     */
+    brevoApiKeyRemove?: boolean | null;
     heading?: string | null;
     intro?: string | null;
     placeholder?: string | null;
@@ -1947,21 +1968,30 @@ export interface Redirect {
   createdAt: string;
 }
 /**
- * Everyone who can log in here. Each person works on one site or on both. Per site they are an editor, who writes and publishes, or an admin, who can also change the site settings and add people.
+ * Everyone with a login. To let a colleague in: press Create New, fill in their email address and a first password, and choose under "Websites this person works on" which website they work on and what they may do there. An editor writes and publishes. An admin of a website can also change its menu, footer and settings, and add people.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
   id: number;
+  /**
+   * Used in the greeting after logging in.
+   */
   name?: string | null;
   /**
-   * Super admins manage both sites and all people. Everyone else gets their rights per site, below.
+   * A normal account only reaches the websites chosen below. A main admin can do everything on both websites and manages all people: give this to one or two people at most.
    */
   roles: ('super-admin' | 'user')[];
+  /**
+   * Add a row for each website this person works on, and choose what they may do there. Someone who works on both websites gets two rows.
+   */
   tenants?:
     | {
         tenant: number | Tenant;
+        /**
+         * An editor writes, changes and publishes. An admin of this website can also change its menu, footer and settings, and add people.
+         */
         roles: ('tenant-admin' | 'editor')[];
         id?: string | null;
       }[]
@@ -2942,6 +2972,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
               address?: T;
               email?: T;
               phone?: T;
+              notifyEmail?: T;
             };
         social?:
           | T
@@ -3015,6 +3046,9 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | T
     | {
         brevoListId?: T;
+        brevoApiKeyHint?: T;
+        brevoApiKey?: T;
+        brevoApiKeyRemove?: T;
         heading?: T;
         intro?: T;
         placeholder?: T;
@@ -3085,6 +3119,7 @@ export interface UsersSelect<T extends boolean = true> {
  * via the `definition` "tenants_select".
  */
 export interface TenantsSelect<T extends boolean = true> {
+  _order?: T;
   name?: T;
   slug?: T;
   siteUrl?: T;
@@ -3131,6 +3166,16 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-overview_widget".
+ */
+export interface SiteOverviewWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

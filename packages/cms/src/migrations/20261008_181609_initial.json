@@ -1,5 +1,5 @@
 {
-  "id": "8cde07aa-bf8e-41a1-ba1d-a645417a43a0",
+  "id": "b1f31d32-e82c-49b9-8977-c25236f48403",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -30033,6 +30033,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "general_contact_notify_email": {
+          "name": "general_contact_notify_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "footer_show_newsletter": {
           "name": "footer_show_newsletter",
           "type": "boolean",
@@ -30043,6 +30049,18 @@
         "newsletter_brevo_list_id": {
           "name": "newsletter_brevo_list_id",
           "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "newsletter_brevo_api_key_hint": {
+          "name": "newsletter_brevo_api_key_hint",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "newsletter_brevo_api_key": {
+          "name": "newsletter_brevo_api_key",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -31008,6 +31026,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "_order": {
+          "name": "_order",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "name": {
           "name": "name",
           "type": "varchar",
@@ -31048,6 +31072,21 @@
         }
       },
       "indexes": {
+        "tenants__order_idx": {
+          "name": "tenants__order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "tenants_slug_idx": {
           "name": "tenants_slug_idx",
           "columns": [

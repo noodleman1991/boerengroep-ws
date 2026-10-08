@@ -22,3 +22,27 @@ out=$(mktemp -d)
 (cd packages/cms && cp ../../tools/brand-symbol/1-shapes.mjs ./tmp-shapes.mjs && SCALE=2 BLUR=1.4 node ./tmp-shapes.mjs ../../apps/boerengroep/public/logo.png "$out"; rm ./tmp-shapes.mjs)
 (cd "$out" && npm init -y >/dev/null && npm install potrace && cp "$OLDPWD/tools/brand-symbol/2-trace.cjs" . && SCALE=2 TOL=2.5 ALPHA=1.33 node 2-trace.cjs "$out" "$out/boerengroep-symbol.svg")
 ```
+
+## The Inspringtheater symbol
+
+`apps/inspringtheater/public/brand/inspringtheater-symbol.svg` (a copy sits in
+`apps/boerengroep/public/brand`, for the login page of the admin) was drawn with the same
+scripts. The only picture of that logo is 300 by 99 pixels, so it is enlarged eight times first,
+and the shapes are smoothed more before tracing. About 12% of the symbol lies under lettering in
+the logo and is continued along the sweep of each swirl. The outlines are as true as a picture
+of that size allows: the large shapes are right, the thinnest strokes of the original are
+simplified or left out. If the organisation has the original artwork, use that instead.
+
+```bash
+out=$(mktemp -d)
+logo=apps/inspringtheater/public/brand/inspringtheater-logo.png
+(cd packages/cms && node -e "const s=require('sharp');s('../../$logo').resize({width:2400,kernel:'lanczos3'}).png().toFile('$out/logo-8x.png')")
+(cd packages/cms && cp ../../tools/brand-symbol/1-shapes.mjs ./tmp-shapes.mjs && RW=900 GREEN=309c28 ORANGE=f87800 GREEN_AT=365,255 ORANGE_AT=245,440 VIEW=0,0,900,792 SCALE=2 BLUR=4.5 node ./tmp-shapes.mjs "$out/logo-8x.png" "$out"; rm ./tmp-shapes.mjs)
+(cd "$out" && npm init -y >/dev/null && npm install potrace && cp "$OLDPWD/tools/brand-symbol/2-trace.cjs" . && GREEN=309c28 ORANGE=f87800 SCALE=2 TOL=4 ALPHA=1.33 TURD=1400 node 2-trace.cjs "$out" "$out/inspringtheater-symbol.svg")
+```
+
+`GREEN` and `ORANGE` are the two colours of the logo, `GREEN_AT` and `ORANGE_AT` the middle of
+each swirl in the enlarged picture, `RW` how much of its width holds the symbol. Keep the
+transparency of the logo when enlarging it: on a white background the scripts read white as
+part of the shapes.
+
