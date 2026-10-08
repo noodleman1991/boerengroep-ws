@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { multiTenantPlugin } from '@payloadcms/plugin-multi-tenant'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
@@ -29,9 +30,12 @@ export type CreateConfigOptions = {
   tenantSlug: string
   /** Called with cache tags when a document of this app's own tenant changes. */
   revalidateLocal?: (tags: string[]) => void | Promise<void>
+  /** Sender for CMS emails such as password resets. Without it emails are only logged. */
+  email?: { apiKey: string; fromAddress: string; fromName: string }
 }
 
-export type CmsCustom = CreateConfigOptions
+/** What hooks may read from `config.custom`. Secrets such as the email key are not stored there. */
+export type CmsCustom = Pick<CreateConfigOptions, 'tenantSlug' | 'revalidateLocal'>
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -60,7 +64,16 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
 
   return buildConfig({
     secret: requireEnv('PAYLOAD_SECRET'),
-    custom: opts satisfies CmsCustom,
+    custom: { tenantSlug: opts.tenantSlug, revalidateLocal: opts.revalidateLocal } satisfies CmsCustom,
+    ...(opts.email
+      ? {
+          email: resendAdapter({
+            apiKey: opts.email.apiKey,
+            defaultFromAddress: opts.email.fromAddress,
+            defaultFromName: opts.email.fromName,
+          }),
+        }
+      : {}),
     admin: { user: Users.slug },
     collections: [...tenantScoped.map(withRevalidation), Users, Tenants],
     editor: lexicalEditor(),

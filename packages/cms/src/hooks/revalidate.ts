@@ -21,6 +21,8 @@ export async function revalidateTenant(args: {
   tenant: Ref
   collection: string
   fetchImpl?: typeof fetch
+  /** How long to wait for the other site before giving up. */
+  timeoutMs?: number
 }): Promise<'local' | 'remote' | 'skipped' | 'failed'> {
   const { payload, collection } = args
   const id = relId(args.tenant)
@@ -50,6 +52,8 @@ export async function revalidateTenant(args: {
           method: 'POST',
           headers: { 'content-type': 'application/json', 'x-revalidate-secret': tenant.revalidateSecret },
           body: JSON.stringify({ tags }),
+          // Without a limit, a stalled site would keep the editor's save waiting.
+          signal: AbortSignal.timeout(args.timeoutMs ?? 5000),
         })
         if (res.ok) return 'remote'
         lastError = `status ${res.status}`

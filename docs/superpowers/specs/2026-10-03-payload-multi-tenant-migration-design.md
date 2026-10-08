@@ -408,3 +408,31 @@ section and an earlier section disagree, this section wins.
     such as `bg-[#F28F07]/20`.
 11. **TinaCMS accepts React 19** by its peer dependency range, so the framework
     upgrade stays in phase 0. A build verifies it.
+
+## 17. Amendments from execution (2026-10-08)
+
+Plans A, B and C were executed up to the owner steps of the cutover. The full record,
+with the reason for every decision, is `docs/migration/execution-log.md`. Points that
+change this design:
+
+1. **Tenant admins manage only their own site's users.** They can add and remove members
+   and set roles in their own site. They cannot change memberships in the other site,
+   cannot change the login of or delete a user who also belongs to the other site, and
+   cannot touch a super admin.
+2. **Untranslated child pages.** A page with no Dutch version has no Dutch path. It is
+   shown in English under its English address.
+3. **Addresses resolve in three steps:** the path in the requested locale, then the path
+   in the other locale with a redirect, then segment by segment against slugs in any
+   locale with a redirect. The last step covers addresses that mix both languages.
+4. **Built-in routes own their address.** `apps/boerengroep/lib/reserved-paths.ts` lists
+   them. The content route never prebuilds those addresses, and the migration keeps menu
+   items for them as plain links.
+5. **Static rendering needs the locale set explicitly.** Every page and the root layout
+   call `setRequestLocale`. A page that forgets it turns its route dynamic.
+6. **Routing file has no translated route names.** The generated file only mapped paths
+   to themselves.
+7. **Payload CLI commands use the shared package's config** (`packages/cms/src/dev.config.ts`).
+   The app's own `payload.config.ts` is used by Next only.
+8. **CMS emails go through Resend** when the newsletter's Resend variables are present.
+9. **Draft preview requires membership of the site being previewed.**
+10. **Local media folder** is set with `MEDIA_DIR` when no Blob token is present.

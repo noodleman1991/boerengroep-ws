@@ -7,7 +7,8 @@
     ".": "./src/index.ts",
     "./types": "./src/payload-types.ts",
     "./queries": "./src/queries/index.ts",
-    "./testing": "./test/helpers.ts"
+    "./testing": "./test/helpers.ts",
+    "./access": "./src/access/roles.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -19,6 +20,7 @@
   },
   "dependencies": {
     "@payloadcms/db-postgres": "catalog:",
+    "@payloadcms/email-resend": "catalog:",
     "@payloadcms/plugin-multi-tenant": "catalog:",
     "@payloadcms/richtext-lexical": "catalog:",
     "@payloadcms/storage-vercel-blob": "catalog:",

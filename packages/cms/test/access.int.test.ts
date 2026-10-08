@@ -167,6 +167,81 @@ describe('access control', () => {
     expect(updated.name).toBe('Editor Name')
   })
 
+  it('refuses a tenant admin who changes the login of a user that also belongs to another tenant', async () => {
+    const shared = await makeUser('shared-login@site.test', ['user'], [
+      { tenant: bg.id, roles: ['editor'] },
+      { tenant: it2.id, roles: ['tenant-admin'] },
+    ])
+    for (const data of [{ password: 'new-password-123456' }, { email: 'taken-over@site.test' }]) {
+      await expect(
+        payload.update({ collection: 'users', id: shared.id, data: data as never, user: bgAdmin, overrideAccess: false }),
+      ).rejects.toThrow(/belongs to another site/)
+    }
+    const stored = await payload.findByID({ collection: 'users', id: shared.id, depth: 0, overrideAccess: true })
+    expect(stored.email).toBe('shared-login@site.test')
+  })
+
+  it('refuses a tenant admin who deletes a user that also belongs to another tenant', async () => {
+    const shared = await makeUser('shared-delete@site.test', ['user'], [
+      { tenant: bg.id, roles: ['editor'] },
+      { tenant: it2.id, roles: ['editor'] },
+    ])
+    await expect(
+      payload.delete({ collection: 'users', id: shared.id, user: bgAdmin, overrideAccess: false }),
+    ).rejects.toThrow(/belongs to another site/)
+    expect((await payload.findByID({ collection: 'users', id: shared.id, overrideAccess: true })).email).toBe(
+      'shared-delete@site.test',
+    )
+  })
+
+  it('refuses a tenant admin who edits or deletes a super admin that is a member of their tenant', async () => {
+    const root = await makeUser('root-member@site.test', ['super-admin'], [{ tenant: bg.id, roles: ['editor'] }])
+    await expect(
+      payload.update({
+        collection: 'users',
+        id: root.id,
+        data: { password: 'new-password-123456' } as never,
+        user: bgAdmin,
+        overrideAccess: false,
+      }),
+    ).rejects.toThrow(/super admin/)
+    await expect(
+      payload.update({ collection: 'users', id: root.id, data: { name: 'Renamed' } as never, user: bgAdmin, overrideAccess: false }),
+    ).rejects.toThrow(/super admin/)
+    await expect(
+      payload.delete({ collection: 'users', id: root.id, user: bgAdmin, overrideAccess: false }),
+    ).rejects.toThrow(/super admin/)
+  })
+
+  it('lets a tenant admin reset the password and delete a user that only belongs to their tenant', async () => {
+    const own = await makeUser('own-only@site.test', ['user'], [{ tenant: bg.id, roles: ['editor'] }])
+    await payload.update({
+      collection: 'users',
+      id: own.id,
+      data: { password: 'new-password-123456' } as never,
+      user: bgAdmin,
+      overrideAccess: false,
+    })
+    await payload.delete({ collection: 'users', id: own.id, user: bgAdmin, overrideAccess: false })
+    const left = await payload.find({ collection: 'users', where: { email: { equals: 'own-only@site.test' } }, overrideAccess: true })
+    expect(left.totalDocs).toBe(0)
+  })
+
+  it('lets a user change their own password even when they belong to two tenants', async () => {
+    const shared = await makeUser('shared-self@site.test', ['user'], [
+      { tenant: bg.id, roles: ['editor'] },
+      { tenant: it2.id, roles: ['editor'] },
+    ])
+    const updated = await payload.update({
+      collection: 'users',
+      id: shared.id,
+      data: { password: 'my-own-new-password' } as never,
+      user: shared,
+      overrideAccess: false,
+    })
+    expect(updated.id).toBe(shared.id)
+  })
+
   it('ignores a tenant admin who tries to make someone a super admin', async () => {
     const created = await payload.create({
       collection: 'users',

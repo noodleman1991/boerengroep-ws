@@ -38,11 +38,14 @@ describe('revalidateTenant', () => {
     const out = await revalidateTenant({ payload, tenant: { id: 2 }, collection: 'events', fetchImpl })
     expect(out).toBe('remote')
     expect(local).not.toHaveBeenCalled()
-    expect(fetchImpl).toHaveBeenCalledWith('https://it.test/api/revalidate', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', 'x-revalidate-secret': 'it-secret' },
-      body: JSON.stringify({ tags: ['inspringtheater:events'] }),
-    })
+    expect(fetchImpl).toHaveBeenCalledWith(
+      'https://it.test/api/revalidate',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-revalidate-secret': 'it-secret' },
+        body: JSON.stringify({ tags: ['inspringtheater:events'] }),
+      }),
+    )
   })
 
   it('retries a failed remote call once and then gives up without throwing', async () => {
@@ -68,6 +71,25 @@ describe('revalidateTenant', () => {
       .mockResolvedValueOnce(new Response(null, { status: 200 }))
     expect(await revalidateTenant({ payload, tenant: 2, collection: 'pages', fetchImpl })).toBe('remote')
   })
+
+  it('gives up on a site that does not answer, so an editor save is never left hanging', async () => {
+    const { payload, errors } = fakePayload({
+      own: 'boerengroep',
+      tenant: { id: 2, slug: 'inspringtheater', siteUrl: 'https://it.test', revalidateSecret: 'x' },
+    })
+    // Answers only when the caller aborts, like a server that accepts the connection and stalls.
+    const fetchImpl = vi.fn(
+      (_url: unknown, init?: RequestInit) =>
+        new Promise<Response>((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => reject(new Error('aborted')))
+        }),
+    )
+    const started = Date.now()
+    const out = await revalidateTenant({ payload, tenant: 2, collection: 'pages', fetchImpl: fetchImpl as never, timeoutMs: 30 })
+    expect(out).toBe('failed')
+    expect(Date.now() - started).toBeLessThan(1000)
+    expect(errors[0]).toMatch(/inspringtheater/)
+  }, 3000)
 
   it('skips a document without a tenant', async () => {
     const { payload } = fakePayload({ own: 'boerengroep' })

@@ -9,6 +9,9 @@ catalogs:
     '@payloadcms/db-postgres':
       specifier: 3.90.2
       version: 3.90.2
+    '@payloadcms/email-resend':
+      specifier: 3.90.2
+      version: 3.90.2
     '@payloadcms/live-preview-react':
       specifier: 3.90.2
       version: 3.90.2
@@ -309,6 +312,9 @@ importers:
       '@payloadcms/db-postgres':
         specifier: 'catalog:'
         version: 3.90.2(@neondatabase/serverless@1.0.1)(better-sqlite3@11.10.0)(payload@3.90.2(graphql@16.14.2)(typescript@5.9.2))
+      '@payloadcms/email-resend':
+        specifier: 'catalog:'
+        version: 3.90.2(payload@3.90.2(graphql@16.14.2)(typescript@5.9.2))
       '@payloadcms/plugin-multi-tenant':
         specifier: 'catalog:'
         version: 3.90.2(@payloadcms/ui@3.90.2(monaco-editor@0.31.0)(next@15.4.11(@playwright/test@1.64.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(sass@1.105.1))(payload@3.90.2(graphql@16.14.2)(typescript@5.9.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@5.9.2))(payload@3.90.2(graphql@16.14.2)(typescript@5.9.2))
@@ -2173,6 +2179,12 @@ packages:
 
   '@payloadcms/drizzle@3.90.2':
     resolution: {integrity: sha512-C5r0gimzaq6ih21jh3VPQNNRxFYCi6JhTgkcbf2c/xGF7MEEzNzDn3DgfFFe4zeDE4iuC9glYrXFs85AKghq8w==}
+    peerDependencies:
+      payload: 3.90.2
+
+  '@payloadcms/email-resend@3.90.2':
+    resolution: {integrity: sha512-CckTlL2qeXuaIFA1LFiIXzntlEoVqsz1tEboO/3EsSgNw0kmVUts4fdhvUF2fTvg/lEpVdESk8KyWCBLHYMkxw==}
+    engines: {node: ^18.20.2 || >=20.9.0}
     peerDependencies:
       payload: 3.90.2
 
@@ -7941,6 +7953,10 @@ snapshots:
       - prisma
       - sql.js
       - sqlite3
+
+  '@payloadcms/email-resend@3.90.2(payload@3.90.2(graphql@16.14.2)(typescript@5.9.2))':
+    dependencies:
+      payload: 3.90.2(graphql@16.14.2)(typescript@5.9.2)
 
   '@payloadcms/graphql@3.90.2(graphql@16.14.2)(payload@3.90.2(graphql@16.14.2)(typescript@5.9.2))(typescript@5.9.2)':
     dependencies:
