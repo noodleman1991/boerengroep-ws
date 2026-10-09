@@ -12,6 +12,14 @@ live after Boerengroep, because the admin panel for both lives on the Boerengroe
    - Root Directory: `apps/boerengroep`
    - Production Branch: `main`
    - Framework: Next.js, Node 22
+
+   This has to be a new project. The existing project `boerengroep` has the top of the
+   repository as its Root Directory, which is where the old site lives on `main`, and that
+   setting holds for all branches of a project. On this branch there is no site at the top, so
+   the old project answers every push with "Preview deployment failed: No Next.js version
+   detected". That email is about the old project and says nothing about the new site. To stop
+   it: in the old project, Settings, Git, "Ignored Build Step", choose "Run my Bash script" and
+   enter `if [ "$VERCEL_GIT_COMMIT_REF" = "payload-migration" ]; then exit 0; else exit 1; fi`.
 4. **Environment variables** on that project:
 
    | Name | Production | Preview |
@@ -63,7 +71,17 @@ The subscriber database needs no change for this.
 
 ## Staging rehearsal
 
-1. Push `payload-migration`. The preview deployment runs the migrations against Neon `staging`.
+The database comes first and the deployment after it: the build reads the site from the
+database, and stops with "Tenant not found" when the site is not in it yet.
+
+1. Create the tables in the staging database, from your own machine:
+
+   ```bash
+   cd apps/boerengroep
+   NODE_ENV=production PAYLOAD_SECRET=<preview secret> PAYLOAD_DATABASE_URL=<staging url> TENANT_SLUG=boerengroep \
+   pnpm payload migrate
+   ```
+
 2. Seed the tenant and the first admin against staging:
 
    ```bash
@@ -114,8 +132,12 @@ The subscriber database needs no change for this.
 4. Compare `staging-report.md` with `2026-boerengroep-dry-run-review.md`. Entries for content that
    editors added since the dry run are expected. Every new entry needs a decision, and there must be
    no `error` entries.
-5. Open the preview and check that the home page shows the imported content. The import told
-   the site to refresh (step 3). If it logged "Site not refreshed", or pages still look empty:
+5. Push `payload-migration`, or press Redeploy on the project if it is already pushed. This is
+   the first build that can succeed. With `RUN_MIGRATIONS=1` it also runs the migrations, which
+   finds nothing left to do.
+   Open the preview and check that the home page shows the imported content. During the
+   import the site did not exist yet, so its log said "Site not refreshed": that is expected
+   the first time. On later imports, if it says so again or pages still look empty:
    in Vercel open the project, Settings, Data Cache, "Purge Everything", then redeploy. A
    redeploy alone is not enough, because Vercel keeps remembered content across deployments.
    The same holds locally: delete `apps/<app>/.next` before building after an import.
