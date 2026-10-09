@@ -162,7 +162,8 @@ test('an event can be saved as a calendar file', async ({ page, request }) => {
   expect(res.status()).toBe(200)
   expect(res.headers()['content-type']).toContain('text/calendar')
   expect(res.headers()['content-disposition']).toContain('attachment')
-  const body = await res.text()
+  // A calendar file breaks long lines and starts the next one with a space. Read it as one line each.
+  const body = (await res.text()).replace(/\r?\n[ \t]/g, '')
   expect(body).toContain('BEGIN:VEVENT')
   expect(body).toContain(`/en/activities/calendar/${slug}`)
   expect((await request.get('/calendar/no-such-event.ics')).status()).toBe(404)

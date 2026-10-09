@@ -406,3 +406,15 @@ Said: "I don't like the visual in the hero and the line space is not enough ther
 - Outlines: a plot and a large picture now have one corner that sweeps round, like a stroke of the logo, and three cut close. The sweep moves from plot to plot (top right, then bottom left) and from picture to picture. Small panels keep the gentle unevenness.
 - Brush strokes: three, with more body, set slightly off level, in a fixed order down the page: a long stroke with a flick at its end, a ball with a stroke leaving it in the two colours of the logo, and two strokes one over the other in the two colours.
 - Tests on this: browser, Boerengroep 127 and Inspringtheater 58 with 2 skipped.
+
+### Round 7, the look the owner chose (2026-10-09)
+
+- The sweeping corners and the three brush strokes were answered with "ugly now, think better", and "be creative". Guessing had failed three times, so the next two steps were shown instead of built: a page with the same part of the home page drawn in three ways, in the browser, with one question under it.
+  - First page, three directions (rings from the logo, a hand-printed edge with a bristled brush stroke, and the quiet version). Answer: the quiet one, "but I don't like the uneven borders, try better".
+  - Second page, the quiet look with three kinds of border (the same curve on every corner, a leaf, a fine line set in like a label). Answer: the leaf.
+- What is built: a plot and a large picture have the shape of a leaf, two opposite corners round and the other two almost square, and the next plot turns the other way, so they alternate down the page. Small panels have a small leaf. The announcement strip has one as low as the strip. A picture inside a text keeps even corners. Dates stay on a ball, headings keep the one plain brush stroke, buttons and filters stay pills.
+- Kept from the remarks before: no ball behind the picture of an opening, and more room between the lines of an opening.
+- Found by the screen-size tests when the date rolled over and another event came first: on a 320 pixel phone the large date ball beside the title of an event left a long word no room. On a phone the ball now stands above the title. A browser test that read a calendar file did not expect long lines to be folded. It reads them as one line now.
+- The page with the options was a file in `public` and is removed.
+- Tests: browser, Boerengroep 127 and Inspringtheater 58 with 2 skipped. App 287 unit.
+- Lesson, confirmed twice: for a matter of taste, draw the options for real and let the owner point. Each page took a few minutes and got a clear answer at once.

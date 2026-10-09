@@ -5,11 +5,10 @@
  * on the horizon. Between them lies open white ground with plots on it: a part of a page with
  * a colour is a soft panel set in from the window's edges.
  *
- * The shapes come from the logo, which is drawn by hand: two balls, each with a brush stroke
- * around it. So nothing is a neat rounded box. A plot and a large picture have one corner that
- * sweeps round like a stroke of the logo, and the others cut close. A date stands on a ball.
- * A section heading is underlined with a brush stroke, one of three, in a fixed order down the
- * page.
+ * A plot and a large picture have the shape of a leaf: two opposite corners round, the other
+ * two almost square. The next plot turns the other way, so they alternate down the page. The
+ * rest comes from the logo, which is a ball with a brush stroke around it: a date stands on a
+ * ball, and a section heading is underlined with a brush stroke.
  *
  * Everything a site may change (colours, shapes, sizes) is a variable here. The Inspringtheater
  * app lays its own colours over these in its theme.css.
@@ -44,22 +43,15 @@
     --plot-max: 92rem;
     --band-radius: clamp(1.4rem, 3vw, 2.5rem);
     /*
-     * Outlines as if cut out by hand. --k makes every curve smaller on a small screen.
-     *
-     * Small panels get a gentle unevenness: every corner its own curve.
+     * The leaf: two opposite corners round, two almost square. In three sizes, each with its
+     * turned form (the other two corners round). --k makes the curves smaller on a small screen.
      */
     --k: 1;
-    --blob-soft: calc(2.9rem * var(--k)) calc(1.6rem * var(--k)) calc(3.3rem * var(--k)) calc(1.9rem * var(--k)) / calc(1.8rem * var(--k)) calc(3.1rem * var(--k)) calc(1.9rem * var(--k)) calc(2.8rem * var(--k));
-    /*
-     * A plot has one corner that sweeps round, like a stroke of the logo, and three that are
-     * cut close. The sweep moves from plot to plot: top right, then bottom left.
-     */
-    --plot-a: calc(1.5rem * var(--k)) calc(7rem * var(--k)) calc(1.9rem * var(--k)) calc(3.2rem * var(--k)) / calc(1.6rem * var(--k)) calc(4.6rem * var(--k)) calc(2.1rem * var(--k)) calc(2.6rem * var(--k));
-    --plot-b: calc(3.2rem * var(--k)) calc(1.7rem * var(--k)) calc(2.8rem * var(--k)) calc(7rem * var(--k)) / calc(2.4rem * var(--k)) calc(1.9rem * var(--k)) calc(2.5rem * var(--k)) calc(4.8rem * var(--k));
-    /* The same for a large picture, with the sweep in a different corner each time. */
-    --pic-a: calc(5.2rem * var(--k)) calc(1.5rem * var(--k)) calc(3rem * var(--k)) calc(1.8rem * var(--k)) / calc(3.8rem * var(--k)) calc(1.8rem * var(--k)) calc(2.4rem * var(--k)) calc(1.6rem * var(--k));
-    --pic-b: calc(1.6rem * var(--k)) calc(2.8rem * var(--k)) calc(5.4rem * var(--k)) calc(1.7rem * var(--k)) / calc(1.8rem * var(--k)) calc(2.2rem * var(--k)) calc(3.9rem * var(--k)) calc(1.6rem * var(--k));
-    --pic-c: calc(1.7rem * var(--k)) calc(5rem * var(--k)) calc(1.6rem * var(--k)) calc(3rem * var(--k)) / calc(1.6rem * var(--k)) calc(3.7rem * var(--k)) calc(1.8rem * var(--k)) calc(2.3rem * var(--k));
+    --leaf-plot: calc(4rem * var(--k)) calc(0.875rem * var(--k)) calc(4rem * var(--k)) calc(0.875rem * var(--k));
+    --leaf-plot-turned: calc(0.875rem * var(--k)) calc(4rem * var(--k)) calc(0.875rem * var(--k)) calc(4rem * var(--k));
+    --leaf-pic: calc(2.75rem * var(--k)) calc(0.625rem * var(--k)) calc(2.75rem * var(--k)) calc(0.625rem * var(--k));
+    --leaf-pic-turned: calc(0.625rem * var(--k)) calc(2.75rem * var(--k)) calc(0.625rem * var(--k)) calc(2.75rem * var(--k));
+    --leaf-small: calc(1.75rem * var(--k)) calc(0.5rem * var(--k)) calc(1.75rem * var(--k)) calc(0.5rem * var(--k));
     /* The ground a thing stands on, for the ring around a ball. */
     --ground: var(--field);
 
@@ -68,7 +60,8 @@
     /* The logo in the header: 15% larger than first drawn (56, 42 and 46px). */
     --logo-h: 64px;
     --logo-h-compact: 48px;
-    --plot-radius: var(--blob-soft);
+    /* What most panels and pictures use. Large pictures and plots are set where they are styled. */
+    --plot-radius: var(--leaf-small);
     --measure: 68ch;
     --page-max: 78rem;
     --page-pad: clamp(1rem, 4vw, 2.5rem);
@@ -215,11 +208,11 @@ a {
 .band--plot {
     width: min(100% - 2 * var(--plot-gutter), var(--plot-max));
     margin: var(--plot-gutter) auto;
-    border-radius: var(--plot-a);
+    border-radius: var(--leaf-plot);
 }
-/* The next plot has its sweep in the opposite corner. */
+/* The next plot turns the other way. */
 .band--plot:nth-child(even) {
-    border-radius: var(--plot-b);
+    border-radius: var(--leaf-plot-turned);
 }
 /* Open ground after open ground needs its spacing once, not twice. */
 .section-white + .section-white > .band__inner {
@@ -1661,8 +1654,27 @@ button.month__tile[aria-pressed='true'] {
     max-width: 22ch;
     margin: 0.5rem 0 0;
     font-size: clamp(2rem, 5.5vw, 3.4rem);
-    line-height: 1.06;
+    line-height: 1.14;
     text-wrap: balance;
+    overflow-wrap: break-word;
+}
+/* On a phone the ball stands above the title, so a long word has the whole width. */
+@media (max-width: 560px) {
+    .event-page__head {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: start;
+    }
+    .event-page__head .date-block--large {
+        width: 6.25rem;
+        gap: 0.15rem;
+    }
+    .event-page__head .date-block--large .date-block__day {
+        font-size: 3rem;
+    }
+    .event-page__head .date-block--large .date-block__weekday,
+    .event-page__head .date-block--large .date-block__month {
+        font-size: 0.8125rem;
+    }
 }
 .event-page__title--off {
     text-decoration: line-through;
@@ -3014,9 +3026,9 @@ video.video__frame {
  * A callout is a small plot of its own: a low strip, as wide as the other plots, with the same
  * air above and below. It belongs to neither neighbour.
  */
-.band--callout {
-    /* Low enough to be a strip, round enough to read as one piece. */
-    border-radius: min(var(--band-radius), 2.25rem);
+/* A low strip: the same leaf, as small as the strip is low. Listed after the plots so it wins. */
+.band--plot.band--callout {
+    border-radius: 2.1rem 0.6rem 2.1rem 0.6rem;
 }
 .callout {
     display: flex;
@@ -3981,65 +3993,44 @@ a.callout:focus-visible {
     color: var(--furrow-text);
 }
 
-/* ---------- Shapes from the logo ---------- */
+/* ---------- Shapes: the leaf, the ball and the brush stroke ---------- */
 
 /* On a small screen the curves are smaller, so they do not eat into the words. */
 @media (max-width: 700px) {
     :root {
-        --k: 0.56;
+        --k: 0.62;
     }
 }
 
-/* A large picture has one sweeping corner too. Pictures that stand together differ. */
+/* A large picture is a leaf too. Pictures that stand together turn in turn. */
 .hero__visual > img:not(.hero__symbol),
-.whats-on__lead-picture {
-    border-radius: var(--pic-a);
+.whats-on__lead-picture,
+.spot__picture,
+.brief--lead .brief__picture {
+    border-radius: var(--leaf-pic);
 }
 .pair__picture,
 .spot:nth-child(even) .spot__picture {
-    border-radius: var(--pic-b);
+    border-radius: var(--leaf-pic-turned);
 }
-.spot__picture,
-.brief--lead .brief__picture {
-    border-radius: var(--pic-c);
-}
+/* In a text a picture has even corners: its size and place vary, a leaf would look different every time. */
 .rich-figure img {
-    border-radius: calc(2.6rem * var(--k)) calc(0.9rem * var(--k)) calc(1.6rem * var(--k)) calc(1rem * var(--k)) / calc(1.9rem * var(--k)) calc(1rem * var(--k)) calc(1.3rem * var(--k)) calc(0.9rem * var(--k));
+    border-radius: calc(1.25rem * var(--k));
 }
 
 /*
- * A heading above a part of a page is underlined with a brush stroke, like the strokes of the
- * logo. There are three, and they follow each other in a fixed order down the page:
- *
- *   1. one long stroke, thick in the middle, with a flick at its end
- *   2. a ball and a stroke that leaves it, in the two colours of the logo
- *   3. two strokes, one over the other, in the two colours
- *
- * Each is a mask over a band of colour, so it takes the colours of the site it is on.
+ * A heading above a part of a page is underlined with a brush stroke: thick in the middle,
+ * thin at both ends, like the strokes of the logo. Drawn as a mask, so it takes the leading
+ * colour of the site it is on.
  */
 .block-head h2::after,
 .whats-on__head h2::after {
     content: '';
     display: block;
-    width: 10.5rem;
-    height: 1rem;
-    margin-top: 0.6rem;
+    width: 6.5rem;
+    height: 0.62rem;
+    margin-top: 0.55rem;
     background: var(--leaf);
-    -webkit-mask: var(--stroke) no-repeat left center / 100% 100%;
-    mask: var(--stroke) no-repeat left center / 100% 100%;
-    /* Set down by hand: never quite level. */
-    transform: rotate(-1.2deg);
-    transform-origin: left center;
-    --stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 16' preserveAspectRatio='none'%3E%3Cpath d='M2 12.5C40 4 92 1 134 2.2c16 .5 29 2 38 4.6 3-1.4 5-3.4 6-5.8 0 5.2-2.4 9.6-7.5 12.300-11-3.400-25-4.700-42-4.300C92 9.600 46 11.600 2 12.500Z'/%3E%3C/svg%3E");
-}
-/* 2. A ball, and a stroke that leaves it. The ball has the second colour. */
-.band:nth-child(3n + 2) :is(.block-head, .whats-on__head) h2::after {
-    background: linear-gradient(90deg, var(--harvest) 0 9.5%, var(--leaf) 9.5% 100%);
-    --stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 16' preserveAspectRatio='none'%3E%3Cpath d='M8 1a7 7 0 1 0 0 14a7 7 0 1 0 0-14Z'/%3E%3Cpath d='M22 12C58 5 102 2.2 142 3.4c14 .4 26 1.800 36 4.400C150 8.600 120 9 96 10 70 11 44 12 22 12Z'/%3E%3C/svg%3E");
-}
-/* 3. Two strokes, the first colour over the second. */
-.band:nth-child(3n) :is(.block-head, .whats-on__head) h2::after {
-    height: 1.15rem;
-    background: linear-gradient(180deg, var(--leaf) 0 50%, var(--harvest) 50% 100%);
-    --stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 16' preserveAspectRatio='none'%3E%3Cpath d='M2 7C46 1.600 98 .2 152 1.800c10 .3 19 1 26 2.400C150 4.600 120 5 92 6 60 7 30 7.400 2 7Z'/%3E%3Cpath d='M36 15C66 10.600 102 9.200 140 10c9 .2 16 .9 22 2-22 .4-44 .8-66 1.600C74 14.400 54 15.200 36 15Z'/%3E%3C/svg%3E");
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 12' preserveAspectRatio='none'%3E%3Cpath d='M1 8.6C22 3.2 58 .8 96 2.1c14 .5 26 1.8 33 3.9-17-.9-43-1-69 .2C38 7.2 18 8.7 1 8.6Z'/%3E%3C/svg%3E") no-repeat left center / 100% 100%;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 130 12' preserveAspectRatio='none'%3E%3Cpath d='M1 8.6C22 3.2 58 .8 96 2.1c14 .5 26 1.8 33 3.9-17-.9-43-1-69 .2C38 7.2 18 8.7 1 8.6Z'/%3E%3C/svg%3E") no-repeat left center / 100% 100%;
 }
