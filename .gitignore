@@ -15,8 +15,12 @@ next-env.d.ts
 .idea
 *.log
 .superpowers/
-# Payload local uploads used when no Blob token is set
-media/
-.media/
+# Payload local uploads used when no Blob token is set. Only at these places: a bare
+# "media/" would also hide source folders with that name, such as components/media.
+/media/
+/.media/
+/apps/*/media/
+/apps/*/.media/
+/packages/cms/media/
 test-results/
 playwright-report/
