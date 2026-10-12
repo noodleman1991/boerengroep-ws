@@ -418,3 +418,50 @@ Said: "I don't like the visual in the hero and the line space is not enough ther
 - The page with the options was a file in `public` and is removed.
 - Tests: browser, Boerengroep 127 and Inspringtheater 58 with 2 skipped. App 287 unit.
 - Lesson, confirmed twice: for a matter of taste, draw the options for real and let the owner point. Each page took a few minutes and got a clear answer at once.
+
+## Round 8 (the first real deployment, 2026-10-12)
+
+Asked: sort out the failed Vercel builds, set up both sites, tidy the variables on Vercel and on
+the laptop, and give editors clear instructions for emails.
+
+- **Why two new Vercel projects.** A project builds one folder for all its branches. The old
+  project `boerengroep` builds the top of the repository, where the live Tina site is on `main`,
+  and the old Inspringtheater project belongs to another repository. So: `boerengroep-payload`
+  (folder `apps/boerengroep`) and `inspringtheater-payload` (folder `apps/inspringtheater`), both
+  in Frankfurt on Node 24, sharing one Neon database and one Blob store. The live projects and
+  domains are untouched. The old project now skips builds of this branch, which ends the
+  "No Next.js version detected" emails.
+- **The database was filled from a laptop**: tables, both websites, one admin, both imports.
+  The Boerengroep report is the same as the reviewed dry run. Files: 144 and 73, all on the store.
+- **Four faults that only a real deployment shows**, each fixed and each with a guard:
+  1. The storage plugin adds two columns to `media` only when a store is switched on. The
+     tables were made on a laptop without one, so every upload and every read of a picture
+     failed. Now `alwaysInsertFields`, a second migration, and a test that the tables are the
+     same with and without a store.
+  2. Vercel builds through Turborepo, which hides every variable that `turbo.json` does not
+     name. The build stopped with "Missing required environment variable PAYLOAD_SECRET". The
+     build task now names them and is never cached, because it reads the database.
+  3. `sharp` was a dependency of the shared CMS package only. The functions on Vercel could not
+     find it: the admin and every server-rendered route answered 500. It is now a dependency of
+     both apps.
+  4. A request for a missing file at the top of the site, such as `/favicon.png`, reached the
+     queries with the file name as its language, and the database answered with an error: 500
+     instead of 404. Every query now finds nothing for a language the site does not have.
+- **The Vercel command line does not read `.gitignore`.** The first upload tried to send 466 MB,
+  the local pictures included. `.vercelignore` now lists what stays behind.
+- **Variables.** Each new project holds only what the new code reads. The newsletter sign-up
+  database is now `NEWSLETTER_DATABASE_URL` (the old name still works): under the name
+  `DATABASE_URL` it was mistaken for the content database, and the live projects were pointed
+  at the new, empty database by hand. `.env.example` in both apps explains every name. The
+  laptop's own files were rewritten to match, with emails off and a sign-up address that leads
+  nowhere.
+- **Kept apart from the live sites**: no emails (`EMAILS_OFF=1`), and a site on a `vercel.app`
+  address tells search engines to stay away.
+- **Editors**: `docs/EDITING-GUIDE.md` has "Emails the website sends" (every email, what an
+  editor can set and where, what only the hosting can, and what to do when none arrives), and
+  the first screen of the admin has three new questions about it.
+- **Found, not solved here**: Resend lists no verified sender domain and no sent email for the
+  key that every project uses, old and new. No email can leave a site until `boerengroep.nl` is
+  verified there. And the Brevo key is still the one Brevo refuses.
+- **Lesson**: a build that passes on a laptop says little about the first deployment. Four of
+  the five faults could not be seen locally. Rehearse on the real platform early.

@@ -13,6 +13,11 @@ content put in. The import read the state of its repository of 18 August 2026, t
 this machine: the repository is private and could not be fetched. **At cutover, import again
 from its latest state.** Anything added to the live site since August is missing here.
 
+On 12 October 2026 the import into the new database read a newer copy, the state of
+15 September 2026: the same 14 pages and 29 events, and 73 pictures and files instead of 71.
+Its report (`inspringtheater-staging-report.md`) is the same as the dry run's. Anything
+added to the live site after 15 September is still missing, so the advice stands.
+
 ## Result
 
 The run imported everything and exited cleanly, with no `error` entries. A second run changed

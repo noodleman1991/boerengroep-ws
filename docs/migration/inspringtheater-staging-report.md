@@ -1,0 +1,101 @@
+# Migration report
+
+## shadowed-file (2)
+
+- `pages/en/index.mdx`: not imported: pages/en/home.mdx is the home page
+- `pages/nl/index.mdx`: not imported: pages/nl/home.mdx is the home page
+
+## skipped (92)
+
+- `authors/llamantha.md`: removed by a fix-up
+- `authors/lucy.md`: removed by a fix-up
+- `authors/napoleon.md`: removed by a fix-up
+- `authors/pedro.md`: removed by a fix-up
+- `speakers/dr-maria-van-der-meer.md`: removed by a fix-up
+- `speakers/lisa-vermeulen.md`: removed by a fix-up
+- `speakers/pieter-janssen.md`: removed by a fix-up
+- `speakers/prof-dr-johanna-de-wit.md`: removed by a fix-up
+- `speakers/tom-van-houten.md`: removed by a fix-up
+- `tags/markdown.mdx`: removed by a fix-up
+- `tags/mermaid.mdx`: removed by a fix-up
+- `tags/tinacms.mdx`: removed by a fix-up
+- `events/nl/beleid-bijeenkomst-eu-green-deal.mdx`: removed by a fix-up
+- `events/nl/bestuursvergadering-januari.mdx`: removed by a fix-up
+- `events/nl/excursie-biologische-boerderij.mdx`: removed by a fix-up
+- `events/nl/informatiesessie-csa.mdx`: removed by a fix-up
+- `events/nl/lezing-toekomst-voedselsystemen.mdx`: removed by a fix-up
+- `events/nl/soepkeuken-wageningen.mdx`: removed by a fix-up
+- `events/nl/talk-jonge-boeren.mdx`: removed by a fix-up
+- `events/nl/workshop-regeneratieve-landbouw.mdx`: removed by a fix-up
+- `vacancies/en/Coordinator.mdx`: removed by a fix-up
+- `vacancies/en/Nice-position.mdx`: removed by a fix-up
+- `vacancies/en/position-2.mdx`: removed by a fix-up
+- `newsletters/en/sustainable-farming-guide.mdx`: removed by a fix-up
+- `newsletters/en/welcome-partners.mdx`: removed by a fix-up
+- `newsletters/nl/voorbeeld-externe-link.mdx`: removed by a fix-up
+- `newsletters/nl/welcome-partners.mdx`: removed by a fix-up
+- `pages/en/about-us/index.mdx`: nothing on this page
+- `pages/nl/over-ons/index.mdx`: nothing on this page
+- `pages/en/accessibility.mdx`: nothing on this page
+- `pages/nl/toegankelijkheid.mdx`: nothing on this page
+- `pages/en/agenda.mdx`: removed by a fix-up
+- `pages/nl/agenda.mdx`: removed by a fix-up
+- `pages/en/cookies.mdx`: nothing on this page
+- `pages/nl/cookies.mdx`: nothing on this page
+- `pages/nl/inspiratietheater/index.mdx`: nothing on this page
+- `pages/en/inspiration-theater/index.mdx`: nothing on this page
+- `pages/en/jobs/index.mdx`: nothing on this page
+- `pages/en/library/index.mdx`: nothing on this page
+- `pages/nl/bibliotheek/index.mdx`: nothing on this page
+- `pages/en/news/index.mdx`: removed by a fix-up
+- `pages/nl/nieuws/index.mdx`: removed by a fix-up
+- `pages/en/privacy.mdx`: nothing on this page
+- `pages/nl/privacy.mdx`: nothing on this page
+- `pages/en/privacy-policy.mdx`: removed by a fix-up
+- `pages/en/terms-conditions.mdx`: nothing on this page
+- `pages/nl/algemene-voorwaarden.mdx`: nothing on this page
+- `pages/nl/vacatures/index.mdx`: nothing on this page
+- `pages/en/about-us/history.mdx`: removed by a fix-up
+- `pages/nl/over-ons/geschiedenis.mdx`: removed by a fix-up
+- `pages/en/about-us/network.mdx`: nothing on this page
+- `pages/nl/over-ons/netwerk.mdx`: nothing on this page
+- `pages/nl/over-ons/wat-is-bg.mdx`: nothing on this page
+- `pages/en/about-us/what-is-bg.mdx`: nothing on this page
+- `pages/en/about-us/who-are-we.mdx`: nothing on this page
+- `pages/nl/over-ons/wie-zijn-wij.mdx`: nothing on this page
+- `pages/en/activities/auditorium.mdx`: nothing on this page
+- `pages/nl/activiteiten/auditorium.mdx`: nothing on this page
+- `pages/en/activities/calendar.mdx`: nothing on this page
+- `pages/nl/activiteiten/agenda.mdx`: nothing on this page
+- `pages/en/activities/forum-reader.mdx`: nothing on this page
+- `pages/nl/activiteiten/forumlezer.mdx`: nothing on this page
+- `pages/en/activities/group-studies.mdx`: nothing on this page
+- `pages/nl/activiteiten/groepsstudies.mdx`: nothing on this page
+- `pages/en/activities/past-events.mdx`: nothing on this page
+- `pages/nl/activiteiten/terugblik.mdx`: nothing on this page
+- `pages/en/activities/pei.mdx`: nothing on this page
+- `pages/nl/activiteiten/pei.mdx`: nothing on this page
+- `pages/en/activities/soup-kitchen.mdx`: nothing on this page
+- `pages/nl/activiteiten/soepkeuken.mdx`: nothing on this page
+- `pages/en/activities/teachers.mdx`: nothing on this page
+- `pages/nl/activiteiten/docenten.mdx`: nothing on this page
+- `pages/nl/inspiratietheater/evenementen.mdx`: nothing on this page
+- `pages/nl/inspiratietheater/netwerk.mdx`: nothing on this page
+- `pages/en/inspiration-theater/events.mdx`: nothing on this page
+- `pages/en/inspiration-theater/network.mdx`: nothing on this page
+- `pages/en/library/50-years-bg.mdx`: nothing on this page
+- `pages/nl/bibliotheek/50-jaar-bg.mdx`: nothing on this page
+- `pages/en/library/media.mdx`: nothing on this page
+- `pages/nl/bibliotheek/media.mdx`: nothing on this page
+- `pages/en/library/podcast.mdx`: nothing on this page
+- `pages/nl/bibliotheek/podcast.mdx`: nothing on this page
+- `pages/en/news/friends-news.mdx`: removed by a fix-up
+- `pages/nl/nieuws/vrienden-nieuws.mdx`: removed by a fix-up
+- `pages/en/news/landscape.mdx`: removed by a fix-up
+- `pages/nl/nieuws/landschap.mdx`: removed by a fix-up
+- `pages/en/news/newsletter.mdx`: nothing on this page
+- `pages/nl/nieuws/nieuwsbrief.mdx`: nothing on this page
+- `pages/en/news/positions.mdx`: nothing on this page
+- `pages/nl/nieuws/standpunten.mdx`: nothing on this page
+- `global/index.json`: menu link "Volunteers" left out: /get-involved/volunteers is not a page of the new site
+- `global/index.json`: menu link "Vrijwilligers" left out: /get-involved/volunteers is not a page of the new site
