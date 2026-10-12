@@ -155,6 +155,15 @@ describe('queries', () => {
       expect(await queries('inspringtheater').resolvePage('nl', '/over-ons/history')).toBeNull()
     })
 
+    // A request for a missing file at the top of the site, such as /favicon.png, reaches the
+    // queries with the file name where the language belongs.
+    it('finds nothing, without an error, in a language the site does not have', async () => {
+      const q = queries('boerengroep')
+      expect(await q.resolvePage('favicon.png' as never, '/')).toBeNull()
+      expect(await q.getSiteSettings('favicon.png' as never)).toBeNull()
+      expect(await q.listEvents('wp-login.php' as never)).toEqual([])
+    })
+
     it('returns null for an unknown path', async () => {
       expect(await queries('boerengroep').resolvePage('en', '/nope')).toBeNull()
     })

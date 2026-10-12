@@ -85,6 +85,10 @@ export function createQueries(deps: QueryDeps) {
 
   /** The single place where the tenant filter and the published filter are applied. */
   async function find<T>(collection: string, draft: boolean, opts: FindOptions): Promise<T[]> {
+    // The language comes from the address. A request for a file that does not exist, such as
+    // /favicon.png, arrives here with "favicon.png" as its language, and the database refuses
+    // a language it does not know with an error. Nothing is written in such a language.
+    if (opts.locale !== undefined && !LOCALES.includes(opts.locale)) return []
     const payload = await deps.getPayload()
     const where: Where = {
       and: [

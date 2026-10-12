@@ -255,6 +255,13 @@ test('an unknown page gives a 404', async ({ page }) => {
   expect(res?.status()).toBe(404)
 })
 
+// Browsers and robots ask for such files all day. They must hear "not found", not an error.
+test('a missing file at the top of the site gives a 404', async ({ request }) => {
+  for (const path of ['/favicon.png', '/no-such-file.txt', '/wp-login.php']) {
+    expect((await request.get(path)).status(), path).toBe(404)
+  }
+})
+
 test('the admin panel shows a login form', async ({ page }) => {
   await page.goto('/admin')
   await expect(page.locator('input[type="password"]')).toBeVisible()
@@ -269,7 +276,8 @@ test('the header logo image loads', async ({ page }) => {
   await page.goto('/en')
   const logo = page.locator('header img').first()
   await expect(logo).toBeVisible()
-  expect(await logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true)
+  // Wait for the picture itself: on a deployed site it arrives a moment after the page.
+  await expect.poll(() => logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true)
 })
 
 test('an old upload address still delivers the file', async ({ request }) => {
@@ -591,7 +599,9 @@ test('the login page carries the symbols of both websites and says what to do', 
   const symbols = page.locator('.login__brand img')
   await expect(symbols).toHaveCount(2)
   for (const src of await symbols.evaluateAll((list) => list.map((img) => (img as HTMLImageElement).src))) expect(src).toMatch(/\/brand\/(boerengroep|inspringtheater)-symbol\.svg$/)
-  expect(await symbols.evaluateAll((list) => list.every((img) => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0))).toBe(true)
+  await expect
+    .poll(() => symbols.evaluateAll((list) => list.every((img) => (img as HTMLImageElement).complete && (img as HTMLImageElement).naturalWidth > 0)))
+    .toBe(true)
   await expect(page.locator('.login__brand')).toContainText('Boerengroep and Inspringtheater')
   // On a phone the panel is a band above the form, and the form is not pushed off the screen.
   await page.setViewportSize({ width: 390, height: 844 })
