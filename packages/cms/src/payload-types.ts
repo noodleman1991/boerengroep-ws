@@ -321,6 +321,8 @@ export interface Media {
    */
   caption?: string | null;
   legacyPath?: string | null;
+  prefix?: string | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -2717,6 +2719,8 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   legacyPath?: T;
+  prefix?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

@@ -11,7 +11,8 @@ export default defineConfig({
   out: './drizzle',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    // The newsletter sign-ups, not the content database. DATABASE_URL is the older name.
+    url: (process.env.NEWSLETTER_DATABASE_URL || process.env.DATABASE_URL)!,
   },
   verbose: true,
   strict: true,

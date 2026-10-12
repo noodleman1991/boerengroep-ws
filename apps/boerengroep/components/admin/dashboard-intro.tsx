@@ -42,6 +42,18 @@ const HOW = [
     a: 'For a page, a news item or a story: open it and click Versions at the top. Open the version you want back and press "Restore this version".',
   },
   {
+    q: 'Where do form answers and orders go by email?',
+    a: 'To the address at Site settings, tab General, "Send form answers and orders to". Empty: to the contact email address on the same tab. Type an inbox that someone reads every day and press Save. Every answer is also kept under Forms, Form responses.',
+  },
+  {
+    q: 'How do I connect the newsletter sign-up to our mailing list?',
+    a: 'Open Site settings and click the tab Newsletter. Paste the key from Brevo at "New Brevo key", fill in the "Brevo list number", and press Save. The check at the top of the tab then says whether sign-ups arrive. Each website has its own key and its own list.',
+  },
+  {
+    q: 'An email from the website does not arrive.',
+    a: 'Look in the spam folder first. For form answers, check the address at Site settings, General. For the newsletter, open Site settings, Newsletter: the check at the top says what is wrong. Still nothing? Ask the person who looks after the hosting: on a website that is being tried out, emails are switched off.',
+  },
+  {
     q: 'How do I let a colleague in?',
     a: 'Open People and websites, People who can log in, and press Create New. Fill in their email address and a first password, add a row under "Websites this person works on", and choose what they may do.',
   },

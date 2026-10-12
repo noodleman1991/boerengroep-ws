@@ -27,6 +27,8 @@ Three things make it easy:
 | Put news, vacancies or something special on the home page | [What shows on the home page](#what-shows-on-the-home-page) |
 | Change the order of the menu, or add something to it | [Arrange the menu](#arrange-the-menu) |
 | Change the footer or the logo | [Footer and other settings](#footer-and-other-settings) |
+| Connect the newsletter to Brevo | [The link with Brevo](#the-link-with-brevo) |
+| Choose where emails from the website go, or find out why none arrives | [Emails the website sends](#emails-the-website-sends) |
 | Let a colleague log in | [People and websites](#people-and-websites) |
 | Ask visitors something with a form | [Forms](#forms) |
 | Write the Dutch version of something | [Two languages](#two-languages) |
@@ -387,6 +389,89 @@ A key is like a password. That is why, once saved, it is never shown again: the 
 when you come back, and only the last four characters of the saved key are shown next to it so
 you can tell which one it is. Leaving the box empty keeps the saved key. To replace it, paste a
 new one. To stop using it, tick **Remove the saved Brevo key** and press Save.
+
+Each website has its own tab, so each has its own key and its own list number. Choose the
+website at the top first. Use a different list for Boerengroep and for Inspringtheater, or the
+two newsletters reach the same people.
+
+The button **Bring the Brevo list up to date** appears when the list in Brevo is behind:
+people who confirmed on the website are missing from it, or people who left are still on it.
+That happens, for example, when the key was not filled in yet. Press the button once and the
+list is put right. **Check again** repeats the check.
+
+## Emails the website sends
+
+The newsletter itself is written and sent in Brevo, not on the website. The website only sends
+short, automatic emails. These are all of them:
+
+| Email | Who gets it | When |
+| --- | --- | --- |
+| "Please confirm your address" | A visitor | Right after they fill in the newsletter box |
+| "You are unsubscribed" | A visitor | After they click the unsubscribe link |
+| "Your data" | A visitor | When they ask what the website knows about them |
+| "Your data is removed" | A visitor | When they ask to be forgotten |
+| A copy of a form answer or an order | Your organisation | Each time someone sends a form or orders an item |
+| Extra emails you added to a form | Whoever you chose | Each time someone sends that form |
+| "Choose a new password" | A colleague | When they click "Forgot password" at the login |
+
+### What you can set yourself
+
+Choose the website at the top first: each website has its own settings.
+
+**The address visitors see.** Site settings, tab **General**, under Contact details, the box
+**Email**. It is shown in the footer.
+
+**Where form answers and orders go.** Same tab, the box **Send form answers and orders to**.
+
+1. Go to **Site settings** and open the tab **General**.
+2. Scroll to **Contact details**.
+3. Type the address in **Send form answers and orders to**. Use an inbox that someone reads
+   every day.
+4. Press **Save**.
+
+Leave the box empty and these emails go to the address in the box **Email** above it. Visitors
+never see this address. When you answer such an email, your answer goes to the person who
+filled in the form, if they left their email address.
+
+**An extra email for one form**, for example a thank-you to the visitor. Open the form under
+**Forms**, scroll to **Emails**, and add one: who it goes to, the subject and the text.
+
+**The newsletter.** The key and the list number of Brevo, and every text of the sign-up box,
+are on the tab **Newsletter**. See [The link with Brevo](#the-link-with-brevo).
+
+**Who can log in, and their email address.** See [People and websites](#people-and-websites).
+The "Choose a new password" email goes to the address a person logs in with.
+
+### What you cannot set here, and who can
+
+Three things are set by the person who looks after the website's hosting, because a mistake in
+them stops every email at once:
+
+- **The name and the address the emails come from.** Boerengroep's emails come from "Stichting
+  Boerengroep", Inspringtheater's from "Stichting Inspringtheater". Both use an address ending
+  in boerengroep.nl. A sender address only works on a web domain that is registered with the
+  mail service, and inspringtheater.nl is not. To get a sender address on inspringtheater.nl,
+  ask for that domain to be registered first. The "Choose a new password" email always comes
+  from Stichting Boerengroep, because there is one login for both websites.
+- **The texts of the automatic emails to visitors** (confirm, unsubscribed, your data, your
+  data is removed). They are fixed, in English and Dutch.
+- **Whether the website sends email at all.** A website that is still being tried out has its
+  emails switched off, so that no visitor gets a message from a test.
+
+### No email arrives. What now?
+
+Go through these in order:
+
+1. **Look in the spam folder**, and wait a few minutes.
+2. **Is it a form answer?** Check the address at Site settings, General, **Send form answers
+   and orders to**. The answer itself is never lost: it is under Forms, Form responses.
+3. **Is it the newsletter confirmation?** Sign up with your own address on the website and see
+   whether the email comes. People who never confirm are not added to Brevo.
+4. **Is the newsletter list in Brevo missing people?** Open Site settings, Newsletter. The
+   check at the top says what is wrong and offers a button to repair it.
+5. **Still nothing?** Tell the person who looks after the hosting, and say which email is
+   missing and when you tried. The usual causes are emails that are still switched off, or a
+   sender address that the mail service does not accept.
 
 ## People and websites
 

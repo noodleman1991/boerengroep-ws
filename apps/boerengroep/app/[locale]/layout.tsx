@@ -10,7 +10,7 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { LivePreviewListener } from '@/components/live-preview-listener';
 import Layout from '@/components/layout/layout';
-import { siteUrl } from '@/lib/site-url';
+import { isTrialCopy, siteUrl } from '@/lib/site-url';
 import { SITE } from '@/site.config';
 
 // The fonts of the design, shared by both sites
@@ -48,17 +48,20 @@ export const metadata: Metadata = {
     authors: [{ name: SITE.name }],
     creator: SITE.name,
     publisher: SITE.name,
-    robots: {
-        index: true,
-        follow: true,
-        googleBot: {
-            index: true,
-            follow: true,
-            'max-video-preview': -1,
-            'max-image-preview': 'large',
-            'max-snippet': -1,
-        },
-    },
+    // A copy for trying things out (on a vercel.app address) is kept out of search engines.
+    robots: isTrialCopy()
+        ? { index: false, follow: false }
+        : {
+              index: true,
+              follow: true,
+              googleBot: {
+                  index: true,
+                  follow: true,
+                  'max-video-preview': -1,
+                  'max-image-preview': 'large',
+                  'max-snippet': -1,
+              },
+          },
     openGraph: {
         type: 'website',
         locale: 'en_US',

@@ -247,6 +247,10 @@ export function createPayloadConfig(opts: CreateConfigOptions) {
       vercelBlobStorage({
         enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
         token: process.env.BLOB_READ_WRITE_TOKEN,
+        // The store adds two hidden columns to media. Add them everywhere, also on a laptop
+        // without a store: otherwise the tables made on a laptop lack them, and every read of
+        // a picture fails on the real site.
+        alwaysInsertFields: true,
         clientUploads: true,
         collections: {
           media: { disablePayloadAccessControl: true },

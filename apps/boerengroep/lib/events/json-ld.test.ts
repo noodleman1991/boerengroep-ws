@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { siteUrlFrom } from '../site-url'
+import { isTrialCopyFrom, siteUrlFrom } from '../site-url'
 import { eventJsonLd, jsonLdScript } from './json-ld'
 import type { SiteEvent } from './types'
 
@@ -73,5 +73,13 @@ describe('the address of the site', () => {
   it('uses the deployment address on a preview, and localhost on a laptop', () => {
     expect(siteUrlFrom({ VERCEL_URL: 'bg-git-x.vercel.app' })).toBe('https://bg-git-x.vercel.app')
     expect(siteUrlFrom({})).toBe('http://localhost:3000')
+  })
+  it('knows a copy for trying things out from the real site', () => {
+    expect(isTrialCopyFrom({ NEXT_PUBLIC_SITE_URL: 'https://boerengroep-payload.vercel.app' })).toBe(true)
+    expect(isTrialCopyFrom({ VERCEL_URL: 'bg-git-x.vercel.app' })).toBe(true)
+    expect(isTrialCopyFrom({ NEXT_PUBLIC_SITE_URL: 'https://www.boerengroep.nl' })).toBe(false)
+    expect(isTrialCopyFrom({ NEXT_PUBLIC_SITE_URL: 'https://vercel.app.example.org' })).toBe(false)
+    expect(isTrialCopyFrom({})).toBe(false)
+    expect(isTrialCopyFrom({ NEXT_PUBLIC_SITE_URL: 'not an address' })).toBe(false)
   })
 })

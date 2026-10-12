@@ -1,5 +1,34 @@
 # Cutover runbook
 
+## Where things stand (12 October 2026)
+
+The one-time setup below is done, on the Vercel account `noodleman1991`:
+
+| What | Where |
+|---|---|
+| Content database | Neon, Frankfurt, one database for both sites. Its address is `PAYLOAD_DATABASE_URL` |
+| Pictures and files | Vercel Blob store `sites-media`, Frankfurt, connected to both projects |
+| Boerengroep | Vercel project `boerengroep-payload`, folder `apps/boerengroep`, at boerengroep-payload.vercel.app |
+| Inspringtheater | Vercel project `inspringtheater-payload`, folder `apps/inspringtheater`, at inspringtheater-payload.vercel.app |
+| The live sites | Untouched: the old projects `boerengroep` and `inspringtheater-ws` still serve the two domains |
+
+Both new projects run Node 24 and their server code in Frankfurt, next to the database. The
+database is filled from the old sites as they were that day. Three things keep the new sites
+apart from the live ones until cutover:
+
+- `EMAILS_OFF=1` on both projects: they send no email. Remove it at cutover.
+- A site on a `vercel.app` address tells search engines to stay away. That ends by itself when
+  `NEXT_PUBLIC_SITE_URL` is the real domain.
+- The old project `boerengroep` skips builds of the branch `payload-migration` (its Ignored
+  Build Step), so it no longer reports failed previews.
+
+The new projects are not connected to the repository yet: they were deployed from a laptop with
+`vercel deploy --prod` (see "Deploying without a Git connection"). Connect them before cutover,
+under Settings, Git in each project, so that every push deploys by itself.
+
+**Open before any email can go out:** the mail service (Resend) lists no verified sender domain
+for the key the sites use. See "Email (owner)".
+
 Boerengroep first. The second site, Inspringtheater, has its own section further down and goes
 live after Boerengroep, because the admin panel for both lives on the Boerengroep site.
 
@@ -11,7 +40,8 @@ live after Boerengroep, because the admin panel for both lives on the Boerengroe
 3. **Vercel project.** Create a project `boerengroep-payload` from this repository with
    - Root Directory: `apps/boerengroep`
    - Production Branch: `main`
-   - Framework: Next.js, Node 22
+   - Framework: Next.js, Node 24
+   - Function Region: Frankfurt (`fra1`), where the database is
 
    This has to be a new project. The existing project `boerengroep` has the top of the
    repository as its Root Directory, which is where the old site lives on `main`, and that
@@ -37,13 +67,24 @@ live after Boerengroep, because the admin panel for both lives on the Boerengroe
    from Vercel builds. If Preview deployments are protected, the smoke tests and the parity check
    need a protection bypass or a public preview.
 
-   The existing variables are `DATABASE_URL`, `RESEND_BOERENGROEP`, `FROM_EMAIL`, `FROM_NAME`,
-   `REPLY_TO_EMAIL`, `NEWSLETTER_SECRET`, `BASE_URL`, `BASE_PATH`, `PODCAST_RSS_URL`,
-   `NEXT_PUBLIC_BASE_URL`, `BREVO_API_KEY`, `BREVO_LIST_ID`. Do not copy the four `TINA` variables.
-   The mail key is read from `RESEND_API_KEY` first. `RESEND_BOERENGROEP` is its old name and
-   still works. `BREVO_API_KEY` and `BREVO_LIST_ID` are optional now: an admin can save the
-   key and the list number in the admin panel (Site settings, Newsletter), per website, and
-   what is saved there wins.
+   From the old project, copy only these, under the names the new code reads. Every name is
+   explained in `apps/boerengroep/.env.example`.
+
+   | Old name | New name | What it is |
+   |---|---|---|
+   | `DATABASE_URL` | `NEWSLETTER_DATABASE_URL` | The newsletter sign-ups of this site: who signed up, who confirmed, who left. Not the content database. The old name still works |
+   | `RESEND_BOERENGROEP` | `RESEND_API_KEY` | The key of the mail service. The old name still works |
+   | `FROM_EMAIL`, `FROM_NAME`, `REPLY_TO_EMAIL` | the same | The sender of the emails |
+   | `NEWSLETTER_SECRET` | the same | Signs the links in newsletter emails. Keep the value, or links in emails already sent stop working |
+   | `BASE_URL` | the same, plus `NEXT_PUBLIC_SITE_URL` | The public address of the site |
+   | `PODCAST_RSS_URL` | the same | The podcast feed |
+   | `BREVO_API_KEY`, `BREVO_LIST_ID` | the same | Optional: an admin saves the key and the list number in the admin (Site settings, Newsletter), per website, and what is saved there wins |
+
+   Do not copy the four `TINA` variables, `NODE_ENV`, `BASE_PATH` and `NEXT_PUBLIC_BASE_URL`:
+   nothing reads them any more.
+
+   **Never put the content database in `DATABASE_URL`.** On the old projects that name is the
+   newsletter sign-up database, and the live site writes every sign-up to it.
 
    `PAYLOAD_SECRET` locks the keys that admins save in the settings. If it is ever changed,
    the saved Brevo key can no longer be read: the admin shows that no key works, and an admin
@@ -68,6 +109,28 @@ If the list should record the language, create a text contact attribute named `L
 (Contacts, Settings, Contact attributes). Without it people are still added, only without a language.
 
 The subscriber database needs no change for this.
+
+## Email (owner)
+
+The sites send their own short emails through Resend: the confirmation of a newsletter sign-up,
+a copy of every form answer to the organisation, and password resets. What editors can set
+about them is in `docs/EDITING-GUIDE.md`, "Emails the website sends". Three things are set on
+the hosting:
+
+1. **A verified sender domain.** Checked on 12 October 2026: Resend lists no domain at all for
+   the key the sites use, and no email sent with it. Resend refuses mail from an address on a
+   domain it has not verified, so until this is done no email leaves either site, old or new.
+   In Resend: Domains, Add domain, `boerengroep.nl`. Resend shows a few DNS records. Add them
+   where the domain's DNS is managed, wait for "Verified", and send a test.
+2. **The sender**, per project: `FROM_EMAIL` (an address on the verified domain), `FROM_NAME`
+   and `REPLY_TO_EMAIL`. Inspringtheater sends as "Stichting Inspringtheater" from an address
+   on boerengroep.nl, because inspringtheater.nl is not verified in Resend. To change that,
+   verify inspringtheater.nl the same way and change `FROM_EMAIL` on its project. Its
+   `REPLY_TO_EMAIL` still holds Boerengroep's address, copied from the old project: set it to
+   Inspringtheater's own address, or remove it and the contact address in
+   `apps/inspringtheater/site.config.ts` is used.
+3. **`EMAILS_OFF`**. `1` means the site sends nothing. It is set on both new projects while
+   they are being tried out. Remove it at cutover and redeploy.
 
 ## Staging rehearsal
 
@@ -163,6 +226,20 @@ database, and stops with "Tenant not found" when the site is not in it yet.
 10. Create one account per person in the admin under People and websites, People who can log in, with the role
    Editor on Boerengroep. Ask each editor to log in on the preview and edit a draft page.
 
+### Deploying without a Git connection
+
+Until the new projects are connected to the repository, deploy from a laptop, from the top of
+the repository. The folder of each site (`apps/boerengroep`, `apps/inspringtheater`) is a
+setting of its Vercel project, so the command is the same for both, with another project id:
+
+```bash
+VERCEL_ORG_ID=<team id> VERCEL_PROJECT_ID=<project id> vercel deploy --prod
+```
+
+Deploy Boerengroep first: its build runs the database migrations. "Production" here means the
+project's own `vercel.app` address, not the live domain: the domains stay on the old projects
+until cutover day.
+
 ## Cutover day
 
 1. Announce the content freeze. From now on nobody edits in Tina.
@@ -173,11 +250,15 @@ database, and stops with "Tenant not found" when the site is not in it yet.
    the migrations, which is a no-op because step 3 already applied them, and builds.
 6. Run the parity check and the smoke tests against the production deployment URL of
    `boerengroep-payload`, before it has the domain.
-7. Move the production domain from the old Vercel project to `boerengroep-payload`.
-8. Run the parity check once more against the real domain.
-9. Set the tenant's Site URL in the admin to the real domain if it differs.
+7. On `boerengroep-payload`, set `NEXT_PUBLIC_SITE_URL` and `BASE_URL` to the real domain and
+   remove `EMAILS_OFF`, then redeploy. From then on the site sends email and lets search
+   engines in. Emails only arrive when the sender domain is verified: see "Email (owner)".
+8. Move the production domain from the old Vercel project to `boerengroep-payload`.
+9. Run the parity check once more against the real domain.
+10. Set the website's address in the admin (People and websites, Websites) to the real domain.
+    The admin uses it to tell the site that something changed.
 
-10. Before the Tina account is closed, check that nothing on the site still points at Tina's file
+11. Before the Tina account is closed, check that nothing on the site still points at Tina's file
     server: `pg_dump --data-only <production url> | grep -c assets.tina.io` must print 0. The
     browser test "the year plan and the year report come from this site" checks the two known
     links.
@@ -192,7 +273,7 @@ reads from the same database. Editors use the admin panel on the Boerengroep sit
 Do this after Boerengroep is live, or on staging at the same time as its rehearsal.
 
 1. **Vercel project.** Create a project `inspringtheater-payload` from this repository with Root
-   Directory `apps/inspringtheater`, Production Branch `main`, Node 22.
+   Directory `apps/inspringtheater`, Production Branch `main`, Node 24, Function Region Frankfurt.
 2. **Environment variables** on that project:
 
    | Name | Value |
@@ -204,7 +285,7 @@ Do this after Boerengroep is live, or on staging at the same time as its rehears
    | `ADMIN_URL` | the Boerengroep origin followed by `/admin` |
    | `REVALIDATE_SECRET` | `openssl rand -hex 32`. The same value goes into the seed in step 3 |
    | `BLOB_READ_WRITE_TOKEN` | the same Blob token |
-   | `DATABASE_URL`, `NEWSLETTER_SECRET`, `RESEND_API_KEY`, `FROM_EMAIL`, `FROM_NAME`, `REPLY_TO_EMAIL`, `BREVO_API_KEY`, `BREVO_LIST_ID` | this site's own newsletter list and mail settings. Never Boerengroep's: the two lists must not mix |
+   | `NEWSLETTER_DATABASE_URL`, `NEWSLETTER_SECRET`, `RESEND_API_KEY`, `FROM_EMAIL`, `FROM_NAME`, `REPLY_TO_EMAIL`, `BREVO_API_KEY`, `BREVO_LIST_ID` | this site's own newsletter list and mail settings. Never Boerengroep's: the two lists must not mix |
 
    Do not set `RUN_MIGRATIONS` and do not set `PODCAST_RSS_URL`. Migrations belong to the
    Boerengroep project. `PAYLOAD_SECRET` must be equal on both projects, because preview links
