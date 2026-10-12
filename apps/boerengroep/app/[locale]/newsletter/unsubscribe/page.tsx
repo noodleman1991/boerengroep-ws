@@ -1,39 +1,32 @@
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { UnsubscribePage } from '@/components/newsletter/unsubscribe-page';
+import { NewsletterHelpPage } from '@/components/newsletter/help-page';
 import Layout from '@/components/layout/layout';
 import { SITE } from '@/site.config';
 
-interface UnsubscribePageProps {
+interface Props {
     params: Promise<{ locale: string }>;
-    searchParams: Promise<{ token?: string }>;
 }
 
-export async function generateMetadata({ params }: UnsubscribePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { locale } = await params;
     setRequestLocale(locale);
-    const t = await getTranslations({ locale, namespace: 'newsletter' });
+    const t = await getTranslations({ locale, namespace: 'newsletter.unsubscribe' });
 
     return {
-        title: `${t('unsubscribe.title')} - ${SITE.name}`,
-        description: t('unsubscribe.description'),
+        title: `${t('title')} - ${SITE.name}`,
+        description: t('description'),
     };
 }
 
-export default async function UnsubscribeRoute({ params, searchParams }: UnsubscribePageProps) {
+/** How to leave the newsletter: through the link at the bottom of every newsletter. */
+export default async function Page({ params }: Props) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const { token } = await searchParams;
-
-    const mockLayoutData = {
-        data: {
-            global: null
-        }
-    };
 
     return (
-        <Layout rawPageData={mockLayoutData}>
-            <UnsubscribePage locale={locale} token={token} />
+        <Layout rawPageData={{ data: { global: null } }}>
+            <NewsletterHelpPage locale={locale} about="unsubscribe" />
         </Layout>
     );
 }

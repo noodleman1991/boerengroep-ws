@@ -79,7 +79,7 @@ export const Footer = () => {
 
                         {footer.showNewsletter && (
                             <div className="site-footer__news">
-                                <NewsletterSignup source="footer" />
+                                <NewsletterSignup />
                             </div>
                         )}
                     </div>

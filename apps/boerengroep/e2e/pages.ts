@@ -11,7 +11,7 @@ const INSPRINGTHEATER: { name: string; path: string }[] = [
   { name: 'calendar, month view', path: '/en/activities/calendar?view=month' },
   { name: 'calendar, past', path: '/en/activities/calendar?view=past' },
   { name: 'event', path: 'first-event' },
-  { name: 'newsletter: delete my data', path: '/en/newsletter/delete-data' },
+  { name: 'newsletter: your details', path: '/en/newsletter/delete-data' },
   { name: 'page that does not exist', path: '/en/this-page-does-not-exist' },
 ]
 
@@ -32,8 +32,9 @@ const BOERENGROEP: { name: string; path: string }[] = [
   { name: 'news from friends', path: '/en/news/friends-news' },
   { name: 'vacancies', path: '/en/vacancies' },
   { name: 'podcast', path: '/en/library/podcast' },
-  { name: 'newsletter: delete my data', path: '/en/newsletter/delete-data' },
-  { name: 'newsletter: confirm without a link', path: '/en/newsletter/verify' },
+  { name: 'newsletter: your details', path: '/en/newsletter/delete-data' },
+  { name: 'newsletter: after confirming', path: '/en/newsletter/verify' },
+  { name: 'newsletter: how to leave', path: '/en/newsletter/unsubscribe' },
   { name: 'page that does not exist', path: '/en/this-page-does-not-exist' },
   { name: 'test page with every block', path: '/en/test-blocks' },
 ]

@@ -1866,7 +1866,11 @@ export interface SiteSetting {
      */
     brevoListId?: number | null;
     /**
-     * The last four characters of the saved key, to recognise it by. Empty: no key is saved here, and the key of the hosting is used when there is one.
+     * The email Brevo sends to someone who signs up, with a button to confirm. Only after they click it are they on the list, so nobody can put someone else on it. Make this email in Brevo as a template: give it a button with "Double opt-in link" as the kind of link, switch the template on, and type its number here. With a Dutch and an English version of the email, fill in one number per language of this screen. The check above tells whether the email is right.
+     */
+    brevoConfirmationTemplateId?: number | null;
+    /**
+     * The last four characters of the saved key, to recognise it by. Empty: no key is saved, and nobody can sign up.
      */
     brevoApiKeyHint?: string | null;
     /**
@@ -3050,6 +3054,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | T
     | {
         brevoListId?: T;
+        brevoConfirmationTemplateId?: T;
         brevoApiKeyHint?: T;
         brevoApiKey?: T;
         brevoApiKeyRemove?: T;

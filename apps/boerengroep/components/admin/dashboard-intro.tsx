@@ -47,11 +47,11 @@ const HOW = [
   },
   {
     q: 'How do I connect the newsletter sign-up to our mailing list?',
-    a: 'Open Site settings and click the tab Newsletter. Paste the key from Brevo at "New Brevo key", fill in the "Brevo list number", and press Save. The check at the top of the tab then says whether sign-ups arrive. Each website has its own key and its own list.',
+    a: 'Open Site settings and click the tab Newsletter. Paste the key from Brevo at "New Brevo key", fill in the "Brevo list number" and the number of the "Brevo confirmation email", and press Save. The check at the top of the tab then says whether the sign-up box works, and what is missing if it does not. Brevo keeps the list and sends the email in which people confirm. Each website has its own key, list and confirmation email.',
   },
   {
     q: 'An email from the website does not arrive.',
-    a: 'Look in the spam folder first. For form answers, check the address at Site settings, General. For the newsletter, open Site settings, Newsletter: the check at the top says what is wrong. Still nothing? Ask the person who looks after the hosting: on a website that is being tried out, emails are switched off.',
+    a: 'Look in the spam folder first. For form answers, check the address at Site settings, General. For the newsletter, open Site settings, Newsletter: the check at the top says what is wrong. The email in which people confirm comes from Brevo, not from the website. Still nothing? Ask the person who looks after the hosting: on a website that is being tried out, emails are switched off.',
   },
   {
     q: 'How do I let a colleague in?',

@@ -1,5 +1,6 @@
 import * as migration_20261008_181609_initial from './20261008_181609_initial';
 import * as migration_20261012_100730_media_storage_columns from './20261012_100730_media_storage_columns';
+import * as migration_20261012_143753_newsletter_confirmation_email from './20261012_143753_newsletter_confirmation_email';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20261012_100730_media_storage_columns.up,
     down: migration_20261012_100730_media_storage_columns.down,
-    name: '20261012_100730_media_storage_columns'
+    name: '20261012_100730_media_storage_columns',
+  },
+  {
+    up: migration_20261012_143753_newsletter_confirmation_email.up,
+    down: migration_20261012_143753_newsletter_confirmation_email.down,
+    name: '20261012_143753_newsletter_confirmation_email'
   },
 ];

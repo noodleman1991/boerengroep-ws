@@ -106,6 +106,17 @@ describe('site settings and redirects', () => {
     expect(nl.newsletter).toMatchObject({ brevoListId: 7, heading: 'Blijf op de hoogte', thanksTitle: 'Almost there' })
   })
 
+  it('uses one confirmation email for every language until a language gets its own', async () => {
+    const found = await payload.find({ collection: 'site-settings', where: { tenant: { equals: bg } } })
+    const id = found.docs[0]!.id
+    const chosen = async (locale: 'en' | 'nl') =>
+      ((await payload.findByID({ collection: 'site-settings', id, locale })) as any).newsletter.brevoConfirmationTemplateId
+    await payload.update({ collection: 'site-settings', id, locale: 'en', data: { newsletter: { brevoConfirmationTemplateId: 3 } } as never })
+    expect([await chosen('en'), await chosen('nl')]).toEqual([3, 3])
+    await payload.update({ collection: 'site-settings', id, locale: 'nl', data: { newsletter: { brevoConfirmationTemplateId: 5 } } as never })
+    expect([await chosen('en'), await chosen('nl')]).toEqual([3, 5])
+  })
+
   it('lets a tenant admin change settings but not an editor', async () => {
     const found = await payload.find({ collection: 'site-settings', where: { tenant: { equals: bg } } })
     const id = found.docs[0]!.id

@@ -9,8 +9,6 @@ import { outcomeOf, type SignupOutcome } from '@/lib/newsletter/signup-state';
 import { hasRichText } from '@/lib/rich-text-utils';
 
 interface NewsletterSignupProps {
-    /** Where the box sits, kept with the sign-up for the consent record. */
-    source?: string;
     /** Overrides the heading and introduction from Site settings, for a box placed on a page. */
     heading?: string | null;
     intro?: string | null;
@@ -27,7 +25,6 @@ type State = 'idle' | 'sending' | SignupOutcome;
  * A text they leave empty falls back to the standard wording.
  */
 export function NewsletterSignup({
-    source = 'website',
     heading,
     intro,
     headingLevel: Heading = 'h2',
@@ -46,7 +43,7 @@ export function NewsletterSignup({
     const errorId = useId();
     const doneRef = useRef<HTMLDivElement>(null);
 
-    const done = state === 'thanks' || state === 'already';
+    const done = state === 'thanks';
     useEffect(() => {
         // Move the reading position to the result, so a screen reader announces it.
         if (done) doneRef.current?.focus();
@@ -63,26 +60,24 @@ export function NewsletterSignup({
             const response = await fetch('/api/newsletter/subscribe', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, language: locale, source }),
+                body: JSON.stringify({ email, language: locale }),
             });
-            setState(outcomeOf(response.status, await response.json().catch(() => null)));
+            setState(outcomeOf(response.status));
         } catch {
             setState('error');
         }
     };
 
     if (done) {
-        const custom = state === 'thanks' && hasRichText(texts?.thanksMessage);
+        const custom = hasRichText(texts?.thanksMessage);
         return (
             <div className={`signup signup--done ${className}`} ref={doneRef} tabIndex={-1} role="status">
                 <BrandSymbol className="signup__mark" />
-                <Heading className="signup__heading">
-                    {state === 'already' ? t('already_title') : texts?.thanksTitle || t('thanks_title')}
-                </Heading>
+                <Heading className="signup__heading">{texts?.thanksTitle || t('thanks_title')}</Heading>
                 {custom ? (
                     <RichText data={texts?.thanksMessage} className="signup__message" />
                 ) : (
-                    <p className="signup__message">{state === 'already' ? t('already_message') : t('thanks_message')}</p>
+                    <p className="signup__message">{t('thanks_message')}</p>
                 )}
             </div>
         );

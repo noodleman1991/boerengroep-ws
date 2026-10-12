@@ -1,8 +1,8 @@
-import { getSubscribersForSync, newsletterSync, siteAdmin } from '@/lib/newsletter/sync';
+import { newsletter, siteAdmin } from '@/lib/newsletter/this-site';
 
 export const dynamic = 'force-dynamic';
 
-/** For the admin panel: does the link with Brevo work, and is the list complete? */
+/** For the admin panel: does the sign-up box work, from the box to the Brevo list? */
 export async function GET(request: Request) {
   const who = await siteAdmin(request);
   if ('refusal' in who) return who.refusal;
@@ -12,9 +12,9 @@ export async function GET(request: Request) {
   if (asked && asked !== String(who.tenantId)) return Response.json({ otherSite: true });
 
   try {
-    return Response.json(await newsletterSync.status(await getSubscribersForSync()));
+    return Response.json(await newsletter.status());
   } catch (error) {
     console.error('[newsletter] status failed:', error);
-    return Response.json({ error: 'The list of subscribers on this site could not be read.' }, { status: 500 });
+    return Response.json({ error: 'The check did not work. Try again in a moment.' }, { status: 500 });
   }
 }

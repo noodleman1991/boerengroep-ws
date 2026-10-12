@@ -19,23 +19,20 @@ const DOT: Record<StatusLine['tone'], string> = {
 
 /**
  * Shown at the top of Site settings, Newsletter. It answers one question for an editor:
- * do the people who sign up on the site really arrive on our Brevo list?
+ * does the sign-up box work, from the box on the site to our list in Brevo?
  */
 export function NewsletterStatus() {
   const tenant = useFormFields(([fields]) => fields.tenant?.value)
   const [loaded, setLoaded] = useState<Loaded>({ state: 'checking' })
-  const [working, setWorking] = useState(false)
-  const [note, setNote] = useState<string | null>(null)
 
   const check = useCallback(async () => {
     setLoaded({ state: 'checking' })
-    setNote(null)
     try {
       const query = typeof tenant === 'number' || typeof tenant === 'string' ? `?tenant=${encodeURIComponent(tenant)}` : ''
       const response = await fetch(`/api/newsletter/status${query}`, { credentials: 'include' })
       const body = await response.json().catch(() => null)
       if (response.ok && body?.otherSite) setLoaded({ state: 'hidden' })
-      else if (response.ok && body?.site) setLoaded({ state: 'ready', status: body })
+      else if (response.ok && body?.key) setLoaded({ state: 'ready', status: body })
       else setLoaded({ state: 'failed', message: body?.error ?? 'The check did not work. Try again in a moment.' })
     } catch {
       setLoaded({ state: 'failed', message: 'The check did not work. Try again in a moment.' })
@@ -45,26 +42,6 @@ export function NewsletterStatus() {
   useEffect(() => {
     void check()
   }, [check])
-
-  const repair = async () => {
-    setWorking(true)
-    setNote(null)
-    try {
-      const response = await fetch('/api/newsletter/sync', { method: 'POST', credentials: 'include' })
-      const body = await response.json().catch(() => null)
-      if (response.ok && body?.ok) {
-        setNote(
-          `Sent ${body.added} to the list and took ${body.removed} off it. Brevo needs a minute to work through them, then press "Check again".`,
-        )
-      } else {
-        setNote(`That did not work. ${body?.error ?? ''}`.trim())
-      }
-    } catch {
-      setNote('That did not work. Try again in a moment.')
-    } finally {
-      setWorking(false)
-    }
-  }
 
   if (loaded.state === 'hidden') return null
 
@@ -80,7 +57,7 @@ export function NewsletterStatus() {
         background: 'var(--theme-elevation-50)',
       }}
     >
-      <h3 style={{ margin: '0 0 calc(var(--base) * 0.5)' }}>Does the sign-up reach Brevo?</h3>
+      <h3 style={{ margin: '0 0 calc(var(--base) * 0.5)' }}>Does the sign-up box work?</h3>
 
       {loaded.state === 'checking' && <p style={{ margin: 0 }}>Checking the link with Brevo.</p>}
       {loaded.state === 'failed' && <p style={{ margin: 0 }}>{loaded.message}</p>}
@@ -102,20 +79,9 @@ export function NewsletterStatus() {
         </ul>
       )}
 
-      {note && (
-        <p role="status" style={{ margin: 'calc(var(--base) * 0.6) 0 0' }}>
-          {note}
-        </p>
-      )}
-
       {loaded.state !== 'checking' && (
         <div style={{ display: 'flex', gap: '0.5em', flexWrap: 'wrap', marginTop: 'calc(var(--base) * 0.5)' }}>
-          {described?.canSync && (
-            <Button buttonStyle="primary" size="small" disabled={working} onClick={repair} margin={false}>
-              {working ? 'Working on it' : 'Bring the Brevo list up to date'}
-            </Button>
-          )}
-          <Button buttonStyle="secondary" size="small" disabled={working} onClick={() => void check()} margin={false}>
+          <Button buttonStyle="secondary" size="small" onClick={() => void check()} margin={false}>
             Check again
           </Button>
         </div>

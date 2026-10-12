@@ -1,37 +1,32 @@
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { ExportDataPage } from '@/components/newsletter/export-data-page';
+import { NewsletterHelpPage } from '@/components/newsletter/help-page';
 import Layout from '@/components/layout/layout';
 import { SITE } from '@/site.config';
 
-interface ExportDataPageProps {
+interface Props {
     params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: ExportDataPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { locale } = await params;
     setRequestLocale(locale);
-    const t = await getTranslations({ locale, namespace: 'newsletter' });
+    const t = await getTranslations({ locale, namespace: 'newsletter.yourData' });
 
     return {
-        title: `${t('exportData.title')} - ${SITE.name}`,
-        description: t('exportData.description'),
+        title: `${t('title')} - ${SITE.name}`,
+        description: t('description'),
     };
 }
 
-export default async function ExportDataRoute({ params }: ExportDataPageProps) {
+/** What is kept about a reader of the newsletter, and who to ask for it. */
+export default async function Page({ params }: Props) {
     const { locale } = await params;
     setRequestLocale(locale);
 
-    const mockLayoutData = {
-        data: {
-            global: null
-        }
-    };
-
     return (
-        <Layout rawPageData={mockLayoutData}>
-            <ExportDataPage locale={locale} />
+        <Layout rawPageData={{ data: { global: null } }}>
+            <NewsletterHelpPage locale={locale} about="yourData" />
         </Layout>
     );
 }

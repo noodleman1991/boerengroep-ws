@@ -12,14 +12,10 @@
         "ADMIN_URL",
         "BLOB_READ_WRITE_TOKEN",
         "MEDIA_DIR",
-        "NEWSLETTER_*",
-        "DATABASE_URL",
         "EMAILS_OFF",
         "RESEND_*",
         "FROM_EMAIL",
         "FROM_NAME",
-        "REPLY_TO_EMAIL",
-        "BREVO_*",
         "PODCAST_RSS_URL",
         "RUN_MIGRATIONS"
       ]

@@ -300,8 +300,8 @@ test('content pages are served from the prerender cache', async ({ request }) =>
   expect(['HIT', 'PRERENDER', 'STALE']).toContain(res.headers()['x-nextjs-cache'])
 })
 
-// The newsletter tests answer the site's own endpoints themselves, so a test run
-// never writes to the subscriber list and never sends an email.
+// The newsletter tests answer the sign-up themselves, so a test run never passes an
+// address to Brevo and nobody gets an email.
 test('signing up shows the thank-you in place of the box', async ({ page }) => {
   let sent: unknown
   await page.route('**/api/newsletter/subscribe', async (route) => {
@@ -314,7 +314,7 @@ test('signing up shows the thank-you in place of the box', async ({ page }) => {
   await box.getByRole('button').click()
   await expect(box.getByRole('status')).toContainText('Bijna klaar')
   await expect(box.locator('input[type="email"]')).toHaveCount(0)
-  expect(sent).toEqual({ email: 'anna@example.org', language: 'nl', source: 'footer' })
+  expect(sent).toEqual({ email: 'anna@example.org', language: 'nl' })
 })
 
 test('a mistyped address is caught before anything is sent', async ({ page }) => {
@@ -331,40 +331,46 @@ test('a mistyped address is caught before anything is sent', async ({ page }) =>
   expect(calls).toBe(0)
 })
 
-test('someone already on the list is told so, not shown an error', async ({ page }) => {
-  await page.route('**/api/newsletter/subscribe', (route) => route.fulfill({ json: { status: 'already' } }))
+test('a sign-up that fails says so in the box', async ({ page }) => {
+  await page.route('**/api/newsletter/subscribe', (route) => route.fulfill({ status: 503, json: { error: 'not ready' } }))
   await page.goto('/en')
   const box = page.locator('.site-footer__news')
   await box.locator('input[type="email"]').fill('anna@example.org')
   await box.getByRole('button').click()
-  await expect(box.getByRole('status')).toContainText('already on the list')
+  await expect(box.getByRole('alert')).toContainText('That did not work')
+  await expect(box.locator('input[type="email"]')).toBeVisible()
 })
 
-test('the confirmation link lands on a page that says you are on the list', async ({ page }) => {
-  await page.route('**/api/newsletter/verify', (route) => route.fulfill({ json: { message: 'ok' } }))
-  await page.goto('/en/newsletter/verify?token=11111111-1111-4111-8111-111111111111')
+test('the button in the confirmation email lands on a page that says you are on the list', async ({ page }) => {
+  await page.goto('/en/newsletter/verify')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('You are on the list')
 })
 
-test('deleting your data starts with a link by email', async ({ page }) => {
-  let sent: Record<string, unknown> = {}
-  await page.route('**/api/newsletter/delete-data', async (route) => {
-    sent = route.request().postDataJSON()
-    await route.fulfill({ json: { status: 'email-sent' } })
-  })
-  await page.goto('/en/newsletter/delete-data')
-  await page.locator('main input[type="email"]').fill('anna@example.org')
-  await page.locator('main input[type="checkbox"]').check()
-  await page.getByRole('button', { name: 'Send me the link' }).click()
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Look in your inbox')
-  expect(sent.email).toBe('anna@example.org')
-  expect(sent.token).toBeUndefined()
+test('the pages about leaving the newsletter say how, and who to write to', async ({ page }) => {
+  for (const [path, heading] of [
+    ['/en/newsletter/unsubscribe', 'Leaving the newsletter'],
+    ['/nl/newsletter/unsubscribe', 'Afmelden voor de nieuwsbrief'],
+    ['/en/newsletter/delete-data', 'Your details and the newsletter'],
+    ['/en/newsletter/export-data', 'Your details and the newsletter'],
+  ]) {
+    await page.goto(path)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(heading)
+    await expect(page.locator('main a[href^="mailto:"]')).toBeVisible()
+    // The list is kept by Brevo. The site has no form here that could take someone else off it.
+    await expect(page.locator('main form')).toHaveCount(0)
+  }
 })
 
-test('the newsletter endpoints do not report on the server setup to visitors', async ({ request }) => {
+test('the sign-up refuses what is not an address, and the check is for admins only', async ({ request }) => {
+  expect((await request.post('/api/newsletter/subscribe', { data: { email: 'anna-at-example' } })).status()).toBe(400)
   expect((await request.get('/api/newsletter/subscribe')).status()).toBe(405)
   expect((await request.get('/api/newsletter/status')).status()).toBe(401)
-  expect((await request.post('/api/newsletter/sync')).status()).toBe(401)
+})
+
+test('the site keeps no list of its own: the old handlers are gone', async ({ request }) => {
+  for (const old of ['verify', 'unsubscribe', 'sync', 'export-data', 'delete-data']) {
+    expect((await request.post(`/api/newsletter/${old}`, { data: {} })).status(), old).toBe(404)
+  }
 })
 
 // The block tests use the test page (pnpm --filter @sites/cms seed:test-page).

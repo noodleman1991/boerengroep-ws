@@ -1,39 +1,32 @@
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { VerifyEmailPage } from '@/components/newsletter/verify-email-page';
+import { ConfirmedPage } from '@/components/newsletter/confirmed-page';
 import Layout from '@/components/layout/layout';
 import { SITE } from '@/site.config';
 
-interface VerifyPageProps {
+interface Props {
     params: Promise<{ locale: string }>;
-    searchParams: Promise<{ token?: string }>;
 }
 
-export async function generateMetadata({ params }: VerifyPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { locale } = await params;
     setRequestLocale(locale);
-    const t = await getTranslations({ locale, namespace: 'newsletter' });
+    const t = await getTranslations({ locale, namespace: 'newsletter.verify' });
 
     return {
-        title: `${t('verify.title')} - ${SITE.name}`,
-        description: t('verify.description'),
+        title: `${t('confirmed_title')} - ${SITE.name}`,
+        description: t('confirmed_message'),
     };
 }
 
-export default async function VerifyPage({ params, searchParams }: VerifyPageProps) {
+/** Where Brevo sends someone after they clicked the button in its confirmation email. */
+export default async function Page({ params }: Props) {
     const { locale } = await params;
     setRequestLocale(locale);
-    const { token } = await searchParams;
-
-    const mockLayoutData = {
-        data: {
-            global: null
-        }
-    };
 
     return (
-        <Layout rawPageData={mockLayoutData}>
-            <VerifyEmailPage locale={locale} token={token} />
+        <Layout rawPageData={{ data: { global: null } }}>
+            <ConfirmedPage />
         </Layout>
     );
 }

@@ -259,7 +259,7 @@ export const SiteSettings: CollectionConfig = {
             'The sign-up box and what people read after signing up. Leave a text empty to use the standard wording.',
           fields: [
             {
-              // A live check, not a stored value: do sign-ups arrive on the Brevo list?
+              // A live check, not a stored value: does the sign-up box work, from the box to the Brevo list?
               name: 'brevoStatus',
               type: 'ui',
               admin: { components: { Field: '@/components/admin/newsletter-status#NewsletterStatus' } },
@@ -274,6 +274,16 @@ export const SiteSettings: CollectionConfig = {
               },
             },
             {
+              name: 'brevoConfirmationTemplateId',
+              type: 'number',
+              localized: true,
+              label: 'Brevo confirmation email (template number)',
+              admin: {
+                description:
+                  'The email Brevo sends to someone who signs up, with a button to confirm. Only after they click it are they on the list, so nobody can put someone else on it. Make this email in Brevo as a template: give it a button with "Double opt-in link" as the kind of link, switch the template on, and type its number here. With a Dutch and an English version of the email, fill in one number per language of this screen. The check above tells whether the email is right.',
+              },
+            },
+            {
               // Before the key itself, so it sees what was typed before that is locked.
               name: 'brevoApiKeyHint',
               type: 'text',
@@ -282,7 +292,7 @@ export const SiteSettings: CollectionConfig = {
               hooks: { beforeChange: [noteKey], afterRead: [forPeopleWhoLogIn] },
               admin: {
                 readOnly: true,
-                description: 'The last four characters of the saved key, to recognise it by. Empty: no key is saved here, and the key of the hosting is used when there is one.',
+                description: 'The last four characters of the saved key, to recognise it by. Empty: no key is saved, and nobody can sign up.',
               },
             },
             {
