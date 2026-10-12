@@ -83,6 +83,12 @@ live after Boerengroep, because the admin panel for both lives on the Boerengroe
    Do not copy the four `TINA` variables, `NODE_ENV`, `BASE_PATH` and `NEXT_PUBLIC_BASE_URL`:
    nothing reads them any more.
 
+   A variable the build has to read must also be named in `turbo.json`, under the task
+   `build`, `passThroughEnv`. Vercel builds through Turborepo, which hides every variable that
+   is not named there, and the build then stops with "Missing required environment variable".
+   The same task has `"cache": false`: the build reads the pages from the database, so the
+   same code must be built again when only the content changed.
+
    **Never put the content database in `DATABASE_URL`.** On the old projects that name is the
    newsletter sign-up database, and the live site writes every sign-up to it.
 

@@ -1,0 +1,26 @@
+# What "vercel deploy" from a laptop must leave behind. The command line does not read
+# .gitignore, so without this file it uploads everything on the laptop, the local pictures
+# and secrets included. Everything listed here is also ignored by git.
+
+# Local uploads. Only at these places, as in .gitignore: a bare "media" would also hide source
+# folders with that name, such as components/media.
+/.media
+/media
+/apps/*/.media
+/apps/*/media
+/packages/cms/media
+
+# Settings with secrets. The example files hold no values.
+.env
+.env.*
+!.env.example
+
+# Leftovers of tools
+.idea
+.turbo
+.DS_Store
+*.tsbuildinfo
+*.log
+coverage
+test-results
+playwright-report
