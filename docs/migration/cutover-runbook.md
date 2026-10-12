@@ -26,8 +26,13 @@ The new projects are not connected to the repository yet: they were deployed fro
 `vercel deploy --prod` (see "Deploying without a Git connection"). Connect them before cutover,
 under Settings, Git in each project, so that every push deploys by itself.
 
-**Open before any email can go out:** the mail service (Resend) lists no verified sender domain
-for the key the sites use. See "Email (owner)".
+**Checked on the deployed sites that day:** every address of the two live sites arrives (238
+and 199, none failed), and the browser tests pass against both (Boerengroep 111, Inspringtheater
+58), with the admin login.
+
+**Open before the newsletter works:** the mail service (Resend) lists no verified sender domain
+for the key the sites use, the Brevo key is refused by Brevo, and Inspringtheater's sign-up
+database has no tables. See "Newsletter and Brevo (owner)" and "Email (owner)".
 
 Boerengroep first. The second site, Inspringtheater, has its own section further down and goes
 live after Boerengroep, because the admin panel for both lives on the Boerengroep site.
@@ -115,6 +120,25 @@ If the list should record the language, create a text contact attribute named `L
 (Contacts, Settings, Contact attributes). Without it people are still added, only without a language.
 
 The subscriber database needs no change for this.
+
+### How the sign-ups stand (12 October 2026)
+
+Read through the admin's own check (Site settings, Newsletter) on the new sites:
+
+- **Boerengroep**: 25 people filled in the box and none confirmed. They are waiting for a
+  confirmation email that was never delivered: see "Email (owner)". Once email works, they can
+  sign up again and get the email, or be asked to.
+- **Inspringtheater**: its sign-up database has no tables, so the box on the site cannot store
+  anyone, on the old site either. Create them once, from a laptop, with that database's
+  address (it is `NEWSLETTER_DATABASE_URL` on the project `inspringtheater-payload`):
+
+  ```bash
+  cd apps/boerengroep
+  NEWSLETTER_DATABASE_URL=<Inspringtheater's sign-up database> pnpm exec drizzle-kit migrate
+  ```
+
+  It only adds the four empty tables of `apps/boerengroep/drizzle`. Never run it with
+  `PAYLOAD_DATABASE_URL`, the content database.
 
 ## Email (owner)
 
