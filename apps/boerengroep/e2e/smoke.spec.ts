@@ -369,7 +369,8 @@ test('the sign-up refuses what is not an address, and the check is for admins on
 
 test('the site keeps no list of its own: the old handlers are gone', async ({ request }) => {
   for (const old of ['verify', 'unsubscribe', 'sync', 'export-data', 'delete-data']) {
-    expect((await request.post(`/api/newsletter/${old}`, { data: {} })).status(), old).toBe(404)
+    // "Not found", or "not allowed" where the address falls through to the pages of the site.
+    expect([404, 405], old).toContain((await request.post(`/api/newsletter/${old}`, { data: {} })).status())
   }
 })
 

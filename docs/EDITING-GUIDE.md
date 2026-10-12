@@ -368,48 +368,66 @@ Only site admins can change these. Go to **Site settings**. Next to Menu it has 
 - **Footer**: the columns of links at the bottom of every page. It works like the menu: each
   column is a row, click it to open it, drag to change the order.
 - **Newsletter**: the texts of the sign-up box, including the small print about what people
-  agree to. At the top, "Does the sign-up reach Brevo?" tells you in plain words whether
-  sign-ups arrive in your mailing list. See "The link with Brevo" below.
+  agree to. At the top, "Does the sign-up box work?" tells you in plain words whether people
+  who sign up arrive in your mailing list. See "The link with Brevo" below.
 - **Calendar**: the text above the calendar, and whether it opens as a list or as a month.
 
 ### The link with Brevo
 
-Brevo is the service that keeps your mailing list and sends the newsletter. The website adds
-people to your list when they confirm their email address. For that it needs two things from
-your Brevo account, and both go on the tab **Newsletter** of Site settings:
+Brevo is the service that keeps your mailing list and sends the newsletter. The website keeps
+no list of its own. This is what happens when someone fills in the sign-up box:
+
+1. The website gives the address to Brevo.
+2. Brevo sends that person an email with a button to confirm.
+3. When they click the button, Brevo puts them on your list, and they land on a page of the
+   website that says "You are on the list".
+
+Someone who does not click the button is not on the list. That way nobody can sign up somebody
+else. Leaving works the same way everywhere: every newsletter you send from Brevo has an
+unsubscribe link at the bottom, and Brevo takes the person off the list.
+
+For this the website needs three things from your Brevo account. All three go on the tab
+**Newsletter** of Site settings:
 
 1. **The key.** In Brevo, click your name at the top right, then "SMTP & API", then "API
    keys", and make a new key. Copy it, paste it in the box **New Brevo key**, and press Save.
 2. **The list number.** In Brevo, under Contacts, Lists, each list has a number in the column
    "ID". Fill it in at **Brevo list number** and press Save.
+3. **The confirmation email.** This is the email from step 2 above. You make it in Brevo, as
+   an email template (in Brevo: Transactional, then Templates):
+   - Write a short email, for example "Please confirm that you want our newsletter".
+   - Give it a button, and for the link of that button choose the kind **Double opt-in link**.
+     Without that button nobody can confirm.
+   - Switch the template on (Brevo calls this "active").
+   - Each template has a number in Brevo. Fill it in at **Brevo confirmation email (template
+     number)** and press Save.
 
-After saving, the check at the top of the tab tells you whether it works.
+   With a Dutch and an English version of the email, make two templates. Fill in the number of
+   the English one, switch the language at the top of the screen to Nederlands, fill in the
+   number of the Dutch one, and save. With one email for everyone, fill in only the first.
+
+After saving, the check at the top of the tab tells you whether it works. It names what is
+missing or wrong, and lists the lists and the emails of your Brevo account with their numbers,
+so you can see which number to fill in. **Check again** repeats the check, for example after
+you changed something in Brevo.
 
 A key is like a password. That is why, once saved, it is never shown again: the box is empty
 when you come back, and only the last four characters of the saved key are shown next to it so
 you can tell which one it is. Leaving the box empty keeps the saved key. To replace it, paste a
 new one. To stop using it, tick **Remove the saved Brevo key** and press Save.
 
-Each website has its own tab, so each has its own key and its own list number. Choose the
-website at the top first. Use a different list for Boerengroep and for Inspringtheater, or the
-two newsletters reach the same people.
-
-The button **Bring the Brevo list up to date** appears when the list in Brevo is behind:
-people who confirmed on the website are missing from it, or people who left are still on it.
-That happens, for example, when the key was not filled in yet. Press the button once and the
-list is put right. **Check again** repeats the check.
+Each website has its own tab, so each has its own key, its own list number and its own
+confirmation email. Choose the website at the top first. Use a different list for Boerengroep
+and for Inspringtheater, or the two newsletters reach the same people.
 
 ## Emails the website sends
 
-The newsletter itself is written and sent in Brevo, not on the website. The website only sends
-short, automatic emails. These are all of them:
+The newsletter is written and sent in Brevo, not on the website. So is the email that asks a
+new reader to confirm their address: see [The link with Brevo](#the-link-with-brevo). The
+website itself only sends these short, automatic emails:
 
 | Email | Who gets it | When |
 | --- | --- | --- |
-| "Please confirm your address" | A visitor | Right after they fill in the newsletter box |
-| "You are unsubscribed" | A visitor | After they click the unsubscribe link |
-| "Your data" | A visitor | When they ask what the website knows about them |
-| "Your data is removed" | A visitor | When they ask to be forgotten |
 | A copy of a form answer or an order | Your organisation | Each time someone sends a form or orders an item |
 | Extra emails you added to a form | Whoever you chose | Each time someone sends that form |
 | "Choose a new password" | A colleague | When they click "Forgot password" at the login |
@@ -436,27 +454,30 @@ filled in the form, if they left their email address.
 **An extra email for one form**, for example a thank-you to the visitor. Open the form under
 **Forms**, scroll to **Emails**, and add one: who it goes to, the subject and the text.
 
-**The newsletter.** The key and the list number of Brevo, and every text of the sign-up box,
-are on the tab **Newsletter**. See [The link with Brevo](#the-link-with-brevo).
+**The newsletter.** The key, the list number and the confirmation email of Brevo, and every
+text of the sign-up box, are on the tab **Newsletter**. The text of the confirmation email
+itself, and who it comes from, you set in Brevo. See
+[The link with Brevo](#the-link-with-brevo).
 
 **Who can log in, and their email address.** See [People and websites](#people-and-websites).
 The "Choose a new password" email goes to the address a person logs in with.
 
 ### What you cannot set here, and who can
 
-Three things are set by the person who looks after the website's hosting, because a mistake in
-them stops every email at once:
+Two things are set by the person who looks after the website's hosting, because a mistake in
+them stops every email of the website at once:
 
-- **The name and the address the emails come from.** Boerengroep's emails come from "Stichting
-  Boerengroep", Inspringtheater's from "Stichting Inspringtheater". Both use an address ending
-  in boerengroep.nl. A sender address only works on a web domain that is registered with the
-  mail service, and inspringtheater.nl is not. To get a sender address on inspringtheater.nl,
-  ask for that domain to be registered first. The "Choose a new password" email always comes
-  from Stichting Boerengroep, because there is one login for both websites.
-- **The texts of the automatic emails to visitors** (confirm, unsubscribed, your data, your
-  data is removed). They are fixed, in English and Dutch.
+- **The name and the address the website's own emails come from.** Boerengroep's come from
+  "Stichting Boerengroep", Inspringtheater's from "Stichting Inspringtheater". Both use an
+  address ending in boerengroep.nl. A sender address only works on a web domain that is
+  registered with the mail service of the website (Resend). The "Choose a new password" email
+  always comes from Stichting Boerengroep, because there is one login for both websites.
 - **Whether the website sends email at all.** A website that is still being tried out has its
-  emails switched off, so that no visitor gets a message from a test.
+  emails switched off, so that no visitor gets a message from a test. On such a copy the
+  newsletter box also passes nobody to Brevo, and the check on the Newsletter tab says so.
+
+This is about the website's own emails only. The newsletter and its confirmation email come
+from Brevo, with the sender you chose there.
 
 ### No email arrives. What now?
 
@@ -465,11 +486,12 @@ Go through these in order:
 1. **Look in the spam folder**, and wait a few minutes.
 2. **Is it a form answer?** Check the address at Site settings, General, **Send form answers
    and orders to**. The answer itself is never lost: it is under Forms, Form responses.
-3. **Is it the newsletter confirmation?** Sign up with your own address on the website and see
-   whether the email comes. People who never confirm are not added to Brevo.
-4. **Is the newsletter list in Brevo missing people?** Open Site settings, Newsletter. The
-   check at the top says what is wrong and offers a button to repair it.
-5. **Still nothing?** Tell the person who looks after the hosting, and say which email is
+3. **Is it the newsletter confirmation, or does nobody new arrive on your list?** Open Site
+   settings, Newsletter. The check at the top says what is wrong: the key, the list or the
+   confirmation email. When the check is all green, sign up with your own address on the
+   website and see whether the email from Brevo comes. That email is sent by Brevo, so its
+   own sending log (in Brevo, under Transactional) shows whether it left.
+4. **Still nothing?** Tell the person who looks after the hosting, and say which email is
    missing and when you tried. The usual causes are emails that are still switched off, or a
    sender address that the mail service does not accept.
 

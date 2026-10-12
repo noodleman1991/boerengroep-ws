@@ -465,3 +465,45 @@ the laptop, and give editors clear instructions for emails.
   verified there. And the Brevo key is still the one Brevo refuses.
 - **Lesson**: a build that passes on a laptop says little about the first deployment. Four of
   the five faults could not be seen locally. Rehearse on the real platform early.
+
+## Round 9 (the newsletter goes straight to Brevo, 2026-10-12)
+
+The owner's view was that there is no sign-up list on the site: the list is in Brevo. The code
+said otherwise. It still ran the old site's sign-up: a small database per site, a confirmation
+email through Resend, and only then a copy to Brevo. Checking what that had done on the live
+sites settled it.
+
+- **Resend, checked three ways.** With the one key that all four Vercel projects hold, Resend
+  lists no sender domain and no email ever sent. A test send from `newsletter@boerengroep.nl`
+  to Resend's own test inbox was refused: "The boerengroep.nl domain is not verified." The DNS
+  of boerengroep.nl has none of Resend's records. So no confirmation email ever left a site.
+- **What that meant.** Boerengroep's sign-up database held 25 addresses, none confirmed.
+  Inspringtheater's had no tables. On the old projects the Brevo list number is empty and
+  Brevo refuses the key. The old path never brought one person to Brevo.
+- **The decision** (owner, that day): Brevo only.
+- **How it works now.** The box hands the address to Brevo's double opt-in. Brevo sends its
+  confirmation email and puts the person on the list when they click the button, then sends
+  them to the site's "You are on the list" page. The site stores nothing about readers.
+- **In the admin**, Site settings, Newsletter: the key, the list number and, new, the number
+  of the confirmation email in Brevo, per language if wanted (third migration,
+  `20261012_143753_newsletter_confirmation_email`). The check on that tab asks Brevo about all
+  three and names the lists and emails of the account. The key and list are no longer read
+  from the hosting: one place to set them.
+- **Guards.** `EMAILS_OFF=1` keeps the box from passing anyone to Brevo, so a trial copy
+  cannot make Brevo email a real person. The sign-up is limited per visitor. The answer to a
+  visitor is the same whether or not Brevo knew the address.
+- **The pages** for leaving and for data requests keep their addresses and now say how: the
+  link at the bottom of every newsletter, or a message to the organisation. They had forms
+  that worked on the site's own list, and that list is gone.
+- **Removed**: the sign-up tables and their code, the site's own newsletter emails, five
+  handlers, four packages, and five variables (`NEWSLETTER_DATABASE_URL`, `NEWSLETTER_SECRET`,
+  `REPLY_TO_EMAIL`, `BREVO_API_KEY`, `BREVO_LIST_ID`). Each new Vercel project now holds 12.
+- **Checked on the deployed copies** after the change: the third migration is in the real
+  database; the check in the admin answers for both sites (emails off, no key saved yet); the
+  four newsletter pages answer in both languages and the five old handlers are gone; every
+  address of the live sites still arrives (238 and 199, none failed); browser tests
+  Boerengroep 115 passed and 17 skipped, Inspringtheater 58 passed and 2 skipped. On the
+  laptop: lint, typecheck, 469 unit tests, 103 and 36 database tests, the migration check.
+- **Not checked**: a real sign-up through Brevo. It needs a working key, a list and a
+  confirmation email in the owner's Brevo account. The calls follow Brevo's reference and are
+  covered by tests with a stand-in for Brevo.

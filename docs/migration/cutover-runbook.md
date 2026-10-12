@@ -16,7 +16,8 @@ Both new projects run Node 24 and their server code in Frankfurt, next to the da
 database is filled from the old sites as they were that day. Three things keep the new sites
 apart from the live ones until cutover:
 
-- `EMAILS_OFF=1` on both projects: they send no email. Remove it at cutover.
+- `EMAILS_OFF=1` on both projects: they send no email, and the newsletter box passes nobody
+  to Brevo. Remove it at cutover.
 - A site on a `vercel.app` address tells search engines to stay away. That ends by itself when
   `NEXT_PUBLIC_SITE_URL` is the real domain.
 - The old project `boerengroep` skips builds of the branch `payload-migration` (its Ignored
@@ -30,9 +31,11 @@ under Settings, Git in each project, so that every push deploys by itself.
 and 199, none failed), and the browser tests pass against both (Boerengroep 111, Inspringtheater
 58), with the admin login.
 
-**Open before the newsletter works:** the mail service (Resend) lists no verified sender domain
-for the key the sites use, the Brevo key is refused by Brevo, and Inspringtheater's sign-up
-database has no tables. See "Newsletter and Brevo (owner)" and "Email (owner)".
+**Open before the newsletter works:** a working Brevo key, the list number and the
+confirmation email, saved in the admin for each website. See "Newsletter and Brevo (owner)".
+
+**Open before the sites' own emails work** (copies of form answers, password emails): the mail
+service (Resend) has no verified sender domain. See "Email (owner)".
 
 Boerengroep first. The second site, Inspringtheater, has its own section further down and goes
 live after Boerengroep, because the admin panel for both lives on the Boerengroep site.
@@ -77,16 +80,16 @@ live after Boerengroep, because the admin panel for both lives on the Boerengroe
 
    | Old name | New name | What it is |
    |---|---|---|
-   | `DATABASE_URL` | `NEWSLETTER_DATABASE_URL` | The newsletter sign-ups of this site: who signed up, who confirmed, who left. Not the content database. The old name still works |
    | `RESEND_BOERENGROEP` | `RESEND_API_KEY` | The key of the mail service. The old name still works |
-   | `FROM_EMAIL`, `FROM_NAME`, `REPLY_TO_EMAIL` | the same | The sender of the emails |
-   | `NEWSLETTER_SECRET` | the same | Signs the links in newsletter emails. Keep the value, or links in emails already sent stop working |
+   | `FROM_EMAIL`, `FROM_NAME` | the same | The sender of the site's own emails |
    | `BASE_URL` | the same, plus `NEXT_PUBLIC_SITE_URL` | The public address of the site |
    | `PODCAST_RSS_URL` | the same | The podcast feed |
-   | `BREVO_API_KEY`, `BREVO_LIST_ID` | the same | Optional: an admin saves the key and the list number in the admin (Site settings, Newsletter), per website, and what is saved there wins |
 
-   Do not copy the four `TINA` variables, `NODE_ENV`, `BASE_PATH` and `NEXT_PUBLIC_BASE_URL`:
-   nothing reads them any more.
+   Do not copy the rest: nothing reads them any more. That is the four `TINA` variables,
+   `NODE_ENV`, `BASE_PATH`, `NEXT_PUBLIC_BASE_URL`, and everything of the old newsletter
+   sign-up: `DATABASE_URL`, `NEWSLETTER_SECRET`, `REPLY_TO_EMAIL`, `BREVO_API_KEY` and
+   `BREVO_LIST_ID`. The new sites keep no sign-up list of their own, and the Brevo settings are
+   saved in the admin.
 
    A variable the build has to read must also be named in `turbo.json`, under the task
    `build`, `passThroughEnv`. Vercel builds through Turborepo, which hides every variable that
@@ -94,8 +97,8 @@ live after Boerengroep, because the admin panel for both lives on the Boerengroe
    The same task has `"cache": false`: the build reads the pages from the database, so the
    same code must be built again when only the content changed.
 
-   **Never put the content database in `DATABASE_URL`.** On the old projects that name is the
-   newsletter sign-up database, and the live site writes every sign-up to it.
+   On the two old projects, `DATABASE_URL` is the old site's own newsletter sign-up database.
+   The new projects have no such variable.
 
    `PAYLOAD_SECRET` locks the keys that admins save in the settings. If it is ever changed,
    the saved Brevo key can no longer be read: the admin shows that no key works, and an admin
@@ -103,62 +106,67 @@ live after Boerengroep, because the admin panel for both lives on the Boerengroe
 
 ## Newsletter and Brevo (owner)
 
-The site adds people to a Brevo list when they confirm their email, takes them off when they
-unsubscribe and deletes them when they ask for their data to be erased. Two things are needed, in
-this order. Until both are there the site keeps collecting sign-ups in its own table and nothing is lost.
+Brevo keeps the mailing list. The site keeps none. When someone fills in the sign-up box, the
+site hands the address to Brevo, Brevo sends its confirmation email, and Brevo puts the person
+on the list when they click the button in it. People leave through the unsubscribe link that
+Brevo puts in every newsletter. So there is no sign-up database, no variable on Vercel, and
+nothing to bring across at cutover.
 
-1. A working key. In Brevo: your name at the top right, "SMTP & API", "API keys", create a key.
-   The current local key is refused by Brevo with "API Key is not enabled". Save the new key as
-   `BREVO_API_KEY` in Vercel for Production and Preview, then redeploy.
-2. The list. In the admin panel open Site settings, Newsletter. The box "Does the sign-up reach
-   Brevo?" shows whether the key works and names the lists of the account with their numbers. Fill
-   in "Brevo list number" and save. `BREVO_LIST_ID` in Vercel is only a fallback and can stay empty.
-3. In the same box press "Bring the Brevo list up to date". Everyone who confirmed while the link
-   was broken is added, and everyone who unsubscribed is taken off. It is safe to press again.
+Everything is set in the admin, per website, under Site settings, Newsletter. The steps for
+editors are in `docs/EDITING-GUIDE.md`, "The link with Brevo". In short:
 
-If the list should record the language, create a text contact attribute named `LANGUAGE` in Brevo
-(Contacts, Settings, Contact attributes). Without it people are still added, only without a language.
+1. **A working key.** In Brevo: your name at the top right, "SMTP & API", "API keys", create a
+   key, and paste it at "New Brevo key". The key that was on the old projects is refused by
+   Brevo with "API Key is not enabled", so a new one is needed.
+2. **The list number**, at "Brevo list number". A different list for each website.
+3. **The confirmation email**, at "Brevo confirmation email (template number)": an email
+   template in Brevo with a button whose link is of the kind "Double opt-in link", switched
+   on. One per language of the site is possible.
 
-The subscriber database needs no change for this.
+The box at the top of that tab, "Does the sign-up box work?", checks all three against Brevo
+and names what is missing, with the lists and the emails of the account and their numbers.
+Until all three are right, the sign-up box tells a visitor that signing up is not possible
+right now, and nobody is added anywhere.
 
-### How the sign-ups stand (12 October 2026)
+If the list should record the language of a reader, create a text contact attribute named
+`LANGUAGE` in Brevo (Contacts, Settings, Contact attributes). Without it people are still
+added, only without a language.
 
-Read through the admin's own check (Site settings, Newsletter) on the new sites:
+`EMAILS_OFF=1` also keeps the box from passing anyone to Brevo, so that a trial copy never
+makes Brevo email a real person. The check then says so, and still tells whether the three
+settings are right. To try the whole path before cutover, remove `EMAILS_OFF` from one of the
+new projects for a moment, redeploy, and sign up with your own address.
 
-- **Boerengroep**: 25 people filled in the box and none confirmed. They are waiting for a
-  confirmation email that was never delivered: see "Email (owner)". Once email works, they can
-  sign up again and get the email, or be asked to.
-- **Inspringtheater**: its sign-up database has no tables, so the box on the site cannot store
-  anyone, on the old site either. Create them once, from a laptop, with that database's
-  address (it is `NEWSLETTER_DATABASE_URL` on the project `inspringtheater-payload`):
+### What happened to the old sign-up lists
 
-  ```bash
-  cd apps/boerengroep
-  NEWSLETTER_DATABASE_URL=<Inspringtheater's sign-up database> pnpm exec drizzle-kit migrate
-  ```
-
-  It only adds the four empty tables of `apps/boerengroep/drizzle`. Never run it with
-  `PAYLOAD_DATABASE_URL`, the content database.
+The old sites kept sign-ups in a small database of their own (`DATABASE_URL` on the old
+projects) and mailed a confirmation link through Resend. That never worked from start to end:
+Resend has no verified domain, so no confirmation email ever left, and the Brevo key was
+refused. On 12 October 2026 Boerengroep's database held 25 addresses that were typed in the
+box and never confirmed, and Inspringtheater's had no tables at all. Nobody in them agreed by
+confirming, so they are not brought to Brevo. The owner decided that day that the new sites
+use Brevo only. The two old databases can be deleted in Neon once the old sites are switched
+off.
 
 ## Email (owner)
 
-The sites send their own short emails through Resend: the confirmation of a newsletter sign-up,
-a copy of every form answer to the organisation, and password resets. What editors can set
-about them is in `docs/EDITING-GUIDE.md`, "Emails the website sends". Three things are set on
-the hosting:
+The sites send two kinds of email themselves, through Resend: a copy of every form answer to
+the organisation, and password emails for editors. (The newsletter and its confirmation email
+come from Brevo.) What editors can set about them is in `docs/EDITING-GUIDE.md`, "Emails the
+website sends". Three things are set on the hosting:
 
-1. **A verified sender domain.** Checked on 12 October 2026: Resend lists no domain at all for
-   the key the sites use, and no email sent with it. Resend refuses mail from an address on a
-   domain it has not verified, so until this is done no email leaves either site, old or new.
-   In Resend: Domains, Add domain, `boerengroep.nl`. Resend shows a few DNS records. Add them
-   where the domain's DNS is managed, wait for "Verified", and send a test.
-2. **The sender**, per project: `FROM_EMAIL` (an address on the verified domain), `FROM_NAME`
-   and `REPLY_TO_EMAIL`. Inspringtheater sends as "Stichting Inspringtheater" from an address
-   on boerengroep.nl, because inspringtheater.nl is not verified in Resend. To change that,
-   verify inspringtheater.nl the same way and change `FROM_EMAIL` on its project. Its
-   `REPLY_TO_EMAIL` still holds Boerengroep's address, copied from the old project: set it to
-   Inspringtheater's own address, or remove it and the contact address in
-   `apps/inspringtheater/site.config.ts` is used.
+1. **A verified sender domain.** Checked on 12 October 2026 in three ways: Resend lists no
+   domain and no sent email for the key the sites use; a test send from
+   `newsletter@boerengroep.nl` to Resend's own test inbox was refused with "The boerengroep.nl
+   domain is not verified"; and the DNS of boerengroep.nl holds none of Resend's records. So
+   until this is done no email leaves either site, old or new. In Resend: Domains, Add domain,
+   `boerengroep.nl`. Resend shows a few DNS records. Add them where the domain's DNS is
+   managed, wait for "Verified", and send a test.
+2. **The sender**, per project: `FROM_EMAIL` (an address on the verified domain) and
+   `FROM_NAME`. Inspringtheater sends as "Stichting Inspringtheater" from an address on
+   boerengroep.nl. To give it an address of its own, verify inspringtheater.nl the same way
+   and change `FROM_EMAIL` on its project. An answer to a copy of a form answer goes to the
+   visitor who filled in the form, so no reply address is set.
 3. **`EMAILS_OFF`**. `1` means the site sends nothing. It is set on both new projects while
    they are being tried out. Remove it at cutover and redeploy.
 
@@ -281,8 +289,10 @@ until cutover day.
 6. Run the parity check and the smoke tests against the production deployment URL of
    `boerengroep-payload`, before it has the domain.
 7. On `boerengroep-payload`, set `NEXT_PUBLIC_SITE_URL` and `BASE_URL` to the real domain and
-   remove `EMAILS_OFF`, then redeploy. From then on the site sends email and lets search
-   engines in. Emails only arrive when the sender domain is verified: see "Email (owner)".
+   remove `EMAILS_OFF`, then redeploy. From then on the site sends email, passes newsletter
+   sign-ups to Brevo, and lets search engines in. The site's own emails only arrive when the
+   sender domain is verified (see "Email (owner)"), and the sign-up box only works when the
+   check under Site settings, Newsletter is all green (see "Newsletter and Brevo (owner)").
 8. Move the production domain from the old Vercel project to `boerengroep-payload`.
 9. Run the parity check once more against the real domain.
 10. Set the website's address in the admin (People and websites, Websites) to the real domain.
@@ -315,7 +325,7 @@ Do this after Boerengroep is live, or on staging at the same time as its rehears
    | `ADMIN_URL` | the Boerengroep origin followed by `/admin` |
    | `REVALIDATE_SECRET` | `openssl rand -hex 32`. The same value goes into the seed in step 3 |
    | `BLOB_READ_WRITE_TOKEN` | the same Blob token |
-   | `NEWSLETTER_DATABASE_URL`, `NEWSLETTER_SECRET`, `RESEND_API_KEY`, `FROM_EMAIL`, `FROM_NAME`, `REPLY_TO_EMAIL`, `BREVO_API_KEY`, `BREVO_LIST_ID` | this site's own newsletter list and mail settings. Never Boerengroep's: the two lists must not mix |
+   | `RESEND_API_KEY`, `FROM_EMAIL`, `FROM_NAME` | the sender of this site's own emails |
 
    Do not set `RUN_MIGRATIONS` and do not set `PODCAST_RSS_URL`. Migrations belong to the
    Boerengroep project. `PAYLOAD_SECRET` must be equal on both projects, because preview links
@@ -434,14 +444,16 @@ started working, list their changes from the admin's version history before deci
   included, is mailed to the organisation: to the address under Site settings, General, "Send
   form answers and orders to", or else to the contact address there. Editors can add more
   emails on a form. All of it goes out through the same mail settings as password resets.
-- **A copy on a laptop must not send mail.** It holds the real addresses of the organisation
-  and of subscribers. Start it with `EMAILS_OFF=1`: emails are then written to the server's
-  log instead of sent. The browser tests fill in forms, so they start the app that way
+- **A copy on a laptop must not send mail.** It holds the real addresses of the organisation.
+  Start it with `EMAILS_OFF=1`: emails are then written to the server's log instead of sent,
+  and the newsletter box passes nobody to Brevo. The browser tests fill in forms, so they start the app that way
   themselves. When you run them against a server you started, start that server with
   `EMAILS_OFF=1` too. Against a preview on Vercel they do send: one test answer of the form
   on the test page arrives at the organisation's address.
-- **The database has one migration**, `20261008_181609_initial`. From the first deployment on,
-  every later change to the content model is a new, additive migration next to it.
+- **The database has three migrations**: `20261008_181609_initial`, then
+  `20261012_100730_media_storage_columns` and `20261012_143753_newsletter_confirmation_email`.
+  The first deployment has happened, so every later change to the content model is a new,
+  additive migration next to them.
 - **Browser tests are not part of CI.** CI runs lint, typecheck, the unit tests, the database
   tests and the migration check. The browser tests (behaviour, twelve screen widths,
   accessibility: 120 for Boerengroep, and the shared ones plus its own for Inspringtheater) need
